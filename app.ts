@@ -24,7 +24,6 @@ const ENV = process.env.NODE_ENV || "development"
 // start -> app configuration
 
 app.use(express.json())
-app.use(express.static(path.join(__dirname, "build")))
 app.use(cookieParser());
 app.use(helmet());
 if (ENV === "development") {
@@ -47,6 +46,7 @@ app.use("/api/v1", OpportunityRoutes)
 app.use("/api/v1", ActivityRoutes)
 
 if (ENV === "production") {
+    app.use(express.static(path.join(__dirname, "build")))
     app.get('*', (req, res) => {
         res.sendFile(path.join(__dirname, "build/", "index.html"));
     })
