@@ -16,8 +16,7 @@ DB_URL=mongodb+srv://username:password@cluster_name/?retryWrites=true&w=majority
 # jwt auth keys
 `default 1 minute`
 JWT_ACCESS_EXPIRE="" like -> 1h,1m,10s etc.
-JWT_ACCESS_USER_SECRET=some strong secret1
-JWT_ACCESS_ORGANIZATION_SECRET=some strong secret2
+JWT_ACCESS_USER_SECRET=some strong secret
 COOKIE_EXPIRE=5 //in minutes
 
 # cloudinary keys
