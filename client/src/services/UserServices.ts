@@ -2,7 +2,7 @@ import axios from "axios";
 import { IUser } from "../types/user.type";
 
 const request = axios.create({
-  baseURL: process.env.REACT_APP_BACKEND_SERVER + "/api/v1/",
+  baseURL: process.env.REACT_APP_BACKEND_SERVER + "/api/v1/" || "/api/v1",
   withCredentials: true
 })
 
@@ -30,7 +30,7 @@ export const GetUsers = async (): Promise<{ data: IUser[] }> => {
 }
 
 export const GetProfile = async ()
-:Promise<{ data: { user: IUser } }> => {
+  : Promise<{ data: { user: IUser } }> => {
   return await request.get("profile");
 };
 
