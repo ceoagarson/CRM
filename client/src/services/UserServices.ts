@@ -1,13 +1,9 @@
 import axios from "axios";
 import { IUser } from "../types/user.type";
 
-let BASE_URL = process.env.REACT_APP_BACKEND_SERVER + "/api/v1/"
-if (process.env.REACT_APP_NODE_ENV === "production") {
-  BASE_URL = "/api/v1"
-}
 
 const request = axios.create({
-  baseURL: BASE_URL,
+  baseURL: process.env.REACT_APP_BACKEND_SERVER + "/api/v1/",
   withCredentials: true
 })
 
