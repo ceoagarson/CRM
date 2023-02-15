@@ -24,13 +24,15 @@ const ENV = process.env.NODE_ENV || "development"
 // start -> app configuration
 
 app.use(express.json())
-app.use(express.static(path.join(__dirname,"build")))
+app.use(express.static(path.join(__dirname, "build")))
 app.use(cookieParser());
 app.use(helmet());
-app.use(cors({
-    origin: ['http://localhost:3000', 'https://roaring-sundae-2f86c4.netlify.app'],
-    credentials: true
-}))
+if (ENV === "development") {
+    app.use(cors({
+        origin: ['http://localhost:3000'],
+        credentials: true
+    }))
+}
 connectDatabase();
 cloudinary.v2.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -49,7 +51,6 @@ if (ENV === "production") {
         res.sendFile(path.join(__dirname, "build/", "index.html"));
     })
 }
-
 else {
     app.use("*", (_req: Request, res: Response, _next: NextFunction) => {
         res.status(404).json({ message: "resource not found" })
