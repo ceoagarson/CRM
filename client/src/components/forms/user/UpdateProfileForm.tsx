@@ -1,17 +1,21 @@
-import { Button, Stack, TextField } from '@mui/material';
+import { Button, LinearProgress, Stack, TextField } from '@mui/material';
 import { useFormik } from 'formik';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
 import { UpdateProfile } from '../../../services/UserServices';
 import { Target } from '../../../types';
 import { IUser } from '../../../types/user.type';
+import { ChoiceActions,ChoiceContext } from '../../../contexts/dialogContext';
+import { useContext,useEffect } from 'react';
 
 type TformData = {
   email: string,
   dp: string | Blob | File
 }
 function UpdateProfileForm({ user }: { user: IUser }) {
-  const { mutate } = useMutation(UpdateProfile)
+  const { mutate,isLoading,isSuccess } = useMutation(UpdateProfile)
+  const { setChoice } = useContext(ChoiceContext)
+
   const formik = useFormik<TformData>({
     initialValues: {
       email: user.email || "",
@@ -51,6 +55,11 @@ function UpdateProfileForm({ user }: { user: IUser }) {
       mutate(formdata)
     }
   });
+  useEffect(() => {
+    if (isSuccess) {
+        setChoice({ type: ChoiceActions.close })
+    }
+}, [isSuccess,setChoice])
   return (
 
     <form onSubmit={formik.handleSubmit}>
@@ -96,7 +105,10 @@ function UpdateProfileForm({ user }: { user: IUser }) {
             }
           }}
         />
-        <Button variant="contained" color="primary" type="submit" fullWidth>Update</Button>
+         {isLoading && <LinearProgress />}
+        <Button variant="contained" color="primary" type="submit" 
+        disabled={Boolean(!isLoading)}
+        fullWidth>Update</Button>
       </Stack>
     </form>
   )

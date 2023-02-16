@@ -1,10 +1,11 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Button, IconButton, InputAdornment, Stack, TextField } from '@mui/material';
+import { Button, IconButton, InputAdornment, LinearProgress, Stack, TextField } from '@mui/material';
 import { useFormik } from 'formik';
-import { useState } from 'react';
+import { useEffect, useContext,useState } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
-import { NewUser} from '../../../services/UserServices';
+import { ChoiceActions,ChoiceContext } from '../../../contexts/dialogContext';
+import { NewUser } from '../../../services/UserServices';
 
 type Target = EventTarget & (HTMLTextAreaElement | HTMLInputElement)
     & {
@@ -17,7 +18,9 @@ type TformData = {
     dp: string | Blob | File
 }
 function NewUserForm() {
-    const newUser = useMutation(NewUser)
+    const { mutate, isLoading, isSuccess } = useMutation(NewUser)
+  const { setChoice } = useContext(ChoiceContext)
+
     const formik = useFormik<TformData>({
         initialValues: {
             username: '',
@@ -66,7 +69,7 @@ function NewUserForm() {
             formdata.append("email", values.email)
             formdata.append("password", values.password)
             formdata.append("dp", values.dp)
-            newUser.mutate(formdata)
+            mutate(formdata)
         }
     });
     const [visiblity, setVisiblity] = useState(false);
@@ -78,6 +81,11 @@ function NewUserForm() {
     ) => {
         e.preventDefault();
     };
+    useEffect(() => {
+        if (isSuccess) {
+            setChoice({ type: ChoiceActions.close })
+        }
+    }, [isSuccess,setChoice])
     return (
 
         <form onSubmit={formik.handleSubmit}>
@@ -169,7 +177,10 @@ function NewUserForm() {
                         }
                     }}
                 />
-                <Button variant="contained" color="primary" type="submit" fullWidth>Register</Button>
+                {isLoading && <LinearProgress />}
+                <Button variant="contained" color="primary" type="submit"
+                    disabled={Boolean(!isLoading)}
+                    fullWidth>Register</Button>
             </Stack>
         </form>
     )

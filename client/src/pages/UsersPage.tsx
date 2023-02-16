@@ -1,5 +1,5 @@
 import { DeleteOutlined, EditOutlined } from '@mui/icons-material'
-import { Avatar, IconButton, Snackbar, Typography } from '@mui/material'
+import { Avatar, IconButton, LinearProgress, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import React, { useContext, useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
@@ -12,7 +12,7 @@ import { GetUsers } from '../services/UserServices'
 import { IUser } from '../types/user.type'
 
 export default function UsersPage() {
-    const { data, isSuccess, isError } = useQuery("users", GetUsers)
+    const { data, isSuccess, isLoading } = useQuery("users", GetUsers)
     const [rowid, setRowId] = useState<string | undefined>()
     const { setChoice } = useContext(ChoiceContext)
     const [DATA, setDATA] = useState<IUser[]>([])
@@ -119,7 +119,7 @@ export default function UsersPage() {
             }
 
         ]
-        , []
+        , [setChoice]
     )
     useEffect(() => {
         if (isSuccess)
@@ -131,13 +131,14 @@ export default function UsersPage() {
             {
                 data && data.data.length > 0 ?
                     < UserTable data={MemoData} columns={MemoColumns} />
-                    : <h1>No data exists in the table</h1>
-            }
-            {
-                isError ?
-                    <Snackbar message="Error while fetching data" />
                     : null
             }
+            {
+                isLoading ?
+                    <LinearProgress color="success" />
+                    : null
+            }
+
             {
                 rowid ? <>
                     <UpdateUserDialog id={rowid} />

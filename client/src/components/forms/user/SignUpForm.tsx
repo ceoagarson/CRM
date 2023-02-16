@@ -1,9 +1,11 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Button, IconButton, InputAdornment,  Stack, TextField } from '@mui/material';
+import { Button, IconButton, InputAdornment, LinearProgress, Stack, TextField } from '@mui/material';
 import { useFormik } from 'formik';
-import { useState } from 'react';
+import { useEffect, useContext,useState } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
+import { ChoiceActions,ChoiceContext } from '../../../contexts/dialogContext';
+
 import { Signup } from '../../../services/UserServices';
 
 type Target = EventTarget & (HTMLTextAreaElement | HTMLInputElement)
@@ -19,7 +21,9 @@ type TformData = {
   dp: string | Blob | File
 }
 function OwnerSignUpForm() {
-  const signup = useMutation(Signup)
+  const { mutate, isLoading, isSuccess } = useMutation(Signup)
+  const { setChoice } = useContext(ChoiceContext)
+
   const formik = useFormik<TformData>({
     initialValues: {
       organization_name: '',
@@ -79,7 +83,7 @@ function OwnerSignUpForm() {
       formdata.append("email", values.email)
       formdata.append("password", values.password)
       formdata.append("dp", values.dp)
-      signup.mutate(formdata)
+      mutate(formdata)
     }
   });
   const [visiblity, setVisiblity] = useState(false);
@@ -91,6 +95,11 @@ function OwnerSignUpForm() {
   ) => {
     e.preventDefault();
   };
+  useEffect(() => {
+    if (isSuccess) {
+        setChoice({ type: ChoiceActions.close })
+    }
+}, [isSuccess,setChoice])
   return (
 
     <form onSubmit={formik.handleSubmit}>
@@ -212,9 +221,12 @@ function OwnerSignUpForm() {
             }
           }}
         />
-        <Button variant="contained" color="primary" type="submit" fullWidth>Register</Button>
+        {isLoading && <LinearProgress color="info" />}
+        <Button variant="contained"
+          disabled={Boolean(!isLoading)}
+          color="primary" type="submit" fullWidth>Register</Button>
       </Stack>
-    </form>
+    </form >
   )
 }
 

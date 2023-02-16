@@ -1,5 +1,5 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Button, IconButton, InputAdornment, TextField } from '@mui/material';
+import { Button, IconButton, InputAdornment, LinearProgress, TextField } from '@mui/material';
 import { Stack } from '@mui/system';
 import { useFormik } from 'formik';
 import React, { useContext, useEffect, useState } from 'react';
@@ -14,7 +14,7 @@ import { Login } from '../../../services/UserServices';
 
 function LoginForm() {
   const goto = useNavigate()
-  const { mutate, data, isSuccess } = useMutation(Login)
+  const { mutate, data, isSuccess,isLoading } = useMutation(Login)
   const { setChoice } = useContext(ChoiceContext)
   const { dispatch } = useContext(UserContext)
   const formik = useFormik({
@@ -46,7 +46,7 @@ function LoginForm() {
   };
   const handleMouseDown = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {  
+  ) => {
     e.preventDefault()
   };
   useEffect(() => {
@@ -55,7 +55,7 @@ function LoginForm() {
       setChoice({ type: ChoiceActions.close })
       goto(paths.dashboard)
     }
-  }, [dispatch, goto,setChoice, isSuccess, data])
+  }, [dispatch, goto, setChoice, isSuccess, data])
   return (
     <>
       <form onSubmit={formik.handleSubmit}>
@@ -106,7 +106,10 @@ function LoginForm() {
             }}
             {...formik.getFieldProps('password')}
           />
-          <Button variant="contained" color="primary" type="submit" fullWidth>Login</Button>
+          {isLoading && <LinearProgress />}
+          <Button variant="contained"
+            disabled={Boolean(!isLoading)}
+            color="primary" type="submit" fullWidth>Login</Button>
         </Stack>
       </form>
     </>

@@ -5,11 +5,11 @@ import AppRoutes from './Routes';
 function App() {
   return (
     <>
-        <ChoiceProvider>
-          <MenuProvider>
-            <AppRoutes />
-          </MenuProvider>
-        </ChoiceProvider>
+      <ChoiceProvider>
+        <MenuProvider>
+          <AppRoutes />
+        </MenuProvider>
+      </ChoiceProvider>
     </>
   )
 }
