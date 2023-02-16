@@ -25,7 +25,13 @@ const ENV = process.env.NODE_ENV || "development"
 
 app.use(express.json())
 app.use(cookieParser());
-app.use(helmet());
+app.use(
+    helmet.contentSecurityPolicy({
+        directives: {
+            "img-src": ["'self'", "https://res.cloudinary.com/"],
+        },
+    })
+);
 if (ENV === "development") {
     app.use(cors({
         origin: ['http://localhost:3000'],
