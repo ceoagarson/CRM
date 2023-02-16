@@ -4,7 +4,7 @@ import { IUser } from "../types/user.type";
 let BaseURL = "/api/v1/"
 if (process.env.REACT_APP_SERVER_URL)
   BaseURL = process.env.REACT_APP_SERVER_URL + BaseURL
-  
+
 const request = axios.create({
   baseURL: BaseURL,
   withCredentials: true
@@ -25,6 +25,10 @@ export const Signup = async (body: FormData): Promise<{ data: { user: IUser } }>
 export const NewUser = async (body: FormData): Promise<{ data: { user: IUser } }> => {
   return await request.post("users", body);
 };
+export const UpdateUser = async ({ id, body }: { id: string, body: FormData }): Promise<string> => {
+  return await request.put(`users/${id}`, body);
+};
+
 export const Logout = async () => {
   return await request.post("logout");
 };
@@ -32,11 +36,19 @@ export const Logout = async () => {
 export const GetUsers = async (): Promise<{ data: IUser[] }> => {
   return await request.get("users")
 }
+export const GetUser = async (id: string): Promise<{ data: IUser }> => {
+  return await request.get(`users/${id}`)
+}
+export const DeleteUser = async (id: string): Promise<string> => {
+  return await request.delete(`users/${id}`)
+}
+
 
 export const GetProfile = async ()
   : Promise<{ data: { user: IUser } }> => {
   return await request.get("profile");
 };
+
 
 // edit profile
 // export const useProfileMutation = (body) => {

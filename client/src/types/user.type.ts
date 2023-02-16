@@ -9,7 +9,7 @@ export interface IUser extends BaseIUser {
     dp?: Asset,
     email?: string,
     organization?: IOrganization
-    role?: string[],
+    roles?: string[],
     email_verified?: Boolean,
     last_login?: Date,
     createdAt?: Date,

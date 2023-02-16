@@ -44,7 +44,6 @@ app.use("/api/v1", LeadRoutes)
 app.use("/api/v1", AccountRoutes)
 app.use("/api/v1", OpportunityRoutes)
 app.use("/api/v1", ActivityRoutes)
-
 if (ENV === "production") {
     app.use(express.static(path.join(__dirname, "build")))
     app.get('*', (req, res) => {

@@ -1,6 +1,7 @@
 import { Menu, MenuItem } from '@mui/material'
 import React, { useContext } from 'react'
 import { ChoiceActions, ChoiceContext } from '../../contexts/dialogContext';
+import { UserContext } from '../../contexts/userContext';
 import NewUserDialog from '../dialogs/users/NewUserDialog';
 type Props = {
     anchorEl: null | HTMLElement,
@@ -9,6 +10,7 @@ type Props = {
 }
 function UserMenu({ anchorEl, handleClose, handleLogout }: Props) {
     const openMenu = Boolean(anchorEl);
+    const { user } = useContext(UserContext)
     const { setChoice } = useContext(ChoiceContext)
     return (
         <>
@@ -24,7 +26,11 @@ function UserMenu({ anchorEl, handleClose, handleLogout }: Props) {
                 }}
             >
                 <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={() => setChoice({ type: ChoiceActions.new_user })}>New User</MenuItem>
+                {user?.roles?.includes("admin") ?
+                    <MenuItem onClick={() => setChoice({ type: ChoiceActions.new_user })}>New User</MenuItem>
+                    :
+                    null
+                }
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
         </>

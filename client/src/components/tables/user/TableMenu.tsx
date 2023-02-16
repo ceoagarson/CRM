@@ -8,13 +8,27 @@ import { IUser } from '../../../types/user.type';
 
 type Props = {
     columns: ColumnInstance<IUser>[],
-    selectedFlatRows: Row<IUser>[] 
+    selectedFlatRows: Row<IUser>[]
+}
+type SelectedData = {
+    username?: string,
+    email?: string,
+    dp?: string,
+    email_verified?: Boolean,
+    is_active?: Boolean,
+    last_login?: string,
+    organization?: string,
+    organization_email?: string,
+    roles?: string,
+    createdAt?: string,
+    createdBy?: string
+
 }
 function TableMenu({ columns, selectedFlatRows }: Props) {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [toogleCol, setToogleCol] = useState(false)
     const openMenu = Boolean(anchorEl);
-    const [selectedData, setSelectedData] = useState<IUser[]>([])
+    const [selectedData, setSelectedData] = useState<SelectedData[]>([])
     const [sent, setSent] = useState(false)
 
 
@@ -43,9 +57,27 @@ function TableMenu({ columns, selectedFlatRows }: Props) {
     }
     // refine data
     useEffect(() => {
-        let data: IUser[] = []
+        let data: SelectedData[] = []
         selectedFlatRows.map((item) => {
-            return data.push(item.original)
+            const user = item.original
+            let lastlogin = undefined
+            let created_at = undefined
+            if (user.last_login && user.createdAt) {
+                lastlogin = new Date(user.last_login).toLocaleDateString()
+                created_at = new Date(user.createdAt).toLocaleDateString()
+            }
+            return data.push({
+                username: user.username,
+                email: user.email,
+                dp: user.dp?.url,
+                email_verified: user.email_verified,
+                is_active: user.is_active,
+                last_login: lastlogin,
+                organization: user.organization?.organization_name,
+                organization_email: user.organization?.organization_email,
+                roles: user.roles?.toString(),
+                createdAt: created_at
+            })
         })
         setSelectedData(data)
     }, [selectedFlatRows])

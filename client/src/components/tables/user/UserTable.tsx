@@ -38,7 +38,7 @@ export function UserTable({ data, columns }: Props) {
     } = useTable({
         data, columns, initialState: {
             pageSize: 10,
-            hiddenColumns: ['_id']
+            hiddenColumns: ['']
         }
     },
         useGlobalFilter,
@@ -99,7 +99,7 @@ export function UserTable({ data, columns }: Props) {
                     overflow: "scroll"
                 }}>
                 <Table
-                    sx={{ height: "700" }}
+                    sx={{ height: "700",minWidth:"1000px" }}
                     size="small"
                     {...getTableProps()}>
                     <TableHead

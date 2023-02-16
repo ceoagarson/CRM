@@ -46,7 +46,7 @@ function LoginForm() {
   };
   const handleMouseDown = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  ) => {  
     e.preventDefault()
   };
   useEffect(() => {
@@ -66,7 +66,7 @@ function LoginForm() {
         >
           <TextField
             autoFocus
-            focused
+            variant="standard"
             fullWidth
             required
             error={
@@ -85,6 +85,7 @@ function LoginForm() {
               formik.touched.password && formik.errors.password ? true : false
             }
             id="password"
+            variant="standard"
             label="Password"
             fullWidth
             helperText={

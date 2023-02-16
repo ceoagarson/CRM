@@ -6,7 +6,6 @@ import NewUserForm from '../../forms/user/NewUserForm';
 
 function NewUserDialog() {
   const { choice, setChoice } = useContext(ChoiceContext)
-
   return (
     <Dialog open={choice === ChoiceActions.new_user ? true : false} onClose={() => setChoice({ type: ChoiceActions.close })}
       scroll="paper"
@@ -26,8 +25,6 @@ function NewUserDialog() {
             justifyContent: "center"
           }}
         >
-          <Button onClick={() => setChoice({ type: ChoiceActions.login })}>Login</Button>{" or "}
-          <Button onClick={() => setChoice({ type: ChoiceActions.reset_password_mail })}> Forgot Password</Button>
         </Typography >
       </DialogActions>
     </Dialog>
