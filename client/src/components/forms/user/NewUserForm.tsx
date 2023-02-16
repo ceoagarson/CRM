@@ -179,7 +179,7 @@ function NewUserForm() {
                 />
                 {isLoading && <LinearProgress />}
                 <Button variant="contained" color="primary" type="submit"
-                    disabled={Boolean(!isLoading)}
+                    disabled={Boolean(isLoading)}
                     fullWidth>Register</Button>
             </Stack>
         </form>
