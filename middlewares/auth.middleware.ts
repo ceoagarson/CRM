@@ -16,7 +16,7 @@ export const isAuthenticatedUser = catchAsyncError(async (req: Request, res: Res
         process.env.JWT_ACCESS_USER_SECRET || "some random secret",
         async (err: any, decodedData: any) => {
             if (err) {
-                return res.status(403).json({ message: "Please Login again, session expired" })
+                return res.status(403).json({ message: "login again ! session expired" })
             }
             if (decodedData) {
                 req.user = await User.findById(decodedData.id)
@@ -53,7 +53,7 @@ export const sendUserToken = (res: Response, accessToken: string) => {
         expires: new Date(Date.now() + Expiry * 60 * 1000),//1 minute by default
         httpOnly: true,
         secure: true,
-        sameSite: 'none'
+        sameSite: 'lax'
     });
 }
 
@@ -61,7 +61,7 @@ export const sendUserToken = (res: Response, accessToken: string) => {
 export const deleteToken = async (res: Response) => {
     const options = {
         expires: new Date(Date.now()),
-        httpOnly: true,
+        httpOnly: true
     };
     res.cookie("accessToken", null, options);
 };

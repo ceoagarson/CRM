@@ -1,14 +1,5 @@
-import axios from "axios";
 import { IUser } from "../types/user.type";
-
-let BaseURL = "/api/v1/"
-if (process.env.REACT_APP_SERVER_URL)
-  BaseURL = process.env.REACT_APP_SERVER_URL + BaseURL
-
-const request = axios.create({
-  baseURL: BaseURL,
-  withCredentials: true
-})
+import { apiClient } from "../utils/AxiosInterceptor";
 
 export const Login = async (
   body: {
@@ -16,46 +7,46 @@ export const Login = async (
     password: string
   }
 ): Promise<{ data: { user: IUser } }> => {
-  return await request.post("login", body);
+  return await apiClient.post("login", body);
 };
 
 export const Signup = async (body: FormData): Promise<{ data: { user: IUser } }> => {
-  return await request.post("signup", body);
+  return await apiClient.post("signup", body);
 };
 export const NewUser = async (body: FormData): Promise<{ data: { user: IUser } }> => {
-  return await request.post("users", body);
+  return await apiClient.post("users", body);
 };
 export const UpdateUser = async ({ id, body }: { id: string, body: FormData }): Promise<string> => {
-  return await request.put(`users/${id}`, body);
+  return await apiClient.put(`users/${id}`, body);
 };
 
 export const Logout = async () => {
-  return await request.post("logout");
+  return await apiClient.post("logout");
 };
 
 export const GetUsers = async (): Promise<{ data: IUser[] }> => {
-  return await request.get("users")
+  return await apiClient.get("users")
 }
 export const GetUser = async (id: string): Promise<{ data: IUser }> => {
-  return await request.get(`users/${id}`)
+  return await apiClient.get(`users/${id}`)
 }
 export const DeleteUser = async (id: string): Promise<string> => {
-  return await request.delete(`users/${id}`)
+  return await apiClient.delete(`users/${id}`)
 }
 
 
 export const GetProfile = async ()
-  : Promise<{ data: IUser}> => {
-  return await request.get("profile");
+  : Promise<{ data: IUser }> => {
+  return await apiClient.get("profile");
 };
 
 export const UpdateProfile = async (body: FormData): Promise<{ data: { user: IUser } }> => {
-  return await request.put("profile", body);
+  return await apiClient.put("profile", body);
 };
 // edit profile
 // export const useProfileMutation = (body) => {
 //   return useMutation(async (body) => {
-//     return await request.put(base_url + "profile", body);
+//     return await apiClient.put(base_url + "profile", body);
 //   });
 // };
 //login user
