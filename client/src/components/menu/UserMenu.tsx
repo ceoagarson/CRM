@@ -1,38 +1,63 @@
 import { Menu, MenuItem } from '@mui/material'
-import React, { useContext } from 'react'
+import  { useContext, useEffect } from 'react'
+import { useMutation } from 'react-query';
+import { useNavigate } from 'react-router-dom';
 import { ChoiceActions, ChoiceContext } from '../../contexts/dialogContext';
-import { UserContext } from '../../contexts/userContext';
+import { MenuActions, MenuContext } from '../../contexts/menuContext';
+import { UserActions, UserContext } from '../../contexts/userContext';
+import { paths } from '../../Routes';
+import { Logout } from '../../services/UserServices';
 import NewUserDialog from '../dialogs/users/NewUserDialog';
-type Props = {
-    anchorEl: null | HTMLElement,
-    handleClose: () => void,
-    handleLogout: (e: React.MouseEvent) => void
-}
-function UserMenu({ anchorEl, handleClose, handleLogout }: Props) {
-    const openMenu = Boolean(anchorEl);
-    const { user } = useContext(UserContext)
+import UpdateProfileDialog from '../dialogs/users/UpdateProfileDialog';
+
+function UserMenu() {
+    const { menu, setMenu } = useContext(MenuContext)
+    const { user, dispatch } = useContext(UserContext)
     const { setChoice } = useContext(ChoiceContext)
+    const { mutate, isSuccess } = useMutation(Logout)
+    const goto = useNavigate()
+    useEffect(() => {
+        if (isSuccess) {
+            dispatch({ type: UserActions.logout })
+            setChoice({ type: ChoiceActions.close })
+            setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
+            goto(paths.home)
+        }
+    }, [dispatch, goto, setChoice, setMenu, isSuccess])
     return (
         <>
             {/* new user dialog */}
             <NewUserDialog />
             <Menu
-                id="basic-menu"
-                anchorEl={anchorEl}
-                open={openMenu}
-                onClose={handleClose}
-                MenuListProps={{
-                    'aria-labelledby': 'basic-button',
-                }}
+                anchorEl={menu.anchorEl}
+                open={Boolean(menu.type === MenuActions.user_menu)}
+                onClose={() => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })}
             >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
+                <MenuItem
+                    onClick={() => {
+                        setChoice({ type: ChoiceActions.update_profile })
+                        setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
+                    }
+                    }
+                >Profile</MenuItem>
                 {user?.roles?.includes("admin") ?
-                    <MenuItem onClick={() => setChoice({ type: ChoiceActions.new_user })}>New User</MenuItem>
+                    <MenuItem onClick={() => {
+                        setChoice({ type: ChoiceActions.new_user })
+                        setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
+
+                    }
+                    }>New User</MenuItem>
                     :
                     null
                 }
-                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                <MenuItem onClick={
+                    () => {
+                        mutate()
+                        setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
+                    }
+                }>Logout</MenuItem>
             </Menu>
+            <UpdateProfileDialog />
         </>
     )
 }

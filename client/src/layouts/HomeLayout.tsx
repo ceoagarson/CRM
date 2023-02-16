@@ -3,7 +3,7 @@ import { paths } from '../Routes';
 import { Stack } from '@mui/system';
 import styled from '@emotion/styled';
 import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { AccountCircle } from '@mui/icons-material';
 import { ChoiceActions, ChoiceContext } from '../contexts/dialogContext';
 import LoginDialog from '../components/dialogs/users/LoginDialog';
@@ -12,6 +12,7 @@ import SignUpDialog from '../components/dialogs/users/SignUpDialog';
 
 import Menu from "@mui/icons-material/Menu";
 import HomeMenu from '../components/menu/HomeMenu';
+import { MenuActions, MenuContext } from '../contexts/menuContext';
 
 export const StyledLink = styled(Link)`
     text-decoration: none;
@@ -19,22 +20,15 @@ export const StyledLink = styled(Link)`
 `
 export default function HomeLayout() {
   const { setChoice } = useContext(ChoiceContext)
-  const [anchorHomerEl, setAnchorHomerEl] = useState<null | HTMLElement>(null);
-
-  function HandleHomeMenu(e: React.MouseEvent<HTMLButtonElement>) {
-    setAnchorHomerEl(e.currentTarget);
-  };
-  function closeHomeMenu() {
-    setAnchorHomerEl(null)
-  }
+  const {  setMenu } = useContext(MenuContext)
 
   return (
     <>
-      <Box sx={{ bgcolor: 'primary.dark',width: '100%' }}>
+      <Box sx={{ bgcolor: 'primary.dark', width: '100%' }}>
         {/* parent stack */}
         <Stack direction="row" sx={{
           justifyContent: "space-between", alignItems: "center",
-          p:2
+          p: 2
         }}
         >
           {/* child stack1 */}
@@ -75,7 +69,8 @@ export default function HomeLayout() {
             >
               <Tooltip title="open menu">
                 <IconButton
-                  onClick={HandleHomeMenu}
+                  onClick={(e) => setMenu({ type: MenuActions.home_menu, payload: { type: MenuActions.home_menu, anchorEl: e.currentTarget } })
+                  }
                   sx={{
                     color: "white",
                     display: {
@@ -99,11 +94,7 @@ export default function HomeLayout() {
         </Stack>
       </Box>
       <Outlet />
-      <HomeMenu
-        anchorEl={anchorHomerEl
-        }
-        handleClose={closeHomeMenu}
-      />
+      <HomeMenu />
       <LoginDialog />
       <ResetPasswordSendMailDialog />
       <SignUpDialog />

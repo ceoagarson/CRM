@@ -1,61 +1,32 @@
-import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 import { paths } from '../Routes';
 import { Stack } from '@mui/system';
 import styled from '@emotion/styled';
 import { Avatar, Box, Button, IconButton, Tooltip, Typography } from '@mui/material';
-import { useContext, useEffect, useState } from 'react';
-import { UserActions, UserContext } from '../contexts/userContext';
+import { useContext} from 'react';
+import {  UserContext } from '../contexts/userContext';
 import { AccountCircle } from '@mui/icons-material';
 import { ChoiceActions, ChoiceContext } from '../contexts/dialogContext';
 import LoginDialog from '../components/dialogs/users/LoginDialog';
 import ResetPasswordSendMailDialog from '../components/dialogs/users/ResetPasswordSendMailDialog';
 import SignUpDialog from '../components/dialogs/users/SignUpDialog';
 import UserMenu from '../components/menu/UserMenu';
-import { useMutation } from 'react-query';
-import { Logout } from '../services/UserServices';
 import Menu from "@mui/icons-material/Menu";
 import DashboardMenu from '../components/menu/DashboardMenu';
+import { MenuActions, MenuContext } from '../contexts/menuContext';
 
 export const StyledLink = styled(Link)`
     text-decoration: none;
     color:white;
 `
 export default function DashboardLayout() {
-  const { user, dispatch } = useContext(UserContext)
+  const { setMenu } = useContext(MenuContext)
+  const { user } = useContext(UserContext)
   const { setChoice } = useContext(ChoiceContext)
-  const [anchorUserEl, setAnchorUserEl] = useState<null | HTMLElement>(null);
-  const [anchorHomerEl, setAnchorHomerEl] = useState<null | HTMLElement>(null);
-  const { mutate, isSuccess } = useMutation(Logout)
-  const goto = useNavigate()
-
-  function handleLogout() {
-    mutate()
-  }
-
-  function HandleDashboardMenu(e: React.MouseEvent<HTMLButtonElement>) {
-    setAnchorHomerEl(e.currentTarget);
-  };
-  function closeDashboardMenu() {
-    setAnchorHomerEl(null)
-  }
-  function handleUserMenu(e: React.MouseEvent<HTMLButtonElement>) {
-    setAnchorUserEl(e.currentTarget);
-  };
-  function closeUserMenu() {
-    setAnchorUserEl(null)
-  }
-  useEffect(() => {
-    if (isSuccess) {
-      dispatch({ type: UserActions.logout })
-      setChoice({ type: ChoiceActions.close })
-      setAnchorUserEl(null)
-      goto(paths.home)
-    }
-  }, [dispatch, goto, setChoice, isSuccess])
 
   return (
     <>
-      <Box sx={{ bgcolor: 'primary.dark',width: '100%' }}>
+      <Box sx={{ bgcolor: 'primary.dark', width: '100%' }}>
         {/* parent stack */}
         <Stack direction="row" sx={{
           justifyContent: "space-between", alignItems: "center"
@@ -106,9 +77,9 @@ export default function DashboardLayout() {
                 >
 
                   <Tooltip title="open menu">
-
                     <IconButton
-                      onClick={HandleDashboardMenu}
+                      onClick={(e) => setMenu({ type: MenuActions.dashboard_menu, payload: { type: MenuActions.dashboard_menu, anchorEl: e.currentTarget } })
+                      }
                       sx={{
                         color: "white",
                         display: {
@@ -120,7 +91,8 @@ export default function DashboardLayout() {
                   </Tooltip>
                   <Tooltip title="open settings">
                     <IconButton
-                      onClick={handleUserMenu}
+                      onClick={(e) => setMenu({ type: MenuActions.user_menu, payload: { type: MenuActions.user_menu, anchorEl: e.currentTarget } })
+                      }
                     >
                       <Avatar
                         alt="img1" src={user.dp?.url} />
@@ -145,18 +117,8 @@ export default function DashboardLayout() {
         </Stack>
       </Box>
       <Outlet />
-      <UserMenu
-        anchorEl={anchorUserEl
-        }
-        handleLogout={handleLogout}
-        handleClose={closeUserMenu}
-      />
-      <DashboardMenu
-        anchorEl={anchorHomerEl
-        }
-        handleClose={closeDashboardMenu}
-      />
-
+      <DashboardMenu />
+      <UserMenu />
       <LoginDialog />
       <ResetPasswordSendMailDialog />
       <SignUpDialog />

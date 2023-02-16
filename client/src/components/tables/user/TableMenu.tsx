@@ -1,10 +1,11 @@
 import { Fade, IconButton, Menu, MenuItem, Snackbar } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import  { useContext, useEffect, useState } from 'react'
 import { ColumnInstance, Row } from 'react-table';
 import ToogleColumns from './ToogleColumns';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../utils/ExportToExcel';
 import { IUser } from '../../../types/user.type';
+import { MenuActions, MenuContext } from '../../../contexts/menuContext';
 
 type Props = {
     columns: ColumnInstance<IUser>[],
@@ -25,14 +26,14 @@ type SelectedData = {
 
 }
 function TableMenu({ columns, selectedFlatRows }: Props) {
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const { menu, setMenu } = useContext(MenuContext)
     const [toogleCol, setToogleCol] = useState(false)
-    const openMenu = Boolean(anchorEl);
     const [selectedData, setSelectedData] = useState<SelectedData[]>([])
     const [sent, setSent] = useState(false)
 
 
     function handleExcel() {
+        setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
         try {
             ExportToExcel(selectedData, "USERS_DATA")
             setSent(true)
@@ -42,19 +43,7 @@ function TableMenu({ columns, selectedFlatRows }: Props) {
         }
 
     }
-    // tooogle columns false
-    function setToogleClose() {
-        setToogleCol(false)
-        setAnchorEl(null)
-    }
-    // open  menu
-    function setAnchorElement(e: React.MouseEvent<HTMLButtonElement>) {
-        setAnchorEl(e.currentTarget);
-    };
-    // close menu
-    function handleClose() {
-        setAnchorEl(null)
-    }
+
     // refine data
     useEffect(() => {
         let data: SelectedData[] = []
@@ -92,22 +81,32 @@ function TableMenu({ columns, selectedFlatRows }: Props) {
                 message="File Exported Successfuly"
             />
 
-            <IconButton size="medium" onClick={setAnchorElement}>
+            <IconButton size="medium"
+                onClick={(e) => setMenu({ type: MenuActions.user_table_menu, payload: { type: MenuActions.user_table_menu, anchorEl: e.currentTarget } })
+                }
+            >
                 <MenuIcon />
             </IconButton>
-            <ToogleColumns columns={columns} open={toogleCol} handleClose={setToogleClose} />
+            <ToogleColumns columns={columns} open={toogleCol} handleClose={() =>
+                setToogleCol(false)
+            } />
             <Menu
-                id="basic-menu"
-                anchorEl={anchorEl}
-                open={openMenu}
-                onClose={handleClose}
+                anchorEl={menu.anchorEl}
+                open={Boolean(menu.type === MenuActions.user_table_menu)}
+                onClose={(e) => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
+                }
                 TransitionComponent={Fade}
                 MenuListProps={{
                     'aria-labelledby': 'basic-button',
                 }}
             >
-                <MenuItem onClick={() => setToogleCol(true)}>Show and hide columns</MenuItem>
-                <MenuItem onClick={handleExcel}>Export To Excel</MenuItem>
+                <MenuItem onClick={() => {
+                    setToogleCol(true)
+                    setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
+                }}
+                >Show and hide columns</MenuItem>
+                <MenuItem onClick={handleExcel}
+                >Export To Excel</MenuItem>
             </Menu>
 
         </>

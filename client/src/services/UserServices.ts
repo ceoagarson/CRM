@@ -45,11 +45,13 @@ export const DeleteUser = async (id: string): Promise<string> => {
 
 
 export const GetProfile = async ()
-  : Promise<{ data: { user: IUser } }> => {
+  : Promise<{ data: IUser}> => {
   return await request.get("profile");
 };
 
-
+export const UpdateProfile = async (body: FormData): Promise<{ data: { user: IUser } }> => {
+  return await request.put("profile", body);
+};
 // edit profile
 // export const useProfileMutation = (body) => {
 //   return useMutation(async (body) => {
