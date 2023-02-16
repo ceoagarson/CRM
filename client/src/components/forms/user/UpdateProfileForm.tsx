@@ -107,7 +107,7 @@ function UpdateProfileForm({ user }: { user: IUser }) {
         />
          {isLoading && <LinearProgress />}
         <Button variant="contained" color="primary" type="submit" 
-        disabled={Boolean(!isLoading)}
+        disabled={Boolean(isLoading)}
         fullWidth>Update</Button>
       </Stack>
     </form>
