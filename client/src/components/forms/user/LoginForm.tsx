@@ -108,7 +108,7 @@ function LoginForm() {
           />
           {isLoading && <LinearProgress />}
           <Button variant="contained"
-            disabled={Boolean(!isLoading)}
+            disabled={Boolean(isLoading)}
             color="primary" type="submit" fullWidth>Login</Button>
         </Stack>
       </form>
