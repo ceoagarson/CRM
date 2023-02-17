@@ -1,3 +1,4 @@
+import { LinearProgress } from '@mui/material'
 import React, { Suspense, useContext } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import ResetPasswordDialog from './components/dialogs/users/ResetPasswordDialog'
@@ -45,7 +46,7 @@ function AppRoutes() {
           }>
             <Route
               index element={
-                <Suspense fallback={"loading..."}>
+                <Suspense fallback={<LinearProgress/>}>
                   <DashBoardPage />
                 </Suspense>
 
@@ -53,30 +54,30 @@ function AppRoutes() {
             />
             <Route
               path={paths.users} element={
-                <Suspense fallback={"loading..."}><UsersPage />
+                <Suspense fallback={<LinearProgress/>}><UsersPage />
                 </Suspense>
 
               }
             />
             <Route
               path={paths.leads} element={
-                <Suspense fallback={"loading..."}><LeadsPage /></Suspense>
+                <Suspense fallback={<LinearProgress/>}><LeadsPage /></Suspense>
 
               }
             />
             <Route
               path={paths.activities} element={
-                <Suspense fallback={"loading..."}><ActivityPage /></Suspense>
+                <Suspense fallback={<LinearProgress/>}><ActivityPage /></Suspense>
               }
             />
             <Route
               path={paths.opportunities} element={
-                <Suspense fallback={"loading..."}><OpportunityPage /></Suspense>
+                <Suspense fallback={<LinearProgress/>}><OpportunityPage /></Suspense>
               }
             />
             <Route
               path={paths.accounts} element={
-                <Suspense fallback={"loading..."}><AccountsPage /></Suspense>
+                <Suspense fallback={<LinearProgress/>}><AccountsPage /></Suspense>
               }
             />
           </Route>
