@@ -1,6 +1,6 @@
 import React, { useReducer } from "react"
 
-type ChoiceState = "signup" | "login" | "reset_password_mail" | null | "new_user" | "update_user" | "delete_user" | "update_profile" | "view_profile"
+type ChoiceState = "signup" | "login" | "reset_password_mail" | null | "new_user" | "update_user" | "delete_user" | "update_profile" | "view_profile"|"update_password"|"reset_password"|"verify_email"
 
 // initial state
 const initialState: ChoiceState = null
@@ -15,7 +15,10 @@ export enum ChoiceActions {
   update_user = "update_user",
   delete_user = "delete_user",
   update_profile = "update_profile",
-  view_profile = "view_profile"
+  view_profile = "view_profile",
+  reset_password="reset_password",
+  update_password="update_password",
+  verify_email="verify_email"
 }
 type Action = {
   type: ChoiceActions
@@ -32,6 +35,9 @@ function reducer(state: ChoiceState, action: Action) {
     case ChoiceActions.delete_user: return type
     case ChoiceActions.update_profile: return type
     case ChoiceActions.view_profile: return type
+    case ChoiceActions.update_password: return type
+    case ChoiceActions.reset_password: return type
+    case ChoiceActions.verify_email: return type
     case ChoiceActions.close: return null
     default: return state
   }

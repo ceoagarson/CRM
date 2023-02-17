@@ -1,5 +1,5 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Button, CircularProgress, IconButton, InputAdornment, Snackbar, TextField } from '@mui/material';
+import { Button, CircularProgress, IconButton, InputAdornment,  TextField } from '@mui/material';
 import { Stack } from '@mui/system';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
@@ -13,6 +13,7 @@ import { paths } from '../../../Routes';
 import { Login } from '../../../services/UserServices';
 import { BackendError } from '../../../types';
 import { IUser } from '../../../types/user.type';
+import AlertBar from '../../alert/Alert';
 
 function LoginForm() {
   const goto = useNavigate()
@@ -59,16 +60,19 @@ function LoginForm() {
   };
   useEffect(() => {
     if (isSuccess) {
+     setTimeout(()=>{
       dispatch({ type: UserActions.login, payload: data.data })
       setChoice({ type: ChoiceActions.close })
       goto(paths.dashboard)
+     },1000)
     }
   }, [dispatch, goto, setChoice, isSuccess, data])
   return (
     <>
 
       <form onSubmit={formik.handleSubmit}>
-        <Snackbar open={isError} message={error?.response.data.message} />
+        <AlertBar  open={isError} message={error?.response.data.message} />
+        <AlertBar color="success" open={isSuccess} message="logged in successfully" />
         <Stack
           direction="column"
           pt={2}

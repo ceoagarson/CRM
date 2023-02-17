@@ -1,4 +1,4 @@
-import { DeleteOutlined, EditOutlined,  Visibility } from '@mui/icons-material'
+import { DeleteOutlined, EditOutlined, Visibility } from '@mui/icons-material'
 import { Avatar, IconButton, LinearProgress, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import React, { useContext, useEffect, useState } from 'react'
@@ -27,7 +27,7 @@ export default function UsersPage() {
             {
                 Header: "Index",
                 accessor: "_id",
-                width:20,
+                width: 20,
                 disableSortBy: true,
                 Cell: (props) => {
                     return <Typography variant="body1" component="span" pr={2}>{props.row.index + 1}</Typography>
@@ -35,7 +35,8 @@ export default function UsersPage() {
             },
             {
                 Header: "Actions",
-                accessor: "email_verified",
+                accessor: "email_verified",//already used so use it for display actions
+                disableSortBy: true,
                 Cell: (props) => {
                     return (
                         <Stack direction="row">
@@ -86,18 +87,17 @@ export default function UsersPage() {
             {
                 Header: 'Picture',
                 accessor: 'dp',
+                disableSortBy: true,
                 Cell: (props) => {
                     return (
-                        <IconButton
-                        >
-                            <Stack>
-                                <Avatar
-                                    alt="display picture" src={props.row.original.dp?.url} />
-                                <Typography variant="caption" component="span">
-                                    {props.row.original.roles?.toString()}
-                                </Typography>
-                            </Stack>
-                        </IconButton>
+
+                        <Stack>
+                            <Avatar
+                                alt="display picture" src={props.row.original.dp?.url} />
+                            <Typography variant="caption" component="span">
+                                {props.row.original.roles?.toString()}
+                            </Typography>
+                        </Stack>
                     )
                 }
 

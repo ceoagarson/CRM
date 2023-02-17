@@ -1,7 +1,9 @@
 import React, { Suspense, useContext } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
+import ResetPasswordDialog from './components/dialogs/users/ResetPasswordDialog'
 import { UserContext } from './contexts/userContext'
 import { DashboardLayout } from './layouts'
+import EmailVerifyPage from './pages/EmailVerifyPage'
 const AccountsPage = React.lazy(() => import('./pages/AccountsPage'))
 const ActivityPage = React.lazy(() => import('./pages/ActivityPage'))
 const DashBoardPage = React.lazy(() => import('./pages/DashBoardPage'))
@@ -20,7 +22,9 @@ export enum paths {
   accounts = "accounts",
   activities = "activities",
   opportunities = "opportunities",
-  users = "users"
+  users = "users",
+  reset_password = "/password/reset/:token",
+  verify_email = "/email/verify/:token"
 }
 function AppRoutes() {
   const { user } = useContext(UserContext)
@@ -73,13 +77,14 @@ function AppRoutes() {
             <Route
               path={paths.accounts} element={
                 <Suspense fallback={"loading..."}><AccountsPage /></Suspense>
-
               }
             />
           </Route>
           )
       }
       {/* not found */}
+      <Route path={paths.reset_password} element={<ResetPasswordDialog />} />
+      <Route path={paths.verify_email} element={<EmailVerifyPage />} />
       <Route path="*" element={<Navigate to={paths.home} />} />
     </Routes >
   )

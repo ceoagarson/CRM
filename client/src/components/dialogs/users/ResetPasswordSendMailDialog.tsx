@@ -10,7 +10,7 @@ function ResetPasswordSendMailDialog() {
         <Dialog open={choice === ChoiceActions.reset_password_mail ? true : false}
             onClose={() => setChoice({ type: ChoiceActions.close })}
         >
-            <DialogTitle textAlign="center">Update Password Form</DialogTitle>
+            <DialogTitle textAlign="center">Reset Password  </DialogTitle>
             <DialogContent>
                 <ResetPasswordSendMailForm />
             </DialogContent>

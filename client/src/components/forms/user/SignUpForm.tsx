@@ -1,16 +1,19 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Button, CircularProgress, IconButton, InputAdornment, LinearProgress, Snackbar, Stack, TextField } from '@mui/material';
+import { Button, CircularProgress, IconButton, InputAdornment, LinearProgress,  Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useEffect, useContext, useState } from 'react';
 import { useMutation } from 'react-query';
+import { useNavigate } from 'react-router-dom';
 import * as Yup from "yup"
-import { queryClient } from '../../..';
 import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
+import { UserActions, UserContext } from '../../../contexts/userContext';
+import { paths } from '../../../Routes';
 
 import { Signup } from '../../../services/UserServices';
 import { BackendError } from '../../../types';
 import { IUser } from '../../../types/user.type';
+import AlertBar from '../../alert/Alert';
 
 type Target = EventTarget & (HTMLTextAreaElement | HTMLInputElement)
   & {
@@ -25,11 +28,11 @@ type TformData = {
   dp: string | Blob | File
 }
 function OwnerSignUpForm() {
-  const { mutate, isLoading, isSuccess, isError, error } = useMutation
+  const goto = useNavigate()
+  const { dispatch } = useContext(UserContext)
+  const { mutate, data,isLoading, isSuccess, isError, error } = useMutation
     <AxiosResponse<IUser>, BackendError, FormData>
-    (Signup,{
-      onSuccess: () => queryClient.invalidateQueries('users')
-    })
+    (Signup)
   const { setChoice } = useContext(ChoiceContext)
 
   const formik = useFormik<TformData>({
@@ -105,13 +108,17 @@ function OwnerSignUpForm() {
   };
   useEffect(() => {
     if (isSuccess) {
-      setChoice({ type: ChoiceActions.close })
+      setTimeout(()=>{
+        dispatch({ type: UserActions.login, payload: data.data })
+        setChoice({ type: ChoiceActions.close })
+        goto(paths.dashboard)
+      },1000)
     }
-  }, [isSuccess, setChoice])
+  }, [isSuccess,dispatch,goto,data, setChoice])
   return (
-
     <form onSubmit={formik.handleSubmit}>
-      <Snackbar open={isError} message={error?.response.data.message} />
+      <AlertBar color="error" open={isError} message={error?.response.data.message} />
+      <AlertBar color="success" open={isSuccess} message="You created an Organization successfully" />
       <Stack
         direction="column"
         gap={2}

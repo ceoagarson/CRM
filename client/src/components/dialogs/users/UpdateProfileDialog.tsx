@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTitle, Button, DialogActions, Typography, Avatar, CircularProgress } from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, Button,  Typography, Avatar, CircularProgress } from '@mui/material'
 import { Stack } from '@mui/system'
 import { useContext, useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
@@ -76,7 +76,7 @@ function UpdateProfileDialog() {
                     </DialogContent>
 
             }
-            <DialogActions>
+            <Stack gap={2} p={2}>
                 {
                     !isEditing ?
                         <Button
@@ -104,7 +104,7 @@ function UpdateProfileDialog() {
                 >
                     Cancel
                 </Button >
-            </DialogActions>
+            </Stack>
         </Dialog>
     )
 }

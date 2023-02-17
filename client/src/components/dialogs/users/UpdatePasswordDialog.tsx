@@ -1,33 +1,24 @@
-import { Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material'
-import { useState } from 'react'
-import UpdatePasswordForm from '../../forms/user/UpdatePasswordForm'
+import { Dialog, DialogContent, DialogTitle, Button, DialogActions, Typography } from '@mui/material'
+import { useContext } from 'react';
+import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
+import LoginForm from '../../forms/user/LoginForm';
+import UpdatePasswordForm from '../../forms/user/UpdatePasswordForm';
 
 
 function UpdatePasswordDialog() {
-    const [open, setOpen] = useState(true)
-
+    const { choice, setChoice } = useContext(ChoiceContext)
     return (
-        <Dialog open={open}
-            onClose={() => setOpen(false)}
-        >
-            <DialogTitle textAlign="center">Update Password Form</DialogTitle>
-            <DialogContent>
-                <UpdatePasswordForm />
-            </DialogContent>
-            <DialogActions>
-                <Typography
-                    variant="button"
-                    component="p"
-                    sx={{
-                        display: "flex",
-                        width: "100%",
-                        alignItems: "center",
-                        justifyContent: "center"
-                    }}
-                >
-                </Typography >
-            </DialogActions>
-        </Dialog>
+        <>
+            <Dialog open={choice === ChoiceActions.update_password ? true : false}
+                onClose={() => setChoice({ type: ChoiceActions.close })}
+            >
+                <DialogTitle textAlign="center">Update Password</DialogTitle>
+                <DialogContent>
+                    <UpdatePasswordForm />
+                </DialogContent>
+                <Button onClick={() => setChoice({ type: ChoiceActions.close })}>Cancel</Button>
+            </Dialog >
+        </>
     )
 }
 

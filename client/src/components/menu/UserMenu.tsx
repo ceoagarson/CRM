@@ -1,5 +1,5 @@
-import { Menu, MenuItem } from '@mui/material'
-import  { useContext, useEffect } from 'react'
+import { Button, Menu, MenuItem } from '@mui/material'
+import { useContext, useEffect } from 'react'
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { ChoiceActions, ChoiceContext } from '../../contexts/dialogContext';
@@ -7,7 +7,9 @@ import { MenuActions, MenuContext } from '../../contexts/menuContext';
 import { UserActions, UserContext } from '../../contexts/userContext';
 import { paths } from '../../Routes';
 import { Logout } from '../../services/UserServices';
+import EmailVerifySendMailDialog from '../dialogs/users/EmailVerifySendMailDialog';
 import NewUserDialog from '../dialogs/users/NewUserDialog';
+import UpdatePasswordDialog from '../dialogs/users/UpdatePasswordDialog';
 import UpdateProfileDialog from '../dialogs/users/UpdateProfileDialog';
 
 function UserMenu() {
@@ -39,25 +41,47 @@ function UserMenu() {
                         setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
                     }
                     }
-                >Profile</MenuItem>
+                >View Profile</MenuItem>
                 {user?.roles?.includes("admin") ?
                     <MenuItem onClick={() => {
                         setChoice({ type: ChoiceActions.new_user })
                         setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
 
                     }
-                    }>New User</MenuItem>
+                    }>New Staff</MenuItem>
                     :
                     null
                 }
-                <MenuItem onClick={
-                    () => {
-                        mutate()
-                        setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
-                    }
-                }>Logout</MenuItem>
+
+                <MenuItem onClick={() => {
+                    setChoice({ type: ChoiceActions.update_password })
+                    setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
+                }}>
+                    Update Password
+                </MenuItem>
+                <MenuItem onClick={() => {
+                    setChoice({ type: ChoiceActions.verify_email })
+                    setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
+                }}>
+                    Verify Email
+                </MenuItem>
+
+                <MenuItem>
+                    <Button fullWidth color="error" variant="outlined"
+                        onClick={
+                            () => {
+                                mutate()
+                                setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
+                            }
+                        }
+                    >
+                        Logout
+                    </Button>
+                </MenuItem>
             </Menu>
+            <EmailVerifySendMailDialog />
             <UpdateProfileDialog />
+            <UpdatePasswordDialog />
         </>
     )
 }

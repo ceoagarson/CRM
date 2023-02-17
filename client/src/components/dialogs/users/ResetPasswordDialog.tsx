@@ -1,33 +1,27 @@
-import {  Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material'
-import { useState } from 'react'
-import ResetPasswordForm from '../../forms/user/ResetPasswordForm'
+import { Dialog, DialogContent, DialogTitle, Button } from '@mui/material'
+import { useContext, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
+import ResetPasswordForm from '../../forms/user/ResetPasswordForm';
 
 
 function ResetPasswordDialog() {
-  const [open,setOpen]=useState(true)
-
+    const { choice, setChoice } = useContext(ChoiceContext)
+    const { token } = useParams()
     return (
-        <Dialog open={open}
-            onClose={()=>setOpen(false)}
-        >
-            <DialogTitle textAlign="center">Update Password Form</DialogTitle>
-            <DialogContent>
-                <ResetPasswordForm />
-            </DialogContent>
-            <DialogActions>
-                <Typography
-                    variant="button"
-                    component="p"
-                    sx={{
-                        display: "flex",
-                        width: "100%",
-                        alignItems: "center",
-                        justifyContent: "center"
-                    }}
-                >
-                </Typography >
-            </DialogActions>
-        </Dialog>
+        <>
+            <Dialog
+                // open={true}
+                open={choice === ChoiceActions.reset_password || token ? true : false}
+                onClose={() => setChoice({ type: ChoiceActions.close })}
+            >
+                <DialogTitle textAlign="center">Reset Password</DialogTitle>
+                <DialogContent>
+                    <ResetPasswordForm token={token || ""} />
+                </DialogContent>
+                <Button onClick={() => setChoice({ type: ChoiceActions.close })}>Cancel</Button>
+            </Dialog >
+        </>
     )
 }
 

@@ -6,14 +6,14 @@ export const Login = async (
     username: string,
     password: string
   }
-)=> {
+) => {
   return await apiClient.post("login", body);
 };
 
 export const Signup = async (body: FormData) => {
   return await apiClient.post("signup", body);
 };
-export const NewUser = async (body: FormData)=> {
+export const NewUser = async (body: FormData) => {
   return await apiClient.post("users", body);
 };
 export const UpdateUser = async ({ id, body }: { id: string, body: FormData }) => {
@@ -27,7 +27,7 @@ export const Logout = async () => {
 export const GetUsers = async () => {
   return await apiClient.get("users")
 }
-export const GetUser = async (id: string)=> {
+export const GetUser = async (id: string) => {
   return await apiClient.get(`users/${id}`)
 }
 export const DeleteUser = async (id: string) => {
@@ -43,43 +43,34 @@ export const UpdateProfile = async (body: FormData) => {
   return await apiClient.put("profile", body);
 };
 
-// //change password
-// export const useUpdatePasswordMutation = (body) => {
-//   return useMutation(async (body) => {
-//     return await axios.patch(base_url + "password/update", body);
-//   });
-// };
+// //update password
+export const UpdatePassword = async (body: { oldPassword: string, newPassword: string, confirmPassword: string }) => {
+  return await apiClient.patch("profile", body)
+};
+// //update password
+export const ResetPassword = async ({ token, body }:
+  {
+    token: string,
+    body: { newPassword: string, confirmPassword: string }
+  }) => {
+  return await apiClient.patch(`password/reset/${token}`, body)
+};
 
-// //send password reset mail
-// export const useSendResetPasswordMutation = (email) => {
-//   return useMutation(async (email) => {
-//     return await axios.post(base_url + "password/forgot", email);
-//   });
-// };
+export const ResetPasswordSendMail = async ({ email }:
+  {
+    email: string
+  }) => {
+  return await apiClient.post(`password/reset`, { email: email })
+};
 
-// //send email verify mail
-// export const useSendVerifyEmailMutation = (email) => {
-//   return useMutation(async (email) => {
-//     return await axios.post(base_url + "email/verify", email);
-//   });
-// };
+// //update email
+export const VerifyEmail = async (token: string) => {
+  return await apiClient.patch(`email/verify/${token}`)
+};
 
-// //reset password
-// export const useResetPasswordMutation = (body) => {
-//   return useMutation(async (body) => {
-//     return await axios.put(base_url + `/password/reset/${body.token}`, body);
-//   });
-// };
-
-// //verify email
-// export const useVerifyEmailMutation = (token) => {
-//   return useMutation(async (token) => {
-//     return await axios.put(base_url + `/email/verify/${token}`);
-//   });
-// };
-// //get all users
-// export const useGetIUsers = () => {
-//   return useQuery("users", async () => {
-//     return await axios.get(base_url + "users");
-//   });
-// };
+export const SendVerifyEmail = async ({ email }:
+  {
+    email: string
+  }) => {
+  return await apiClient.post(`email/verify`, { email: email })
+};

@@ -1,16 +1,16 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material'
-import { useState } from 'react'
-import EmailVerifySendMailDialogForm from '../../forms/user/EmailVerifySendMailDialogForm'
+import { useContext } from 'react'
+import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
+import EmailVerifySendMailDialogForm from '../../forms/user/EmailVerifySendMailForm'
 
 
 function EmailVerifySendMailDialog() {
-    const [open, setOpen] = useState(true)
+    const { choice, setChoice } = useContext(ChoiceContext)
     return (
-        <Dialog open={open}
-            onClose={() => setOpen(false)}
-            scroll="paper"
+        <Dialog open={choice === ChoiceActions.verify_email ? true : false}
+            onClose={() => setChoice({ type: ChoiceActions.close })}
         >
-            <DialogTitle textAlign="center">Update Password Form</DialogTitle>
+            <DialogTitle textAlign="center">Verify Your Email</DialogTitle>
             <DialogContent>
                 <EmailVerifySendMailDialogForm />
             </DialogContent>

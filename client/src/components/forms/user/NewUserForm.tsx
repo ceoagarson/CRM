@@ -1,5 +1,5 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Button, CircularProgress, IconButton, InputAdornment, Snackbar, Stack, TextField } from '@mui/material';
+import { Button, CircularProgress, IconButton, InputAdornment, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useEffect, useContext, useState } from 'react';
@@ -10,6 +10,7 @@ import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { NewUser } from '../../../services/UserServices';
 import { BackendError } from '../../../types';
 import { IUser } from '../../../types/user.type';
+import AlertBar from '../../alert/Alert';
 
 type Target = EventTarget & (HTMLTextAreaElement | HTMLInputElement)
     & {
@@ -22,7 +23,7 @@ type TformData = {
     dp: string | Blob | File
 }
 function NewUserForm() {
-    const { mutate, isLoading, isSuccess,isError,error } = useMutation
+    const { mutate,  isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<IUser>, BackendError, FormData>
         (NewUser, {
             onSuccess: () => queryClient.invalidateQueries('users')
@@ -91,13 +92,16 @@ function NewUserForm() {
     };
     useEffect(() => {
         if (isSuccess) {
+           setTimeout(()=>{
             setChoice({ type: ChoiceActions.close })
+           },1000)
         }
     }, [isSuccess, setChoice])
     return (
 
         <form onSubmit={formik.handleSubmit}>
-        <Snackbar open={isError} message={error?.response.data.message} />
+            <AlertBar color="error" open={isError} message={error?.response.data.message} />
+            <AlertBar color="success" open={isSuccess} message="new user created successfully" />
             <Stack
                 direction="column"
                 gap={2}
