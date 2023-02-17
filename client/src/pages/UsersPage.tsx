@@ -12,7 +12,9 @@ import { GetUsers } from '../services/UserServices'
 import { IUser } from '../types/user.type'
 
 export default function UsersPage() {
-    const { data, isSuccess, isLoading } = useQuery("users", GetUsers)
+    const { data, isSuccess, isLoading } = useQuery("users", GetUsers, {
+        refetchOnMount: true
+    })
     const [rowid, setRowId] = useState<string | undefined>()
     const [user, setUser] = useState<IUser>()
     const { setChoice } = useContext(ChoiceContext)

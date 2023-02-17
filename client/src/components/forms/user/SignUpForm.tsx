@@ -224,11 +224,7 @@ function OwnerSignUpForm() {
         {isLoading && <LinearProgress color="info" />}
         <Button variant="contained"
           disabled={Boolean(isLoading)}
-<<<<<<< HEAD
           color="primary" type="submit" fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Register"}</Button>
-=======
-          color="primary" type="submit" fullWidth>Register</Button>
->>>>>>> bf0b27739824efe90e618af7267e0f969a756169
       </Stack>
     </form >
   )

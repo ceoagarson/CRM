@@ -1,5 +1,5 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Button, CircularProgress, IconButton, InputAdornment, LinearProgress, TextField } from '@mui/material';
+import { Button, CircularProgress, IconButton, InputAdornment,  TextField } from '@mui/material';
 import { Stack } from '@mui/system';
 import { useFormik } from 'formik';
 import React, { useContext, useEffect, useState } from 'react';
@@ -108,11 +108,7 @@ function LoginForm() {
           />
           <Button variant="contained"
             disabled={Boolean(isLoading)}
-<<<<<<< HEAD
             color="primary" type="submit" fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Login"}</Button>
-=======
-            color="primary" type="submit" fullWidth>Login</Button>
->>>>>>> bf0b27739824efe90e618af7267e0f969a756169
         </Stack>
       </form>
     </>
