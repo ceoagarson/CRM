@@ -50,17 +50,16 @@ export const sendUserToken = (res: Response, accessToken: string) => {
         UserTokens.push(accessToken)
     const Expiry = Number(process.env.COOKIE_EXPIRE) || 1
     res.cookie("accessToken", accessToken, {
-        expires: new Date(Date.now() + Expiry * 60 * 1000),//1 minute by default
+        maxAge: Expiry * 60 * 1000,//1 minute by default
         httpOnly: true,
         secure: true,
         sameSite: 'lax'
     });
 }
-
 //logout
 export const deleteToken = async (res: Response) => {
     const options = {
-        expires: new Date(Date.now()),
+        maxAge: 0,
         httpOnly: true
     };
     res.cookie("accessToken", null, options);

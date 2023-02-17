@@ -38,7 +38,7 @@ export function UserTable({ data, columns }: Props) {
     } = useTable({
         data, columns, initialState: {
             pageSize: 10,
-            hiddenColumns: ['']
+            hiddenColumns: ['selection']
         }
     },
         useGlobalFilter,
@@ -95,11 +95,11 @@ export function UserTable({ data, columns }: Props) {
             {/* table */}
             <Box
                 sx={{
-                    width: '100vw',
-                    overflow: "scroll"
+                    overflow: "scroll",
+                    height: '70vh'
                 }}>
                 <Table
-                    sx={{ height: "700",minWidth:"1000px" }}
+                    sx={{ minWidth: "1500px" }}
                     size="small"
                     {...getTableProps()}>
                     <TableHead
@@ -134,13 +134,16 @@ export function UserTable({ data, columns }: Props) {
                         {page.map(row => {
                             prepareRow(row)
                             return (
+
+
                                 <TableRow sx={{
                                     '&:nth-of-type(odd)': { bgcolor: color1 },
                                     '&:nth-of-type(even)': { bgcolor: color2 },
                                     '&:hover': { bgcolor: colorHover, cursor: 'pointer' }
                                 }}
+
                                     {...row.getRowProps()}>
-                                    {row.cells.map(cell => {
+                                    {row.cells.map((cell) => {
                                         return (
                                             <TableCell
                                                 {...cell.getCellProps()}
@@ -154,7 +157,9 @@ export function UserTable({ data, columns }: Props) {
 
                                         )
                                     })}
+
                                 </TableRow>
+
                             )
                         })}
                     </TableBody>

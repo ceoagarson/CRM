@@ -3,13 +3,16 @@ import { MenuProvider } from './contexts/menuContext';
 import AppRoutes from './Routes';
 
 function App() {
+
   return (
     <>
+
       <ChoiceProvider>
         <MenuProvider>
           <AppRoutes />
         </MenuProvider>
       </ChoiceProvider>
+
     </>
   )
 }

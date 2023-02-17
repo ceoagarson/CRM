@@ -19,7 +19,7 @@ function ToogleColumns({ columns, open, handleClose }: Props) {
                     {columns.map(column => (
                         <ListItem key={column.id}>
                             <>
-                                <Checkbox  {...column.getToggleHiddenProps()} defaultChecked
+                                <Checkbox  {...column.getToggleHiddenProps()} 
                                 />
                                 {column.id === "selection" ? "Selection" : column.Header}
                             </>

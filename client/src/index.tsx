@@ -6,10 +6,10 @@ import App from "./App";
 import { UserProvider } from "./contexts/userContext";
 import { BrowserRouter } from "react-router-dom";
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnWindowFocus: false,
+      refetchOnWindowFocus: true,
       refetchOnReconnect: true,
       retryDelay:5000
     }

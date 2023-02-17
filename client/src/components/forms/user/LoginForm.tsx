@@ -1,5 +1,5 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Button, IconButton, InputAdornment, LinearProgress, TextField } from '@mui/material';
+import { Button, CircularProgress, IconButton, InputAdornment, LinearProgress, TextField } from '@mui/material';
 import { Stack } from '@mui/system';
 import { useFormik } from 'formik';
 import React, { useContext, useEffect, useState } from 'react';
@@ -14,7 +14,7 @@ import { Login } from '../../../services/UserServices';
 
 function LoginForm() {
   const goto = useNavigate()
-  const { mutate, data, isSuccess,isLoading } = useMutation(Login)
+  const { mutate, data, isSuccess, isLoading } = useMutation(Login)
   const { setChoice } = useContext(ChoiceContext)
   const { dispatch } = useContext(UserContext)
   const formik = useFormik({
@@ -106,10 +106,13 @@ function LoginForm() {
             }}
             {...formik.getFieldProps('password')}
           />
-          {isLoading && <LinearProgress />}
           <Button variant="contained"
             disabled={Boolean(isLoading)}
+<<<<<<< HEAD
+            color="primary" type="submit" fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Login"}</Button>
+=======
             color="primary" type="submit" fullWidth>Login</Button>
+>>>>>>> bf0b27739824efe90e618af7267e0f969a756169
         </Stack>
       </form>
     </>

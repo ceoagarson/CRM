@@ -126,7 +126,7 @@ export const NewUser = catchAsyncError(async (req: Request, res: Response, next:
 export const UpdateUser = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
-    let user = await User.findOne({ id, organization: req.user.organization });
+    let user = await User.findOne({ _id:id, organization: req.user.organization });
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }

@@ -1,9 +1,10 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Button, IconButton, InputAdornment, LinearProgress, Stack, TextField } from '@mui/material';
+import { Button, CircularProgress, IconButton, InputAdornment, LinearProgress, Stack, TextField } from '@mui/material';
 import { useFormik } from 'formik';
 import { useEffect, useContext,useState } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
+import { queryClient } from '../../..';
 import { ChoiceActions,ChoiceContext } from '../../../contexts/dialogContext';
 import { NewUser } from '../../../services/UserServices';
 
@@ -18,7 +19,9 @@ type TformData = {
     dp: string | Blob | File
 }
 function NewUserForm() {
-    const { mutate, isLoading, isSuccess } = useMutation(NewUser)
+    const { mutate, isLoading, isSuccess } = useMutation(NewUser,{
+        onSuccess:()=>queryClient.invalidateQueries('users')
+    })
   const { setChoice } = useContext(ChoiceContext)
 
     const formik = useFormik<TformData>({
@@ -177,10 +180,14 @@ function NewUserForm() {
                         }
                     }}
                 />
-                {isLoading && <LinearProgress />}
+                
                 <Button variant="contained" color="primary" type="submit"
                     disabled={Boolean(isLoading)}
+<<<<<<< HEAD
+                    fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Register"}</Button>
+=======
                     fullWidth>Register</Button>
+>>>>>>> bf0b27739824efe90e618af7267e0f969a756169
             </Stack>
         </form>
     )

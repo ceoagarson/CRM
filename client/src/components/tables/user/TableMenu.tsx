@@ -1,5 +1,5 @@
 import { Fade, IconButton, Menu, MenuItem, Snackbar } from '@mui/material'
-import  { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { ColumnInstance, Row } from 'react-table';
 import ToogleColumns from './ToogleColumns';
 import { Menu as MenuIcon } from '@mui/icons-material';
@@ -35,6 +35,8 @@ function TableMenu({ columns, selectedFlatRows }: Props) {
     function handleExcel() {
         setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
         try {
+            if (selectedData.length === 0)
+                return alert("please select some rows")
             ExportToExcel(selectedData, "USERS_DATA")
             setSent(true)
         }
@@ -70,6 +72,7 @@ function TableMenu({ columns, selectedFlatRows }: Props) {
         })
         setSelectedData(data)
     }, [selectedFlatRows])
+
     return (
         <>
             {/* snak bar */}

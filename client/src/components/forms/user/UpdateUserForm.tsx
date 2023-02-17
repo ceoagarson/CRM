@@ -1,7 +1,9 @@
-import { Button, Stack, TextField } from '@mui/material';
+import { Button, CircularProgress,  Stack, TextField } from '@mui/material';
 import { useFormik } from 'formik';
+import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
+import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { UpdateUser } from '../../../services/UserServices';
 import { Target } from '../../../types';
 import { IUser } from '../../../types/user.type';
@@ -16,7 +18,8 @@ type Props = {
   user: IUser
 }
 function UpdateUserForm({ user }: Props) {
-  const { mutate } = useMutation(UpdateUser)
+  const { mutate, isLoading, isSuccess} = useMutation(UpdateUser)
+  const { setChoice } = useContext(ChoiceContext)
   const formik = useFormik<TformData>({
     initialValues: {
       username: user.username || "",
@@ -65,73 +68,83 @@ function UpdateUserForm({ user }: Props) {
         mutate({ id: user._id, body: formdata })
     }
   });
-
+  useEffect(() => {
+    if (isSuccess) {
+      setChoice({ type: ChoiceActions.close })
+    }
+  }, [isSuccess, setChoice])
   return (
-    <form onSubmit={formik.handleSubmit}>
-      <Stack
-        direction="column"
-        gap={2}
+    <>
+      {
+        isSuccess ? alert("success") : null
+      }
+      <form onSubmit={formik.handleSubmit}>
+        <Stack
+          direction="column"
+          gap={2}
 
-      >
-
-        <TextField
-          variant='standard'
-          focused
-          fullWidth
-          required
-          error={
-            formik.touched.username && formik.errors.username ? true : false
-          }
-          id="username"
-          label="Username"
-          helperText={
-            formik.touched.username && formik.errors.username ? formik.errors.username : ""
-          }
-          {...formik.getFieldProps('username')}
-        />
-        <TextField
-          variant='standard'
-          focused
-          required
-          fullWidth
-          error={
-            formik.touched.email && formik.errors.email ? true : false
-          }
-          id="email"
-          label="Email"
-          helperText={
-            formik.touched.email && formik.errors.email ? formik.errors.email : ""
-          }
-          {...formik.getFieldProps('email')}
-        />
-
-        <TextField
-          fullWidth
-          error={
-            formik.touched.dp && formik.errors.dp ? true : false
-          }
-          helperText={
-            formik.touched.dp && formik.errors.dp ? String(formik.errors.dp) : ""
-          }
-          label="Display Picture"
-          focused
-          variant='standard'
-          type="file"
-          name="dp"
-          onBlur={formik.handleBlur}
-          onChange={(e) => {
-            e.preventDefault()
-            const target: Target = e.currentTarget
-            let files = target.files
-            if (files) {
-              let file = files[0]
-              formik.setFieldValue("dp", file)
+        >
+          <TextField
+            variant='standard'
+            focused
+            fullWidth
+            required
+            error={
+              formik.touched.username && formik.errors.username ? true : false
             }
-          }}
-        />
-        <Button variant="contained" color="primary" type="submit" fullWidth>Update</Button>
-      </Stack>
-    </form>
+            id="username"
+            label="Username"
+            helperText={
+              formik.touched.username && formik.errors.username ? formik.errors.username : ""
+            }
+            {...formik.getFieldProps('username')}
+          />
+          <TextField
+            variant='standard'
+            focused
+            required
+            fullWidth
+            error={
+              formik.touched.email && formik.errors.email ? true : false
+            }
+            id="email"
+            label="Email"
+            helperText={
+              formik.touched.email && formik.errors.email ? formik.errors.email : ""
+            }
+            {...formik.getFieldProps('email')}
+          />
+
+          <TextField
+            fullWidth
+            error={
+              formik.touched.dp && formik.errors.dp ? true : false
+            }
+            helperText={
+              formik.touched.dp && formik.errors.dp ? String(formik.errors.dp) : ""
+            }
+            label="Display Picture"
+            focused
+            variant='standard'
+            type="file"
+            name="dp"
+            onBlur={formik.handleBlur}
+            onChange={(e) => {
+              e.preventDefault()
+              const target: Target = e.currentTarget
+              let files = target.files
+              if (files) {
+                let file = files[0]
+                formik.setFieldValue("dp", file)
+              }
+            }}
+          />
+          <Button variant="contained" color="primary" type="submit"
+            disabled={Boolean(isLoading)}
+            fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Update"}</Button>
+        </Stack>
+      </form>
+    </>
   )
 }
 

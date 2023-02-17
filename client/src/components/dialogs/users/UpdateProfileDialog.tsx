@@ -16,7 +16,7 @@ function UpdateProfileDialog() {
     useEffect(() => {
         if (isSuccess)
             setProfile(data.data)
-    }, [data,isSuccess])
+    }, [data, isSuccess])
     return (
         <Dialog open={choice === ChoiceActions.update_profile ? true : false}
             onClose={() => setChoice({ type: ChoiceActions.close })}
@@ -91,18 +91,19 @@ function UpdateProfileDialog() {
                             Edit Profile
                         </Button >
                         :
-                        <Button
-                            variant="outlined"
-                            color="warning"
-                            fullWidth
-                            onClick={() => {
-                                setIsEditing(false)
-                                setChoice({ type: ChoiceActions.close })
-                            }}
-                        >
-                            Cancel
-                        </Button >
+                        null
                 }
+                <Button
+                    variant="outlined"
+                    color="warning"
+                    fullWidth
+                    onClick={() => {
+                        setIsEditing(false)
+                        setChoice({ type: ChoiceActions.close })
+                    }}
+                >
+                    Cancel
+                </Button >
             </DialogActions>
         </Dialog>
     )

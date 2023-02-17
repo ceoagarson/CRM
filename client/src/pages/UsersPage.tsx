@@ -14,6 +14,7 @@ import { IUser } from '../types/user.type'
 export default function UsersPage() {
     const { data, isSuccess, isLoading } = useQuery("users", GetUsers)
     const [rowid, setRowId] = useState<string | undefined>()
+    const [user, setUser] = useState<IUser>()
     const { setChoice } = useContext(ChoiceContext)
     const [DATA, setDATA] = useState<IUser[]>([])
     const MemoData = React.useMemo(() => DATA, [DATA])
@@ -21,15 +22,22 @@ export default function UsersPage() {
     const MemoColumns: Column<IUser>[] = React.useMemo(
         () => [
             {
-                Header: "Allowed Actions",
+                Header: "Index",
                 accessor: "_id",
+                Cell: (props) => {
+                    return <Typography variant="body1" component="span" pr={2}>{props.row.index + 1}</Typography>
+                }
+            },
+            {
+                Header: "Actions",
+                accessor: "email_verified",
                 Cell: (props) => {
                     return (
                         <Stack direction="row">
                             <IconButton color="inherit"
                                 onClick={() => {
                                     setChoice({ type: ChoiceActions.update_user })
-                                    setRowId(props.row.original._id)
+                                    setUser(props.row.original)
                                 }}>
                                 <EditOutlined />
                             </IconButton>
@@ -58,10 +66,29 @@ export default function UsersPage() {
                     return (
                         <Stack>
                             <Typography variant="body1">{props.row.original.username}</Typography>
-                            <Typography variant="caption">blocked</Typography >
+                            <Typography variant="caption" >blocked</Typography >
                         </Stack>
                     )
                 }
+            },
+            {
+                Header: 'Picture',
+                accessor: 'dp',
+                Cell: (props) => {
+                    return (
+                        <IconButton
+                        >
+                            <Stack>
+                                <Avatar
+                                    alt="display picture" src={props.row.original.dp?.url} />
+                                <Typography variant="caption" component="span">
+                                    {props.row.original.roles?.toString()}
+                                </Typography>
+                            </Stack>
+                        </IconButton>
+                    )
+                }
+
             },
             {
                 Header: 'Email',
@@ -103,20 +130,33 @@ export default function UsersPage() {
                 }
 
             },
+
             {
-                Header: 'Picture',
-                accessor: 'dp',
+                Header: 'Joined Date',
+                accessor: 'createdAt',
                 Cell: (props) => {
+                    let date = null
+                    if (props.row.original.createdAt)
+                        date = new Date(props.row.original.createdAt).toLocaleDateString()
                     return (
-                        <IconButton
-                        >
-                            <Avatar
-                                alt="display picture" src={props.row.original.dp?.url} />
-                        </IconButton>
+                        <Typography variant="body1">{date}</Typography>
                     )
                 }
 
-            }
+            },
+            {
+                Header: 'Last Login',
+                accessor: 'last_login',
+                Cell: (props) => {
+                    let date = null
+                    if (props.row.original.last_login)
+                        date = new Date(props.row.original.last_login).toLocaleDateString()
+                    return (
+                        <Typography variant="body1">{date}</Typography>
+                    )
+                }
+
+            },
 
         ]
         , [setChoice]
@@ -125,7 +165,6 @@ export default function UsersPage() {
         if (isSuccess)
             setDATA(data.data)
     }, [isSuccess, data])
-
     return (
         <>
             {
@@ -138,12 +177,17 @@ export default function UsersPage() {
                     <LinearProgress color="success" />
                     : null
             }
+            {
+                user ?
+                    < UpdateUserDialog user={user} />
+                    : null
+            }
 
             {
-                rowid ? <>
-                    <UpdateUserDialog id={rowid} />
+                rowid ?
+
                     <DeleteUserDialog id={rowid} />
-                </> : null
+                    : null
             }
         </>
 

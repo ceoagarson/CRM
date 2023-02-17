@@ -1,5 +1,5 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Button, IconButton, InputAdornment, LinearProgress, Stack, TextField } from '@mui/material';
+import { Button, CircularProgress, IconButton, InputAdornment, LinearProgress, Stack, TextField } from '@mui/material';
 import { useFormik } from 'formik';
 import { useEffect, useContext,useState } from 'react';
 import { useMutation } from 'react-query';
@@ -224,7 +224,11 @@ function OwnerSignUpForm() {
         {isLoading && <LinearProgress color="info" />}
         <Button variant="contained"
           disabled={Boolean(isLoading)}
+<<<<<<< HEAD
+          color="primary" type="submit" fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Register"}</Button>
+=======
           color="primary" type="submit" fullWidth>Register</Button>
+>>>>>>> bf0b27739824efe90e618af7267e0f969a756169
       </Stack>
     </form >
   )

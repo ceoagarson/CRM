@@ -36,7 +36,7 @@ function Pagination({
                 spacing={2}
                 padding={1}
             >
-                <Typography  sx={{display:{xs:'none',sm:'flex'}}} component="div" variant="body1">
+                <Typography sx={{ display: { xs: 'none', sm: 'flex' } }} component="div" variant="body1">
                     Page  {pageIndex + 1} of {pageOptions.length}
                 </Typography>
                 <Typography sx={{ display: { xs: 'none', sm: 'flex' } }} component="div" variant="body1">

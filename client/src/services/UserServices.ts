@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import { IUser } from "../types/user.type";
 import { apiClient } from "../utils/AxiosInterceptor";
 

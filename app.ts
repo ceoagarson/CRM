@@ -14,6 +14,7 @@ import AccountRoutes from "./routes/account.route"
 import OpportunityRoutes from "./routes/opportunity.route"
 import ActivityRoutes from "./routes/activity.routes"
 import path from 'path';
+import morgan from "morgan";
 
 // app variables
 const app = express()
@@ -25,6 +26,7 @@ const ENV = process.env.NODE_ENV || "development"
 
 app.use(express.json())
 app.use(cookieParser());
+app.use(morgan('tiny'))
 app.use(
     helmet.contentSecurityPolicy({
         directives: {
@@ -32,12 +34,14 @@ app.use(
         },
     })
 );
+
 if (ENV === "development") {
     app.use(cors({
         origin: ['http://localhost:3000'],
         credentials: true
     }))
 }
+
 connectDatabase();
 cloudinary.v2.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
