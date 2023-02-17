@@ -1,12 +1,15 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Button, CircularProgress, IconButton, InputAdornment,  Stack, TextField } from '@mui/material';
+import { Button, CircularProgress, IconButton, InputAdornment, Snackbar, Stack, TextField } from '@mui/material';
+import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext,useState } from 'react';
+import { useEffect, useContext, useState } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
 import { queryClient } from '../../..';
-import { ChoiceActions,ChoiceContext } from '../../../contexts/dialogContext';
+import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { NewUser } from '../../../services/UserServices';
+import { BackendError } from '../../../types';
+import { IUser } from '../../../types/user.type';
 
 type Target = EventTarget & (HTMLTextAreaElement | HTMLInputElement)
     & {
@@ -19,10 +22,12 @@ type TformData = {
     dp: string | Blob | File
 }
 function NewUserForm() {
-    const { mutate, isLoading, isSuccess } = useMutation(NewUser,{
-        onSuccess:()=>queryClient.invalidateQueries('users')
-    })
-  const { setChoice } = useContext(ChoiceContext)
+    const { mutate, isLoading, isSuccess,isError,error } = useMutation
+        <AxiosResponse<IUser>, BackendError, FormData>
+        (NewUser, {
+            onSuccess: () => queryClient.invalidateQueries('users')
+        })
+    const { setChoice } = useContext(ChoiceContext)
 
     const formik = useFormik<TformData>({
         initialValues: {
@@ -88,10 +93,11 @@ function NewUserForm() {
         if (isSuccess) {
             setChoice({ type: ChoiceActions.close })
         }
-    }, [isSuccess,setChoice])
+    }, [isSuccess, setChoice])
     return (
 
         <form onSubmit={formik.handleSubmit}>
+        <Snackbar open={isError} message={error?.response.data.message} />
             <Stack
                 direction="column"
                 gap={2}
@@ -180,7 +186,7 @@ function NewUserForm() {
                         }
                     }}
                 />
-                
+
                 <Button variant="contained" color="primary" type="submit"
                     disabled={Boolean(isLoading)}
                     fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Register"}</Button>

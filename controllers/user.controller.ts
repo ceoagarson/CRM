@@ -58,6 +58,8 @@ export const SignUp = catchAsyncError(
         let organization = new Organization({
             organization_name, organization_email
         })
+
+
         let owner = new User({
             username, password, email, roles: ["owner", "admin"],
             dp
@@ -119,7 +121,7 @@ export const NewUser = catchAsyncError(async (req: Request, res: Response, next:
         createdBy: req.user,
         roles: ["user"]
     }).save()
-    res.status(201).json({ user })
+    res.status(201).json(user)
 })
 
 // update user only admin can do
@@ -205,7 +207,7 @@ export const GetUser = catchAsyncError(async (req: Request, res: Response, next:
         return res.status(400).json({ message: "user id not valid" })
     const user = await User.findById(req.params.id).populate('organization')
     if (!user)
-        return res.status(404).json({ message: "user  not found" })
+        return res.status(404).json({ message: "user not found" })
     res.status(200).json(user)
 })
 
@@ -244,7 +246,7 @@ export const Login = catchAsyncError(async (req: Request, res: Response, next: N
     sendUserToken(res, user.getAccessToken())
     user.last_login = new Date(Date.now())
     await user.save()
-    res.status(200).json({ user })
+    res.status(200).json(user)
 })
 
 // logout
@@ -301,7 +303,7 @@ export const UpdateProfile = catchAsyncError(async (req: Request, res: Response,
         email,
         dp
     })
-        .then(() => res.status(200).json({ message: "user updated" }))
+        .then(() => res.status(200).json({ message: "profile updated" }))
 })
 //update password
 export const updatePassword = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
@@ -321,7 +323,7 @@ export const updatePassword = catchAsyncError(async (req: Request, res: Response
         return res.status(401).json({ message: "Old password is incorrect" })
     user.password = newPassword;
     await user.save();
-    res.status(200).json({ msg: "password updated" });
+    res.status(200).json({ message: "password updated" });
 });
 // make admin
 export const MakeAdmin = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
@@ -335,7 +337,7 @@ export const MakeAdmin = catchAsyncError(async (req: Request, res: Response, nex
         return res.status(404).json({ message: "already a admin" })
     user.roles?.push("admin")
     await user.save();
-    res.status(200).json({ msg: "admin role provided successfully", user });
+    res.status(200).json({ message: "admin role provided successfully", user });
 })
 // make owner
 export const MakeOwner = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
@@ -349,7 +351,7 @@ export const MakeOwner = catchAsyncError(async (req: Request, res: Response, nex
         return res.status(404).json({ message: "already a owner" })
     user.roles?.push("owner")
     await user.save();
-    res.status(200).json({ msg: "new owner created successfully" });
+    res.status(200).json({ message: "new owner created successfully" });
 })
 
 // block user
@@ -365,7 +367,7 @@ export const BlockUser = catchAsyncError(async (req: Request, res: Response, nex
         return res.status(404).json({ message: "user already blocked" })
     user.is_active = false
     await user.save();
-    res.status(200).json({ msg: "user blocked successfully" });
+    res.status(200).json({ message: "user blocked successfully" });
 })
 // unblock user
 export const UnBlockUser = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
@@ -380,7 +382,7 @@ export const UnBlockUser = catchAsyncError(async (req: Request, res: Response, n
         return res.status(404).json({ message: "user is already active" })
     user.is_active = true
     await user.save();
-    res.status(200).json({ msg: "user unblocked successfully" });
+    res.status(200).json({ message: "user unblocked successfully" });
 })
 
 // sending password reset mail controller
@@ -437,7 +439,7 @@ export const ResetPassword = catchAsyncError(async (req: Request, res: Response,
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
     await user.save();
-    res.status(200).json({ msg: "password updated" });
+    res.status(200).json({ message: "password updated" });
 });
 // send verification mail controller
 export const SendVerifyEmail = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
@@ -487,42 +489,7 @@ export const VerifyEmail = catchAsyncError(async (req: Request, res: Response, n
     user.emailVerifyExpire = undefined;
     await user.save();
     res.status(200).json({
-        msg: `congrats ${user.email} verification successful`
+        message: `congrats ${user.email} verification successful`
     });
 });
 
-// filter users 
-export const FilterUsers = catchAsyncError(async (req, res, next) => {
-    let filter = [];
-    if (req.query.username)
-        filter.push({ username: { $regex: req.query.username } });
-    if (req.query.roles) filter.push({ roles: { $regex: req.query.roles } });
-    if (req.query.email) filter.push({ email: { $regex: req.query.email } });
-    if (req.query.organization)
-        filter.push({ organization: { $regex: req.query.organization } });
-    if (filter.length < 1)
-        return res.status(400).json({ message: "no filter provided" })
-
-    const users = await User.find({
-        $and: filter,
-    }).sort({ createdAt: -1 });
-
-    if (users.length > 0) res.status(200).json({ users });
-    else
-        return res.status(404).json({ message: "users not found" })
-});
-
-// fuzzy search 
-export const FuzzySearchUsers = catchAsyncError(async (req, res, next) => {
-    const key = String(req.params.query);
-    const users = await User.find({
-        $or: [
-            { username: { $regex: key } },
-            { email: { $regex: key } },
-            { organization: { $regex: key } },
-            { roles: { $regex: key } },
-        ],
-    }).sort({ createdAt: -1 });
-    if (users.length > 0) res.status(200).json({ users });
-    else return res.status(404).json({ message: "user not found" });
-});

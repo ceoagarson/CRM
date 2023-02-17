@@ -99,7 +99,7 @@ export function UserTable({ data, columns }: Props) {
                     height: '70vh'
                 }}>
                 <Table
-                    sx={{ minWidth: "1500px" }}
+                    sx={{ minWidth: "1200px" }}
                     size="small"
                     {...getTableProps()}>
                     <TableHead

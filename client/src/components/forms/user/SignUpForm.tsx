@@ -1,12 +1,16 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Button, CircularProgress, IconButton, InputAdornment, LinearProgress, Stack, TextField } from '@mui/material';
+import { Button, CircularProgress, IconButton, InputAdornment, LinearProgress, Snackbar, Stack, TextField } from '@mui/material';
+import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext,useState } from 'react';
+import { useEffect, useContext, useState } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
-import { ChoiceActions,ChoiceContext } from '../../../contexts/dialogContext';
+import { queryClient } from '../../..';
+import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 
 import { Signup } from '../../../services/UserServices';
+import { BackendError } from '../../../types';
+import { IUser } from '../../../types/user.type';
 
 type Target = EventTarget & (HTMLTextAreaElement | HTMLInputElement)
   & {
@@ -21,7 +25,11 @@ type TformData = {
   dp: string | Blob | File
 }
 function OwnerSignUpForm() {
-  const { mutate, isLoading, isSuccess } = useMutation(Signup)
+  const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    <AxiosResponse<IUser>, BackendError, FormData>
+    (Signup,{
+      onSuccess: () => queryClient.invalidateQueries('users')
+    })
   const { setChoice } = useContext(ChoiceContext)
 
   const formik = useFormik<TformData>({
@@ -97,12 +105,13 @@ function OwnerSignUpForm() {
   };
   useEffect(() => {
     if (isSuccess) {
-        setChoice({ type: ChoiceActions.close })
+      setChoice({ type: ChoiceActions.close })
     }
-}, [isSuccess,setChoice])
+  }, [isSuccess, setChoice])
   return (
 
     <form onSubmit={formik.handleSubmit}>
+      <Snackbar open={isError} message={error?.response.data.message} />
       <Stack
         direction="column"
         gap={2}

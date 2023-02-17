@@ -1,10 +1,11 @@
-import { DeleteOutlined, EditOutlined } from '@mui/icons-material'
+import { DeleteOutlined, EditOutlined,  Visibility } from '@mui/icons-material'
 import { Avatar, IconButton, LinearProgress, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import React, { useContext, useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
 import { Column } from 'react-table'
 import DeleteUserDialog from '../components/dialogs/users/DeleteUserDialog'
+import ProfileDialog from '../components/dialogs/users/ProfileDialog'
 import UpdateUserDialog from '../components/dialogs/users/UpdateUserDialog'
 import { UserTable } from '../components/tables/user/UserTable'
 import { ChoiceActions, ChoiceContext } from '../contexts/dialogContext'
@@ -26,6 +27,8 @@ export default function UsersPage() {
             {
                 Header: "Index",
                 accessor: "_id",
+                width:20,
+                disableSortBy: true,
                 Cell: (props) => {
                     return <Typography variant="body1" component="span" pr={2}>{props.row.index + 1}</Typography>
                 }
@@ -36,7 +39,14 @@ export default function UsersPage() {
                 Cell: (props) => {
                     return (
                         <Stack direction="row">
-                            <IconButton color="inherit"
+                            <IconButton color="success"
+                                onClick={() => {
+                                    setChoice({ type: ChoiceActions.view_profile })
+                                    setUser(props.row.original)
+                                }}>
+                                <Visibility />
+                            </IconButton>
+                            <IconButton color="info"
                                 onClick={() => {
                                     setChoice({ type: ChoiceActions.update_user })
                                     setUser(props.row.original)
@@ -113,27 +123,6 @@ export default function UsersPage() {
 
             },
             {
-                Header: 'Organization',
-                accessor: 'organization',
-                Cell: (props) => {
-                    if (props.row.original.organization?.email_verified)
-                        return (
-                            <Stack>
-                                <Typography variant="body1">{props.row.original.organization?.organization_name}</Typography>
-                                <Typography variant="caption">verified</Typography >
-                            </Stack>
-                        )
-                    return (
-                        <Stack>
-                            <Typography variant="body1">{props.row.original.organization?.organization_name}</Typography>
-                            <Typography variant="caption">not verified</Typography >
-                        </Stack>
-                    )
-                }
-
-            },
-
-            {
                 Header: 'Joined Date',
                 accessor: 'createdAt',
                 Cell: (props) => {
@@ -152,7 +141,7 @@ export default function UsersPage() {
                 Cell: (props) => {
                     let date = null
                     if (props.row.original.last_login)
-                        date = new Date(props.row.original.last_login).toLocaleDateString()
+                        date = new Date(props.row.original.last_login).toLocaleString()
                     return (
                         <Typography variant="body1">{date}</Typography>
                     )
@@ -181,7 +170,10 @@ export default function UsersPage() {
             }
             {
                 user ?
-                    < UpdateUserDialog user={user} />
+                    <>
+                        <ProfileDialog profile={user} />
+                        < UpdateUserDialog user={user} />
+                    </>
                     : null
             }
 

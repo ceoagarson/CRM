@@ -1,6 +1,6 @@
 import express from "express";
 import multer from "multer";
-import { SignUp, DeleteUser, FilterUsers, FuzzySearchUsers, GetProfile, GetUser, GetUsers, Login, Logout, NewUser, ResetPassword, SendPasswordResetMail, SendVerifyEmail, updatePassword, UpdateProfile, UpdateUser, MakeOwner, VerifyEmail, MakeAdmin, BlockUser, UnBlockUser } from "../controllers/user.controller";
+import { SignUp, DeleteUser, GetProfile, GetUser, GetUsers, Login, Logout, NewUser, ResetPassword, SendPasswordResetMail, SendVerifyEmail, updatePassword, UpdateProfile, UpdateUser, MakeOwner, VerifyEmail, MakeAdmin, BlockUser, UnBlockUser } from "../controllers/user.controller";
 import { isAdmin, isAuthenticatedUser, isOwner } from "../middlewares/auth.middleware";
 
 const router = express.Router()
@@ -34,7 +34,5 @@ router.patch("/email/verify/:token", VerifyEmail)
 router.post("/password/reset", SendPasswordResetMail)
 router.patch("/password/reset/:token", ResetPassword)
 
-router.get("/filter/users", isAuthenticatedUser, isAdmin, FilterUsers)
-router.get("/users/search:query", isAuthenticatedUser, isAdmin, FuzzySearchUsers)
 
 export default router;

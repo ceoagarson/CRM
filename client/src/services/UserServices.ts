@@ -1,4 +1,3 @@
-import { AxiosError } from "axios";
 import { IUser } from "../types/user.type";
 import { apiClient } from "../utils/AxiosInterceptor";
 
@@ -7,17 +6,17 @@ export const Login = async (
     username: string,
     password: string
   }
-): Promise<{ data: { user: IUser } }> => {
+)=> {
   return await apiClient.post("login", body);
 };
 
-export const Signup = async (body: FormData): Promise<{ data: { user: IUser } }> => {
+export const Signup = async (body: FormData) => {
   return await apiClient.post("signup", body);
 };
-export const NewUser = async (body: FormData): Promise<{ data: { user: IUser } }> => {
+export const NewUser = async (body: FormData)=> {
   return await apiClient.post("users", body);
 };
-export const UpdateUser = async ({ id, body }: { id: string, body: FormData }): Promise<string> => {
+export const UpdateUser = async ({ id, body }: { id: string, body: FormData }) => {
   return await apiClient.put(`users/${id}`, body);
 };
 
@@ -25,36 +24,24 @@ export const Logout = async () => {
   return await apiClient.post("logout");
 };
 
-export const GetUsers = async (): Promise<{ data: IUser[] }> => {
+export const GetUsers = async () => {
   return await apiClient.get("users")
 }
-export const GetUser = async (id: string): Promise<{ data: IUser }> => {
+export const GetUser = async (id: string)=> {
   return await apiClient.get(`users/${id}`)
 }
-export const DeleteUser = async (id: string): Promise<string> => {
+export const DeleteUser = async (id: string) => {
   return await apiClient.delete(`users/${id}`)
 }
-
 
 export const GetProfile = async ()
   : Promise<{ data: IUser }> => {
   return await apiClient.get("profile");
 };
 
-export const UpdateProfile = async (body: FormData): Promise<{ data: { user: IUser } }> => {
+export const UpdateProfile = async (body: FormData) => {
   return await apiClient.put("profile", body);
 };
-// edit profile
-// export const useProfileMutation = (body) => {
-//   return useMutation(async (body) => {
-//     return await apiClient.put(base_url + "profile", body);
-//   });
-// };
-//login user
-
-// //signup user
-
-//logout user
 
 // //change password
 // export const useUpdatePasswordMutation = (body) => {

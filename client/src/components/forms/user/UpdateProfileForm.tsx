@@ -1,19 +1,25 @@
-import { Button, CircularProgress, Stack, TextField } from '@mui/material';
+import { Button, CircularProgress, Snackbar, Stack, TextField } from '@mui/material';
 import { useFormik } from 'formik';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
 import { UpdateProfile } from '../../../services/UserServices';
-import { Target } from '../../../types';
+import { BackendError, Target } from '../../../types';
 import { IUser } from '../../../types/user.type';
 import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { useContext, useEffect } from 'react';
+import { AxiosResponse } from 'axios';
+import { queryClient } from '../../..';
 
 type TformData = {
   email: string,
   dp: string | Blob | File
 }
 function UpdateProfileForm({ user }: { user: IUser }) {
-  const { mutate, isLoading, isSuccess } = useMutation(UpdateProfile)
+  const { mutate, isLoading, isSuccess,isError,error } = useMutation
+    <AxiosResponse<IUser>, BackendError, FormData>
+    (UpdateProfile,{
+      onSuccess: () => queryClient.invalidateQueries('profile')
+    })
   const { setChoice } = useContext(ChoiceContext)
 
   const formik = useFormik<TformData>({
@@ -63,6 +69,7 @@ function UpdateProfileForm({ user }: { user: IUser }) {
   return (
 
     <form onSubmit={formik.handleSubmit}>
+    <Snackbar open={isError} message={error?.response.data.message} />
       <Stack
         direction="column"
         gap={2}>

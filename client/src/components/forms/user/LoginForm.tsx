@@ -1,6 +1,7 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Button, CircularProgress, IconButton, InputAdornment,  TextField } from '@mui/material';
+import { Button, CircularProgress, IconButton, InputAdornment, Snackbar, TextField } from '@mui/material';
 import { Stack } from '@mui/system';
+import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import React, { useContext, useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
@@ -10,11 +11,18 @@ import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { UserActions, UserContext } from '../../../contexts/userContext';
 import { paths } from '../../../Routes';
 import { Login } from '../../../services/UserServices';
-
+import { BackendError } from '../../../types';
+import { IUser } from '../../../types/user.type';
 
 function LoginForm() {
   const goto = useNavigate()
-  const { mutate, data, isSuccess, isLoading } = useMutation(Login)
+  const { mutate, data, isSuccess, isLoading, isError, error } = useMutation
+    <AxiosResponse<IUser>,
+      BackendError,
+      { username: string, password: string }
+    >
+    (Login)
+
   const { setChoice } = useContext(ChoiceContext)
   const { dispatch } = useContext(UserContext)
   const formik = useFormik({
@@ -51,14 +59,16 @@ function LoginForm() {
   };
   useEffect(() => {
     if (isSuccess) {
-      dispatch({ type: UserActions.login, payload: data.data.user })
+      dispatch({ type: UserActions.login, payload: data.data })
       setChoice({ type: ChoiceActions.close })
       goto(paths.dashboard)
     }
   }, [dispatch, goto, setChoice, isSuccess, data])
   return (
     <>
+
       <form onSubmit={formik.handleSubmit}>
+        <Snackbar open={isError} message={error?.response.data.message} />
         <Stack
           direction="column"
           pt={2}
