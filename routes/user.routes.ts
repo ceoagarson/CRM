@@ -1,7 +1,7 @@
 import express from "express";
 import multer from "multer";
 import { SignUp, DeleteUser, GetProfile, GetUser, GetUsers, Login, Logout, NewUser, ResetPassword, SendPasswordResetMail, SendVerifyEmail, updatePassword, UpdateProfile, UpdateUser, MakeOwner, VerifyEmail, MakeAdmin, BlockUser, UnBlockUser, RevokePermissions } from "../controllers/user.controller";
-import { isAdmin, isAuthenticatedUser, isCrmAdmin, isOwner } from "../middlewares/auth.middleware";
+import { isAdmin, isAuthenticatedUser, isOwner } from "../middlewares/auth.middleware";
 
 const router = express.Router()
 const upload = multer({ storage: multer.diskStorage({ destination: "/tmp/" }) })
@@ -13,7 +13,7 @@ router.route("/users")
 router.route("/users/:id")
     .get(isAuthenticatedUser, GetUser)
     .put(isAuthenticatedUser, isAdmin, upload.single("dp"), UpdateUser)
-    .delete(isAuthenticatedUser, isCrmAdmin, DeleteUser)
+    .delete(isAuthenticatedUser, isAdmin, isOwner, DeleteUser)
     .patch(isAuthenticatedUser, isAdmin, isOwner, MakeAdmin)
 
 router.patch("/owner/update/role/admin/:id", isAuthenticatedUser, isAdmin, isOwner, MakeOwner)

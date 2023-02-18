@@ -192,6 +192,9 @@ export const DeleteUser = catchAsyncError(async (req: Request, res: Response, ne
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }
+    if (String(user.createdBy) === String(user._id))
+        return res.status(403).json({ message: "not allowed contact crm administrator" })
+
     await destroyFile(user.dp?.public_id || "");
     await User.findByIdAndRemove(id).then(() => {
         res.status(200).json({ message: "user permanently deleted" })
@@ -200,7 +203,7 @@ export const DeleteUser = catchAsyncError(async (req: Request, res: Response, ne
 
 // get profile 
 export const GetProfile = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    const profile = await User.findById(req.user?._id).populate('organization')
+    const profile = await User.findById(req.user?._id).populate('organization').populate("createdBy")
     if (profile)
         return res.status(200).json(profile)
     res.status(403).json({ message: "please login to access the profile" })
@@ -210,7 +213,7 @@ export const GetProfile = catchAsyncError(async (req: Request, res: Response, ne
 export const GetUser = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     if (!isMongoId(req.params.id))
         return res.status(400).json({ message: "user id not valid" })
-    const user = await User.findById(req.params.id).populate('organization')
+    const user = await User.findById(req.params.id).populate('organization').populate("createdBy")
     if (!user)
         return res.status(404).json({ message: "user not found" })
     res.status(200).json(user)
@@ -219,7 +222,7 @@ export const GetUser = catchAsyncError(async (req: Request, res: Response, next:
 // get all users only admin can do
 export const GetUsers =
     catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-        const users = await User.find({ organization: req.user?.organization }).populate('organization')
+        const users = await User.find({ organization: req.user?.organization }).populate('organization').populate("createdBy")
         res.status(200).json(users)
     })
 // login 

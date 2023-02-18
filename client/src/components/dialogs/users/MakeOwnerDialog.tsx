@@ -71,7 +71,7 @@ function MakeOwnerDialog({ id }: { id: string }) {
                 </Button>
                 <Button fullWidth variant="contained"
                     disabled={isLoading}
-                    color="warning" onClick={() => setChoice({ type: ChoiceActions.close })}>Cancel</Button>
+                     onClick={() => setChoice({ type: ChoiceActions.close })}>Cancel</Button>
             </Stack >
         </Dialog >
 

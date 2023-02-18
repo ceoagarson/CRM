@@ -49,7 +49,7 @@ function UnBlockUserDialog({ id }: { id: string }) {
                         </Alert>
                     ) : null
                 }
-                <Typography variant="body1" color="error">
+                <Typography variant="body1" >
                     Warning ! This will unblock user and make him able to login in to the site, Be careful
                 </Typography>
             </DialogContent>

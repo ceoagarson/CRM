@@ -13,5 +13,6 @@ export interface IUser extends BaseIUser {
     email_verified?: Boolean,
     last_login?: Date,
     createdAt?: Date,
+    createdBy?: IUser,
     is_active?: Boolean
 }

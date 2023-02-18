@@ -1,5 +1,14 @@
 import { IUser } from "../types/user.type";
-import { apiClient } from "../utils/AxiosInterceptor";
+import axios from "axios";
+
+let BaseURL = "/api/v1/"
+if (process.env.REACT_APP_SERVER_URL)
+    BaseURL = process.env.REACT_APP_SERVER_URL + BaseURL
+
+const apiClient = axios.create({
+    baseURL: BaseURL,
+    withCredentials: true
+})
 
 // login
 export const Login = async (

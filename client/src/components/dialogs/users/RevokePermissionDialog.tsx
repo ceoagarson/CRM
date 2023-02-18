@@ -49,7 +49,7 @@ function RevokePermissionsDialog({ id }: { id: string }) {
                         </Alert>
                     ) : null
                 }
-                <Typography variant="body1" color="error">
+                <Typography variant="body1">
                     Warning ! This is a dangerous  Action, Be careful
                 </Typography>
             </DialogContent>
