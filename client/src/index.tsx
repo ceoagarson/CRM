@@ -5,12 +5,14 @@ import { QueryClientProvider, QueryClient } from "react-query";
 import App from "./App";
 import { UserProvider } from "./contexts/userContext";
 import { BrowserRouter } from "react-router-dom";
+import { ChoiceProvider } from "./contexts/dialogContext";
+import { MenuProvider } from "./contexts/menuContext";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnReconnect: true,
-      retryDelay:5000
+      retryDelay: 5000
     }
   }
 });
@@ -19,12 +21,16 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <QueryClientProvider client={queryClient}>
-    <UserProvider>
-      <BrowserRouter>
-        <React.StrictMode>
-          <App />
-        </React.StrictMode>
-      </BrowserRouter>
-    </UserProvider>
+    <BrowserRouter>
+      <UserProvider>
+        <ChoiceProvider>
+          <MenuProvider>
+            <React.StrictMode>
+              <App />
+            </React.StrictMode>
+          </MenuProvider>
+        </ChoiceProvider>
+      </UserProvider>
+    </BrowserRouter>
   </QueryClientProvider>
 );

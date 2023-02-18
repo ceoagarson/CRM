@@ -1,5 +1,5 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Button, CircularProgress, IconButton, InputAdornment, TextField } from '@mui/material';
+import { Alert, Button, CircularProgress, IconButton, InputAdornment, TextField } from '@mui/material';
 import { Stack } from '@mui/system';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
@@ -7,17 +7,16 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from 'yup';
 import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
-import {  UpdatePassword } from '../../../services/UserServices';
+import { UpdatePassword } from '../../../services/UserServices';
 import { BackendError } from '../../../types';
-import AlertBar from '../../alert/Alert';
+
 
 function UpdatePasswordForm() {
     const { mutate, isSuccess, isLoading, isError, error } = useMutation
         <AxiosResponse<string>,
             BackendError,
             { oldPassword: string, newPassword: string, confirmPassword: string }
-        >
-        (UpdatePassword)
+        >(UpdatePassword)
 
     const { setChoice } = useContext(ChoiceContext)
     const formik = useFormik({
@@ -49,7 +48,8 @@ function UpdatePasswordForm() {
             mutate(values)
         },
     });
-    // passworrd validation
+
+    // passworrd handling
     const [visiblity, setVisiblity] = useState(false);
     const handlePasswordVisibility = () => {
         setVisiblity(!visiblity);
@@ -61,110 +61,120 @@ function UpdatePasswordForm() {
     };
     useEffect(() => {
         if (isSuccess) {
-            setTimeout(()=>{
+            setTimeout(() => {
                 setChoice({ type: ChoiceActions.close })
-            },1000)
+            }, 1000)
         }
     }, [setChoice, isSuccess,])
+
     return (
-        <>
+        <form onSubmit={formik.handleSubmit}>
+            {
+                isError ? (
+                    <Alert color="error">
+                        {error?.response.data.message}
+                    </Alert>
+                ) : null
+            }
+            {
+                isSuccess ? (
+                    <Alert color="success">
+                        updated password successfully
+                    </Alert>
+                ) : null
+            }
+            <Stack
+                direction="column"
+                pt={2}
+                gap={2}
+            >
 
-            <form onSubmit={formik.handleSubmit}>
-                <AlertBar open={isError} message={error?.response.data.message} />
-                <AlertBar color="success" open={isSuccess} message="updated password successfully" />
-                <Stack
-                    direction="column"
-                    pt={2}
-                    gap={2}
-                >
-
-                    <TextField
-                        required
-                        error={
-                            formik.touched.oldPassword && formik.errors.oldPassword ? true : false
-                        }
-                        id="oldPassword"
-                        variant="standard"
-                        label="oldPassword"
-                        fullWidth
-                        helperText={
-                            formik.touched.oldPassword && formik.errors.oldPassword ? formik.errors.oldPassword : ""
-                        }
-                        type={visiblity ? "text" : "password"}
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        onClick={handlePasswordVisibility}
-                                        onMouseDown={(e) => handleMouseDown(e)}
-                                    >
-                                        {visiblity ? <VisibilityOff /> : <Visibility />}
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                        }}
-                        {...formik.getFieldProps('oldPassword')}
-                    />
-                    <TextField
-                        required
-                        error={
-                            formik.touched.newPassword && formik.errors.newPassword ? true : false
-                        }
-                        id="newPassword"
-                        variant="standard"
-                        label="New Password"
-                        fullWidth
-                        helperText={
-                            formik.touched.newPassword && formik.errors.newPassword ? formik.errors.newPassword : ""
-                        }
-                        type={visiblity ? "text" : "password"}
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        onClick={handlePasswordVisibility}
-                                        onMouseDown={(e) => handleMouseDown(e)}
-                                    >
-                                        {visiblity ? <VisibilityOff /> : <Visibility />}
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                        }}
-                        {...formik.getFieldProps('newPassword')}
-                    />
-                    <TextField
-                        required
-                        error={
-                            formik.touched.confirmPassword && formik.errors.confirmPassword ? true : false
-                        }
-                        id="confirmPassword"
-                        variant="standard"
-                        label="Password"
-                        fullWidth
-                        helperText={
-                            formik.touched.confirmPassword && formik.errors.confirmPassword ? formik.errors.confirmPassword : ""
-                        }
-                        type={visiblity ? "text" : "password"}
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        onClick={handlePasswordVisibility}
-                                        onMouseDown={(e) => handleMouseDown(e)}
-                                    >
-                                        {visiblity ? <VisibilityOff /> : <Visibility />}
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                        }}
-                        {...formik.getFieldProps('confirmPassword')}
-                    />
-                    <Button variant="contained"
-                        disabled={Boolean(isLoading)}
-                        color="primary" type="submit" fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Update"}</Button>
-                </Stack>
-            </form>
-        </>
+                <TextField
+                    required
+                    error={
+                        formik.touched.oldPassword && formik.errors.oldPassword ? true : false
+                    }
+                    id="oldPassword"
+                    variant="standard"
+                    label="oldPassword"
+                    fullWidth
+                    helperText={
+                        formik.touched.oldPassword && formik.errors.oldPassword ? formik.errors.oldPassword : ""
+                    }
+                    type={visiblity ? "text" : "password"}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton
+                                    onClick={handlePasswordVisibility}
+                                    onMouseDown={(e) => handleMouseDown(e)}
+                                >
+                                    {visiblity ? <VisibilityOff /> : <Visibility />}
+                                </IconButton>
+                            </InputAdornment>
+                        ),
+                    }}
+                    {...formik.getFieldProps('oldPassword')}
+                />
+                <TextField
+                    required
+                    error={
+                        formik.touched.newPassword && formik.errors.newPassword ? true : false
+                    }
+                    id="newPassword"
+                    variant="standard"
+                    label="New Password"
+                    fullWidth
+                    helperText={
+                        formik.touched.newPassword && formik.errors.newPassword ? formik.errors.newPassword : ""
+                    }
+                    type={visiblity ? "text" : "password"}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton
+                                    onClick={handlePasswordVisibility}
+                                    onMouseDown={(e) => handleMouseDown(e)}
+                                >
+                                    {visiblity ? <VisibilityOff /> : <Visibility />}
+                                </IconButton>
+                            </InputAdornment>
+                        ),
+                    }}
+                    {...formik.getFieldProps('newPassword')}
+                />
+                <TextField
+                    required
+                    error={
+                        formik.touched.confirmPassword && formik.errors.confirmPassword ? true : false
+                    }
+                    id="confirmPassword"
+                    variant="standard"
+                    label="Password"
+                    fullWidth
+                    helperText={
+                        formik.touched.confirmPassword && formik.errors.confirmPassword ? formik.errors.confirmPassword : ""
+                    }
+                    type={visiblity ? "text" : "password"}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton
+                                    onClick={handlePasswordVisibility}
+                                    onMouseDown={(e) => handleMouseDown(e)}
+                                >
+                                    {visiblity ? <VisibilityOff /> : <Visibility />}
+                                </IconButton>
+                            </InputAdornment>
+                        ),
+                    }}
+                    {...formik.getFieldProps('confirmPassword')}
+                />
+                <Button variant="contained"
+                    disabled={Boolean(isLoading)}
+                    color="primary" type="submit" fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Update"}</Button>
+            </Stack>
+        </form>
     )
 }
 

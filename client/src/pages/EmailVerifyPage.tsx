@@ -1,9 +1,8 @@
-import { LinearProgress } from '@mui/material'
+import { Alert, LinearProgress } from '@mui/material'
 import { AxiosResponse } from 'axios'
 import { useEffect, useMemo } from 'react'
 import { useMutation } from 'react-query'
-import { Navigate, useParams } from 'react-router-dom'
-import AlertBar from '../components/alert/Alert'
+import {useParams } from 'react-router-dom'
 import { VerifyEmail } from '../services/UserServices'
 import { BackendError } from '../types'
 
@@ -20,10 +19,23 @@ export default function EmailVerifyPage() {
   
   return (
     <>
+    {
+        isError ? (
+          <Alert color="error">
+            {error?.response.data.message}
+          </Alert>
+        ) : null
+      }
+      {
+        isSuccess ? (
+          <Alert color="success">
+           email verified successfully
+          </Alert>
+        ) : null
+      }
+
       {isLoading ? <LinearProgress /> : null
       }
-      {isError ? <AlertBar color="error" open={isError} message={error.response.data.message} /> : null}
-      {isSuccess ? <Navigate to="/" /> : null}
     </>
   )
 }

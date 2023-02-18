@@ -1,8 +1,7 @@
-import { Dialog, DialogContent, DialogTitle, Button, DialogActions, Typography } from '@mui/material';
+import { Dialog, DialogContent, DialogTitle,  DialogActions, Typography } from '@mui/material';
 import { useContext} from 'react';
 import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import NewUserForm from '../../forms/user/NewUserForm';
-
 
 function NewUserDialog() {
   const { choice, setChoice } = useContext(ChoiceContext)

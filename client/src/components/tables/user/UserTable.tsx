@@ -139,7 +139,7 @@ export function UserTable({ data, columns }: Props) {
                                 <TableRow sx={{
                                     '&:nth-of-type(odd)': { bgcolor: color1 },
                                     '&:nth-of-type(even)': { bgcolor: color2 },
-                                    '&:hover': { bgcolor: colorHover, cursor: 'pointer' }
+                                    '&:hover': { bgcolor: 'rgba(0,0,0,0.1)', cursor: 'pointer' }
                                 }}
 
                                     {...row.getRowProps()}>

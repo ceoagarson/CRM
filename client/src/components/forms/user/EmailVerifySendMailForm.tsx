@@ -1,4 +1,4 @@
-import { Button, CircularProgress, TextField } from '@mui/material';
+import { Alert, Button, CircularProgress, TextField } from '@mui/material';
 import { Stack } from '@mui/system';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
@@ -10,7 +10,7 @@ import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { paths } from '../../../Routes';
 import { SendVerifyEmail } from '../../../services/UserServices';
 import { BackendError } from '../../../types';
-import AlertBar from '../../alert/Alert';
+
 
 function EmailVerifySendMailForm() {
   const goto = useNavigate()
@@ -18,10 +18,9 @@ function EmailVerifySendMailForm() {
     <AxiosResponse<string>,
       BackendError,
       { email: string }
-    >
-    (SendVerifyEmail)
-
+    >(SendVerifyEmail)
   const { setChoice } = useContext(ChoiceContext)
+
   const formik = useFormik({
     initialValues: {
       email: ''
@@ -37,6 +36,7 @@ function EmailVerifySendMailForm() {
       mutate(values)
     },
   });
+
   useEffect(() => {
     if (isSuccess) {
       setTimeout(() => {
@@ -44,12 +44,25 @@ function EmailVerifySendMailForm() {
         goto(paths.dashboard)
       }, 1000)
     }
-  }, [setChoice,goto, isSuccess])
+  }, [setChoice, goto, isSuccess])
+
   return (
     <>
       <form onSubmit={formik.handleSubmit}>
-        <AlertBar open={isError} message={error?.response.data.message} />
-        <AlertBar color="success" open={isSuccess} message="email verification link sent successfully " />
+        {
+          isError ? (
+            <Alert color="error">
+              {error?.response.data.message}
+            </Alert>
+          ) : null
+        }
+        {
+          isSuccess ? (
+            <Alert color="success">
+              email verification link sent successfully
+            </Alert>
+          ) : null
+        }
         <Stack
           direction="column"
           pt={2}

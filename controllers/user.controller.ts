@@ -73,7 +73,9 @@ export const SignUp = catchAsyncError(
         await owner.save()
         res.status(201).json({ owner, organization })
     })
-// create normal user only admin can do
+
+
+// create normal user  owner and admin both can do
 export const NewUser = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     if (!req.user)
         return res.status(403).json({ message: "please login to access this resource" })
@@ -117,7 +119,7 @@ export const NewUser = catchAsyncError(async (req: Request, res: Response, next:
         email,
         password,
         dp,
-        organization: req.user.organization,
+        organization: req.user?.organization,
         createdBy: req.user,
         roles: ["user"]
     }).save()
@@ -128,7 +130,7 @@ export const NewUser = catchAsyncError(async (req: Request, res: Response, next:
 export const UpdateUser = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
-    let user = await User.findOne({ _id:id, organization: req.user.organization });
+    let user = await User.findOne({ _id: id, organization: req.user?.organization });
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }
@@ -145,6 +147,9 @@ export const UpdateUser = catchAsyncError(async (req: Request, res: Response, ne
         if (await User.findOne({ email: String(email).toLowerCase().trim() }))
             return res.status(403).json({ message: `${email} already exists` });
     }
+    // check first owner
+    if (!(String(user.createdBy) === String(user._id) && String(req.user?._id) === String(user._id) && user.roles?.includes("owner")))
+        return res.status(403).json({ message: "not allowed contact crm administrator" })
 
     //handle dp
     let dp = user.dp;
@@ -183,7 +188,7 @@ export const DeleteUser = catchAsyncError(async (req: Request, res: Response, ne
     const id = req.params.id;
     if (!isMongoId(id))
         return res.status(400).json({ message: "user id not valid" })
-    let user = await User.findOne({ id, organization: req.user.organization });
+    let user = await User.findOne({ _id: id, organization: req.user?.organization });
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }
@@ -214,7 +219,7 @@ export const GetUser = catchAsyncError(async (req: Request, res: Response, next:
 // get all users only admin can do
 export const GetUsers =
     catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-        const users = await User.find({ organization: req.user.organization }).populate('organization')
+        const users = await User.find({ organization: req.user?.organization }).populate('organization')
         res.status(200).json(users)
     })
 // login 
@@ -258,7 +263,7 @@ export const Logout = catchAsyncError(async (req: Request, res: Response, next: 
 })
 //update profile 
 export const UpdateProfile = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    let user = await User.findOne({ id: req.user._id, organization: req.user.organization });
+    let user = await User.findOne({ id: req.user?._id, organization: req.user?.organization });
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }
@@ -314,7 +319,7 @@ export const updatePassword = catchAsyncError(async (req: Request, res: Response
         return res.status(403).json({ message: "new password should not be same to the old password" })
     if (newPassword !== confirmPassword)
         return res.status(403).json({ message: "new password and confirm password not matched" })
-    let user = await User.findOne({ id: req.user._id, organization: req.user.organization }).select("+password")
+    let user = await User.findOne({ id: req.user?._id, organization: req.user?.organization }).select("+password")
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }
@@ -329,7 +334,7 @@ export const updatePassword = catchAsyncError(async (req: Request, res: Response
 export const MakeAdmin = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
-    let user = await User.findOne({ _id: id, organization: req.user.organization })
+    let user = await User.findOne({ _id: id, organization: req.user?.organization })
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }
@@ -343,10 +348,13 @@ export const MakeAdmin = catchAsyncError(async (req: Request, res: Response, nex
 export const MakeOwner = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
-    let user = await User.findOne({ _id: id, organization: req.user.organization })
+    let user = await User.findOne({ _id: id, organization: req.user?.organization })
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }
+    if (String(user.createdBy) === String(user._id))
+        return res.status(403).json({ message: "not allowed contact crm administrator" })
+
     if (user.roles?.includes("owner"))
         return res.status(404).json({ message: "already a owner" })
     user.roles?.push("owner")
@@ -359,12 +367,16 @@ export const BlockUser = catchAsyncError(async (req: Request, res: Response, nex
     //update role of user
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
-    let user = await User.findOne({ _id: id, organization: req.user.organization })
+    let user = await User.findOne({ _id: id, organization: req.user?.organization })
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }
     if (!user.is_active)
         return res.status(404).json({ message: "user already blocked" })
+
+    if (String(user.createdBy) === String(user._id))
+        return res.status(403).json({ message: "not allowed contact crm administrator" })
+
     user.is_active = false
     await user.save();
     res.status(200).json({ message: "user blocked successfully" });
@@ -374,7 +386,7 @@ export const UnBlockUser = catchAsyncError(async (req: Request, res: Response, n
     //update role of user
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
-    let user = await User.findOne({ _id: id, organization: req.user.organization })
+    let user = await User.findOne({ _id: id, organization: req.user?.organization })
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }
@@ -383,6 +395,21 @@ export const UnBlockUser = catchAsyncError(async (req: Request, res: Response, n
     user.is_active = true
     await user.save();
     res.status(200).json({ message: "user unblocked successfully" });
+})
+
+// revoke permissions
+export const RevokePermissions = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    //update role of user
+    const id = req.params.id;
+    if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
+    let user = await User.findOne({ _id: id, organization: req.user?.organization })
+    if (!user) {
+        return res.status(404).json({ message: "user not found" })
+    }
+    if (String(user.createdBy) === String(user._id))
+        return res.status(403).json({ message: "not allowed contact crm administrator" })
+    await User.findByIdAndUpdate(id, { roles: ["user"] })
+    res.status(200).json({ message: "user permissions revoked successfully" });
 })
 
 // sending password reset mail controller

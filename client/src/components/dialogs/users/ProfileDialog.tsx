@@ -5,7 +5,7 @@ import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { IUser } from '../../../types/user.type'
 
 
-function ProfileDialog({profile}:{profile:IUser}) {
+function ProfileDialog({ profile }: { profile: IUser }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     return (
         <Dialog open={choice === ChoiceActions.view_profile ? true : false}

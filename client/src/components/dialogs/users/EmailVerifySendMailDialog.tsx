@@ -3,7 +3,6 @@ import { useContext } from 'react'
 import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import EmailVerifySendMailDialogForm from '../../forms/user/EmailVerifySendMailForm'
 
-
 function EmailVerifySendMailDialog() {
     const { choice, setChoice } = useContext(ChoiceContext)
     return (

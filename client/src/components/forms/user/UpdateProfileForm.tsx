@@ -1,4 +1,4 @@
-import { Button, CircularProgress,  Stack, TextField } from '@mui/material';
+import { Alert, Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { useFormik } from 'formik';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
@@ -9,16 +9,17 @@ import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { useContext, useEffect } from 'react';
 import { AxiosResponse } from 'axios';
 import { queryClient } from '../../..';
-import AlertBar from '../../alert/Alert';
+
 
 type TformData = {
   email: string,
   dp: string | Blob | File
 }
+
 function UpdateProfileForm({ user }: { user: IUser }) {
-  const { mutate, isLoading, isSuccess,isError,error } = useMutation
+  const { mutate, isLoading, isSuccess, isError, error } = useMutation
     <AxiosResponse<IUser>, BackendError, FormData>
-    (UpdateProfile,{
+    (UpdateProfile, {
       onSuccess: () => queryClient.invalidateQueries('profile')
     })
   const { setChoice } = useContext(ChoiceContext)
@@ -64,16 +65,28 @@ function UpdateProfileForm({ user }: { user: IUser }) {
   });
   useEffect(() => {
     if (isSuccess) {
-      setTimeout(()=>{
+      setTimeout(() => {
         setChoice({ type: ChoiceActions.close })
-      },1000)
+      }, 1000)
     }
   }, [isSuccess, setChoice])
-  return (
 
+  return (
     <form onSubmit={formik.handleSubmit}>
-    <AlertBar color="error" open={isError} message={error?.response.data.message} />
-    <AlertBar color="success" open={isSuccess} message="profile updated successfully" />
+      {
+        isError ? (
+          <Alert color="error">
+            {error?.response.data.message}
+          </Alert>
+        ) : null
+      }
+      {
+        isSuccess ? (
+          <Alert color="success">
+            profile updated successfully
+          </Alert>
+        ) : null
+      }
       <Stack
         direction="column"
         gap={2}>

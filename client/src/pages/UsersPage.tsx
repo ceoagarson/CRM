@@ -1,14 +1,20 @@
-import { DeleteOutlined, EditOutlined, Visibility } from '@mui/icons-material'
-import { Avatar, IconButton, LinearProgress, Typography } from '@mui/material'
+import { AssuredWorkloadOutlined, AttributionOutlined, BlockOutlined, CancelOutlined, CheckCircleOutline, DeleteOutlined, EditOutlined, Visibility } from '@mui/icons-material'
+import { Avatar, IconButton, LinearProgress, Tooltip, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import React, { useContext, useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
 import { Column } from 'react-table'
+import BlockUserDialog from '../components/dialogs/users/BlockUserDialog'
 import DeleteUserDialog from '../components/dialogs/users/DeleteUserDialog'
+import MakeAdminDialog from '../components/dialogs/users/MakeAdminDialog'
+import MakeOwnerDialog from '../components/dialogs/users/MakeOwnerDialog'
 import ProfileDialog from '../components/dialogs/users/ProfileDialog'
+import RevokePermissionsDialog from '../components/dialogs/users/RevokePermissionDialog'
+import UnBlockUserDialog from '../components/dialogs/users/UnBlockUserDialog'
 import UpdateUserDialog from '../components/dialogs/users/UpdateUserDialog'
 import { UserTable } from '../components/tables/user/UserTable'
 import { ChoiceActions, ChoiceContext } from '../contexts/dialogContext'
+import { UserContext } from '../contexts/userContext'
 import { GetUsers } from '../services/UserServices'
 import { IUser } from '../types/user.type'
 
@@ -16,6 +22,7 @@ export default function UsersPage() {
     const { data, isSuccess, isLoading } = useQuery("users", GetUsers, {
         refetchOnMount: true
     })
+    const { user: loggedInUser } = useContext(UserContext)
     const [rowid, setRowId] = useState<string | undefined>()
     const [user, setUser] = useState<IUser>()
     const { setChoice } = useContext(ChoiceContext)
@@ -33,75 +40,163 @@ export default function UsersPage() {
                     return <Typography variant="body1" component="span" pr={2}>{props.row.index + 1}</Typography>
                 }
             },
+            // actions
             {
-                Header: "Actions",
+                Header: "Allowed Actions",
                 accessor: "email_verified",//already used so use it for display actions
                 disableSortBy: true,
                 Cell: (props) => {
+                    let CellUser = props.row.original
                     return (
                         <Stack direction="row">
-                            <IconButton color="success"
-                                onClick={() => {
-                                    setChoice({ type: ChoiceActions.view_profile })
-                                    setUser(props.row.original)
-                                }}>
-                                <Visibility />
-                            </IconButton>
-                            <IconButton color="info"
-                                onClick={() => {
-                                    setChoice({ type: ChoiceActions.update_user })
-                                    setUser(props.row.original)
-                                }}>
-                                <EditOutlined />
-                            </IconButton>
-                            <IconButton
-                                onClick={() => {
-                                    setChoice({ type: ChoiceActions.delete_user })
-                                    setRowId(props.row.original._id)
-                                }} color="error">
-                                <DeleteOutlined />
-                            </IconButton>
-                        </Stack>
+                            {/* view icon */}
+                            <Tooltip title="view">
+                                <IconButton size="medium" color="success"
+                                    onClick={() => {
+                                        setChoice({ type: ChoiceActions.view_profile })
+                                        setUser(props.row.original)
+                                    }}>
+                                    <Visibility />
+                                </IconButton>
+                            </Tooltip>
+                            {/* delete icon */}
+                            {
+                                loggedInUser?.roles?.includes("crm_admin") ?
+                                    <Tooltip title="delete">
+                                        <IconButton size="medium"
+                                            onClick={() => {
+                                                setChoice({ type: ChoiceActions.delete_user })
+                                                setRowId(props.row.original._id)
+                                            }} color="error">
+                                            <DeleteOutlined />
+                                        </IconButton>
+                                    </Tooltip>
+                                    : null
+                            }
+                            {loggedInUser?.roles?.includes("owner") ?
+                                <>
+                                    {/* edit icon */}
+                                    <Tooltip title="edit">
+                                        <IconButton size="medium" color="info"
+                                            onClick={() => {
+                                                setChoice({ type: ChoiceActions.update_user })
+                                                setUser(props.row.original)
+                                            }}>
+                                            <EditOutlined />
+                                        </IconButton>
+                                    </Tooltip>
+                                    {/* revoke */}
+                                    < Tooltip title="Revoke Permissions "><IconButton size="medium"
+                                        onClick={() => {
+
+                                            setChoice({ type: ChoiceActions.revoke_permission })
+                                            setRowId(props.row.original._id)
+                                        }} color="error">
+                                        <CancelOutlined />
+                                    </IconButton>
+                                    </Tooltip>
+                                    {/* make owner */}
+                                    <Tooltip title="make owner">
+                                        <IconButton size="medium"
+                                            onClick={() => {
+
+                                                setChoice({ type: ChoiceActions.make_owner })
+                                                setRowId(props.row.original._id)
+                                            }} color="warning">
+                                            <AssuredWorkloadOutlined />
+                                        </IconButton>
+                                    </Tooltip>
+                                    {/* make admin */}
+                                    <Tooltip title="make admin"><IconButton size="medium"
+                                        onClick={() => {
+                                            setChoice({ type: ChoiceActions.make_admin })
+                                            setRowId(props.row.original._id)
+                                        }} color="warning">
+                                        <AttributionOutlined />
+                                    </IconButton>
+                                    </Tooltip>
+
+                                    {/* block */}
+                                    {
+                                        CellUser?.is_active ?
+                                            <Tooltip title="block"><IconButton size="medium"
+                                                onClick={() => {
+                                                    setChoice({ type: ChoiceActions.block_user })
+                                                    setRowId(props.row.original._id)
+                                                }} color="error">
+                                                <BlockOutlined />
+                                            </IconButton>
+                                            </Tooltip>
+                                            :
+                                            < Tooltip title="unblock">
+                                                <IconButton size="medium"
+                                                    onClick={() => {
+                                                        setChoice({ type: ChoiceActions.unblock_user })
+                                                        setRowId(props.row.original._id)
+                                                    }} color="warning">
+                                                    <CheckCircleOutline />
+                                                </IconButton>
+                                            </Tooltip>
+                                    }
+                                </>
+                                : null
+                            }
+                        </Stack >
                     )
                 }
             },
+            // user name
             {
+
                 Header: 'User Name',
                 accessor: 'username',
                 Cell: (props) => {
-                    if (props.row.original.is_active)
-                        return (
-                            <Stack>
-                                <Typography variant="body1">{props.row.original.username}</Typography>
-                                <Typography variant="caption">active</Typography >
-                            </Stack>
-                        )
+                    let roles = props.row.original.roles
                     return (
                         <Stack>
-                            <Typography variant="body1">{props.row.original.username}</Typography>
-                            <Typography variant="caption" >blocked</Typography >
-                        </Stack>
+                            {roles?.includes("owner") ?
+                                < Typography variant="body1" sx={{ color: "green", fontWeight: "bold" }}>{props.row.original.username}</Typography>
+                                :
+                                <Typography variant="body1" sx={{ color: "grey", fontWeight: "bold" }}>{props.row.original.username}</Typography>
+                            }
+
+                            <Typography variant="caption" component="span">
+                                {roles?.toString()}
+                            </Typography>
+                        </Stack >
                     )
                 }
             },
+            // picture
             {
                 Header: 'Picture',
                 accessor: 'dp',
                 disableSortBy: true,
                 Cell: (props) => {
+                    if (props.row.original.is_active)
+                        return (
+                            <Stack>
+                                <Avatar
+                                    alt="display picture" src={props.row.original.dp?.url} />
+                                <Typography variant="caption" sx={{
+                                    color: "green"
+                                }}>active</Typography>
+                            </Stack >
+                        )
                     return (
-
                         <Stack>
                             <Avatar
                                 alt="display picture" src={props.row.original.dp?.url} />
-                            <Typography variant="caption" component="span">
-                                {props.row.original.roles?.toString()}
-                            </Typography>
+                            <Typography variant="body1" >{props.row.original.username}</Typography>
+                            <Typography variant="caption" sx={{
+                                color: "red"
+                            }}>blocked</Typography >
                         </Stack>
                     )
                 }
 
             },
+            // email
             {
                 Header: 'Email',
                 accessor: 'email',
@@ -110,18 +205,23 @@ export default function UsersPage() {
                         return (
                             <Stack>
                                 <Typography variant="body1">{props.row.original.email}</Typography>
-                                <Typography variant="caption">verified</Typography >
+                                <Typography variant="caption" sx={{
+                                    color: "green"
+                                }}>verified</Typography >
                             </Stack>
                         )
                     return (
                         <Stack>
                             <Typography variant="body1">{props.row.original.email}</Typography>
-                            <Typography variant="caption">not verified</Typography >
+                            <Typography variant="caption" sx={{
+                                color: "red"
+                            }}>not verified</Typography >
                         </Stack>
                     )
                 }
 
             },
+            // joined date
             {
                 Header: 'Joined Date',
                 accessor: 'createdAt',
@@ -135,6 +235,7 @@ export default function UsersPage() {
                 }
 
             },
+            // logindate
             {
                 Header: 'Last Login',
                 accessor: 'last_login',
@@ -148,9 +249,8 @@ export default function UsersPage() {
                 }
 
             },
-
         ]
-        , [setChoice]
+        , [setChoice, loggedInUser]
     )
     useEffect(() => {
         if (isSuccess)
@@ -172,16 +272,21 @@ export default function UsersPage() {
                 user ?
                     <>
                         <ProfileDialog profile={user} />
-                        < UpdateUserDialog user={user} />
+                        <UpdateUserDialog user={user} />
                     </>
                     : null
             }
-
             {
                 rowid ?
+                    <>
+                        <DeleteUserDialog id={rowid} />
+                        <BlockUserDialog id={rowid} />
+                        <UnBlockUserDialog id={rowid} />
+                        <MakeAdminDialog id={rowid} />
+                        <MakeOwnerDialog id={rowid} />
+                        <RevokePermissionsDialog id={rowid} />
 
-                    <DeleteUserDialog id={rowid} />
-                    : null
+                    </> : null
             }
         </>
 

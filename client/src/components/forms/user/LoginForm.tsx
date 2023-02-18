@@ -1,5 +1,5 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Button, CircularProgress, IconButton, InputAdornment,  TextField } from '@mui/material';
+import { Alert, Button, CircularProgress, IconButton, InputAdornment, TextField } from '@mui/material';
 import { Stack } from '@mui/system';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
@@ -13,7 +13,6 @@ import { paths } from '../../../Routes';
 import { Login } from '../../../services/UserServices';
 import { BackendError } from '../../../types';
 import { IUser } from '../../../types/user.type';
-import AlertBar from '../../alert/Alert';
 
 function LoginForm() {
   const goto = useNavigate()
@@ -21,11 +20,11 @@ function LoginForm() {
     <AxiosResponse<IUser>,
       BackendError,
       { username: string, password: string }
-    >
-    (Login)
+    >(Login)
 
   const { setChoice } = useContext(ChoiceContext)
   const { dispatch } = useContext(UserContext)
+
   const formik = useFormik({
     initialValues: {
       username: '',
@@ -48,7 +47,8 @@ function LoginForm() {
       mutate(values)
     },
   });
-  // passworrd validation
+
+  // passworrd handling
   const [visiblity, setVisiblity] = useState(false);
   const handlePasswordVisibility = () => {
     setVisiblity(!visiblity);
@@ -58,74 +58,88 @@ function LoginForm() {
   ) => {
     e.preventDefault()
   };
+
+
   useEffect(() => {
     if (isSuccess) {
-     setTimeout(()=>{
-      dispatch({ type: UserActions.login, payload: data.data })
-      setChoice({ type: ChoiceActions.close })
-      goto(paths.dashboard)
-     },1000)
+      setTimeout(() => {
+        dispatch({ type: UserActions.login, payload: data.data })
+        setChoice({ type: ChoiceActions.close })
+        goto(paths.dashboard)
+      }, 1000)
     }
   }, [dispatch, goto, setChoice, isSuccess, data])
-  return (
-    <>
 
-      <form onSubmit={formik.handleSubmit}>
-        <AlertBar  open={isError} message={error?.response.data.message} />
-        <AlertBar color="success" open={isSuccess} message="logged in successfully" />
-        <Stack
-          direction="column"
-          pt={2}
-          gap={2}
-        >
-          <TextField
-            autoFocus
-            variant="standard"
-            fullWidth
-            required
-            error={
-              formik.touched.username && formik.errors.username ? true : false
-            }
-            id="username"
-            label="Username or Email"
-            helperText={
-              formik.touched.username && formik.errors.username ? formik.errors.username : ""
-            }
-            {...formik.getFieldProps('username')}
-          />
-          <TextField
-            required
-            error={
-              formik.touched.password && formik.errors.password ? true : false
-            }
-            id="password"
-            variant="standard"
-            label="Password"
-            fullWidth
-            helperText={
-              formik.touched.password && formik.errors.password ? formik.errors.password : ""
-            }
-            type={visiblity ? "text" : "password"}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={handlePasswordVisibility}
-                    onMouseDown={(e) => handleMouseDown(e)}
-                  >
-                    {visiblity ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-            {...formik.getFieldProps('password')}
-          />
-          <Button variant="contained"
-            disabled={Boolean(isLoading)}
-            color="primary" type="submit" fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Login"}</Button>
-        </Stack>
-      </form>
-    </>
+  return (
+    <form onSubmit={formik.handleSubmit}>
+      {
+        isError ? (
+          <Alert color="error">
+            {error?.response.data.message}
+          </Alert>
+        ) : null
+      }
+      {
+        isSuccess ? (
+          <Alert color="success">
+            logged in successfully
+          </Alert>
+        ) : null
+      }
+      <Stack
+        direction="column"
+        pt={2}
+        gap={2}
+      >
+        <TextField
+          autoFocus
+          variant="standard"
+          fullWidth
+          required
+          error={
+            formik.touched.username && formik.errors.username ? true : false
+          }
+          id="username"
+          label="Username or Email"
+          helperText={
+            formik.touched.username && formik.errors.username ? formik.errors.username : ""
+          }
+          {...formik.getFieldProps('username')}
+        />
+        <TextField
+          required
+          error={
+            formik.touched.password && formik.errors.password ? true : false
+          }
+          id="password"
+          variant="standard"
+          label="Password"
+          fullWidth
+          helperText={
+            formik.touched.password && formik.errors.password ? formik.errors.password : ""
+          }
+          type={visiblity ? "text" : "password"}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={handlePasswordVisibility}
+                  onMouseDown={(e) => handleMouseDown(e)}
+                >
+                  {visiblity ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+          {...formik.getFieldProps('password')}
+        />
+
+        <Button variant="contained"
+          disabled={Boolean(isLoading)}
+          color="primary" type="submit" fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Login"}
+        </Button>
+      </Stack>
+    </form>
   )
 }
 

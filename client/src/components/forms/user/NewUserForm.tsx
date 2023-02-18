@@ -1,5 +1,5 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Button, CircularProgress, IconButton, InputAdornment, Stack, TextField } from '@mui/material';
+import { Alert, Button, CircularProgress, IconButton, InputAdornment, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useEffect, useContext, useState } from 'react';
@@ -8,26 +8,23 @@ import * as Yup from "yup"
 import { queryClient } from '../../..';
 import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { NewUser } from '../../../services/UserServices';
-import { BackendError } from '../../../types';
+import { BackendError, Target } from '../../../types';
 import { IUser } from '../../../types/user.type';
-import AlertBar from '../../alert/Alert';
 
-type Target = EventTarget & (HTMLTextAreaElement | HTMLInputElement)
-    & {
-        files?: FileList | null
-    }
 type TformData = {
     username: string,
     email: string,
     password: string,
     dp: string | Blob | File
 }
+
 function NewUserForm() {
-    const { mutate,  isLoading, isSuccess, isError, error } = useMutation
+    const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<IUser>, BackendError, FormData>
         (NewUser, {
             onSuccess: () => queryClient.invalidateQueries('users')
         })
+
     const { setChoice } = useContext(ChoiceContext)
 
     const formik = useFormik<TformData>({
@@ -81,6 +78,7 @@ function NewUserForm() {
             mutate(formdata)
         }
     });
+
     const [visiblity, setVisiblity] = useState(false);
     const handlePasswordVisibility = () => {
         setVisiblity(!visiblity);
@@ -90,22 +88,34 @@ function NewUserForm() {
     ) => {
         e.preventDefault();
     };
+
     useEffect(() => {
         if (isSuccess) {
-           setTimeout(()=>{
-            setChoice({ type: ChoiceActions.close })
-           },1000)
+            setTimeout(() => {
+                setChoice({ type: ChoiceActions.close })
+            }, 1000)
         }
     }, [isSuccess, setChoice])
-    return (
 
+    return (
         <form onSubmit={formik.handleSubmit}>
-            <AlertBar color="error" open={isError} message={error?.response.data.message} />
-            <AlertBar color="success" open={isSuccess} message="new user created successfully" />
+            {
+                isError ? (
+                    <Alert color="error">
+                        {error?.response.data.message}
+                    </Alert>
+                ) : null
+            }
+            {
+                isSuccess ? (
+                    <Alert color="success">
+                        new user created successfully
+                    </Alert>
+                ) : null
+            }
             <Stack
                 direction="column"
                 gap={2}
-
             >
                 <TextField
                     autoFocus
@@ -193,7 +203,8 @@ function NewUserForm() {
 
                 <Button variant="contained" color="primary" type="submit"
                     disabled={Boolean(isLoading)}
-                    fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Register"}</Button>
+                    fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Register"}
+                </Button>
             </Stack>
         </form>
     )

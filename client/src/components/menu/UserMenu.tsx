@@ -42,30 +42,33 @@ function UserMenu() {
                     }
                     }
                 >View Profile</MenuItem>
-                {user?.roles?.includes("admin") ?
+                {user?.roles?.includes("owner") ?
                     <MenuItem onClick={() => {
                         setChoice({ type: ChoiceActions.new_user })
                         setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
 
                     }
-                    }>New Staff</MenuItem>
+                    }>New User</MenuItem>
                     :
                     null
                 }
-
                 <MenuItem onClick={() => {
                     setChoice({ type: ChoiceActions.update_password })
                     setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
                 }}>
                     Update Password
                 </MenuItem>
-                <MenuItem onClick={() => {
-                    setChoice({ type: ChoiceActions.verify_email })
-                    setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
-                }}>
-                    Verify Email
-                </MenuItem>
+                {
+                    !user?.email_verified ?
 
+                        <MenuItem onClick={() => {
+                            setChoice({ type: ChoiceActions.verify_email })
+                            setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
+                        }}>
+                            Verify Email
+                        </MenuItem>
+                        : null
+                }
                 <MenuItem>
                     <Button fullWidth color="error" variant="outlined"
                         onClick={

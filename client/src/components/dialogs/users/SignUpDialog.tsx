@@ -3,7 +3,6 @@ import { useContext } from 'react';
 import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import SignUpForm from '../../forms/user/SignUpForm';
 
-
 function SignUpDialog() {
   const { choice, setChoice } = useContext(ChoiceContext)
   return (

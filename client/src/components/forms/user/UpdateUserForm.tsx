@@ -1,4 +1,4 @@
-import { Button, CircularProgress, Stack, TextField } from '@mui/material';
+import { Alert,Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useContext, useEffect } from 'react';
@@ -9,7 +9,6 @@ import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { UpdateUser } from '../../../services/UserServices';
 import { BackendError, Target } from '../../../types';
 import { IUser } from '../../../types/user.type';
-import AlertBar from '../../alert/Alert';
 
 type TformData = {
   username: string,
@@ -74,6 +73,7 @@ function UpdateUserForm({ user }: Props) {
         mutate({ id: user._id, body: formdata })
     }
   });
+  
   useEffect(() => {
     if (isSuccess) {
       setTimeout(() => {
@@ -81,11 +81,24 @@ function UpdateUserForm({ user }: Props) {
       }, 1000)
     }
   }, [isSuccess, setChoice])
+
   return (
     <>
       <form onSubmit={formik.handleSubmit}>
-        <AlertBar color="error" open={isError} message={error?.response.data.message} />
-        <AlertBar color="success" open={isSuccess} message="user updated successfully" />
+        {
+          isError ? (
+            <Alert color="error">
+              {error?.response.data.message}
+            </Alert>
+          ) : null
+        }
+        {
+          isSuccess ? (
+            <Alert color="success">
+              user updated successfully
+            </Alert>
+          ) : null
+        }
         <Stack
           direction="column"
           gap={2}

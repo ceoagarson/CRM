@@ -3,9 +3,9 @@ import { useContext} from 'react'
 import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import ResetPasswordSendMailForm from '../../forms/user/ResetPasswordSendMailForm'
 
-
 function ResetPasswordSendMailDialog() {
     const { choice, setChoice } = useContext(ChoiceContext)
+
     return (
         <Dialog open={choice === ChoiceActions.reset_password_mail ? true : false}
             onClose={() => setChoice({ type: ChoiceActions.close })}

@@ -1,9 +1,8 @@
 import { Dialog, DialogContent, DialogTitle, Button } from '@mui/material'
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import ResetPasswordForm from '../../forms/user/ResetPasswordForm';
-
 
 function ResetPasswordDialog() {
     const { choice, setChoice } = useContext(ChoiceContext)
@@ -11,7 +10,6 @@ function ResetPasswordDialog() {
     return (
         <>
             <Dialog
-                // open={true}
                 open={choice === ChoiceActions.reset_password || token ? true : false}
                 onClose={() => setChoice({ type: ChoiceActions.close })}
             >

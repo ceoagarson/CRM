@@ -1,5 +1,5 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Button, CircularProgress, IconButton, InputAdornment, LinearProgress,  Stack, TextField } from '@mui/material';
+import { Alert, Button, CircularProgress, IconButton, InputAdornment,  Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useEffect, useContext, useState } from 'react';
@@ -9,16 +9,10 @@ import * as Yup from "yup"
 import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { UserActions, UserContext } from '../../../contexts/userContext';
 import { paths } from '../../../Routes';
-
 import { Signup } from '../../../services/UserServices';
-import { BackendError } from '../../../types';
+import { BackendError, Target } from '../../../types';
 import { IUser } from '../../../types/user.type';
-import AlertBar from '../../alert/Alert';
 
-type Target = EventTarget & (HTMLTextAreaElement | HTMLInputElement)
-  & {
-    files?: FileList | null
-  }
 type TformData = {
   organization_name: string,
   organization_email: string,
@@ -30,8 +24,8 @@ type TformData = {
 function OwnerSignUpForm() {
   const goto = useNavigate()
   const { dispatch } = useContext(UserContext)
-  const { mutate, data,isLoading, isSuccess, isError, error } = useMutation
-    <AxiosResponse<IUser>, BackendError, FormData>
+  const { mutate, data, isLoading, isSuccess, isError, error } = useMutation
+    <AxiosResponse<{ owner: IUser }>, BackendError, FormData>
     (Signup)
   const { setChoice } = useContext(ChoiceContext)
 
@@ -97,6 +91,8 @@ function OwnerSignUpForm() {
       mutate(formdata)
     }
   });
+
+  // password handling 
   const [visiblity, setVisiblity] = useState(false);
   const handlePasswordVisibility = () => {
     setVisiblity(!visiblity);
@@ -106,23 +102,36 @@ function OwnerSignUpForm() {
   ) => {
     e.preventDefault();
   };
+
   useEffect(() => {
     if (isSuccess) {
-      setTimeout(()=>{
-        dispatch({ type: UserActions.login, payload: data.data })
+      setTimeout(() => {
+        dispatch({ type: UserActions.login, payload: data.data.owner })
         setChoice({ type: ChoiceActions.close })
         goto(paths.dashboard)
-      },1000)
+      }, 1000)
     }
-  }, [isSuccess,dispatch,goto,data, setChoice])
+  }, [isSuccess, dispatch, goto, data, setChoice])
+
   return (
     <form onSubmit={formik.handleSubmit}>
-      <AlertBar color="error" open={isError} message={error?.response.data.message} />
-      <AlertBar color="success" open={isSuccess} message="You created an Organization successfully" />
+      {
+        isError ? (
+          <Alert color="error">
+            {error?.response.data.message}
+          </Alert>
+        ) : null
+      }
+      {
+        isSuccess ? (
+          <Alert color="success">
+            reset password mail sent successfully
+          </Alert>
+        ) : null
+      }
       <Stack
         direction="column"
         gap={2}
-
       >
         <TextField
           variant='standard'
@@ -237,7 +246,6 @@ function OwnerSignUpForm() {
             }
           }}
         />
-        {isLoading && <LinearProgress color="info" />}
         <Button variant="contained"
           disabled={Boolean(isLoading)}
           color="primary" type="submit" fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Register"}</Button>

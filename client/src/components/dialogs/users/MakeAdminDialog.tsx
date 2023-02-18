@@ -4,14 +4,14 @@ import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { queryClient } from '../../..';
 import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
-import { DeleteUser } from '../../../services/UserServices';
+import { MakeAdmin } from '../../../services/UserServices';
 import { BackendError } from '../../../types';
 
-function DeleteUserDialog({ id }: { id: string }) {
+function MakeAdminDialog({ id }: { id: string }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
-        (DeleteUser,
+        (MakeAdmin,
             {
                 onSuccess: () => {
                     queryClient.invalidateQueries('users')
@@ -28,29 +28,30 @@ function DeleteUserDialog({ id }: { id: string }) {
     }, [setChoice, isSuccess])
 
     return (
-            <Dialog open={choice === ChoiceActions.delete_user ? true : false}
+        <>
+            <Dialog open={choice === ChoiceActions.make_admin ? true : false}
                 onClose={() => setChoice({ type: ChoiceActions.close })}
             >
                 <DialogTitle textAlign="center">
-                    Delete User
+                    Make Admin
                 </DialogTitle>
                 <DialogContent>
-                {
-                isError ? (
-                    <Alert color="error">
-                        {error?.response.data.message}
-                    </Alert>
-                ) : null
-            }
-            {
-                isSuccess ? (
-                    <Alert color="success">
-                        user deleted successfully
-                    </Alert>
-                ) : null
-            }
+                    {
+                        isError ? (
+                            <Alert color="error">
+                                {error?.response.data.message}
+                            </Alert>
+                        ) : null
+                    }
+                    {
+                        isSuccess ? (
+                            <Alert color="success">
+                                new role created successfully
+                            </Alert>
+                        ) : null
+                    }
                     <Typography variant="body1" color="error">
-                        Warning ! This is delete user account permanently.
+                        Warning ! This is a dangerous  Action, Be careful
                     </Typography>
                 </DialogContent>
                 <Stack
@@ -61,20 +62,21 @@ function DeleteUserDialog({ id }: { id: string }) {
                 >
                     <Button fullWidth variant="outlined" color="error"
                         onClick={() => {
-                            setChoice({ type: ChoiceActions.delete_user })
+                            setChoice({ type: ChoiceActions.make_admin })
                             mutate(id)
                         }}
                         disabled={isLoading}
                     >
                         {isLoading ? <CircularProgress /> :
-                            "Delete"}
+                            "Submit"}
                     </Button>
                     <Button fullWidth variant="contained"
                         disabled={isLoading}
                         color="warning" onClick={() => setChoice({ type: ChoiceActions.close })}>Cancel</Button>
                 </Stack >
             </Dialog >
+        </>
     )
 }
 
-export default DeleteUserDialog
+export default MakeAdminDialog
