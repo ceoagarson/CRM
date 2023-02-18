@@ -2,8 +2,8 @@
 `server`
 
 
-![Screenshot from 2023-02-15 12-07-18](https://user-images.githubusercont
-ent.com/45355788/218951629-0e24495a-138a-444a-8d02-cf476b363efc.png)
+
+
 
 `react client`
 
