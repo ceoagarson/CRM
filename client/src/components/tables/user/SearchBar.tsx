@@ -2,7 +2,7 @@ import { Search } from '@mui/icons-material';
 import { InputAdornment, Stack, TextField } from '@mui/material';
 import React from 'react';
 import { Row, useAsyncDebounce } from 'react-table';
-import { IUser } from '../../../types/user.type';
+import { IUser } from '../../../contexts/userContext';
 import { headColor } from '../../../utils/colors';
 
 

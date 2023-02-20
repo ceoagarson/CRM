@@ -2,7 +2,7 @@ import { Button, Menu, MenuItem } from '@mui/material'
 import { useContext, useEffect } from 'react'
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
-import { ChoiceActions, ChoiceContext } from '../../contexts/dialogContext';
+import { UserChoiceActions, ChoiceContext } from '../../contexts/dialogContext';
 import { MenuActions, MenuContext } from '../../contexts/menuContext';
 import { UserActions, UserContext } from '../../contexts/userContext';
 import { paths } from '../../Routes';
@@ -21,7 +21,7 @@ function UserMenu() {
     useEffect(() => {
         if (isSuccess) {
             dispatch({ type: UserActions.logout })
-            setChoice({ type: ChoiceActions.close })
+            setChoice({ type: UserChoiceActions.close })
             setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
             goto(paths.home)
         }
@@ -37,14 +37,14 @@ function UserMenu() {
             >
                 <MenuItem
                     onClick={() => {
-                        setChoice({ type: ChoiceActions.update_profile })
+                        setChoice({ type: UserChoiceActions.update_profile })
                         setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
                     }
                     }
                 >View Profile</MenuItem>
                 {user?.roles?.includes("owner") ?
                     <MenuItem onClick={() => {
-                        setChoice({ type: ChoiceActions.new_user })
+                        setChoice({ type: UserChoiceActions.new_user })
                         setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
 
                     }
@@ -53,7 +53,7 @@ function UserMenu() {
                     null
                 }
                 <MenuItem onClick={() => {
-                    setChoice({ type: ChoiceActions.update_password })
+                    setChoice({ type: UserChoiceActions.update_password })
                     setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
                 }}>
                     Update Password
@@ -62,7 +62,7 @@ function UserMenu() {
                     !user?.email_verified ?
 
                         <MenuItem onClick={() => {
-                            setChoice({ type: ChoiceActions.verify_email })
+                            setChoice({ type: UserChoiceActions.verify_email })
                             setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
                         }}>
                             Verify Email

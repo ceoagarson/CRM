@@ -7,6 +7,7 @@ import { User } from "../models/user.model"
 import { Asset } from "../types/asset.type"
 import { ILead, TLeadBody } from "../types/lead.type"
 import { uploadFileToCloudinary } from "../utils/uploadFile.util"
+
 // create lead any one can do in the organization
 export const CreateLead = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const { name, mobile, email } = req.body as TLeadBody
@@ -53,6 +54,13 @@ export const CreateLead = catchAsyncError(async (req: Request, res: Response, ne
         dp,
         organization: user.organization,
         lead_owner: user._id,
+        createdBy: user._id,
+        updatedBy: user._id,
+        open: {
+            status: true,
+            changedBy: user.username
+        }
+        
     }).save()
     res.status(200).json({ lead })
 })
@@ -77,13 +85,14 @@ export const UpdateLead = catchAsyncError(async (req: Request, res: Response, ne
     if ((String(mobile).trim().length !== 10))
         return res.status(403).json({ message: "please provide valid mobile number" });
     if (name !== lead.name)
-        if (await Lead.findOne({ name: name.toLowerCase().trim() }))
+        if (await Lead.findOne({ name: name.toLowerCase().trim(), organization: lead.organization?._id }))
             return res.status(403).json({ message: `${name} already exists` });
     if (email !== lead.email)
-        if (await Lead.findOne({ email: email.toLowerCase().trim() }))
+        if (await Lead.findOne({ email: email.toLowerCase().trim(), organization: lead.organization?._id }))
             return res.status(403).json({ message: `${email} already exists` });
-    if (mobile !== lead.mobile)
-        if (await Lead.findOne({ mobile: String(mobile).trim() }))
+            console.log(mobile,lead.mobile)
+    if (mobile !=lead.mobile)
+        if (await Lead.findOne({ mobile: String(mobile).trim(), organization: lead.organization?._id }))
             return res.status(403).json({ message: `${mobile} already exists` });
 
     let dp: Asset = {
@@ -112,6 +121,8 @@ export const UpdateLead = catchAsyncError(async (req: Request, res: Response, ne
         dp,
         organization: user.organization,
         lead_owner: user._id,
+        createdBy: user._id,
+        updatedBy: user._id
     }).then(() =>
         res.status(200).json({ message: "lead updated" })
     )
@@ -131,7 +142,7 @@ export const ToogleLeadStatus = catchAsyncError(async (req: Request, res: Respon
     await Lead.findByIdAndUpdate(lead._id, {
         open: {
             status: !lead.open?.status,
-            changedBy: user._id
+            changedBy: user.username
         }
     }).then(() => res.status(200).json({ message: "lead status updated" }))
 })
@@ -151,7 +162,7 @@ export const DeleteLead = catchAsyncError(async (req: Request, res: Response, ne
 export const GetLead = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "lead id not valid" })
-    let lead = await Lead.findById(id).populate('lead_owner').populate('organization').populate('activities')
+    let lead = await Lead.findById(id).populate('lead_owner').populate('organization').populate('activities').populate('createdBy').populate('updatedBy')
     if (!lead) {
         return res.status(404).json({ message: "lead not found" })
     }
@@ -159,7 +170,7 @@ export const GetLead = catchAsyncError(async (req: Request, res: Response, next:
 })
 // get all leads  anyone can do in the organization
 export const GetLeads = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    let leads = await Lead.find().populate('lead_owner').populate('organization').populate('activities')
+    let leads = await Lead.find({ organization: req.user?.organization }).populate('lead_owner').populate('organization').populate('activities').populate('createdBy').populate('updatedBy')
     if (!leads) {
         return res.status(404).json({ message: "leads not found" })
     }

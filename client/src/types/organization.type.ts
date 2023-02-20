@@ -1,5 +1,5 @@
+import { IUser } from "../contexts/userContext"
 import { Asset } from "./asset.type"
-import { IUser } from "./user.type"
 
 export interface BaseOrganization {
     organization_name: string

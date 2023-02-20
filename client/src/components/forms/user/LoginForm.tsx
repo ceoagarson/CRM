@@ -3,16 +3,15 @@ import { Alert, Button, CircularProgress, IconButton, InputAdornment, TextField 
 import { Stack } from '@mui/system';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
-import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
-import { UserActions, UserContext } from '../../../contexts/userContext';
+import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
+import { IUser, UserActions, UserContext } from '../../../contexts/userContext';
 import { paths } from '../../../Routes';
 import { Login } from '../../../services/UserServices';
 import { BackendError } from '../../../types';
-import { IUser } from '../../../types/user.type';
 
 function LoginForm() {
   const goto = useNavigate()
@@ -59,12 +58,11 @@ function LoginForm() {
     e.preventDefault()
   };
 
-
   useEffect(() => {
     if (isSuccess) {
       setTimeout(() => {
         dispatch({ type: UserActions.login, payload: data.data })
-        setChoice({ type: ChoiceActions.close })
+        setChoice({ type: UserChoiceActions.close })
         goto(paths.dashboard)
       }, 1000)
     }

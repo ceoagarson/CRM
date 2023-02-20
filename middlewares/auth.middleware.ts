@@ -61,7 +61,7 @@ export const sendUserToken = (res: Response, accessToken: string) => {
     res.cookie("accessToken", accessToken, {
         maxAge: Expiry * 60 * 1000,//1 minute by default
         httpOnly: true,
-        secure: true,
+        secure: false,
         sameSite: 'lax'
     });
 }

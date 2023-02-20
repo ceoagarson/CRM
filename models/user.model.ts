@@ -36,23 +36,45 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
     size: { type: String },
     format: { type: String },
   },
-  roles: [{ type: String, lowercase: true, trim: true }],
+  roles: [
+    { type: String, lowercase: true, trim: true }
+  ],
   email_verified: {
     type: Boolean,
     default: false,
   },
-  is_active: { type: Boolean, default: true },
-  last_login: { type: Date, default: new Date(Date.now()) },
-  createdAt: { type: Date, default: new Date(Date.now()) },
-  createdBy: {
+  is_active: {
+    type: Boolean, default: true
+  },
+  last_login: {
+    type: Date, default: new Date(Date.now())
+  },
+  created_at: {
+    type: Date, default: new Date(Date.now())
+  },
+  created_by: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
   },
-  resetPasswordToken: String,
-  resetPasswordExpire: { type: Date, default: undefined },
-  emailVerifyToken: String,
-  emailVerifyExpire: { type: Date, default: undefined },
+  updated_at: {
+    type: Date, default: new Date(Date.now())
+  },
+  updated_by: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  resetPasswordToken: { type: String },
+  resetPasswordExpire: { 
+    type: Date, 
+    default: undefined 
+  },
+  emailVerifyToken: { type: String },
+  emailVerifyExpire: { 
+    type: Date, 
+    default: undefined
+   },
 })
 
 // hashing passwords

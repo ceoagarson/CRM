@@ -4,11 +4,11 @@ import { useMutation } from 'react-query';
 import * as Yup from "yup"
 import { UpdateProfile } from '../../../services/UserServices';
 import { BackendError, Target } from '../../../types';
-import { IUser } from '../../../types/user.type';
-import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
+import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { useContext, useEffect } from 'react';
 import { AxiosResponse } from 'axios';
 import { queryClient } from '../../..';
+import { IUser } from '../../../contexts/userContext';
 
 
 type TformData = {
@@ -66,7 +66,7 @@ function UpdateProfileForm({ user }: { user: IUser }) {
   useEffect(() => {
     if (isSuccess) {
       setTimeout(() => {
-        setChoice({ type: ChoiceActions.close })
+        setChoice({ type: UserChoiceActions.close })
       }, 1000)
     }
   }, [isSuccess, setChoice])

@@ -50,6 +50,12 @@ export const CreateActivity = catchAsyncError(async (req: Request, res: Response
             id: id,
             type: resource_type
         },
+        createdBy: user._id,
+        updatedBy: user._id,
+        open: {
+            status: true,
+            changedBy: user.username
+        }
     }).save()
     Resource?.activities?.push(activity)
     await Resource?.save()
@@ -71,7 +77,8 @@ export const UpdateActivity = catchAsyncError(async (req: Request, res: Response
     await Activity.findByIdAndUpdate(id, {
         ...req.body,
         organization: user.organization,
-        activity_owner: user._id
+        activity_owner: user._id,
+        updatedBy: user._id,
     }).then(() => res.status(200).json({ message: "activity updated" }))
 })
 //toogle activity status only admin can do "open",/"close"
@@ -88,7 +95,7 @@ export const ToogleActivityStatus = catchAsyncError(async (req: Request, res: Re
     await Activity.findOneAndUpdate(activity._id, {
         open: {
             status: !activity.open?.status,
-            changedBy: user._id
+            changedBy: user.username
         }
     }).then(() => res.status(200).json({ message: "activity status updated" }))
 })

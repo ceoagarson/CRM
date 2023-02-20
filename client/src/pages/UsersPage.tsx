@@ -1,6 +1,7 @@
 import { AssuredWorkloadOutlined, AttributionOutlined, BlockOutlined, CancelOutlined, CheckCircleOutline, DeleteOutlined, EditOutlined, Visibility } from '@mui/icons-material'
-import { Avatar, IconButton, LinearProgress, Tooltip, Typography } from '@mui/material'
+import { Alert, Avatar, IconButton, LinearProgress, Tooltip, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
+import { AxiosResponse } from 'axios'
 import React, { useContext, useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
 import { Column } from 'react-table'
@@ -13,13 +14,13 @@ import RevokePermissionsDialog from '../components/dialogs/users/RevokePermissio
 import UnBlockUserDialog from '../components/dialogs/users/UnBlockUserDialog'
 import UpdateUserDialog from '../components/dialogs/users/UpdateUserDialog'
 import { UserTable } from '../components/tables/user/UserTable'
-import { ChoiceActions, ChoiceContext } from '../contexts/dialogContext'
-import { UserContext } from '../contexts/userContext'
+import { UserChoiceActions, ChoiceContext } from '../contexts/dialogContext'
+import { IUser, UserContext } from '../contexts/userContext'
 import { GetUsers } from '../services/UserServices'
-import { IUser } from '../types/user.type'
+import { BackendError } from '../types'
 
 export default function UsersPage() {
-    const { data, isSuccess, isLoading } = useQuery("users", GetUsers, {
+    const { data, isSuccess, isLoading, isError, error } = useQuery<AxiosResponse<IUser[]>, BackendError>("users", GetUsers, {
         refetchOnMount: true
     })
     const { user: loggedInUser } = useContext(UserContext)
@@ -52,7 +53,7 @@ export default function UsersPage() {
                         <Stack>
                             {
                                 roles?.includes("admin") ?
-                                    <Typography  sx={{ fontWeight: "bold" }}>{props.row.original.username}</Typography>
+                                    <Typography sx={{ fontWeight: "bold" }}>{props.row.original.username}</Typography>
                                     :
                                     <Typography >{props.row.original.username}</Typography>
                             }
@@ -159,7 +160,7 @@ export default function UsersPage() {
             // actions
             {
                 Header: "Allowed Actions",
-                accessor: "email_verified",//already used so use it for display actions
+                accessor: "actions",//already used so use it for display actions
                 disableSortBy: true,
                 Cell: (props) => {
                     let CellUser = props.row.original
@@ -169,7 +170,7 @@ export default function UsersPage() {
                             <Tooltip title="view">
                                 <IconButton size="medium"
                                     onClick={() => {
-                                        setChoice({ type: ChoiceActions.view_profile })
+                                        setChoice({ type: UserChoiceActions.view_profile })
                                         setUser(props.row.original)
                                     }}>
                                     <Visibility />
@@ -181,7 +182,7 @@ export default function UsersPage() {
                                     <Tooltip title="delete">
                                         <IconButton size="medium"
                                             onClick={() => {
-                                                setChoice({ type: ChoiceActions.delete_user })
+                                                setChoice({ type: UserChoiceActions.delete_user })
                                                 setRowId(props.row.original._id)
                                             }} color="error">
                                             <DeleteOutlined />
@@ -195,7 +196,7 @@ export default function UsersPage() {
                                     <Tooltip title="edit">
                                         <IconButton size="medium"
                                             onClick={() => {
-                                                setChoice({ type: ChoiceActions.update_user })
+                                                setChoice({ type: UserChoiceActions.update_user })
                                                 setUser(props.row.original)
                                             }}>
                                             <EditOutlined />
@@ -205,7 +206,7 @@ export default function UsersPage() {
                                     < Tooltip title="Revoke Permissions "><IconButton size="medium"
                                         onClick={() => {
 
-                                            setChoice({ type: ChoiceActions.revoke_permission })
+                                            setChoice({ type: UserChoiceActions.revoke_permission })
                                             setRowId(props.row.original._id)
                                         }}>
                                         <CancelOutlined />
@@ -216,7 +217,7 @@ export default function UsersPage() {
                                         <IconButton size="medium"
                                             onClick={() => {
 
-                                                setChoice({ type: ChoiceActions.make_owner })
+                                                setChoice({ type: UserChoiceActions.make_owner })
                                                 setRowId(props.row.original._id)
                                             }}>
                                             <AssuredWorkloadOutlined />
@@ -225,7 +226,7 @@ export default function UsersPage() {
                                     {/* make admin */}
                                     <Tooltip title="make admin"><IconButton size="medium"
                                         onClick={() => {
-                                            setChoice({ type: ChoiceActions.make_admin })
+                                            setChoice({ type: UserChoiceActions.make_admin })
                                             setRowId(props.row.original._id)
                                         }}>
                                         <AttributionOutlined />
@@ -237,7 +238,7 @@ export default function UsersPage() {
                                         CellUser?.is_active ?
                                             <Tooltip title="block"><IconButton size="medium"
                                                 onClick={() => {
-                                                    setChoice({ type: ChoiceActions.block_user })
+                                                    setChoice({ type: UserChoiceActions.block_user })
                                                     setRowId(props.row.original._id)
                                                 }}
                                             >
@@ -248,7 +249,7 @@ export default function UsersPage() {
                                             < Tooltip title="unblock">
                                                 <IconButton size="medium"
                                                     onClick={() => {
-                                                        setChoice({ type: ChoiceActions.unblock_user })
+                                                        setChoice({ type: UserChoiceActions.unblock_user })
                                                         setRowId(props.row.original._id)
                                                     }}>
                                                     <CheckCircleOutline />
@@ -272,11 +273,14 @@ export default function UsersPage() {
     }, [isSuccess, data])
     return (
         <>
-            {
-                data && data.data.length > 0 ?
-                    < UserTable data={MemoData} columns={MemoColumns} />
-                    : null
+            < UserTable data={MemoData} columns={MemoColumns} />
+
+            {isError ?
+                <Alert color="error">{error?.response.data.message}</Alert>
+                : null
             }
+
+
             {
                 isLoading ?
                     <LinearProgress color="success" />

@@ -2,28 +2,34 @@ import { Types } from "mongoose";
 import { Asset } from "./asset.type";
 import { IOrganization } from "./organization.type";
 
-export interface BaseIUser {
+type BaseUser = {
+    _id: Types.ObjectId,
     username: string,
     password: string,
     email: string,
-    organization: IOrganization
+    organization: IOrganization | Types.ObjectId,
+    dp: Asset,
+    roles: Types.Array<string>
 }
-export interface IUser extends BaseIUser {
-    _id?: Types.ObjectId,
-    dp?: Asset,
-    roles?: Types.Array<string>,
-    email_verified?: Boolean,
-    last_login?: Date,
-    createdAt?: Date,
-    createdBy?: IUser | IUser['_id'],
+type Status = {
+    email_verified: Boolean,
+    last_login: Date,
+    created_at: Date,
+    created_by: IUser | Types.ObjectId,
+    updated_at: Date,
+    updated_by: IUser | Types.ObjectId
     is_active: Boolean,
-    resetPasswordToken?: string,
-    resetPasswordExpire?: Date,
-    emailVerifyToken?: string,
-    emailVerifyExpire?: Date,
+}
+type Tokens = {
+    resetPasswordToken: string,
+    resetPasswordExpire: Date,
+    emailVerifyToken: string,
+    emailVerifyExpire: Date,
 }
 
-export interface IUserMethods {
+export type IUser = BaseUser & Status & Tokens
+
+export type IUserMethods = {
     getAccessToken: () => string,
     comparePassword: (password: string) => boolean,
     getResetPasswordToken: () => string,

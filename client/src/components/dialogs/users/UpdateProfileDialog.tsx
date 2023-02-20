@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogTitle, Button, Typography, Avatar} from '@mui/material'
 import { Stack } from '@mui/system'
 import { useContext,  useState } from 'react'
-import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
+import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { UserContext } from '../../../contexts/userContext'
 import UpdateProfileForm from '../../forms/user/UpdateProfileForm'
 
@@ -10,8 +10,8 @@ function UpdateProfileDialog() {
     const { choice, setChoice } = useContext(ChoiceContext)
     const {user}=useContext(UserContext)
     return (
-        <Dialog open={choice === ChoiceActions.update_profile ? true : false}
-            onClose={() => setChoice({ type: ChoiceActions.close })}
+        <Dialog open={choice === UserChoiceActions.update_profile ? true : false}
+            onClose={() => setChoice({ type: UserChoiceActions.close })}
         >
             {isEditing ?
                 <DialogTitle textAlign="center">
@@ -71,7 +71,7 @@ function UpdateProfileDialog() {
                             fullWidth
                             onClick={() => {
                                 setIsEditing(true)
-                                setChoice({ type: ChoiceActions.update_profile })
+                                setChoice({ type: UserChoiceActions.update_profile })
                             }}
                         >
                             Edit Profile
@@ -85,7 +85,7 @@ function UpdateProfileDialog() {
                     fullWidth
                     onClick={() => {
                         setIsEditing(false)
-                        setChoice({ type: ChoiceActions.close })
+                        setChoice({ type: UserChoiceActions.close })
                     }}
                 >
                     Cancel

@@ -6,7 +6,7 @@ import { Avatar, Box, Button, IconButton, Tooltip, Typography } from '@mui/mater
 import { useContext} from 'react';
 import {  UserContext } from '../contexts/userContext';
 import { AccountCircle } from '@mui/icons-material';
-import { ChoiceActions, ChoiceContext } from '../contexts/dialogContext';
+import { UserChoiceActions, ChoiceContext } from '../contexts/dialogContext';
 import LoginDialog from '../components/dialogs/users/LoginDialog';
 import ResetPasswordSendMailDialog from '../components/dialogs/users/ResetPasswordSendMailDialog';
 import SignUpDialog from '../components/dialogs/users/SignUpDialog';
@@ -107,7 +107,7 @@ export default function DashboardLayout() {
                   variant="outlined"
                   startIcon={<AccountCircle />}
                   sx={{ color: "white" }}
-                  onClick={() => setChoice({ type: ChoiceActions.login })}
+                  onClick={() => setChoice({ type: UserChoiceActions.login })}
                 >
                   Login
                 </Button>

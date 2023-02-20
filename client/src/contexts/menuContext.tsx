@@ -1,7 +1,8 @@
 import React, { useReducer } from "react"
 
 type Menu = "user_menu" | "home_menu"
-    | "dashboard_menu" |null|"user_table_menu"
+    | "dashboard_menu" | null | "user_table_menu" | "lead_table_menu" | "account_table_menu" | "opportunity_table_menu"
+
 type MenuState = {
     type: Menu
     anchorEl: HTMLElement | null
@@ -19,7 +20,10 @@ export enum MenuActions {
     home_menu = "home_menu",
     dashboard_menu = "dashboard_menu",
     close = "close",
-    user_table_menu="user_table_menu"
+    user_table_menu = "user_table_menu",
+    lead_table_menu = "lead_table_menu",
+    account_table_menu = "account_table_menu",
+    opportunity_table_menu = "opportunity_table_menu"
 }
 type Action = {
     type: MenuActions,
@@ -32,6 +36,9 @@ function reducer(state: MenuState, action: Action) {
         case MenuActions.user_menu: return action.payload
         case MenuActions.dashboard_menu: return action.payload
         case MenuActions.user_table_menu: return action.payload
+        case MenuActions.lead_table_menu: return action.payload
+        case MenuActions.account_table_menu: return action.payload
+        case MenuActions.opportunity_table_menu: return action.payload
         case MenuActions.close: return action.payload
         default: return state
     }
@@ -48,8 +55,8 @@ export const MenuContext = React.createContext<Context>(
     }
 )
 // provider
-export function MenuProvider(props: { children: JSX.Element | JSX.Element[] }) {
-    const [menu, setMenu] = useReducer(reducer,initialState)
+export function MenuProvider(props: { children: JSX.Element }) {
+    const [menu, setMenu] = useReducer(reducer, initialState)
     return (
         <MenuContext.Provider value={{ menu, setMenu }}>
             {props.children}

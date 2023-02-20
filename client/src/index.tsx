@@ -8,6 +8,7 @@ import { BrowserRouter } from "react-router-dom";
 import { ChoiceProvider } from "./contexts/dialogContext";
 import { MenuProvider } from "./contexts/menuContext";
 
+
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -25,9 +26,7 @@ root.render(
       <UserProvider>
         <ChoiceProvider>
           <MenuProvider>
-            <React.StrictMode>
-              <App />
-            </React.StrictMode>
+            <App />
           </MenuProvider>
         </ChoiceProvider>
       </UserProvider>

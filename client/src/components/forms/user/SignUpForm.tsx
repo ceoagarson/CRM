@@ -6,12 +6,11 @@ import { useEffect, useContext, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from "yup"
-import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
-import { UserActions, UserContext } from '../../../contexts/userContext';
+import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
+import { IUser, UserActions, UserContext } from '../../../contexts/userContext';
 import { paths } from '../../../Routes';
 import { Signup } from '../../../services/UserServices';
 import { BackendError, Target } from '../../../types';
-import { IUser } from '../../../types/user.type';
 
 type TformData = {
   organization_name: string,
@@ -107,7 +106,7 @@ function OwnerSignUpForm() {
     if (isSuccess) {
       setTimeout(() => {
         dispatch({ type: UserActions.login, payload: data.data.owner })
-        setChoice({ type: ChoiceActions.close })
+        setChoice({ type: UserChoiceActions.close })
         goto(paths.dashboard)
       }, 1000)
     }

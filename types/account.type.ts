@@ -1,31 +1,39 @@
 import { Types } from "mongoose";
 import { IActivity } from "./activity.type";
 import { Asset } from "./asset.type";
+import { IOrganization } from "./organization.type";
+import { IUser } from "./user.type";
 
-export interface BaseAccount {
+type BaseAccount = {
+    _id: Types.ObjectId,
     name: string,
+    customer_name: string,
+    customer_designination?: string,
     mobile: number
     email: string
+    city: string,
+    state: string,
+    address: string,
+    description: string,
 }
-export interface IAccount extends BaseAccount {
-    _id: Types.ObjectId,
-    city?: string,
-    state?: string,
-    description?: string,
-    account_type?: "easy" | "tricky" | "hard"
-    account_owner?: Types.ObjectId,
-    organization?: Types.ObjectId
-    dp?: Asset
-    customer_name: string,
-    address?: string,
-    country?: string
-    alternate_mobile?: number,
-    alternate_email?: string,
-    customer_designination?: string,
-    account_source?: string,
-    remarks?: string,
-    open?: {status:Boolean,changedBy:Types.ObjectId},
-    createdOn?: Date,
-    activities?: IActivity[]
+type AdditionalData = {
+    alternate_mobile: number,
+    alternate_email: string,
+    probability: "easy" | "medium" | "hard"
+    account_owner: IUser | Types.ObjectId,
+    organization: IOrganization | Types.ObjectId
+    dp: Asset
+    account_source: string,
+    remarks: string,
+    country: string
 }
+type Status = {
+    status: Boolean,
+    status_changed_by: IUser | Types.ObjectId
+    created_at: Date,
+    updated_at: Date,
+    updated_by: IUser | Types.ObjectId
+    activities: IActivity[] | Types.ObjectId[]
+}
+export type IAccount = BaseAccount & AdditionalData & Status
 export type TAccountBody = Request['body'] & IAccount;

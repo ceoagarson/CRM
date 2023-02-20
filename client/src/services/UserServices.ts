@@ -1,14 +1,4 @@
-import { IUser } from "../types/user.type";
-import axios from "axios";
-
-let BaseURL = "/api/v1/"
-if (process.env.REACT_APP_SERVER_URL)
-    BaseURL = process.env.REACT_APP_SERVER_URL + BaseURL
-
-const apiClient = axios.create({
-    baseURL: BaseURL,
-    withCredentials: true
-})
+import { apiClient } from "../utils/AxiosInterceptor";
 
 // login
 export const Login = async (
@@ -70,8 +60,7 @@ export const RevokeUser = async (id: string) => {
   return await apiClient.patch(`owner/revoke/user/${id}`)
 }
 // get profile
-export const GetProfile = async ()
-  : Promise<{ data: IUser }> => {
+export const GetProfile = async ()=> {
   return await apiClient.get("profile");
 };
 // update profile

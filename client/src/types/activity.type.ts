@@ -1,8 +1,8 @@
+import { IUser } from "../contexts/userContext";
 import { IOrganization } from "./organization.type";
-import { IUser } from "./user.type";
 
 export interface IActivity {
-    _id:string,
+    _id: string,
     type: "telephonic" | "visited",
     description: string,
     remarks: string,
@@ -12,6 +12,8 @@ export interface IActivity {
         id: string,
         type: "lead" | "account" | "opportunity"
     },
-    open: { status: Boolean, changedBy: IUser },
-    createdOn?: Date
+    open?: { status: Boolean, changedBy: IUser['username'] },
+    createdAt?: Date,
+    createdBy?: IUser,
+    updatedBy?: IUser,
 }

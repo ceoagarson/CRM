@@ -3,7 +3,7 @@ import { AxiosResponse } from 'axios';
 import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { queryClient } from '../../..';
-import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
+import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { BlockUser } from '../../../services/UserServices';
 import { BackendError } from '../../../types';
 
@@ -22,13 +22,13 @@ function BlockUserDialog({ id }: { id: string }) {
     useEffect(() => {
         if (isSuccess)
             setTimeout(() => {
-                setChoice({ type: ChoiceActions.close })
+                setChoice({ type: UserChoiceActions.close })
             }, 1000)
     }, [setChoice, isSuccess])
 
     return (
-        <Dialog open={choice === ChoiceActions.block_user ? true : false}
-            onClose={() => setChoice({ type: ChoiceActions.close })}
+        <Dialog open={choice === UserChoiceActions.block_user ? true : false}
+            onClose={() => setChoice({ type: UserChoiceActions.close })}
         >
             <DialogTitle textAlign="center">
                 Block User
@@ -60,7 +60,7 @@ function BlockUserDialog({ id }: { id: string }) {
             >
                 <Button fullWidth variant="outlined" color="error"
                     onClick={() => {
-                        setChoice({ type: ChoiceActions.block_user })
+                        setChoice({ type: UserChoiceActions.block_user })
                         mutate(id)
                     }}
                     disabled={isLoading}
@@ -70,7 +70,7 @@ function BlockUserDialog({ id }: { id: string }) {
                 </Button>
                 <Button fullWidth variant="contained"
                     disabled={isLoading}
-                     onClick={() => setChoice({ type: ChoiceActions.close })}>Cancel</Button>
+                     onClick={() => setChoice({ type: UserChoiceActions.close })}>Cancel</Button>
             </Stack >
         </Dialog >
     )

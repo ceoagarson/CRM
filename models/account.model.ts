@@ -1,8 +1,6 @@
 import mongoose, { Types } from "mongoose";
 import { IAccount } from "../types/account.type";
 
-
-
 const accountSchema = new mongoose.Schema<IAccount, mongoose.Model<IAccount>>({
     name: {
         type: String,
@@ -15,7 +13,7 @@ const accountSchema = new mongoose.Schema<IAccount, mongoose.Model<IAccount>>({
         type: String,
         trim: true,
         required: true,
-        index:true,
+        index: true,
         lowercase: true
     },
     mobile: {
@@ -40,12 +38,16 @@ const accountSchema = new mongoose.Schema<IAccount, mongoose.Model<IAccount>>({
         trim: true,
         lowercase: true
     },
-    // easy,tricky,hard
-    account_type: {
+    // easy,medium,hard
+    probability: {
         type: String,
         trim: true,
-        lowercase: true,
-        default:""
+        lowercase: true
+    },
+    country: {
+        type: String,
+        trim: true,
+        lowercase: true
     },
     account_owner: {
         type: mongoose.Schema.Types.ObjectId,
@@ -79,6 +81,7 @@ const accountSchema = new mongoose.Schema<IAccount, mongoose.Model<IAccount>>({
     alternate_mobile: {
         type: Number,
         trim: true,
+        default: 0
     },
 
     alternate_email: {
@@ -92,7 +95,6 @@ const accountSchema = new mongoose.Schema<IAccount, mongoose.Model<IAccount>>({
         trim: true,
         lowercase: true,
     },
-
     account_source: {
         type: String,
         trim: true,
@@ -103,19 +105,28 @@ const accountSchema = new mongoose.Schema<IAccount, mongoose.Model<IAccount>>({
         trim: true,
         lowercase: true,
     },
-    open: {
-        status: {
-            type: Boolean,
-            default: true
-        },
-        changedBy: {
-            type: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'User'
-            }
-        },
+
+    status: {
+        type: Boolean,
+        default: true
     },
-    createdOn: { type: Date, default: new Date(Date.now()) },
+    status_changed_by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    updated_by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    created_at: {
+        type: Date,
+        default: new Date(Date.now())
+    },
+    updated_at: {
+        type: Date,
+        default: new Date(Date.now())
+    },
     activities: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Activity',

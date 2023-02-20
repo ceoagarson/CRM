@@ -1,15 +1,15 @@
 import { Dialog, DialogContent, DialogTitle, Button, DialogActions, Typography, Avatar, Box } from '@mui/material'
 import { Stack } from '@mui/system'
 import { useContext } from 'react'
-import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
-import { IUser } from '../../../types/user.type'
+import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
+import { IUser } from '../../../contexts/userContext'
 
 
 function ProfileDialog({ profile }: { profile: IUser }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     return (
-        <Dialog open={choice === ChoiceActions.view_profile ? true : false}
-            onClose={() => setChoice({ type: ChoiceActions.close })}
+        <Dialog open={choice === UserChoiceActions.view_profile ? true : false}
+            onClose={() => setChoice({ type: UserChoiceActions.close })}
         >
             <DialogTitle textAlign="center">
                 User Profile
@@ -53,7 +53,7 @@ function ProfileDialog({ profile }: { profile: IUser }) {
                     color="warning"
                     fullWidth
                     onClick={() => {
-                        setChoice({ type: ChoiceActions.close })
+                        setChoice({ type: UserChoiceActions.close })
                     }}
                 >
                     Close

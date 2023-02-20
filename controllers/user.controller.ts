@@ -58,24 +58,25 @@ export const SignUp = catchAsyncError(
         let organization = new Organization({
             organization_name, organization_email
         })
-
-
         let owner = new User({
             username, password, email, roles: ["owner", "admin"],
             dp
         })
-        owner.organization = organization
+        owner.organization = organization._id
         owner.createdBy = owner._id
-        organization.owners = [owner]
+        owner.updatedBy = owner._id
+        organization.owners = [owner._id]
+        organization.createdBy = owner._id
+        organization.updatedBy = owner._id
         organization = await organization.save()
-        sendUserToken(res, owner.getAccessToken())
         owner.last_login = new Date(Date.now())
+        sendUserToken(res, owner.getAccessToken())
         await owner.save()
         res.status(201).json({ owner, organization })
     })
 
 
-// create normal user  owner and admin both can do
+// create normal user 
 export const NewUser = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     if (!req.user)
         return res.status(403).json({ message: "please login to access this resource" })
@@ -119,8 +120,9 @@ export const NewUser = catchAsyncError(async (req: Request, res: Response, next:
         email,
         password,
         dp,
-        organization: req.user?.organization,
-        createdBy: req.user,
+        organization: req.user?.organization._id,
+        createdBy: req.user._id,
+        updatedBy: req.user._id,
         roles: ["user"]
     }).save()
     res.status(201).json(user)
@@ -179,8 +181,11 @@ export const UpdateUser = catchAsyncError(async (req: Request, res: Response, ne
             .then(() => { return res.status(200).json({ message: "user updated" }) })
     }
     await User.findByIdAndUpdate(user.id, {
-        email, username,
+        email, 
+        username,
         dp,
+        updatedBy:req.user?._id,
+        createdBy:req.user?._id
     }).then(() => res.status(200).json({ message: "user updated" }))
 })
 // delete user only organization admin
@@ -203,7 +208,7 @@ export const DeleteUser = catchAsyncError(async (req: Request, res: Response, ne
 
 // get profile 
 export const GetProfile = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    const profile = await User.findById(req.user?._id).populate('organization').populate("createdBy")
+    const profile = await User.findById(req.user?._id).populate('organization').populate("createdBy").populate("updatedBy")
     if (profile)
         return res.status(200).json(profile)
     res.status(403).json({ message: "please login to access the profile" })
@@ -213,7 +218,7 @@ export const GetProfile = catchAsyncError(async (req: Request, res: Response, ne
 export const GetUser = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     if (!isMongoId(req.params.id))
         return res.status(400).json({ message: "user id not valid" })
-    const user = await User.findById(req.params.id).populate('organization').populate("createdBy")
+    const user = await User.findById(req.params.id).populate('organization').populate("createdBy").populate("updatedBy")
     if (!user)
         return res.status(404).json({ message: "user not found" })
     res.status(200).json(user)
@@ -222,7 +227,7 @@ export const GetUser = catchAsyncError(async (req: Request, res: Response, next:
 // get all users only admin can do
 export const GetUsers =
     catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-        const users = await User.find({ organization: req.user?.organization }).populate('organization').populate("createdBy")
+        const users = await User.find({ organization: req.user?.organization }).populate('organization').populate("createdBy").populate("updatedBy")
         res.status(200).json(users)
     })
 // login 
@@ -235,11 +240,11 @@ export const Login = catchAsyncError(async (req: Request, res: Response, next: N
 
     let user = await User.findOne({
         username: String(username).toLowerCase().trim(),
-    }).select("+password").populate("organization").populate("createdBy");
+    }).select("+password").populate("organization").populate("createdBy").populate("updatedBy")
     if (!user) {
         user = await User.findOne({
             email: String(username).toLowerCase().trim(),
-        }).select("+password").populate("organization").populate("createdBy");
+        }).select("+password").populate("organization").populate("createdBy").populate("updatedBy")
         if (user)
             if (!user.email_verified)
                 return res.status(403).json({ message: "please verify email id before login" })
@@ -303,13 +308,15 @@ export const UpdateProfile = catchAsyncError(async (req: Request, res: Response,
         await User.findByIdAndUpdate(user.id, {
             email,
             dp,
-            email_verified: false
+            email_verified: false,
+            updatedBy:user.id
         })
             .then(() => { return res.status(200).json({ message: "user updated" }) })
     }
     await User.findByIdAndUpdate(user.id, {
         email,
-        dp
+        dp,
+        updatedBy:user._id
     })
         .then(() => res.status(200).json({ message: "profile updated" }))
 })
@@ -330,6 +337,7 @@ export const updatePassword = catchAsyncError(async (req: Request, res: Response
     if (!isPasswordMatched)
         return res.status(401).json({ message: "Old password is incorrect" })
     user.password = newPassword;
+    user.updatedBy=req.user?._id
     await user.save();
     res.status(200).json({ message: "password updated" });
 });
@@ -344,6 +352,7 @@ export const MakeAdmin = catchAsyncError(async (req: Request, res: Response, nex
     if (user.roles?.includes("admin"))
         return res.status(404).json({ message: "already a admin" })
     user.roles?.push("admin")
+    user.updatedBy=req.user?._id
     await user.save();
     res.status(200).json({ message: "admin role provided successfully", user });
 })
@@ -361,6 +370,7 @@ export const MakeOwner = catchAsyncError(async (req: Request, res: Response, nex
     if (user.roles?.includes("owner"))
         return res.status(404).json({ message: "already a owner" })
     user.roles?.push("owner")
+    user.updatedBy=req.user?._id
     await user.save();
     res.status(200).json({ message: "new owner created successfully" });
 })
@@ -381,6 +391,7 @@ export const BlockUser = catchAsyncError(async (req: Request, res: Response, nex
         return res.status(403).json({ message: "not allowed contact crm administrator" })
 
     user.is_active = false
+    user.updatedBy=req.user?._id
     await user.save();
     res.status(200).json({ message: "user blocked successfully" });
 })
@@ -396,6 +407,7 @@ export const UnBlockUser = catchAsyncError(async (req: Request, res: Response, n
     if (user.is_active)
         return res.status(404).json({ message: "user is already active" })
     user.is_active = true
+    user.updatedBy=req.user?._id
     await user.save();
     res.status(200).json({ message: "user unblocked successfully" });
 })
@@ -411,7 +423,9 @@ export const RevokePermissions = catchAsyncError(async (req: Request, res: Respo
     }
     if (String(user.createdBy) === String(user._id))
         return res.status(403).json({ message: "not allowed contact crm administrator" })
-    await User.findByIdAndUpdate(id, { roles: ["user"] })
+    await User.findByIdAndUpdate(id, { roles: ["user"],
+    updatedBy:req.user?._id
+})
     res.status(200).json({ message: "user permissions revoked successfully" });
 })
 

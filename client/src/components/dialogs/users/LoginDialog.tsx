@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogTitle, Button, DialogActions, Typography } from '@mui/material'
 import { useContext } from 'react';
-import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
+import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import LoginForm from '../../forms/user/LoginForm';
 
 
@@ -8,8 +8,8 @@ function LoginDialog() {
   const { choice, setChoice } = useContext(ChoiceContext)
   return (
     <>
-      <Dialog open={choice === ChoiceActions.login ? true : false}
-        onClose={() => setChoice({ type: ChoiceActions.close })}
+      <Dialog open={choice === UserChoiceActions.login ? true : false}
+        onClose={() => setChoice({ type: UserChoiceActions.close })}
       >
         <DialogTitle textAlign="center">Login Form</DialogTitle>
         <DialogContent>
@@ -26,8 +26,8 @@ function LoginDialog() {
               justifyContent: "center"
             }}
           >
-            <Button onClick={() => setChoice({ type: ChoiceActions.signup })} >Register</Button>{" or "}
-            <Button onClick={() => setChoice({ type: ChoiceActions.reset_password_mail })}> Forgot Password</Button>
+            <Button onClick={() => setChoice({ type: UserChoiceActions.signup })} >Register</Button>{" or "}
+            <Button onClick={() => setChoice({ type: UserChoiceActions.reset_password_mail })}> Forgot Password</Button>
           </Typography >
         </DialogActions>
       </Dialog >

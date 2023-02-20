@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material';
 import { useContext } from 'react';
 import { AccountCircle } from '@mui/icons-material';
-import { ChoiceActions, ChoiceContext } from '../contexts/dialogContext';
+import { UserChoiceActions, ChoiceContext } from '../contexts/dialogContext';
 import LoginDialog from '../components/dialogs/users/LoginDialog';
 import ResetPasswordSendMailDialog from '../components/dialogs/users/ResetPasswordSendMailDialog';
 import SignUpDialog from '../components/dialogs/users/SignUpDialog';
@@ -85,7 +85,7 @@ export default function HomeLayout() {
                 variant="outlined"
                 startIcon={<AccountCircle />}
                 sx={{ color: "white" }}
-                onClick={() => setChoice({ type: ChoiceActions.login })}
+                onClick={() => setChoice({ type: UserChoiceActions.login })}
               >
                 Login
               </Button>

@@ -1,12 +1,12 @@
 import { Dialog, DialogContent, DialogTitle,  DialogActions, Typography } from '@mui/material';
 import { useContext} from 'react';
-import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
+import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import NewUserForm from '../../forms/user/NewUserForm';
 
 function NewUserDialog() {
   const { choice, setChoice } = useContext(ChoiceContext)
   return (
-    <Dialog open={choice === ChoiceActions.new_user ? true : false} onClose={() => setChoice({ type: ChoiceActions.close })}
+    <Dialog open={choice === UserChoiceActions.new_user ? true : false} onClose={() => setChoice({ type: UserChoiceActions.close })}
       scroll="paper"
     >
       <DialogTitle textAlign={"center"}>New User Form</DialogTitle>

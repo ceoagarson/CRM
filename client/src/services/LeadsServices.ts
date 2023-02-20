@@ -1,7 +1,21 @@
-import axios from "axios";
-const base_url = "api/v1/";
+import { apiClient } from "../utils/AxiosInterceptor"
 
-//get user profile
-export const fetchProfileService = async () => {
-  return await axios.get(base_url + "profile");
-};
+export const GetLead = async (id: string) => {
+  return await apiClient.get(`leads/${id}`)
+}
+export const DeleteLead = async (id: string) => {
+  return await apiClient.delete(`leads/${id}`)
+}
+export const GetLeads = async () => {
+  return await apiClient.get(`leads`)
+}
+export const NewLead = async (body: FormData) => {
+  return await apiClient.post("leads",body)
+}
+export const UpdateLead = async ({ id, body }: { id: string, body: FormData }) => {
+  return await apiClient.put(`leads/${id}`,body)
+}
+export const ToogleLeadStatus = async (id: string) => {
+  return await apiClient.patch(`leads/${id}`)
+
+}

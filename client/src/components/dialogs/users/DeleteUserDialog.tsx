@@ -3,7 +3,7 @@ import { AxiosResponse } from 'axios';
 import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { queryClient } from '../../..';
-import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
+import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { DeleteUser } from '../../../services/UserServices';
 import { BackendError } from '../../../types';
 
@@ -23,13 +23,13 @@ function DeleteUserDialog({ id }: { id: string }) {
     useEffect(() => {
         if (isSuccess)
             setTimeout(() => {
-                setChoice({ type: ChoiceActions.close })
+                setChoice({ type: UserChoiceActions.close })
             }, 1000)
     }, [setChoice, isSuccess])
 
     return (
-            <Dialog open={choice === ChoiceActions.delete_user ? true : false}
-                onClose={() => setChoice({ type: ChoiceActions.close })}
+            <Dialog open={choice === UserChoiceActions.delete_user ? true : false}
+                onClose={() => setChoice({ type: UserChoiceActions.close })}
             >
                 <DialogTitle textAlign="center">
                     Delete User
@@ -61,7 +61,7 @@ function DeleteUserDialog({ id }: { id: string }) {
                 >
                     <Button fullWidth variant="outlined" color="error"
                         onClick={() => {
-                            setChoice({ type: ChoiceActions.delete_user })
+                            setChoice({ type: UserChoiceActions.delete_user })
                             mutate(id)
                         }}
                         disabled={isLoading}
@@ -71,7 +71,7 @@ function DeleteUserDialog({ id }: { id: string }) {
                     </Button>
                     <Button fullWidth variant="contained"
                         disabled={isLoading}
-                        color="warning" onClick={() => setChoice({ type: ChoiceActions.close })}>Cancel</Button>
+                        color="warning" onClick={() => setChoice({ type: UserChoiceActions.close })}>Cancel</Button>
                 </Stack >
             </Dialog >
     )

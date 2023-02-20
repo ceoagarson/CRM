@@ -7,7 +7,7 @@ import TableMenu from './TableMenu';
 import { Stack } from '@mui/system';
 import { color1, color2, colorHover, headColor } from '../../../utils/colors';
 import { ArrowDropDown, ArrowDropUp } from '@mui/icons-material';
-import { IUser } from '../../../types/user.type';
+import { IUser } from '../../../contexts/userContext';
 
 interface Props {
     data: IUser[],
@@ -99,7 +99,7 @@ export function UserTable({ data, columns }: Props) {
                     height: '70vh'
                 }}>
                 <Table
-                    sx={{ minWidth: "1200px" }}
+                    sx={{ minWidth: "1920px" }}
                     size="small"
                     {...getTableProps()}>
                     <TableHead

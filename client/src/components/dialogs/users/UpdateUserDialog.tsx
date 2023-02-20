@@ -1,14 +1,14 @@
-import { Dialog, DialogContent, DialogTitle,  DialogActions, Typography, CircularProgress } from '@mui/material'
-import { useContext} from 'react'
-import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
-import { IUser } from '../../../types/user.type'
+import { Dialog, DialogContent, DialogTitle, DialogActions, Typography, CircularProgress, Button } from '@mui/material'
+import { useContext } from 'react'
+import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
+import { IUser } from '../../../contexts/userContext'
 import UpdateUserForm from '../../forms/user/UpdateUserForm'
 
 function UpdateUserDialog({ user }: { user: IUser }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     return (
-        <Dialog open={choice === ChoiceActions.update_user ? true : false}
-            onClose={() => setChoice({ type: ChoiceActions.close })}
+        <Dialog open={choice === UserChoiceActions.update_user ? true : false}
+            onClose={() => setChoice({ type: UserChoiceActions.close })}
         >
             <DialogTitle textAlign="center">Update User Form</DialogTitle>
             <DialogContent>
@@ -18,17 +18,7 @@ function UpdateUserDialog({ user }: { user: IUser }) {
                 }
             </DialogContent>
             <DialogActions>
-                <Typography
-                    variant="button"
-                    component="p"
-                    sx={{
-                        display: "flex",
-                        width: "100%",
-                        alignItems: "center",
-                        justifyContent: "center"
-                    }}
-                >
-                </Typography >
+                <Button fullWidth onClick={() => setChoice({ type: UserChoiceActions.close })}>Cancel</Button>
             </DialogActions>
         </Dialog>
     )

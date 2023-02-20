@@ -3,7 +3,7 @@ import { AxiosResponse } from 'axios';
 import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { queryClient } from '../../..';
-import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
+import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { MakeOwner } from '../../../services/UserServices';
 import { BackendError } from '../../../types';
 
@@ -23,13 +23,13 @@ function MakeOwnerDialog({ id }: { id: string }) {
     useEffect(() => {
         if (isSuccess)
             setTimeout(() => {
-                setChoice({ type: ChoiceActions.close })
+                setChoice({ type: UserChoiceActions.close })
             }, 1000)
     }, [setChoice, isSuccess])
 
     return (
-        <Dialog open={choice === ChoiceActions.make_owner ? true : false}
-            onClose={() => setChoice({ type: ChoiceActions.close })}
+        <Dialog open={choice === UserChoiceActions.make_owner ? true : false}
+            onClose={() => setChoice({ type: UserChoiceActions.close })}
         >
             <DialogTitle textAlign="center">
                 Make Owner
@@ -61,7 +61,7 @@ function MakeOwnerDialog({ id }: { id: string }) {
             >
                 <Button fullWidth variant="outlined" color="error"
                     onClick={() => {
-                        setChoice({ type: ChoiceActions.make_owner })
+                        setChoice({ type: UserChoiceActions.make_owner })
                         mutate(id)
                     }}
                     disabled={isLoading}
@@ -71,7 +71,7 @@ function MakeOwnerDialog({ id }: { id: string }) {
                 </Button>
                 <Button fullWidth variant="contained"
                     disabled={isLoading}
-                     onClick={() => setChoice({ type: ChoiceActions.close })}>Cancel</Button>
+                     onClick={() => setChoice({ type: UserChoiceActions.close })}>Cancel</Button>
             </Stack >
         </Dialog >
 

@@ -1,21 +1,18 @@
+import { IUser } from "../contexts/userContext";
 import { IActivity } from "./activity.type";
 import { Asset } from "./asset.type";
-import { IOrganization } from "./organization.type";
-import { IUser } from "./user.type";
 
-export interface BaseAccount {
+export interface IAccount{
+    _id: string,
     name: string,
     mobile: number
     email: string
-}
-export interface IAccount extends BaseAccount {
-    _id:string,
     city?: string,
     state?: string,
     description?: string,
-    account_type?: "easy" | "tricky" | "hard"
-    account_owner?:IUser,
-    organization?: IOrganization
+    account_type?: "easy" | "medium" | "hard"
+    account_owner?: IUser,
+    organization?: IUser
     dp?: Asset
     customer_name: string,
     address?: string,
@@ -25,7 +22,10 @@ export interface IAccount extends BaseAccount {
     customer_designination?: string,
     account_source?: string,
     remarks?: string,
-    open?: {status:Boolean,changedBy:IUser},
-    createdOn?: Date,
-    activities?: IActivity[]
+    open?: { status: Boolean, changedBy: IUser['username'] },
+    createdAt?: Date,
+    createdBy?: IUser,
+    updatedBy?: IUser,
+    activities?: IActivity[],
+    actions?: any
 }

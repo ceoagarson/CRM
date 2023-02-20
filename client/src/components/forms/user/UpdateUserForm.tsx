@@ -5,10 +5,10 @@ import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
 import { queryClient } from '../../..';
-import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
+import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
+import { IUser } from '../../../contexts/userContext';
 import { UpdateUser } from '../../../services/UserServices';
 import { BackendError, Target } from '../../../types';
-import { IUser } from '../../../types/user.type';
 
 type TformData = {
   username: string,
@@ -77,7 +77,7 @@ function UpdateUserForm({ user }: Props) {
   useEffect(() => {
     if (isSuccess) {
       setTimeout(() => {
-        setChoice({ type: ChoiceActions.close })
+        setChoice({ type: UserChoiceActions.close })
       }, 1000)
     }
   }, [isSuccess, setChoice])

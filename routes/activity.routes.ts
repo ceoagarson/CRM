@@ -6,13 +6,13 @@ const router = express.Router()
 
 router.route("/activities")
     .get(isAuthenticatedUser, GetActivities)
-router.route("/activity/:id")
+router.route("/activities/:id")
     .post(isAuthenticatedUser, CreateActivity)
     .get(isAuthenticatedUser, GetActivity)
     .put(isAuthenticatedUser, UpdateActivity)
     .patch(isAuthenticatedUser, ToogleActivityStatus)
     .delete(isAuthenticatedUser,isAdmin, DeleteActivity)
-router.get("/activity/filter", isAuthenticatedUser, FilterActivities)
-router.get("/activity/search", isAuthenticatedUser, FuzzySearchActivities)
+router.get("/activities/filter", isAuthenticatedUser, FilterActivities)
+router.get("/activities/search", isAuthenticatedUser, FuzzySearchActivities)
 
 export default router

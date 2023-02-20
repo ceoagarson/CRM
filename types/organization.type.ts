@@ -2,22 +2,35 @@ import { Types } from "mongoose"
 import { Asset } from "./asset.type"
 import { IUser } from "./user.type"
 
-export interface BaseOrganization {
+type BaseOrganization = {
+    _id: Types.ObjectId,
     organization_name: string,
-    organization_email: string
+    organization_email: string,
+    mobile: number,
+}
+type AdditionalData = {
+    organization_dp: Asset,
+    owners: IUser[] | Types.ObjectId[],
+    alternate_mobile: number,
+    alternate_email: string,
+    country: string,
+    address: string
+}
+type Status = {
+    email_verified: Boolean,
+    created_at: Date,
+    created_by: IUser | Types.ObjectId,
+    updated_at: Date,
+    updated_by: IUser | Types.ObjectId
+    is_active: Boolean,
+}
+type Tokens = {
+    emailVerifyToken: string,
+    emailVerifyExpire: Date
 }
 
-export interface IOrganization extends BaseOrganization {
-    _id?: Types.ObjectId,
-    organization_dp?: Asset,
-    owners:IUser[],
-    email_verified?: Boolean,
-    createdAt?: Date,
-    is_active?: Boolean
-    emailVerifyToken?: string,
-    emailVerifyExpire?: Date
-}
-export interface IOrganizationMethods {
+export type IOrganizationMethods = {
     getEmailVerifyToken: () => string
 }
+export type IOrganization = BaseOrganization & AdditionalData & Status & Tokens
 export type TOrganizationBody = Request['body'] & IOrganization;

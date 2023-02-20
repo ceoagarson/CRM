@@ -1,31 +1,40 @@
 import { Types } from "mongoose";
 import { IActivity } from "./activity.type";
 import { Asset } from "./asset.type";
+import { IOrganization } from "./organization.type";
+import { IUser } from "./user.type";
 
-export interface BaseOpportunity {
+type BaseOpportunity = {
+    _id: Types.ObjectId,
     name: string,
+    customer_name: string,
+    customer_designination?: string,
     mobile: number
     email: string
+    city: string,
+    state: string,
+    address: string,
+    description: string,
 }
-export interface IOpportunity extends BaseOpportunity {
-    _id: Types.ObjectId,
-    city?: string,
-    state?: string,
-    description?: string,
-    opportunity_type?: "easy" | "tricky" | "hard"
-    opportunity_owner?: Types.ObjectId,
-    organization?: Types.ObjectId
-    dp?: Asset
-    customer_name: string,
-    address?: string,
-    country?: string
-    alternate_mobile?: number,
-    alternate_email?: string,
-    customer_designination?: string,
-    opportunity_source?: string,
-    remarks?: string,
-    open?: {status:Boolean,changedBy:Types.ObjectId},
-    createdOn?: Date,
-    activities?: IActivity[]
+
+type AdditionalData = {
+    alternate_mobile: number,
+    alternate_email: string,
+    probability: "easy" | "medium" | "hard"
+    opportunity_owner: IUser | Types.ObjectId,
+    organization: IOrganization | Types.ObjectId
+    dp: Asset
+    opportunity_source: string,
+    remarks: string,
+    country: string
 }
+type Status = {
+    status: Boolean,
+    status_changed_by: IUser | Types.ObjectId
+    created_at: Date,
+    updated_at: Date,
+    updated_by: IUser | Types.ObjectId
+    activities: IActivity[] | Types.ObjectId[]
+}
+export type IOpportunity = BaseOpportunity & AdditionalData & Status
 export type TOpportunityBody = Request['body'] & IOpportunity;

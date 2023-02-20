@@ -1,13 +1,54 @@
 import React, { useReducer } from "react"
 
-type ChoiceState = "signup" | "login" | "reset_password_mail" | null | "new_user" | "update_user" | "update_profile" | "view_profile" | "update_password" | "reset_password" | "verify_email" | "change_role" | "delete_user" |
+// choices
+type UserChoices = "signup" | "login" | "reset_password_mail" | null | "new_user" | "update_user" | "update_profile" | "view_profile" | "update_password" | "reset_password" | "verify_email" | "change_role" | "delete_user" |
   "block_user" | "unblock_user" | "make_admin" | "revoke_permission" | "make_owner"
 
+type LeadChoices = "create_lead" | "update_lead" | "open_close_lead" | "close" | "view_lead"
+
+type AccountChoices = "create_account" | "update_account" | "open_close_account" | "close" | "view_account"
+
+type OpportunityChoices = "create_opportunity" | "update_opportunity" | "open_close_opportunity" | "close" | "view_opportunity"
+
+type ActivityChoices = "create_activity" | "update_activity" | "open_close_activity" | "close" | "view_activity" | "delete_activity"
+
 // initial state
+type ChoiceState = UserChoices | LeadChoices | AccountChoices | OpportunityChoices | ActivityChoices
 const initialState: ChoiceState = null
 
-// action
-export enum ChoiceActions {
+// actions
+export enum LeadChoiceActions {
+  create_lead = "create_lead",
+  update_lead = "update_lead",
+  open_close_lead = "open_close_lead",
+  view_lead = "view_lead",
+  close = "close",
+}
+export enum AccountChoiceActions {
+  create_account = "create_account",
+  update_account = "update_account",
+  open_close_account = "open_close_account",
+  view_account = "view_account",
+  close = "close"
+}
+export enum OpportunityChoiceActions {
+  create_opportunity = "create_opportunity",
+  update_opportunity = "update_opportunity",
+  open_close_opportunity = "open_close_opportunity",
+  close = "close",
+  view_opportunity = "view_opportunity"
+}
+export enum ActivityChoiceActions {
+  create_activity = "create_activity",
+  update_activity = "update_activity",
+  open_close_activity = "open_close_activity",
+  close = "close",
+  view_activity = "view_activity",
+  delete_activity = "delete_activity"
+
+}
+
+export enum UserChoiceActions {
   signup = "signup",
   login = "login",
   reset_password_mail = "reset_password_mail",
@@ -26,30 +67,61 @@ export enum ChoiceActions {
   make_owner = "make_owner",
   delete_user = "delete_user"
 }
+
 type Action = {
-  type: ChoiceActions
+  type: UserChoiceActions | LeadChoiceActions | AccountChoiceActions | OpportunityChoiceActions | ActivityChoiceActions
 }
+
 // reducer
 function reducer(state: ChoiceState, action: Action) {
   let type = action.type
   switch (type) {
-    case ChoiceActions.login: return type
-    case ChoiceActions.signup: return type
-    case ChoiceActions.reset_password_mail: return type
-    case ChoiceActions.new_user: return type
-    case ChoiceActions.update_user: return type
-    case ChoiceActions.update_profile: return type
-    case ChoiceActions.view_profile: return type
-    case ChoiceActions.update_password: return type
-    case ChoiceActions.reset_password: return type
-    case ChoiceActions.verify_email: return type
-    case ChoiceActions.block_user: return type
-    case ChoiceActions.unblock_user: return type
-    case ChoiceActions.make_admin: return type
-    case ChoiceActions.make_owner: return type
-    case ChoiceActions.revoke_permission: return type
-    case ChoiceActions.delete_user: return type
-    case ChoiceActions.close: return null
+    // user dialogs choices
+    case UserChoiceActions.login: return type
+    case UserChoiceActions.signup: return type
+    case UserChoiceActions.reset_password_mail: return type
+    case UserChoiceActions.new_user: return type
+    case UserChoiceActions.update_user: return type
+    case UserChoiceActions.update_profile: return type
+    case UserChoiceActions.view_profile: return type
+    case UserChoiceActions.update_password: return type
+    case UserChoiceActions.reset_password: return type
+    case UserChoiceActions.verify_email: return type
+    case UserChoiceActions.block_user: return type
+    case UserChoiceActions.unblock_user: return type
+    case UserChoiceActions.make_admin: return type
+    case UserChoiceActions.make_owner: return type
+    case UserChoiceActions.revoke_permission: return type
+    case UserChoiceActions.delete_user: return type
+    case UserChoiceActions.close: return null
+    // lead dialog choices
+    case LeadChoiceActions.create_lead: return type
+    case LeadChoiceActions.update_lead: return type
+    case LeadChoiceActions.open_close_lead: return type
+    case LeadChoiceActions.view_lead: return type
+    case LeadChoiceActions.close: return null
+
+    // account dialog choices
+    case AccountChoiceActions.create_account: return type
+    case AccountChoiceActions.update_account: return type
+    case AccountChoiceActions.open_close_account: return type
+    case AccountChoiceActions.view_account: return type
+    case AccountChoiceActions.close: return null
+
+    // opportunity dialog choices
+    case OpportunityChoiceActions.create_opportunity: return type
+    case OpportunityChoiceActions.update_opportunity: return type
+    case OpportunityChoiceActions.open_close_opportunity: return type
+    case OpportunityChoiceActions.view_opportunity: return type
+    case OpportunityChoiceActions.close: return null
+
+    // activity dialog choices
+    case ActivityChoiceActions.create_activity: return type
+    case ActivityChoiceActions.update_activity: return type
+    case ActivityChoiceActions.open_close_activity: return type
+    case ActivityChoiceActions.view_activity: return type
+    case ActivityChoiceActions.delete_activity: return type
+    case ActivityChoiceActions.close: return null
     default: return state
   }
 }
@@ -65,7 +137,7 @@ export const ChoiceContext = React.createContext<Context>(
   }
 )
 // provider
-export function ChoiceProvider(props: { children: JSX.Element | JSX.Element[] }) {
+export function ChoiceProvider(props: { children: JSX.Element }) {
   const [choice, setChoice] = useReducer(reducer, initialState)
   return (
     <ChoiceContext.Provider value={{ choice, setChoice }}>

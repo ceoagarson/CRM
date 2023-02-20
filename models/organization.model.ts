@@ -17,6 +17,12 @@ const OrganizationSchema = new mongoose.Schema<IOrganization, mongoose.Model<IOr
         trim: true,
         lowercase: true
     },
+    mobile: {
+        type: Number,
+        trim: true,
+        index: true,
+        required: true,
+    },
     organization_dp: {
         type: {
             public_id: "",
@@ -25,19 +31,60 @@ const OrganizationSchema = new mongoose.Schema<IOrganization, mongoose.Model<IOr
             format: ""
         }
     },
+    address: {
+        type: String,
+        trim: true,
+        lowercase: true
+    },
+
+    alternate_mobile: {
+        type: Number,
+        trim: true,
+        default: 0
+    },
+
+    alternate_email: {
+        type: String,
+        trim: true,
+        lowercase: true,
+
+    },
+    country: {
+        type: String,
+        trim: true,
+        lowercase: true
+    },
     email_verified: {
         type: Boolean,
         default: false,
     },
-    owners:[
+    owners: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Owner',
+            ref: 'IUser',
             required: true
         }
     ],
-    is_active: { type: Boolean, default: true },
-    createdAt: { type: Date, default: new Date(Date.now()) },
+    is_active: {
+        type: Boolean,
+        default: true
+    },
+    created_at: {
+        type: Date, default: new Date(Date.now())
+    },
+    created_by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    updated_at: {
+        type: Date, default: new Date(Date.now())
+    },
+    updated_by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     emailVerifyToken: String,
     emailVerifyExpire: { type: Date, default: undefined },
 })

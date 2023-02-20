@@ -31,59 +31,61 @@ function AppRoutes() {
   const { user } = useContext(UserContext)
   return (
     <Routes >
-      {/* public routes1 [homelayout] */}
-      <Route path={paths.home} element={<HomeLayout />}>
-        <Route index element={<HomePage />} />
-        <Route path={paths.about} element={<h1>about page</h1>} />
-      </Route>
+      {
+        !user ?
+          <Route>
+            < Route path={paths.home} element={<HomeLayout />}>
+              <Route index element={<HomePage />} />
+              <Route path={paths.about} element={<h1>about page</h1>} />
+            </Route>
+            <Route path={paths.reset_password} element={<ResetPasswordDialog />} />
+            <Route path={paths.verify_email} element={<EmailVerifyPage />} />
+          </Route>
+          :
+          // protected routes1 [user related]
+          < Route path={paths.dashboard} element={<DashboardLayout />
+          }>
+            <Route
+              index element={
+                <Suspense fallback={<LinearProgress />}>
+                  <DashBoardPage />
+                </Suspense>
 
-      {/* public routes2[email related]  */}
-      <Route path={paths.reset_password} element={<ResetPasswordDialog />} />
-      <Route path={paths.verify_email} element={<EmailVerifyPage />} />
+              }
+            />
+            <Route
+              path={paths.users} element={
+                <Suspense fallback={<LinearProgress />}><UsersPage />
+                </Suspense>
 
-      {/* protected routes1 [user related] */}
-      (< Route path={paths.dashboard} element={
-        user ? <DashboardLayout /> : null
-      }>
-        <Route
-          index element={
-            <Suspense fallback={<LinearProgress />}>
-              <DashBoardPage />
-            </Suspense>
+              }
+            />
+            <Route
+              path={paths.leads} element={
+                <Suspense fallback={<LinearProgress />}><LeadsPage /></Suspense>
 
-          }
-        />
-        <Route
-          path={paths.users} element={
-            <Suspense fallback={<LinearProgress />}><UsersPage />
-            </Suspense>
+              }
+            />
+            <Route
+              path={paths.activities} element={
+                <Suspense fallback={<LinearProgress />}><ActivityPage /></Suspense>
+              }
+            />
+            <Route
+              path={paths.opportunities} element={
+                <Suspense fallback={<LinearProgress />}><OpportunityPage /></Suspense>
+              }
+            />
+            <Route
+              path={paths.accounts} element={
+                <Suspense fallback={<LinearProgress />}><AccountsPage /></Suspense>
+              }
+            />
+          </Route>
 
-          }
-        />
-        <Route
-          path={paths.leads} element={
-            <Suspense fallback={<LinearProgress />}><LeadsPage /></Suspense>
-
-          }
-        />
-        <Route
-          path={paths.activities} element={
-            <Suspense fallback={<LinearProgress />}><ActivityPage /></Suspense>
-          }
-        />
-        <Route
-          path={paths.opportunities} element={
-            <Suspense fallback={<LinearProgress />}><OpportunityPage /></Suspense>
-          }
-        />
-        <Route
-          path={paths.accounts} element={
-            <Suspense fallback={<LinearProgress />}><AccountsPage /></Suspense>
-          }
-        />
-      </Route>
-      )
+      }
       {/* not found */}
+
       <Route path="*" element={<Navigate to={paths.home} />} />
     </Routes >
   )

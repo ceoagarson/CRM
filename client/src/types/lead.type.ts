@@ -1,21 +1,18 @@
+import { IUser } from "../contexts/userContext";
 import { IActivity } from "./activity.type";
 import { Asset } from "./asset.type";
-import { IOrganization } from "./organization.type";
-import { IUser } from "./user.type";
 
-export interface BaseLead {
+export interface ILead{
+    _id: string,
     name: string,
     mobile: number
     email: string
-}
-export interface ILead extends BaseLead {
-    _id: string,
     city?: string,
     state?: string,
     description?: string,
-    lead_type?: "easy" | "tricky" | "hard"
+    lead_type?: "easy" | "medium" | "hard"
     lead_owner?: IUser,
-    organization?: IOrganization
+    organization?: IUser
     dp?: Asset
     customer_name: string,
     address?: string,
@@ -25,7 +22,10 @@ export interface ILead extends BaseLead {
     customer_designination?: string,
     lead_source?: string,
     remarks?: string,
-    open?: {status:Boolean,changedBy:IUser},
-    createdOn?: Date,
-    activities?: IActivity[]
+    open?: { status: Boolean, changedBy: IUser['username'] },
+    createdAt?: Date,
+    createdBy?: IUser,
+    updatedBy?: IUser,
+    activities?: IActivity[],
+    actions?: any
 }

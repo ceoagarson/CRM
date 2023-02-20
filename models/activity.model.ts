@@ -7,7 +7,7 @@ const ActivitySchema = new mongoose.Schema<IActivity, mongoose.Model<IActivity>>
         required: true,
         trim: true,
         lowercase: true
-        ,index: true
+        , index: true
     },
     description: {
         type: String,
@@ -32,21 +32,30 @@ const ActivitySchema = new mongoose.Schema<IActivity, mongoose.Model<IActivity>>
         required: true
     },
     resource: {
-        id: { type: mongoose.Schema.Types.ObjectId },
-        type: { type: String,required:true }
+        type: mongoose.Schema.Types.ObjectId
     },
-    open: {
-        status: {
-            type: Boolean,
-            default: true
-        },
-        changedBy: {
-            type: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'User'
-            }
-        },
+    resource_type: {
+        type: String, required: true
     },
-    createdOn: { type: Date, default: new Date(Date.now()) }
+    status: {
+        type: Boolean,
+        default: true
+    },
+    status_changed_by: {
+        type: String,
+    },
+    updated_by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    created_at: {
+        type: Date,
+        default: new Date(Date.now())
+    },
+    updated_at: {
+        type: Date,
+        default: new Date(Date.now())
+    },
 })
 export const Activity = mongoose.model<IActivity, mongoose.Model<IActivity>>("Activity", ActivitySchema)

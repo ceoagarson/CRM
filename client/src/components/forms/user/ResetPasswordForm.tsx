@@ -7,7 +7,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
-import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
+import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { paths } from '../../../Routes';
 import { ResetPassword } from '../../../services/UserServices';
 import { BackendError } from '../../../types';
@@ -60,7 +60,7 @@ function ResetPasswordForm({ token }: { token: string }) {
   useEffect(() => {
     if (isSuccess) {
       setTimeout(() => {
-        setChoice({ type: ChoiceActions.close })
+        setChoice({ type: UserChoiceActions.close })
         goto(paths.dashboard)
       }, 1000)
     }

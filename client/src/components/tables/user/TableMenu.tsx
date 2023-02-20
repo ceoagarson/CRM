@@ -4,8 +4,8 @@ import { ColumnInstance, Row } from 'react-table';
 import ToogleColumns from './ToogleColumns';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../utils/ExportToExcel';
-import { IUser } from '../../../types/user.type';
 import { MenuActions, MenuContext } from '../../../contexts/menuContext';
+import { IUser } from '../../../contexts/userContext';
 
 type Props = {
     columns: ColumnInstance<IUser>[],

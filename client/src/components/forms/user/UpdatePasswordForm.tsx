@@ -6,7 +6,7 @@ import { useFormik } from 'formik';
 import React, { useContext, useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from 'yup';
-import { ChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
+import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { UpdatePassword } from '../../../services/UserServices';
 import { BackendError } from '../../../types';
 
@@ -62,7 +62,7 @@ function UpdatePasswordForm() {
     useEffect(() => {
         if (isSuccess) {
             setTimeout(() => {
-                setChoice({ type: ChoiceActions.close })
+                setChoice({ type: UserChoiceActions.close })
             }, 1000)
         }
     }, [setChoice, isSuccess,])

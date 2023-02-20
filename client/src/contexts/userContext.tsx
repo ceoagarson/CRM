@@ -1,6 +1,21 @@
 import React, { createContext, useReducer } from "react";
-import { IUser } from "../types/user.type";
+import { Asset } from "../types/asset.type";
+import { IOrganization } from "../types/organization.type";
 
+export interface IUser {
+  _id?: string,
+  username: string,
+  dp?: Asset,
+  email?: string,
+  organization?: IOrganization
+  roles?: string[],
+  email_verified?: Boolean,
+  last_login?: Date,
+  createdAt?: Date,
+  createdBy?: IUser,
+  is_active?: Boolean
+  actions?: any
+}
 // initial state
 type UserState = IUser | undefined;
 const IntitialState: UserState = undefined;
@@ -37,7 +52,7 @@ export const UserContext = createContext<Context>({
 
 
 // user provider
-export function UserProvider(props: { children: JSX.Element[] | JSX.Element }) {
+export function UserProvider(props: { children: JSX.Element }) {
   const [user, dispatch] = useReducer(reducer, IntitialState);
   return (
     <UserContext.Provider value={{ user, dispatch }}>
