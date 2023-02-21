@@ -25,6 +25,12 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
     trim: true,
     select: false,
   },
+  mobile: {
+    type: Number,
+    trim: true,
+    index: true,
+    required: true,
+  },
   organization: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Organization',
@@ -37,20 +43,35 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
     format: { type: String },
   },
   roles: [
-    { type: String, lowercase: true, trim: true }
+    {
+      type: String,
+      lowercase: true,
+      trim: true,
+      required: true
+    }
   ],
   email_verified: {
     type: Boolean,
     default: false,
+    required: true
   },
   is_active: {
-    type: Boolean, default: true
+    type: Boolean,
+    default: true,
+    required: true,
+
   },
   last_login: {
-    type: Date, default: new Date(Date.now())
+    type: Date,
+    default: new Date(Date.now()),
+    required: true,
+
   },
   created_at: {
-    type: Date, default: new Date(Date.now())
+    type: Date,
+    default: new Date(Date.now()),
+    required: true,
+
   },
   created_by: {
     type: mongoose.Schema.Types.ObjectId,
@@ -58,23 +79,32 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
     required: true
   },
   updated_at: {
-    type: Date, default: new Date(Date.now())
+    type: Date,
+    default: new Date(Date.now()),
+    required: true,
+
   },
   updated_by: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
   },
-  resetPasswordToken: { type: String },
-  resetPasswordExpire: { 
-    type: Date, 
-    default: undefined 
+  resetPasswordToken: {
+    type: String,
+    default:null
   },
-  emailVerifyToken: { type: String },
-  emailVerifyExpire: { 
-    type: Date, 
-    default: undefined
-   },
+  resetPasswordExpire: {
+    type: Date,
+    default: null
+  },
+  emailVerifyToken: {
+    type: String,
+    default:null
+  },
+  emailVerifyExpire: {
+    type: Date,
+    default: null
+  },
 })
 
 // hashing passwords

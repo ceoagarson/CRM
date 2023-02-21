@@ -26,6 +26,8 @@ const opportunitySchema = new mongoose.Schema<IOpportunity, mongoose.Model<IOppo
         type: String,
         trim: true,
         lowercase: true,
+        required: true,
+
     },
 
     city: {
@@ -81,7 +83,6 @@ const opportunitySchema = new mongoose.Schema<IOpportunity, mongoose.Model<IOppo
     alternate_mobile: {
         type: Number,
         trim: true,
-        default: 0
     },
 
     alternate_email: {
@@ -108,11 +109,13 @@ const opportunitySchema = new mongoose.Schema<IOpportunity, mongoose.Model<IOppo
 
     status: {
         type: Boolean,
-        default: true
+        default: true,
+        required: true,
     },
     status_changed_by: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required: true
     },
     updated_by: {
         type: mongoose.Schema.Types.ObjectId,
@@ -121,11 +124,15 @@ const opportunitySchema = new mongoose.Schema<IOpportunity, mongoose.Model<IOppo
     },
     created_at: {
         type: Date,
-        default: new Date(Date.now())
+        default: new Date(Date.now()),
+        required: true,
+
     },
     updated_at: {
         type: Date,
-        default: new Date(Date.now())
+        default: new Date(Date.now()),
+        required: true,
+
     },
     activities: [{
         type: mongoose.Schema.Types.ObjectId,

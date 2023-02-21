@@ -10,17 +10,15 @@ import { destroyFile } from "../utils/destroyFile.util";
 import { TUserBody } from '../types/user.type';
 import { sendEmail } from '../utils/sendEmail.util';
 import { Organization } from '../models/organization.model';
+import { IOrganization } from '../types/organization.type';
 
 
 // Create Owner account
 export const SignUp = catchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
-        let { username, email, password, organization_name, organization_email } = req.body as TUserBody & {
-            organization_name: string,
-            organization_email: string
-        }
+        let { username, email, password, organization_name, organization_email, organization_mobile, mobile } = req.body as TUserBody & IOrganization
         // validations
-        if (!username || !email || !password || !organization_name || !organization_email)
+        if (!username || !email || !password || !organization_name || !organization_email || !organization_mobile || !mobile)
             return res.status(400).json({ message: "fill all the required fields" });
         if (!isEmail(email))
             return res.status(400).json({ message: "please provide valid email" });
@@ -28,13 +26,18 @@ export const SignUp = catchAsyncError(
             return res.status(400).json({ message: "please provide valid organization email" });
         if (await User.findOne({ username: username.toLowerCase().trim() }))
             return res.status(403).json({ message: `${username} already exists` });
-
         if (await User.findOne({ email: email.toLowerCase().trim() }))
             return res.status(403).json({ message: `${email} already exists` });
+        if (await User.findOne({ mobile: String(mobile).toLowerCase().trim() }))
+            return res.status(403).json({ message: `${mobile} already exists` });
+
+        if (await Organization.findOne({ organization_mobile: String(organization_mobile).toLowerCase().trim() }))
+            return res.status(403).json({ message: `${organization_mobile} already exists` });
         if (await Organization.findOne({ organization_name: organization_name.toLowerCase().trim() }))
             return res.status(403).json({ message: `${organization_name} already exists` });
         if (await Organization.findOne({ organization_email: organization_email.toLowerCase().trim() }))
             return res.status(403).json({ message: `${organization_email} already exists` });
+
         let dp: Asset = {
             public_id: "",
             url: "",
@@ -56,22 +59,27 @@ export const SignUp = catchAsyncError(
             }
         }
         let organization = new Organization({
-            organization_name, organization_email
+            organization_name,
+            organization_email,
+            organization_mobile
         })
         let owner = new User({
-            username, password, email, roles: ["owner", "admin"],
+            username,
+            password,
+            email,
+            mobile,
+            roles: ["owner", "admin"],
             dp
         })
         owner.organization = organization._id
-        owner.createdBy = owner._id
-        owner.updatedBy = owner._id
+        owner.created_by = owner._id
+        owner.updated_by = owner._id
         organization.owners = [owner._id]
-        organization.createdBy = owner._id
-        organization.updatedBy = owner._id
-        organization = await organization.save()
-        owner.last_login = new Date(Date.now())
+        organization.created_by = owner._id
+        organization.updated_by = owner._id
         sendUserToken(res, owner.getAccessToken())
         await owner.save()
+        organization = await organization.save()
         res.status(201).json({ owner, organization })
     })
 
@@ -80,9 +88,9 @@ export const SignUp = catchAsyncError(
 export const NewUser = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     if (!req.user)
         return res.status(403).json({ message: "please login to access this resource" })
-    let { username, email, password } = req.body as TUserBody;
+    let { username, email, mobile, password } = req.body as TUserBody;
     // validations
-    if (!username || !email || !password)
+    if (!username || !email || !password || !mobile)
         return res.status(400).json({ message: "fill all the required fields" });
     if (!isEmail(email))
         return res.status(400).json({ message: "please provide valid email" });
@@ -93,6 +101,8 @@ export const NewUser = catchAsyncError(async (req: Request, res: Response, next:
 
     if (await User.findOne({ email: email.toLowerCase().trim() }))
         return res.status(403).json({ message: `${email} already exists` });
+    if (await User.findOne({ mobile: String(mobile).toLowerCase().trim() }))
+        return res.status(403).json({ message: `${mobile} already exists` });
 
     let dp: Asset = {
         public_id: "",
@@ -119,10 +129,11 @@ export const NewUser = catchAsyncError(async (req: Request, res: Response, next:
         username,
         email,
         password,
+        mobile,
         dp,
         organization: req.user?.organization._id,
-        createdBy: req.user._id,
-        updatedBy: req.user._id,
+        created_by: req.user._id,
+        updated_by: req.user._id,
         roles: ["user"]
     }).save()
     res.status(201).json(user)
@@ -136,21 +147,26 @@ export const UpdateUser = catchAsyncError(async (req: Request, res: Response, ne
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }
-    let { email, username } = req.body as TUserBody;
-    if (!username || !email)
+    let { email, username, mobile } = req.body as TUserBody;
+    if (!username || !email || !mobile)
         return res.status(400).json({ message: "fill all the required fields" });
     //check username
     if (username != user.username) {
         if (await User.findOne({ username: String(username).toLowerCase().trim() }))
             return res.status(403).json({ message: `${username} already exists` });
     }
+    // check mobile
+    if (mobile != user.mobile) {
+        if (await User.findOne({ mobile: String(mobile).toLowerCase().trim() }))
+            return res.status(403).json({ message: `${mobile} already exists` });
+    }
     //check email
     if (email != user.email) {
         if (await User.findOne({ email: String(email).toLowerCase().trim() }))
             return res.status(403).json({ message: `${email} already exists` });
     }
-    // check first owner
-    if (!(String(user.createdBy) === String(user._id) && String(req.user?._id) === String(user._id) && user.roles?.includes("owner")))
+    // check first owner to update himself
+    if ((String(user.created_by) === String(user._id) && user.roles?.includes("owner")))
         return res.status(403).json({ message: "not allowed contact crm administrator" })
 
     //handle dp
@@ -181,11 +197,12 @@ export const UpdateUser = catchAsyncError(async (req: Request, res: Response, ne
             .then(() => { return res.status(200).json({ message: "user updated" }) })
     }
     await User.findByIdAndUpdate(user.id, {
-        email, 
+        email,
         username,
+        mobile,
         dp,
-        updatedBy:req.user?._id,
-        createdBy:req.user?._id
+        updated_by: req.user?._id,
+        updated_at: new Date(Date.now()),
     }).then(() => res.status(200).json({ message: "user updated" }))
 })
 // delete user only organization admin
@@ -197,7 +214,7 @@ export const DeleteUser = catchAsyncError(async (req: Request, res: Response, ne
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }
-    if (String(user.createdBy) === String(user._id))
+    if (String(user.created_by) === String(user._id))
         return res.status(403).json({ message: "not allowed contact crm administrator" })
 
     await destroyFile(user.dp?.public_id || "");
@@ -208,7 +225,7 @@ export const DeleteUser = catchAsyncError(async (req: Request, res: Response, ne
 
 // get profile 
 export const GetProfile = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    const profile = await User.findById(req.user?._id).populate('organization').populate("createdBy").populate("updatedBy")
+    const profile = await User.findById(req.user?._id).populate('organization').populate("created_by").populate("updated_by")
     if (profile)
         return res.status(200).json(profile)
     res.status(403).json({ message: "please login to access the profile" })
@@ -218,7 +235,7 @@ export const GetProfile = catchAsyncError(async (req: Request, res: Response, ne
 export const GetUser = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     if (!isMongoId(req.params.id))
         return res.status(400).json({ message: "user id not valid" })
-    const user = await User.findById(req.params.id).populate('organization').populate("createdBy").populate("updatedBy")
+    const user = await User.findById(req.params.id).populate('organization').populate("created_by").populate("updated_by")
     if (!user)
         return res.status(404).json({ message: "user not found" })
     res.status(200).json(user)
@@ -227,7 +244,7 @@ export const GetUser = catchAsyncError(async (req: Request, res: Response, next:
 // get all users only admin can do
 export const GetUsers =
     catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-        const users = await User.find({ organization: req.user?.organization }).populate('organization').populate("createdBy").populate("updatedBy")
+        const users = await User.find({ organization: req.user?.organization }).populate('organization').populate("created_by").populate("updated_by")
         res.status(200).json(users)
     })
 // login 
@@ -240,11 +257,11 @@ export const Login = catchAsyncError(async (req: Request, res: Response, next: N
 
     let user = await User.findOne({
         username: String(username).toLowerCase().trim(),
-    }).select("+password").populate("organization").populate("createdBy").populate("updatedBy")
+    }).select("+password").populate("organization").populate("created_by").populate("updated_by")
     if (!user) {
         user = await User.findOne({
             email: String(username).toLowerCase().trim(),
-        }).select("+password").populate("organization").populate("createdBy").populate("updatedBy")
+        }).select("+password").populate("organization").populate("created_by").populate("updated_by")
         if (user)
             if (!user.email_verified)
                 return res.status(403).json({ message: "please verify email id before login" })
@@ -275,14 +292,19 @@ export const UpdateProfile = catchAsyncError(async (req: Request, res: Response,
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }
-    let { email } = req.body as TUserBody;
-    if (!email) {
+    let { email, mobile } = req.body as TUserBody;
+    if (!email || !mobile) {
         return res.status(400).json({ message: "please fill required fields" })
     }
+
     //check email
     if (email != user.email) {
         if (await User.findOne({ email: String(email).toLowerCase().trim() }))
             return res.status(403).json({ message: `${email} already exists` });
+    }
+    if (mobile != user.mobile) {
+        if (await User.findOne({ mobile: String(mobile).toLowerCase().trim() }))
+            return res.status(403).json({ message: `${mobile} already exists` });
     }
 
     //handle dp
@@ -308,15 +330,17 @@ export const UpdateProfile = catchAsyncError(async (req: Request, res: Response,
         await User.findByIdAndUpdate(user.id, {
             email,
             dp,
+            mobile,
             email_verified: false,
-            updatedBy:user.id
+            updated_by: user.id
         })
             .then(() => { return res.status(200).json({ message: "user updated" }) })
     }
     await User.findByIdAndUpdate(user.id, {
         email,
+        mobile,
         dp,
-        updatedBy:user._id
+        updated_by: user._id
     })
         .then(() => res.status(200).json({ message: "profile updated" }))
 })
@@ -333,11 +357,11 @@ export const updatePassword = catchAsyncError(async (req: Request, res: Response
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }
-    const isPasswordMatched = await user.comparePassword(oldPassword);
+    const isPasswordMatched = user.comparePassword(oldPassword);
     if (!isPasswordMatched)
         return res.status(401).json({ message: "Old password is incorrect" })
     user.password = newPassword;
-    user.updatedBy=req.user?._id
+    user.updated_by = user._id
     await user.save();
     res.status(200).json({ message: "password updated" });
 });
@@ -352,7 +376,8 @@ export const MakeAdmin = catchAsyncError(async (req: Request, res: Response, nex
     if (user.roles?.includes("admin"))
         return res.status(404).json({ message: "already a admin" })
     user.roles?.push("admin")
-    user.updatedBy=req.user?._id
+    if (req.user)
+        user.updated_by = req.user._id
     await user.save();
     res.status(200).json({ message: "admin role provided successfully", user });
 })
@@ -364,13 +389,14 @@ export const MakeOwner = catchAsyncError(async (req: Request, res: Response, nex
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }
-    if (String(user.createdBy) === String(user._id))
+    if (String(user.created_by) === String(user._id))
         return res.status(403).json({ message: "not allowed contact crm administrator" })
 
     if (user.roles?.includes("owner"))
         return res.status(404).json({ message: "already a owner" })
     user.roles?.push("owner")
-    user.updatedBy=req.user?._id
+    if (req.user)
+        user.updated_by = req.user._id
     await user.save();
     res.status(200).json({ message: "new owner created successfully" });
 })
@@ -387,11 +413,11 @@ export const BlockUser = catchAsyncError(async (req: Request, res: Response, nex
     if (!user.is_active)
         return res.status(404).json({ message: "user already blocked" })
 
-    if (String(user.createdBy) === String(user._id))
+    if (String(user.created_by) === String(user._id))
         return res.status(403).json({ message: "not allowed contact crm administrator" })
-
     user.is_active = false
-    user.updatedBy=req.user?._id
+    if (req.user)
+        user.updated_by = req.user._id
     await user.save();
     res.status(200).json({ message: "user blocked successfully" });
 })
@@ -407,7 +433,8 @@ export const UnBlockUser = catchAsyncError(async (req: Request, res: Response, n
     if (user.is_active)
         return res.status(404).json({ message: "user is already active" })
     user.is_active = true
-    user.updatedBy=req.user?._id
+    if (req.user)
+        user.updated_by = req.user._id
     await user.save();
     res.status(200).json({ message: "user unblocked successfully" });
 })
@@ -421,11 +448,12 @@ export const RevokePermissions = catchAsyncError(async (req: Request, res: Respo
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }
-    if (String(user.createdBy) === String(user._id))
+    if (String(user.created_by) === String(user._id))
         return res.status(403).json({ message: "not allowed contact crm administrator" })
-    await User.findByIdAndUpdate(id, { roles: ["user"],
-    updatedBy:req.user?._id
-})
+    await User.findByIdAndUpdate(id, {
+        roles: ["user"],
+        updated_by: req.user?._id
+    })
     res.status(200).json({ message: "user permissions revoked successfully" });
 })
 
@@ -457,8 +485,8 @@ export const SendPasswordResetMail = catchAsyncError(async (req: Request, res: R
         });
     }
     catch (err: any) {
-        user.resetPasswordToken = undefined;
-        user.resetPasswordExpire = undefined;
+        user.resetPasswordToken = null;
+        user.resetPasswordExpire = null;
         await user.save();
         console.log(err)
         res.status(500).json({ message: "email not sent" })
@@ -480,8 +508,8 @@ export const ResetPassword = catchAsyncError(async (req: Request, res: Response,
         return res.status(403).json({ message: "Reset Password Token is invalid or has been expired" })
 
     user.password = req.body.newPassword;
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpire = undefined;
+    user.resetPasswordToken = null;
+    user.resetPasswordExpire = null;
     await user.save();
     res.status(200).json({ message: "password updated" });
 });
@@ -513,8 +541,8 @@ export const SendVerifyEmail = catchAsyncError(async (req: Request, res: Respons
             message: `Email sent to ${user.email} successfully`,
         });
     } catch (err) {
-        user.emailVerifyToken = undefined;
-        user.emailVerifyExpire = undefined;
+        user.emailVerifyToken = null;
+        user.emailVerifyExpire = null;
         await user.save();
         return res.status(500).json({ message: "email could not be sent, something went wrong" })
     }
@@ -529,8 +557,8 @@ export const VerifyEmail = catchAsyncError(async (req: Request, res: Response, n
     if (!user)
         return res.status(403).json({ message: "Email verification Link  is invalid or has been expired" })
     user.email_verified = true;
-    user.emailVerifyToken = undefined;
-    user.emailVerifyExpire = undefined;
+    user.emailVerifyToken = null;
+    user.emailVerifyExpire = null;
     await user.save();
     res.status(200).json({
         message: `congrats ${user.email} verification successful`

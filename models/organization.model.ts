@@ -17,7 +17,7 @@ const OrganizationSchema = new mongoose.Schema<IOrganization, mongoose.Model<IOr
         trim: true,
         lowercase: true
     },
-    mobile: {
+    organization_mobile: {
         type: Number,
         trim: true,
         index: true,
@@ -35,19 +35,6 @@ const OrganizationSchema = new mongoose.Schema<IOrganization, mongoose.Model<IOr
         type: String,
         trim: true,
         lowercase: true
-    },
-
-    alternate_mobile: {
-        type: Number,
-        trim: true,
-        default: 0
-    },
-
-    alternate_email: {
-        type: String,
-        trim: true,
-        lowercase: true,
-
     },
     country: {
         type: String,
@@ -67,10 +54,14 @@ const OrganizationSchema = new mongoose.Schema<IOrganization, mongoose.Model<IOr
     ],
     is_active: {
         type: Boolean,
-        default: true
+        default: true,
+        required: true
     },
     created_at: {
-        type: Date, default: new Date(Date.now())
+        type: Date,
+        default: new Date(Date.now()),
+        required: true,
+
     },
     created_by: {
         type: mongoose.Schema.Types.ObjectId,
@@ -78,15 +69,24 @@ const OrganizationSchema = new mongoose.Schema<IOrganization, mongoose.Model<IOr
         required: true
     },
     updated_at: {
-        type: Date, default: new Date(Date.now())
+        type: Date,
+        default: new Date(Date.now()),
+        required: true,
+
     },
     updated_by: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
-    emailVerifyToken: String,
-    emailVerifyExpire: { type: Date, default: undefined },
+    emailVerifyToken: {
+        type: String,
+        default: null
+    },
+    emailVerifyExpire: {
+        type: Date,
+        default: null
+    },
 })
 
 //generating email verification token

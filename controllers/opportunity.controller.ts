@@ -7,14 +7,15 @@ import { User } from "../models/user.model"
 import { Asset } from "../types/asset.type"
 import { TOpportunityBody } from "../types/opportunity.types"
 import { uploadFileToCloudinary } from "../utils/uploadFile.util"
+
 // create opportunity any one can do in the organization
 export const CreateOpportunity = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    const { name, mobile, email } = req.body as TOpportunityBody
+    const { name, mobile, email, description } = req.body as TOpportunityBody
     const user = await User.findById(req.user?._id)
     if (!user)
-        return res.status(403).json({ message: "please login to access this resource" })
+        return res.status(404).json({ message: "please login to access this resource" })
     // validations
-    if (!name || !email || !mobile)
+    if (!name || !email || !mobile || !description)
         return res.status(400).json({ message: "fill all the required fields" });
     if (!isEmail(email))
         return res.status(403).json({ message: "please provide valid email" });
@@ -51,39 +52,46 @@ export const CreateOpportunity = catchAsyncError(async (req: Request, res: Respo
     const opportunity = await new Opportunity({
         ...req.body,
         dp,
-        organization: user.organization,
+        description: description,
+        organization: user.organization._id,
         opportunity_owner: user._id,
+        created_by: user._id,
+        updated_by: user._id,
+        created_at: new Date(Date.now()),
+        updated_at: new Date(Date.now()),
+        status_changed_by: user._id
     }).save()
     res.status(200).json({ opportunity })
 })
 // update opportunity only admin can do
 export const UpdateOpportunity = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    const { name, mobile, email } = req.body as TOpportunityBody
+    const { name, mobile, email, description } = req.body as TOpportunityBody
 
     const user = await User.findById(req.user?._id)
     if (!user)
         return res.status(403).json({ message: "please login to access this resource" })
     const id = req.params.id;
-    if (!isMongoId(id)) return res.status(400).json({ message: "opportunity id not valid" })
+    if (!isMongoId(id)) return res.status(403).json({ message: "opportunity id not valid" })
     let opportunity = await Opportunity.findById(id);
     if (!opportunity) {
         return res.status(404).json({ message: "opportunity not found" })
     }
     // validations
-    if (!name || !email || !mobile)
+    if (!name || !email || !mobile || !description)
         return res.status(400).json({ message: "fill all the required fields" });
     if (!isEmail(email))
         return res.status(403).json({ message: "please provide valid email" });
     if ((String(mobile).trim().length !== 10))
         return res.status(403).json({ message: "please provide valid mobile number" });
     if (name !== opportunity.name)
-        if (await Opportunity.findOne({ name: name.toLowerCase().trim() }))
+        if (await Opportunity.findOne({ name: name.toLowerCase().trim(), organization: opportunity.organization?._id }))
             return res.status(403).json({ message: `${name} already exists` });
     if (email !== opportunity.email)
-        if (await Opportunity.findOne({ email: email.toLowerCase().trim() }))
+        if (await Opportunity.findOne({ email: email.toLowerCase().trim(), organization: opportunity.organization?._id }))
             return res.status(403).json({ message: `${email} already exists` });
-    if (mobile !== opportunity.mobile)
-        if (await Opportunity.findOne({ mobile: String(mobile).trim() }))
+    console.log(mobile, opportunity.mobile)
+    if (mobile != opportunity.mobile)
+        if (await Opportunity.findOne({ mobile: String(mobile).trim(), organization: opportunity.organization?._id }))
             return res.status(403).json({ message: `${mobile} already exists` });
 
     let dp: Asset = {
@@ -110,8 +118,10 @@ export const UpdateOpportunity = catchAsyncError(async (req: Request, res: Respo
     await Opportunity.findByIdAndUpdate(opportunity._id, {
         ...req.body,
         dp,
+        description,
         organization: user.organization,
-        opportunity_owner: user._id,
+        updated_at: new Date(Date.now()),
+        updated_by: user._id
     }).then(() =>
         res.status(200).json({ message: "opportunity updated" })
     )
@@ -129,10 +139,8 @@ export const ToogleOpportunityStatus = catchAsyncError(async (req: Request, res:
     }
 
     await Opportunity.findByIdAndUpdate(opportunity._id, {
-        open: {
-            status: !opportunity.open?.status,
-            changedBy: user._id
-        }
+        status: !opportunity.status,
+        status_changed_by: user._id
     }).then(() => res.status(200).json({ message: "opportunity status updated" }))
 })
 
@@ -151,7 +159,7 @@ export const DeleteOpportunity = catchAsyncError(async (req: Request, res: Respo
 export const GetOpportunity = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "opportunity id not valid" })
-    let opportunity = await Opportunity.findById(id).populate('opportunity_owner').populate('organization').populate('activities')
+    let opportunity = await Opportunity.findById(id).populate('opportunity_owner').populate('organization').populate('activities').populate('status_changed_by').populate('updated_by')
     if (!opportunity) {
         return res.status(404).json({ message: "opportunity not found" })
     }
@@ -159,7 +167,7 @@ export const GetOpportunity = catchAsyncError(async (req: Request, res: Response
 })
 // get all opportunities  anyone can do in the organization
 export const GetOpportunities = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    let opportunities = await Opportunity.find().populate('opportunity_owner').populate('organization').populate('activities')
+    let opportunities = await Opportunity.find({ organization: req.user?.organization }).populate('opportunity_owner').populate('organization').populate('activities').populate('status_changed_by').populate('updated_by')
     if (!opportunities) {
         return res.status(404).json({ message: "opportunities not found" })
     }

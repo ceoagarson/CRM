@@ -7,7 +7,12 @@ type BaseUser = {
     username: string,
     password: string,
     email: string,
+    mobile: number,
     organization: IOrganization | Types.ObjectId,
+}
+type AdditionalData = {
+    alternate_mobile: number,
+    alternate_email: string,
     dp: Asset,
     roles: Types.Array<string>
 }
@@ -21,13 +26,13 @@ type Status = {
     is_active: Boolean,
 }
 type Tokens = {
-    resetPasswordToken: string,
-    resetPasswordExpire: Date,
-    emailVerifyToken: string,
-    emailVerifyExpire: Date,
+    resetPasswordToken: string | null,
+    resetPasswordExpire: Date | null,
+    emailVerifyToken: string | null,
+    emailVerifyExpire: Date | null,
 }
 
-export type IUser = BaseUser & Status & Tokens
+export type IUser = BaseUser & AdditionalData & Status & Tokens
 
 export type IUserMethods = {
     getAccessToken: () => string,

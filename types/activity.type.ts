@@ -1,18 +1,15 @@
 import { Types } from "mongoose";
-import { IAccount } from "./account.type";
-import { ILead } from "./lead.type";
-import { IOpportunity } from "./opportunity.types";
 import { IOrganization } from "./organization.type";
 import { IUser } from "./user.type";
 
 type BaseActivity = {
     _id: Types.ObjectId,
-    type: "telephonic" | "visited",
+    activity_type: "telephonic" | "visited",
     description: string,
+    resource_id: Types.ObjectId,
+    resource_type: "lead" | "account" | "opportunity"
 }
-type AdditionalData ={
-    resource: ILead | IAccount | IOpportunity | Types.ObjectId,
-    resource_type: string
+type AdditionalData = {
     remarks: string,
     activity_owner: IUser | Types.ObjectId,
     organization: IOrganization | Types.ObjectId,
@@ -24,5 +21,5 @@ type Status = {
     updated_at: Date,
     updated_by: IUser | Types.ObjectId,
 }
-export type IActivity = BaseActivity & AdditionalData & Status
+export type IActivity = Types.ObjectId & BaseActivity & AdditionalData & Status
 export type TActivityBody = Request['body'] & IActivity;
