@@ -1,6 +1,5 @@
 
 import { NextFunction, Request, Response } from "express"
-import { Document } from "mongoose"
 import isMongoId from "validator/lib/isMongoId"
 import { catchAsyncError } from "../middlewares/catchAsyncError.middleware.ts"
 import Account from "../models/account.model"
@@ -8,7 +7,7 @@ import { Activity } from "../models/activity.model"
 import Lead from "../models/lead.model"
 import Opportunity from "../models/opportunity.model"
 import { User } from "../models/user.model"
-import { IActivity, TActivityBody } from "../types/activity.type"
+import { TActivityBody } from "../types/activity.type"
 
 // create activity any one can do in the organization
 export const CreateActivity = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {

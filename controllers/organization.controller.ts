@@ -1,10 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import isEmail from 'validator/lib/isEmail';
-import isMongoId from 'validator/lib/isMongoId';
 import { catchAsyncError } from '../middlewares/catchAsyncError.middleware.ts';
 import { Organization } from '../models/organization.model';
 import { User } from '../models/user.model';
-import { Asset } from '../types/asset.type';
 import { TOrganizationBody } from '../types/organization.type';
 import { destroyFile } from '../utils/destroyFile.util';
 import { sendEmail } from '../utils/sendEmail.util';
@@ -25,22 +23,28 @@ export const OrganizationProfile = catchAsyncError(
 // update organization profile
 export const UpdateOrganizationProfile = catchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
-        const onwerid = req.user?._id
-        const user = await User.findById(onwerid)
+        const onwer_id = req.user?._id
+        const user = await User.findById(onwer_id)
         if (!user)
             return res.status(403).json({ message: "please login to access this resource" })
         const id = user.organization._id
         let organization = await Organization.findById(id)
         if (!organization)
             return res.status(404).json({ message: "this organization not found" })
-        let { organization_name, organization_email } = req.body as TOrganizationBody;
-        // validations
-        if (organization_email) {
-            return res.status(403).json({ message: "email updation not allowed here" })
-        }
+        let { organization_name, organization_email, organization_mobile, address, country } = req.body as TOrganizationBody;
+        if (!organization_name || !organization_email || !organization_mobile)
+            return res.status(400).json({ message: "please fill all required fields" })
         if (organization_name !== organization.organization_name) {
             if (await Organization.findOne({ organization_name: organization_name.toLowerCase().trim() }))
                 return res.status(403).json({ message: `${organization_name} already exists` });
+        }
+        if (organization_email !== organization.organization_email) {
+            if (await Organization.findOne({ organization_email: organization_email.toLowerCase().trim() }))
+                return res.status(403).json({ message: `${organization_email} already exists` });
+        }
+        if (organization_mobile !== organization.organization_mobile) {
+            if (await Organization.findOne({ organization_mobile: String(organization_mobile).toLowerCase().trim() }))
+                return res.status(403).json({ message: `${organization_mobile} already exists` });
         }
         let organization_dp = organization.organization_dp
         if (req.file) {
@@ -60,38 +64,19 @@ export const UpdateOrganizationProfile = catchAsyncError(
             }
         }
         await Organization.findByIdAndUpdate(organization._id, {
-            ...req.body,
-            organization_dp
+            organization_name,
+            organization_email,
+            organization_mobile,
+            address, country,
+            organization_dp,
+            updated_at: new Date(Date.now()),
+            updated_by: user._id
         }).then(() =>
             res.status(200).json({ message: "organization profile updated" })
         )
     })
 
-// Update Organization Email
-export const UpdateEmailOrganization = catchAsyncError(
-    async (req: Request, res: Response, next: NextFunction) => {
-        const onwerid = req.user?._id
-        const user = await User.findById(onwerid)
-        if (!user)
-            return res.status(403).json({ message: "please login to access this resource" })
-        let organization = await Organization.findById(user.organization._id)
-        if (!organization)
-            return res.status(404).json({ message: "this organization not found" })
-        let { previousEmail, newEmail } = req.body as TOrganizationBody & { previousEmail: string, newEmail: string }
-        if (!previousEmail || !newEmail)
-            return res.status(404).json({ message: "please fil all the required fields" })
-        if (!isEmail(newEmail))
-            return res.status(400).json({ message: "please provide valid email" })
-        if (previousEmail !== organization.organization_email)
-            return res.status(403).json({ message: "previous email is incorrect" })
-        if (previousEmail === newEmail)
-            return res.status(403).json({ message: "new email should be different from previous email " })
-        if (newEmail !== previousEmail) {
-            if (await Organization.findOne({ organization_email: newEmail.toLowerCase().trim() }))
-                return res.status(403).json({ message: `${newEmail} already exists` });
-        }
-        await Organization.findByIdAndUpdate(organization._id, { organization_email: newEmail, email_verified: false }).then(() => res.status(200).json({ message: "email updated" }))
-    })
+
 //Verify Organization Email
 export const SendVerifyOrganizationEmail = catchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
@@ -119,8 +104,8 @@ export const SendVerifyOrganizationEmail = catchAsyncError(
                 message: `Email sent to ${organization.organization_email} successfully`,
             });
         } catch (err) {
-            organization.emailVerifyToken = undefined;
-            organization.emailVerifyExpire = undefined;
+            organization.emailVerifyToken = null;
+            organization.emailVerifyExpire = null;
             await organization.save();
             return res.status(500).json({ message: "email could not be sent, something went wrong" })
         }
@@ -137,8 +122,8 @@ export const VerifyOrganizationEmail = catchAsyncError(
         if (!organization)
             return res.status(403).json({ message: "Email verification Link  is invalid or has been expired" })
         organization.email_verified = true;
-        organization.emailVerifyToken = undefined;
-        organization.emailVerifyExpire = undefined;
+        organization.emailVerifyToken = null;
+        organization.emailVerifyExpire = null;
         await organization.save();
         res.status(200).json({
             msg: `congrats ${organization.organization_email} verification successful`
