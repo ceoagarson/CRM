@@ -7,6 +7,7 @@ import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContex
 import { BlockUser } from '../../../services/UserServices';
 import { BackendError } from '../../../types';
 
+
 function BlockUserDialog({ id }: { id: string }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation

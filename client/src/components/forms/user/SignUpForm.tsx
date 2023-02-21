@@ -1,5 +1,5 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Alert, Button, CircularProgress, IconButton, InputAdornment,  Stack, TextField } from '@mui/material';
+import { Alert, Button, CircularProgress, IconButton, InputAdornment, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useEffect, useContext, useState } from 'react';
@@ -7,19 +7,23 @@ import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from "yup"
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
-import { IUser, UserActions, UserContext } from '../../../contexts/userContext';
+import { UserActions, UserContext } from '../../../contexts/userContext';
 import { paths } from '../../../Routes';
 import { Signup } from '../../../services/UserServices';
 import { BackendError, Target } from '../../../types';
+import { IUser } from '../../../types/user.type';
 
-type TformData = {
-  organization_name: string,
+type TFormData = {
+  organization_name:string
   organization_email: string,
+  organization_mobile: string,
   username: string,
-  email: string,
-  password: string,
+  email:string
+  password:string
+  mobile: string
   dp: string | Blob | File
 }
+
 function OwnerSignUpForm() {
   const goto = useNavigate()
   const { dispatch } = useContext(UserContext)
@@ -28,35 +32,52 @@ function OwnerSignUpForm() {
     (Signup)
   const { setChoice } = useContext(ChoiceContext)
 
-  const formik = useFormik<TformData>({
+  const formik = useFormik<TFormData>({
     initialValues: {
-      organization_name: '',
-      organization_email: '',
-      username: '',
-      email: '',
-      password: '',
-      dp: ''
+      organization_name: "",
+      organization_email: "",
+      organization_mobile: "",
+      username: "",
+      email: "",
+      password: "",
+      mobile: "",
+      dp: ""
     },
     validationSchema: Yup.object({
-      organization_name: Yup.string()
+      organization_name: Yup
+        .string()
         .required('Required field')
         .min(4, 'Must be 4 characters or more')
         .max(30, 'Must be 30 characters or less'),
       organization_email: Yup.string()
         .email('provide a valid email id')
         .required('Required field'),
-      username: Yup.string()
+      organization_mobile: Yup
+        .string()
+        .min(10, 'Must be 10 digits')
+        .max(10, 'Must be 10 digits ')
+        .required('Required field'),
+      mobile: Yup
+        .string()
+        .min(10, 'Must be 10 digits')
+        .max(10, 'Must be 10 digits ')
+        .required('Required field'),
+      username: Yup
+        .string()
         .required('Required field')
         .min(4, 'Must be 4 characters or more')
         .max(30, 'Must be 30 characters or less'),
-      email: Yup.string()
+      email: Yup
+        .string()
         .email('provide a valid email id')
         .required('Required field'),
-      password: Yup.string()
+      password: Yup
+        .string()
         .min(6, 'Must be 6 characters or more')
         .max(30, 'Must be 30 characters or less')
         .required('Required field'),
-      dp: Yup.mixed<File>()
+      dp: Yup
+        .mixed<File>()
         .test("size", "size is allowed only less than 200kb",
           file => {
             if (file)
@@ -79,11 +100,13 @@ function OwnerSignUpForm() {
           }
         )
     }),
-    onSubmit: (values: TformData) => {
+    onSubmit: (values: TFormData) => {
       let formdata = new FormData()
       formdata.append("organization_name", values.organization_name)
       formdata.append("username", values.username)
       formdata.append("organization_email", values.organization_email)
+      formdata.append("organization_mobile", values.organization_mobile)
+      formdata.append("mobile", values.mobile)
       formdata.append("email", values.email)
       formdata.append("password", values.password)
       formdata.append("dp", values.dp)
@@ -91,7 +114,7 @@ function OwnerSignUpForm() {
     }
   });
 
-  // password handling 
+  // password visibility handling 
   const [visiblity, setVisiblity] = useState(false);
   const handlePasswordVisibility = () => {
     setVisiblity(!visiblity);
@@ -124,7 +147,7 @@ function OwnerSignUpForm() {
       {
         isSuccess ? (
           <Alert color="success">
-            reset password mail sent successfully
+            New Organizataion and It's owner created Successfully
           </Alert>
         ) : null
       }
@@ -163,6 +186,22 @@ function OwnerSignUpForm() {
           }
           {...formik.getFieldProps('organization_email')}
         />
+        <TextField
+          variant='standard'
+          focused
+          required
+          fullWidth
+          error={
+            formik.touched.organization_mobile && formik.errors.organization_mobile ? true : false
+          }
+          id="organization_mobile"
+          label="Organization Mobile"
+          helperText={
+            formik.touched.organization_mobile && formik.errors.organization_mobile ? formik.errors.organization_mobile : ""
+          }
+          {...formik.getFieldProps('organization_mobile')}
+        />
+
         <TextField
           variant='standard'
           focused
@@ -222,12 +261,27 @@ function OwnerSignUpForm() {
           {...formik.getFieldProps('password')}
         />
         <TextField
+          variant='standard'
+          focused
+          required
+          fullWidth
+          error={
+            formik.touched.mobile && formik.errors.mobile ? true : false
+          }
+          id="mobile"
+          label="User Mobile"
+          helperText={
+            formik.touched.mobile && formik.errors.mobile ? formik.errors.mobile : ""
+          }
+          {...formik.getFieldProps('mobile')}
+        />
+        <TextField
           fullWidth
           error={
             formik.touched.dp && formik.errors.dp ? true : false
           }
           helperText={
-            formik.touched.dp && formik.errors.dp ? String(formik.errors.dp) : ""
+            formik.touched.dp && formik.errors.dp ? (formik.errors.dp) : ""
           }
           label="Display Picture"
           focused

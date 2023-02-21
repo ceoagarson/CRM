@@ -15,9 +15,10 @@ import UnBlockUserDialog from '../components/dialogs/users/UnBlockUserDialog'
 import UpdateUserDialog from '../components/dialogs/users/UpdateUserDialog'
 import { UserTable } from '../components/tables/user/UserTable'
 import { UserChoiceActions, ChoiceContext } from '../contexts/dialogContext'
-import { IUser, UserContext } from '../contexts/userContext'
+import {  UserContext } from '../contexts/userContext'
 import { GetUsers } from '../services/UserServices'
 import { BackendError } from '../types'
+import { IUser } from '../types/user.type'
 
 export default function UsersPage() {
     const { data, isSuccess, isLoading, isError, error } = useQuery<AxiosResponse<IUser[]>, BackendError>("users", GetUsers, {
@@ -121,10 +122,10 @@ export default function UsersPage() {
             // created by
             {
                 Header: 'Created By',
-                accessor: 'createdBy',
+                accessor: 'created_by',
                 Cell: (props) => {
                     return (
-                        <Typography sx={{ fontWeight: "bold" }}>{props.row.original.createdBy?.username}</Typography>
+                        <Typography sx={{ fontWeight: "bold" }}>{props.row.original.created_by?.username}</Typography>
                     )
                 }
 
@@ -132,11 +133,11 @@ export default function UsersPage() {
             // joined date
             {
                 Header: 'Joined Date',
-                accessor: 'createdAt',
+                accessor: 'created_at',
                 Cell: (props) => {
                     let date = null
-                    if (props.row.original.createdAt)
-                        date = new Date(props.row.original.createdAt).toLocaleDateString()
+                    if (props.row.original.created_at)
+                        date = new Date(props.row.original.created_at).toLocaleDateString()
                     return (
                         <Typography variant="body1">{date}</Typography>
                     )
@@ -178,7 +179,7 @@ export default function UsersPage() {
                             </Tooltip>
                             {/* delete icon */}
                             {
-                                (CellUser.createdBy?._id === loggedInUser?._id) ?
+                                (CellUser.created_by?._id === loggedInUser?._id) ?
                                     <Tooltip title="delete">
                                         <IconButton size="medium"
                                             onClick={() => {

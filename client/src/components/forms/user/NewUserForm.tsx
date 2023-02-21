@@ -7,14 +7,15 @@ import { useMutation } from 'react-query';
 import * as Yup from "yup"
 import { queryClient } from '../../..';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
-import { IUser } from '../../../contexts/userContext';
 import { NewUser } from '../../../services/UserServices';
 import { BackendError, Target } from '../../../types';
+import { IUser } from '../../../types/user.type';
 
 type TformData = {
     username: string,
     email: string,
     password: string,
+    mobile: string,
     dp: string | Blob | File
 }
 
@@ -31,6 +32,7 @@ function NewUserForm() {
         initialValues: {
             username: '',
             email: '',
+            mobile: '',
             password: '',
             dp: ''
         },
@@ -45,6 +47,10 @@ function NewUserForm() {
             password: Yup.string()
                 .min(6, 'Must be 6 characters or more')
                 .max(30, 'Must be 30 characters or less')
+                .required('Required field'),
+            mobile: Yup.string()
+                .min(10, 'Must be 10 digits')
+                .max(10, 'Must be 10 digits')
                 .required('Required field'),
             dp: Yup.mixed<File>()
                 .test("size", "size is allowed only less than 200kb",
@@ -74,6 +80,7 @@ function NewUserForm() {
             formdata.append("username", values.username)
             formdata.append("email", values.email)
             formdata.append("password", values.password)
+            formdata.append("mobile", values.mobile)
             formdata.append("dp", values.dp)
             mutate(formdata)
         }
@@ -175,6 +182,21 @@ function NewUserForm() {
                         ),
                     }}
                     {...formik.getFieldProps('password')}
+                />
+                <TextField
+                    variant='standard'
+                    focused
+                    required
+                    fullWidth
+                    error={
+                        formik.touched.mobile && formik.errors.mobile ? true : false
+                    }
+                    id="mobile"
+                    label="Mobile"
+                    helperText={
+                        formik.touched.mobile && formik.errors.mobile ? formik.errors.mobile : ""
+                    }
+                    {...formik.getFieldProps('mobile')}
                 />
                 <TextField
                     fullWidth

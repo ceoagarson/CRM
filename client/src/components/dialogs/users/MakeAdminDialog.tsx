@@ -7,6 +7,7 @@ import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContex
 import { MakeAdmin } from '../../../services/UserServices';
 import { BackendError } from '../../../types';
 
+
 function MakeAdminDialog({ id }: { id: string }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation

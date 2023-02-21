@@ -8,7 +8,7 @@ import { useMutation } from 'react-query';
 import * as Yup from 'yup';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { UpdatePassword } from '../../../services/UserServices';
-import { BackendError } from '../../../types';
+import { BackendError,Target } from '../../../types';
 
 
 function UpdatePasswordForm() {

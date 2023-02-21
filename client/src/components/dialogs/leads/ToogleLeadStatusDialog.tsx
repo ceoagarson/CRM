@@ -32,7 +32,7 @@ function ToogleLeadStatusDialog({ lead }: { lead: ILead }) {
             onClose={() => setChoice({ type: LeadChoiceActions.close })}
         >
             <DialogTitle textAlign="center">
-            {lead.open?.status ? "Close Lead" : "Open Lead"}
+            {lead.status ? "Close Lead" : "Open Lead"}
             </DialogTitle>
             {
                 isError ? (
@@ -68,7 +68,7 @@ function ToogleLeadStatusDialog({ lead }: { lead: ILead }) {
                 >
                     {isLoading ? <CircularProgress /> :
                         null}
-                    {lead.open?.status ? "Close" : "Open"}
+                    {lead.status ? "Close" : "Open"}
                 </Button>
                 <Button fullWidth variant="contained"
                     disabled={isLoading}

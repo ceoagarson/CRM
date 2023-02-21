@@ -3,9 +3,7 @@ import { apiClient } from "../utils/AxiosInterceptor"
 export const GetAccount = async (id: string) => {
   return await apiClient.get(`accounts/${id}`)
 }
-export const DeleteAccount = async (id: string) => {
-  return await apiClient.delete(`accounts/${id}`)
-}
+
 export const GetAccounts = async () => {
   return await apiClient.get(`accounts`)
 }
@@ -17,5 +15,4 @@ export const UpdateAccount = async ({ id, body }: { id: string, body: FormData }
 }
 export const ToogleAccountStatus = async (id: string) => {
   return await apiClient.patch(`accounts/${id}`)
-
 }

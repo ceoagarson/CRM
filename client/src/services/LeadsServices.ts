@@ -3,9 +3,7 @@ import { apiClient } from "../utils/AxiosInterceptor"
 export const GetLead = async (id: string) => {
   return await apiClient.get(`leads/${id}`)
 }
-export const DeleteLead = async (id: string) => {
-  return await apiClient.delete(`leads/${id}`)
-}
+
 export const GetLeads = async () => {
   return await apiClient.get(`leads`)
 }
@@ -17,5 +15,4 @@ export const UpdateLead = async ({ id, body }: { id: string, body: FormData }) =
 }
 export const ToogleLeadStatus = async (id: string) => {
   return await apiClient.patch(`leads/${id}`)
-
 }

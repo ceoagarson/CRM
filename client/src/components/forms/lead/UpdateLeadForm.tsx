@@ -1,4 +1,4 @@
-import { Alert, Button, CircularProgress, Stack, TextField, Typography } from '@mui/material';
+import { Alert, Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useEffect, useContext } from 'react';
@@ -11,16 +11,17 @@ import { BackendError, Target } from '../../../types';
 import { ILead } from '../../../types/lead.type';
 import { Countries } from '../../../utils/countries';
 import { Source } from '../../../utils/Source';
+import { States } from '../../../utils/states';
 
 type TformData = {
   name: string,
   email: string,
   mobile: string,
-  dp: string | Blob
+  dp: string | Blob | File
   city: string,
   state: string,
   description: string,
-  lead_type: "easy" | "medium" | "hard" | ""
+  probability: "easy" | "medium" | "hard" | ""
   customer_name: string,
   address: string,
   country: string
@@ -33,7 +34,10 @@ type TformData = {
 
 function UpdateLeadForm({ lead }: { lead: ILead }) {
   const { mutate, isLoading, isSuccess, isError, error } = useMutation
-    <AxiosResponse<string>, BackendError, { id: string, body: FormData }>
+    <AxiosResponse<ILead>, BackendError, {
+      id: string,
+      body: FormData
+    }>
     (UpdateLead, {
       onSuccess: () => queryClient.invalidateQueries('leads')
     })
@@ -42,22 +46,22 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
 
   const formik = useFormik<TformData>({
     initialValues: {
-      name: lead.name || "",
-      email: lead.email || "",
-      mobile: String(lead.mobile) || "",
-      dp: "" || "",
-      city: lead.city || "",
-      state: lead.state || "",
-      description: lead.description || "",
-      lead_type: lead.lead_type || "",
-      customer_name: lead.customer_name || "",
-      address: lead.address || "",
-      country: lead.country || "",
-      alternate_mobile: String(lead.alternate_mobile) || "",
-      alternate_email: lead.alternate_email || "",
-      customer_designination: lead.customer_designination || "",
-      lead_source: lead.lead_source || "",
-      remarks: lead.remarks || "",
+      name: lead.name,
+      email: lead.email,
+      mobile: String(lead.mobile),
+      dp: lead.dp.url,
+      city: lead.city,
+      state: lead.state,
+      description: lead.description,
+      probability: lead.probability,
+      customer_name: lead.customer_name,
+      address: lead.address,
+      country: lead.country,
+      alternate_mobile: String(lead.alternate_mobile),
+      alternate_email: lead.alternate_email,
+      customer_designination: lead.customer_designination,
+      lead_source: lead.lead_source,
+      remarks: lead.remarks,
     },
     validationSchema: Yup.object({
       name: Yup.string()
@@ -74,7 +78,10 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
       city: Yup.string().required("required field")
         .min(3, 'Must be 3 characters or more')
         .max(30, 'Must be 30 characters or less'),
-      lead_type: Yup.string().required("required field"),
+      state: Yup.string().required("required field")
+        .min(3, 'Must be 3 characters or more')
+        .max(30, 'Must be 30 characters or less'),
+      probability: Yup.string().required("required field"),
       lead_source: Yup.string().required("required field"),
       country: Yup.string().required("required field"),
       description: Yup.string().required("required field")
@@ -124,7 +131,7 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
       formdata.append("city", values.city)
       formdata.append("state", values.state)
       formdata.append("description", values.description)
-      formdata.append("lead_type", values.lead_type)
+      formdata.append("probability", values.probability)
       formdata.append("customer_name", values.customer_name)
       formdata.append("address", values.address)
       formdata.append("country", values.country)
@@ -134,10 +141,12 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
       formdata.append("lead_source", values.lead_source)
       formdata.append("remarks", values.remarks)
       formdata.append("dp", values.dp)
-      mutate({ id: lead._id, body: formdata })
+      mutate({
+        id: lead._id,
+        body: formdata
+      })
     }
   });
-
   useEffect(() => {
     if (isSuccess) {
       setTimeout(() => {
@@ -150,7 +159,7 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
     <form onSubmit={formik.handleSubmit}>
       {
         isError ? (
-          <Alert  color="error">
+          <Alert color="error">
             {error?.response.data.message}
           </Alert>
         ) : null
@@ -158,7 +167,7 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
       {
         isSuccess ? (
           <Alert color="success">
-            new lead created successfully
+            lead updated successfully
           </Alert>
         ) : null
       }
@@ -297,8 +306,7 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
           }
           {...formik.getFieldProps('city')}
         />
-
-        {/* lead_type */}
+        {/* state */}
         <TextField
           variant='standard'
           select
@@ -308,25 +316,56 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
           focused
           required
           error={
-            formik.touched.lead_type && formik.errors.lead_type ? true : false
+            formik.touched.state && formik.errors.state ? true : false
           }
-          id="lead_type"
-          label="lead_type"
+          id="state"
+          label="state"
           fullWidth
           helperText={
-            formik.touched.lead_type && formik.errors.lead_type ? formik.errors.lead_type : ""
+            formik.touched.state && formik.errors.state ? formik.errors.state : ""
           }
-          {...formik.getFieldProps('lead_type')}
+          {...formik.getFieldProps('state')}
         >
           <option value="">
-            <Typography p={2} variant="body2">Select</Typography>
+            Select State
+          </option>
+          {
+            States.map(state => {
+              return (<option key={state.code} value={String(state.state).toLowerCase()}>
+                {state.state}
+              </option>)
+            })
+          } 
+        </TextField>
+        {/* probability */}
+        <TextField
+          variant='standard'
+          select
+          SelectProps={{
+            native: true
+          }}
+          focused
+          required
+          error={
+            formik.touched.probability && formik.errors.probability ? true : false
+          }
+          id="probability"
+          label="probability"
+          fullWidth
+          helperText={
+            formik.touched.probability && formik.errors.probability ? formik.errors.probability : ""
+          }
+          {...formik.getFieldProps('probability')}
+        >
+          <option value="">
+            Select
           </option>
           <option value="easy">
-            <Typography p={2} variant="body2">easy</Typography>
+            easy
           </option><option value="medium">
-            <Typography p={2} variant="body2">medium</Typography>
+            medium
           </option><option value="hard">
-            <Typography p={2} variant="body2">hard</Typography>
+            hard
           </option>
         </TextField>
 
@@ -351,14 +390,14 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
           {...formik.getFieldProps('lead_source')}
         >
           <option value="">
-            <Typography p={2} variant="body2">Select</Typography>
+            Select
           </option>
           {
 
             Source.map(source => {
               return (
-                <option value={source}>
-                  <Typography p={2} variant="body2">{source}</Typography>
+                <option key={source} value={source}>
+                  {source}
                 </option>)
             })
           }
@@ -381,16 +420,15 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
           helperText={
             formik.touched.country && formik.errors.country ? formik.errors.country : ""
           }
-          type="number"
           {...formik.getFieldProps('country')}
         >
           <option value="">
-            <Typography p={2} variant="body2">Select Country</Typography>
+            Select Country
           </option>
           {
             Countries.map(country => {
-              return (<option value={country.name.toLowerCase()}>
-                <Typography p={2} variant="body2">{country.name}</Typography>
+              return (<option key={country.unicode} value={String(country.name).toLowerCase()}>
+                {country.name}
               </option>)
             })
           }
@@ -436,7 +474,6 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
           helperText={
             formik.touched.address && formik.errors.address ? formik.errors.address : ""
           }
-          type="number"
           {...formik.getFieldProps('address')}
         />
         {/* description */}
@@ -455,7 +492,6 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
           helperText={
             formik.touched.description && formik.errors.description ? formik.errors.description : ""
           }
-          type="number"
           {...formik.getFieldProps('description')}
         />
         {/* remarks */}
@@ -473,7 +509,6 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
           helperText={
             formik.touched.remarks && formik.errors.remarks ? formik.errors.remarks : ""
           }
-          type="number"
           {...formik.getFieldProps('remarks')}
         />
       </Stack>

@@ -3,16 +3,17 @@ import { useFormik } from 'formik';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
 import { UpdateProfile } from '../../../services/UserServices';
-import { BackendError, Target } from '../../../types';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { useContext, useEffect } from 'react';
 import { AxiosResponse } from 'axios';
 import { queryClient } from '../../..';
-import { IUser } from '../../../contexts/userContext';
+import { BackendError, Target } from '../../../types';
+import { IUser } from '../../../types/user.type';
 
 
 type TformData = {
   email: string,
+  mobile: string,
   dp: string | Blob | File
 }
 
@@ -26,12 +27,18 @@ function UpdateProfileForm({ user }: { user: IUser }) {
 
   const formik = useFormik<TformData>({
     initialValues: {
-      email: user.email || "",
-      dp: user.dp?.url || ""
+      email: user.email,
+      mobile: String(user.mobile),
+      dp: user.dp?.url
     },
     validationSchema: Yup.object({
+      mobile: Yup.string()
+        .required('Required field')
+        .min(10, 'Must be 10 digits')
+        .max(10, 'Must be 10 digits'),
       email: Yup.string()
         .email('provide a valid email id')
+        .required('Required field')
         .required('Required field'),
       dp: Yup.mixed<File>()
         .test("size", "size is allowed only less than 200kb",
@@ -59,6 +66,7 @@ function UpdateProfileForm({ user }: { user: IUser }) {
     onSubmit: (values: TformData) => {
       let formdata = new FormData()
       formdata.append("email", values.email)
+      formdata.append("mobile", values.mobile)
       formdata.append("dp", values.dp)
       mutate(formdata)
     }
@@ -104,6 +112,21 @@ function UpdateProfileForm({ user }: { user: IUser }) {
             formik.touched.email && formik.errors.email ? formik.errors.email : ""
           }
           {...formik.getFieldProps('email')}
+        />
+         <TextField
+          variant='standard'
+          focused
+          required
+          fullWidth
+          error={
+            formik.touched.mobile && formik.errors.mobile ? true : false
+          }
+          id="mobile"
+          label="Mobile"
+          helperText={
+            formik.touched.mobile && formik.errors.mobile ? formik.errors.mobile : ""
+          }
+          {...formik.getFieldProps('mobile')}
         />
         <TextField
           fullWidth

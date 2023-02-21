@@ -42,7 +42,6 @@ function AppRoutes() {
             <Route path={paths.verify_email} element={<EmailVerifyPage />} />
           </Route>
           :
-          // protected routes1 [user related]
           < Route path={paths.dashboard} element={<DashboardLayout />
           }>
             <Route
@@ -84,8 +83,6 @@ function AppRoutes() {
           </Route>
 
       }
-      {/* not found */}
-
       <Route path="*" element={<Navigate to={paths.home} />} />
     </Routes >
   )

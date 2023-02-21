@@ -2,7 +2,8 @@ import { Dialog, DialogContent, DialogTitle, Button, DialogActions, Typography, 
 import { Stack } from '@mui/system'
 import { useContext } from 'react'
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
-import { IUser } from '../../../contexts/userContext'
+import { IUser } from '../../../types/user.type'
+
 
 
 function ProfileDialog({ profile }: { profile: IUser }) {

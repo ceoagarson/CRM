@@ -1,9 +1,9 @@
 import nodemailer from "nodemailer";
 
-export const sendEmail = (options: {
-    to:string,
-    subject:string,
-    message:string
+export const sendEmail = async(options: {
+    to: string,
+    subject: string,
+    message: string
 }) => {
     let host = String(process.env.EMAIL_HOST)
     let port = Number(process.env.EMAIL_PORT)
@@ -11,6 +11,7 @@ export const sendEmail = (options: {
     let app_email = String(process.env.APP_EMAIL)
     let pass = String(process.env.APP_EMAIL_PASSWORD)
     try {
+
         const transporter = nodemailer.createTransport({
             host: host,
             port: port,
@@ -27,9 +28,11 @@ export const sendEmail = (options: {
             subject: options.subject,
             text: options.message,
         };
-        transporter.sendMail(mailOptions)
+        await transporter.sendMail(mailOptions)
+        return true
     }
     catch (err) {
-        console.log(err);
+        console.log("error",err);
+        return false
     }
 }

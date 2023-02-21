@@ -1,21 +1,7 @@
 import React, { createContext, useReducer } from "react";
-import { Asset } from "../types/asset.type";
-import { IOrganization } from "../types/organization.type";
+import { IUser } from "../types/user.type";
 
-export interface IUser {
-  _id?: string,
-  username: string,
-  dp?: Asset,
-  email?: string,
-  organization?: IOrganization
-  roles?: string[],
-  email_verified?: Boolean,
-  last_login?: Date,
-  createdAt?: Date,
-  createdBy?: IUser,
-  is_active?: Boolean
-  actions?: any
-}
+
 // initial state
 type UserState = IUser | undefined;
 const IntitialState: UserState = undefined;

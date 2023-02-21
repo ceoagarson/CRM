@@ -49,11 +49,11 @@ export const UnBlockUser = async (id: string) => {
 }
 // make owner
 export const MakeOwner = async (id: string) => {
-  return await apiClient.patch(`owner/update/role/admin/${id}`)
+  return await apiClient.patch(`owner/update/role/owner/${id}`)
 }
 // make admin
 export const MakeAdmin = async (id: string) => {
-  return await apiClient.patch(`users/${id}`)
+  return await apiClient.patch(`owner/update/role/admin/${id}`)
 }
 // revoke permissions of a admin or owner
 export const RevokeUser = async (id: string) => {

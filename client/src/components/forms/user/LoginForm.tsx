@@ -8,10 +8,11 @@ import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
-import { IUser, UserActions, UserContext } from '../../../contexts/userContext';
+import {  UserActions, UserContext } from '../../../contexts/userContext';
 import { paths } from '../../../Routes';
 import { Login } from '../../../services/UserServices';
 import { BackendError } from '../../../types';
+import { IUser } from '../../../types/user.type';
 
 function LoginForm() {
   const goto = useNavigate()

@@ -98,12 +98,13 @@ export const SendVerifyOrganizationEmail = catchAsyncError(
             subject: `CRM Organization Admin  Email Verification`,
             message,
         };
-        try {
-            sendEmail(options);
-            res.status(200).json({
-                message: `Email sent to ${organization.organization_email} successfully`,
-            });
-        } catch (err) {
+        let response = await sendEmail(options);
+        if (response) {
+            return res.status(200).json({
+                message: `Email sent to ${user.email} successfully`,
+            })
+        }
+        else {
             organization.emailVerifyToken = null;
             organization.emailVerifyExpire = null;
             await organization.save();

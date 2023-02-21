@@ -11,6 +11,7 @@ import { BackendError, Target } from '../../../types';
 import { ILead } from '../../../types/lead.type';
 import { Countries } from '../../../utils/countries';
 import { Source } from '../../../utils/Source';
+import { States } from '../../../utils/states';
 
 type TformData = {
   name: string,
@@ -20,7 +21,7 @@ type TformData = {
   city: string,
   state: string,
   description: string,
-  lead_type: "easy" | "medium" | "hard" | ""
+  probability: "easy" | "medium" | "hard" | ""
   customer_name: string,
   address: string,
   country: string
@@ -49,7 +50,7 @@ function NewLeadForm() {
       city: "",
       state: "",
       description: "",
-      lead_type: "",
+      probability: "",
       customer_name: "",
       address: "",
       country: "",
@@ -74,7 +75,10 @@ function NewLeadForm() {
       city: Yup.string().required("required field")
         .min(3, 'Must be 3 characters or more')
         .max(30, 'Must be 30 characters or less'),
-      lead_type: Yup.string().required("required field"),
+      state: Yup.string().required("required field")
+        .min(3, 'Must be 3 characters or more')
+        .max(30, 'Must be 30 characters or less'),
+      probability: Yup.string().required("required field"),
       lead_source: Yup.string().required("required field"),
       country: Yup.string().required("required field"),
       description: Yup.string().required("required field")
@@ -124,7 +128,7 @@ function NewLeadForm() {
       formdata.append("city", values.city)
       formdata.append("state", values.state)
       formdata.append("description", values.description)
-      formdata.append("lead_type", values.lead_type)
+      formdata.append("probability", values.probability)
       formdata.append("customer_name", values.customer_name)
       formdata.append("address", values.address)
       formdata.append("country", values.country)
@@ -137,8 +141,6 @@ function NewLeadForm() {
       mutate(formdata)
     }
   });
-
-
   useEffect(() => {
     if (isSuccess) {
       setTimeout(() => {
@@ -298,8 +300,7 @@ function NewLeadForm() {
           }
           {...formik.getFieldProps('city')}
         />
-
-        {/* lead_type */}
+        {/* state */}
         <TextField
           variant='standard'
           select
@@ -309,25 +310,56 @@ function NewLeadForm() {
           focused
           required
           error={
-            formik.touched.lead_type && formik.errors.lead_type ? true : false
+            formik.touched.state && formik.errors.state ? true : false
           }
-          id="lead_type"
-          label="lead_type"
+          id="state"
+          label="state"
           fullWidth
           helperText={
-            formik.touched.lead_type && formik.errors.lead_type ? formik.errors.lead_type : ""
+            formik.touched.state && formik.errors.state ? formik.errors.state : ""
           }
-          {...formik.getFieldProps('lead_type')}
+          {...formik.getFieldProps('state')}
         >
           <option value="">
-            <Typography p={2} variant="body2">Select</Typography>
+            Select State
+          </option>
+          {
+            States.map(state => {
+              return (<option key={state.code} value={state.state}>
+                {state.state}
+              </option>)
+            })
+          }
+        </TextField>
+        {/* probability */}
+        <TextField
+          variant='standard'
+          select
+          SelectProps={{
+            native: true
+          }}
+          focused
+          required
+          error={
+            formik.touched.probability && formik.errors.probability ? true : false
+          }
+          id="probability"
+          label="probability"
+          fullWidth
+          helperText={
+            formik.touched.probability && formik.errors.probability ? formik.errors.probability : ""
+          }
+          {...formik.getFieldProps('probability')}
+        >
+          <option value="">
+            Select
           </option>
           <option value="easy">
-            <Typography p={2} variant="body2">easy</Typography>
+            easy
           </option><option value="medium">
-            <Typography p={2} variant="body2">medium</Typography>
+            medium
           </option><option value="hard">
-            <Typography p={2} variant="body2">hard</Typography>
+            hard
           </option>
         </TextField>
 
@@ -352,14 +384,14 @@ function NewLeadForm() {
           {...formik.getFieldProps('lead_source')}
         >
           <option value="">
-            <Typography p={2} variant="body2">Select</Typography>
+            Select
           </option>
           {
 
             Source.map(source => {
               return (
-                <option value={source}>
-                  <Typography p={2} variant="body2">{source}</Typography>
+                <option key={source} value={source}>
+                  {source}
                 </option>)
             })
           }
@@ -382,16 +414,15 @@ function NewLeadForm() {
           helperText={
             formik.touched.country && formik.errors.country ? formik.errors.country : ""
           }
-          type="number"
           {...formik.getFieldProps('country')}
         >
           <option value="">
-            <Typography p={2} variant="body2">Select Country</Typography>
+            Select Country
           </option>
           {
             Countries.map(country => {
-              return (<option value={country.name}>
-                <Typography p={2} variant="body2">{country.name}</Typography>
+              return (<option key={country.unicode} value={country.name}>
+                {country.name}
               </option>)
             })
           }
@@ -437,7 +468,6 @@ function NewLeadForm() {
           helperText={
             formik.touched.address && formik.errors.address ? formik.errors.address : ""
           }
-          type="number"
           {...formik.getFieldProps('address')}
         />
         {/* description */}
@@ -456,7 +486,6 @@ function NewLeadForm() {
           helperText={
             formik.touched.description && formik.errors.description ? formik.errors.description : ""
           }
-          type="number"
           {...formik.getFieldProps('description')}
         />
         {/* remarks */}
@@ -474,7 +503,6 @@ function NewLeadForm() {
           helperText={
             formik.touched.remarks && formik.errors.remarks ? formik.errors.remarks : ""
           }
-          type="number"
           {...formik.getFieldProps('remarks')}
         />
       </Stack>

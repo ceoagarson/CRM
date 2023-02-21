@@ -5,7 +5,7 @@ import ToogleColumns from './ToogleColumns';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../utils/ExportToExcel';
 import { MenuActions, MenuContext } from '../../../contexts/menuContext';
-import { IUser } from '../../../contexts/userContext';
+import { IUser } from '../../../types/user.type';
 
 type Props = {
     columns: ColumnInstance<IUser>[],
@@ -21,7 +21,7 @@ type SelectedData = {
     organization?: string,
     organization_email?: string,
     roles?: string,
-    createdAt?: string,
+    created_at?: string,
     createdBy?: string
 
 }
@@ -53,9 +53,9 @@ function TableMenu({ columns, selectedFlatRows }: Props) {
             const user = item.original
             let lastlogin = undefined
             let created_at = undefined
-            if (user.last_login && user.createdAt) {
+            if (user.last_login && user.created_at) {
                 lastlogin = new Date(user.last_login).toLocaleDateString()
-                created_at = new Date(user.createdAt).toLocaleDateString()
+                created_at = new Date(user.created_at).toLocaleDateString()
             }
             return data.push({
                 username: user.username,
@@ -67,7 +67,7 @@ function TableMenu({ columns, selectedFlatRows }: Props) {
                 organization: user.organization?.organization_name,
                 organization_email: user.organization?.organization_email,
                 roles: user.roles?.toString(),
-                createdAt: created_at
+                created_at: created_at
             })
         })
         setSelectedData(data)

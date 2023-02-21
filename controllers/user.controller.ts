@@ -151,7 +151,7 @@ export const UpdateUser = catchAsyncError(async (req: Request, res: Response, ne
     if (!username || !email || !mobile)
         return res.status(400).json({ message: "fill all the required fields" });
     //check username
-    if (username != user.username) {
+    if (username !== user.username) {
         if (await User.findOne({ username: String(username).toLowerCase().trim() }))
             return res.status(403).json({ message: `${username} already exists` });
     }
@@ -161,13 +161,14 @@ export const UpdateUser = catchAsyncError(async (req: Request, res: Response, ne
             return res.status(403).json({ message: `${mobile} already exists` });
     }
     //check email
-    if (email != user.email) {
+    if (email !== user.email) {
         if (await User.findOne({ email: String(email).toLowerCase().trim() }))
             return res.status(403).json({ message: `${email} already exists` });
     }
     // check first owner to update himself
-    if ((String(user.created_by) === String(user._id) && user.roles?.includes("owner")))
-        return res.status(403).json({ message: "not allowed contact crm administrator" })
+    if ((String(user.created_by) === String(user._id)))
+        if ((String(user.created_by) !== String(req.user?._id)))
+            return res.status(403).json({ message: "not allowed contact crm administrator" })
 
     //handle dp
     let dp = user.dp;
@@ -288,7 +289,7 @@ export const Logout = catchAsyncError(async (req: Request, res: Response, next: 
 })
 //update profile 
 export const UpdateProfile = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    let user = await User.findOne({ id: req.user?._id, organization: req.user?.organization });
+    let user = await User.findOne({ _id: req.user?._id, organization: req.user?.organization });
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }
@@ -297,14 +298,14 @@ export const UpdateProfile = catchAsyncError(async (req: Request, res: Response,
         return res.status(400).json({ message: "please fill required fields" })
     }
 
-    //check email
-    if (email != user.email) {
-        if (await User.findOne({ email: String(email).toLowerCase().trim() }))
-            return res.status(403).json({ message: `${email} already exists` });
-    }
     if (mobile != user.mobile) {
         if (await User.findOne({ mobile: String(mobile).toLowerCase().trim() }))
             return res.status(403).json({ message: `${mobile} already exists` });
+    }
+    //check email
+    if (email !== user.email) {
+        if (await User.findOne({ email: String(email).toLowerCase().trim() }))
+            return res.status(403).json({ message: `${email} already exists` });
     }
 
     //handle dp
@@ -353,11 +354,11 @@ export const updatePassword = catchAsyncError(async (req: Request, res: Response
         return res.status(403).json({ message: "new password should not be same to the old password" })
     if (newPassword !== confirmPassword)
         return res.status(403).json({ message: "new password and confirm password not matched" })
-    let user = await User.findOne({ id: req.user?._id, organization: req.user?.organization }).select("+password")
+    let user = await User.findOne({ _id: req.user?._id, organization: req.user?.organization }).select("+password")
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }
-    const isPasswordMatched = user.comparePassword(oldPassword);
+    const isPasswordMatched = await user.comparePassword(oldPassword);
     if (!isPasswordMatched)
         return res.status(401).json({ message: "Old password is incorrect" })
     user.password = newPassword;
@@ -389,7 +390,7 @@ export const MakeOwner = catchAsyncError(async (req: Request, res: Response, nex
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }
-    if (String(user.created_by) === String(user._id))
+    if (String(user.created_by._id) === String(user._id))
         return res.status(403).json({ message: "not allowed contact crm administrator" })
 
     if (user.roles?.includes("owner"))
@@ -413,8 +414,10 @@ export const BlockUser = catchAsyncError(async (req: Request, res: Response, nex
     if (!user.is_active)
         return res.status(404).json({ message: "user already blocked" })
 
-    if (String(user.created_by) === String(user._id))
+    if (String(user.created_by._id) === String(user._id))
         return res.status(403).json({ message: "not allowed contact crm administrator" })
+    if (String(user._id) === String(req.user?._id))
+        return res.status(403).json({ message: "not allowed this operation here, because you may block yourself" })
     user.is_active = false
     if (req.user)
         user.updated_by = req.user._id
@@ -448,8 +451,10 @@ export const RevokePermissions = catchAsyncError(async (req: Request, res: Respo
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }
-    if (String(user.created_by) === String(user._id))
+    if (String(user.created_by._id) === String(user._id))
         return res.status(403).json({ message: "not allowed contact crm administrator" })
+    if (String(user._id) === String(req.user?._id))
+        return res.status(403).json({ message: "not allowed this operation here, because you may harm yourself" })
     await User.findByIdAndUpdate(id, {
         roles: ["user"],
         updated_by: req.user?._id
@@ -478,18 +483,17 @@ export const SendPasswordResetMail = catchAsyncError(async (req: Request, res: R
         subject: `Crm Password Recovery`,
         message: message,
     };
-    try {
-        sendEmail(options);
-        res.status(200).json({
+    let response = await sendEmail(options);
+    if (response) {
+        return res.status(200).json({
             message: `Email sent to ${user.email} successfully`,
-        });
+        })
     }
-    catch (err: any) {
+    else {
         user.resetPasswordToken = null;
         user.resetPasswordExpire = null;
         await user.save();
-        console.log(err)
-        res.status(500).json({ message: "email not sent" })
+        return res.status(500).json({ message: "email could not be sent, something went wrong" })
     }
 });
 // reset password controller
@@ -535,12 +539,14 @@ export const SendVerifyEmail = catchAsyncError(async (req: Request, res: Respons
         subject: `CRM Email Verification`,
         message,
     };
-    try {
-        sendEmail(options);
-        res.status(200).json({
+
+    let response = await sendEmail(options);
+    if (response) {
+        return res.status(200).json({
             message: `Email sent to ${user.email} successfully`,
-        });
-    } catch (err) {
+        })
+    }
+    else {
         user.emailVerifyToken = null;
         user.emailVerifyExpire = null;
         await user.save();

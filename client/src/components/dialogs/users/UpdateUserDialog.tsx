@@ -1,7 +1,7 @@
-import { Dialog, DialogContent, DialogTitle, DialogActions, Typography, CircularProgress, Button } from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, DialogActions,  Button } from '@mui/material'
 import { useContext } from 'react'
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
-import { IUser } from '../../../contexts/userContext'
+import { IUser } from '../../../types/user.type'
 import UpdateUserForm from '../../forms/user/UpdateUserForm'
 
 function UpdateUserDialog({ user }: { user: IUser }) {
@@ -14,7 +14,7 @@ function UpdateUserDialog({ user }: { user: IUser }) {
             <DialogContent>
                 {user ?
                     < UpdateUserForm user={user} />
-                    : <CircularProgress size="large" />
+                    : null
                 }
             </DialogContent>
             <DialogActions>

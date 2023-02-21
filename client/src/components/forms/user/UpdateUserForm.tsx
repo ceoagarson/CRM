@@ -1,4 +1,4 @@
-import { Alert,Button, CircularProgress, Stack, TextField } from '@mui/material';
+import { Alert, Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useContext, useEffect } from 'react';
@@ -6,13 +6,14 @@ import { useMutation } from 'react-query';
 import * as Yup from "yup"
 import { queryClient } from '../../..';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
-import { IUser } from '../../../contexts/userContext';
 import { UpdateUser } from '../../../services/UserServices';
 import { BackendError, Target } from '../../../types';
+import { IUser } from '../../../types/user.type';
 
 type TformData = {
   username: string,
   email: string,
+  mobile: string,
   dp: string | Blob | File
 }
 type Props = {
@@ -29,14 +30,18 @@ function UpdateUserForm({ user }: Props) {
     initialValues: {
       username: user.username || "",
       email: user?.email || "",
+      mobile: String(user.mobile) || "",
       dp: user.dp?.url || ""
     },
     validationSchema: Yup.object({
-
       username: Yup.string()
         .required('Required field')
         .min(4, 'Must be 4 characters or more')
         .max(30, 'Must be 30 characters or less'),
+      mobile: Yup.string()
+        .required('Required field')
+        .min(10, 'Must be 10 digits')
+        .max(10, 'Must be 10 digits'),
       email: Yup.string()
         .email('provide a valid email id')
         .required('Required field'),
@@ -68,12 +73,13 @@ function UpdateUserForm({ user }: Props) {
       let formdata = new FormData()
       formdata.append("username", values.username)
       formdata.append("email", values.email)
+      formdata.append("mobile", values.mobile)
       formdata.append("dp", values.dp)
       if (user._id)
         mutate({ id: user._id, body: formdata })
     }
   });
-  
+
   useEffect(() => {
     if (isSuccess) {
       setTimeout(() => {
@@ -118,6 +124,21 @@ function UpdateUserForm({ user }: Props) {
               formik.touched.username && formik.errors.username ? formik.errors.username : ""
             }
             {...formik.getFieldProps('username')}
+          />
+          <TextField
+            variant='standard'
+            focused
+            fullWidth
+            required
+            error={
+              formik.touched.mobile && formik.errors.mobile ? true : false
+            }
+            id="mobile"
+            label="Mobile"
+            helperText={
+              formik.touched.mobile && formik.errors.mobile ? formik.errors.mobile : ""
+            }
+            {...formik.getFieldProps('mobile')}
           />
           <TextField
             variant='standard'

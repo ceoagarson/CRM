@@ -1,4 +1,4 @@
-import { Add, AddBoxOutlined, Block, CheckCircle, Edit, PlusOne, PlusOneRounded, Visibility } from "@mui/icons-material"
+import {AddBoxOutlined, Block, CheckCircle, Edit, Visibility } from "@mui/icons-material"
 import { Alert, IconButton, LinearProgress, Stack, Tooltip, Typography } from "@mui/material"
 import { AxiosResponse } from "axios"
 import React, { useContext, useEffect, useState } from "react"
@@ -41,10 +41,10 @@ export default function LeadsPage() {
       },
       {
         Header: 'Status',
-        accessor: 'open',
+        accessor: 'status',
         Cell: (props) => {
-          let status = props.row.original.open?.status
-          let username = props.row.original.open?.changedBy
+          let status = props.row.original.status
+          let username = props.row.original.status_changed_by.username
           if (status)
             return (
               <Stack>
@@ -70,7 +70,7 @@ export default function LeadsPage() {
         Header: 'Actions',
         accessor: 'actions',
         Cell: (props) => {
-          let open = props.row.original.open?.status
+          let open = props.row.original.status
           return (
             <Stack direction="row" spacing={1}>
               <Tooltip title="edit">

@@ -33,7 +33,7 @@ function UpdateActivityForm({ activity }: { activity: IActivity }) {
     remarks: string
   }>({
     initialValues: {
-      type: activity.type,
+      type: activity.activity_type,
       description: activity.description,
       remarks: activity.remarks
     },
