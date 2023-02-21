@@ -1,11 +1,16 @@
 ## crm
 `server`
-# docs![Screenshot from 2023-02-15 12-07-18](https://user-images.githubusercont
-ent.com/45355788/218951629-0e24495a-138a-444a-8d02-cf476b363efc.png)
-`'react client`
+
+
+
+
+
+`react client`
+
 ![Screenshot from 2023-02-15 14-36-37](https://user-images.githubusercontent.com/45355788/219867473-21e5662e-94ca-43ee-96e3-9a7658fc5281.png)
 ![Screenshot from 2023-02-16 10-46-40](https://user-images.githubusercontent.com/45355788/219303012-462f4d44-eef3-4960-b405-4617d82e17ab.png)
 
+# Docs
 https://documenter.getpostman.com/view/21601681/2s935rJ2Fk
 
 # live ssr project
