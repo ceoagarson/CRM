@@ -13,6 +13,9 @@ import LeadRoutes from "./routes/lead.routes"
 import AccountRoutes from "./routes/account.route"
 import OpportunityRoutes from "./routes/opportunity.route"
 import ActivityRoutes from "./routes/activity.routes"
+import ConversionRoutes from "./routes/conversion.route"
+
+
 import path from 'path';
 import morgan from "morgan";
 
@@ -54,6 +57,7 @@ app.use("/api/v1", LeadRoutes)
 app.use("/api/v1", AccountRoutes)
 app.use("/api/v1", OpportunityRoutes)
 app.use("/api/v1", ActivityRoutes)
+app.use("/api/v1", ConversionRoutes)
 if (ENV === "production") {
     app.use(express.static(path.join(__dirname, "build")))
     app.get('*', (req, res) => {

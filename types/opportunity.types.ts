@@ -8,7 +8,7 @@ type BaseOpportunity = {
     _id: Types.ObjectId,
     name: string,
     customer_name: string,
-    customer_designination?: string,
+    customer_designination: string,
     mobile: number
     email: string
     city: string,

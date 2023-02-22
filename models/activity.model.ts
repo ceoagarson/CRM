@@ -7,7 +7,6 @@ const ActivitySchema = new mongoose.Schema<IActivity, mongoose.Model<IActivity>>
         required: true,
         trim: true,
         lowercase: true
-        , index: true
     },
     description: {
         type: String,
