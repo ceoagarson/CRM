@@ -1,6 +1,6 @@
 import { apiClient } from "../utils/AxiosInterceptor"
 
-export type Resource_Type = "lead" | "account" | "opportunity"
+export type Resource_Type = "lead" | "account" | "opportunity" | ""
 export type Activity_Type = "visited" | "telephonic" | ""
 
 export const GetActivity = async (id: string) => {

@@ -1,4 +1,4 @@
-import {AddBoxOutlined, Block, CheckCircle, Edit, Visibility } from "@mui/icons-material"
+import {AddBoxOutlined,  Block, ChangeCircle,  Edit, Visibility } from "@mui/icons-material"
 import {  IconButton, LinearProgress, Stack, Tooltip, Typography } from "@mui/material"
 import { AxiosResponse } from "axios"
 import React, { useContext, useEffect, useState } from "react"
@@ -8,8 +8,9 @@ import ToogleAccountStatusDialog from "../components/dialogs/accounts/ToogleAcco
 import UpdateAccountDialog from "../components/dialogs/accounts/UpdateAccountDialog"
 import ViewAccountDialog from "../components/dialogs/accounts/ViewAccountDialog"
 import NewActivityDialog from "../components/dialogs/activities/NewActivityDialog"
+import ConvertResourceDialog from "../components/dialogs/conversion/ConvertResourceDialog"
 import { AccountTable } from "../components/tables/account/AccountTable"
-import { ActivityChoiceActions, ChoiceContext, AccountChoiceActions } from "../contexts/dialogContext"
+import { ActivityChoiceActions, ChoiceContext, AccountChoiceActions, ConversionChoiceActions } from "../contexts/dialogContext"
 import { GetAccounts } from "../services/AccountServices"
 import { BackendError } from "../types"
 import { IAccount } from "../types/account.type"
@@ -115,7 +116,7 @@ export default function AccountsPage() {
                         setAccount(props.row.original)
                       }}
                     >
-                      <CheckCircle />
+                      <Block />
                     </IconButton>
                   </Tooltip>
               }
@@ -128,6 +129,17 @@ export default function AccountsPage() {
                   }}
                 >
                   <AddBoxOutlined />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Convert">
+                <IconButton
+                  color="warning"
+                  onClick={() => {
+                    setChoice({ type: ConversionChoiceActions.convert_resource })
+                    setAccount(props.row.original)
+                  }}
+                >
+                  <ChangeCircle />
                 </IconButton>
               </Tooltip>
             </Stack>
@@ -152,6 +164,7 @@ export default function AccountsPage() {
             <ViewAccountDialog account={account} />
             <ToogleAccountStatusDialog account={account} />
             <NewActivityDialog id={account._id} resource_type="account" />
+            <ConvertResourceDialog resource_id={account._id} resource_type="account" />
           </>
           : null
       } 

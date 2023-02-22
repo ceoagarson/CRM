@@ -1,15 +1,16 @@
-import {AddBoxOutlined, Block, CheckCircle, Edit, Visibility } from "@mui/icons-material"
-import {  IconButton, LinearProgress, Stack, Tooltip, Typography } from "@mui/material"
+import { AddBoxOutlined, Block,  ChangeCircle,  Edit,   Visibility } from "@mui/icons-material"
+import { IconButton, LinearProgress, Stack, Tooltip, Typography } from "@mui/material"
 import { AxiosResponse } from "axios"
 import React, { useContext, useEffect, useState } from "react"
 import { useQuery } from "react-query"
 import { Column } from "react-table"
 import NewActivityDialog from "../components/dialogs/activities/NewActivityDialog"
-import ToogleLeadStatusDialog from "../components/dialogs/leads/ToogleLeadStatusDialog"
+import ConvertResourceDialog from "../components/dialogs/conversion/ConvertResourceDialog"
+import ToogleLeadStatusDialog from "../components/dialogs/leads/ToogleLeadStatusDialog copy"
 import UpdateLeadDialog from "../components/dialogs/leads/UpdateLeadDialog"
 import ViewLeadDialog from "../components/dialogs/leads/ViewLeadDialog"
 import { LeadTable } from "../components/tables/lead/LeadTable"
-import { ActivityChoiceActions, ChoiceContext, LeadChoiceActions } from "../contexts/dialogContext"
+import { ActivityChoiceActions, ChoiceContext, ConversionChoiceActions, LeadChoiceActions } from "../contexts/dialogContext"
 import { GetLeads } from "../services/LeadsServices"
 import { BackendError } from "../types"
 import { ILead } from "../types/lead.type"
@@ -115,7 +116,7 @@ export default function LeadsPage() {
                         setLead(props.row.original)
                       }}
                     >
-                      <CheckCircle />
+                      <Block />
                     </IconButton>
                   </Tooltip>
               }
@@ -128,6 +129,17 @@ export default function LeadsPage() {
                   }}
                 >
                   <AddBoxOutlined />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Convert">
+                <IconButton
+                  color="warning"
+                  onClick={() => {
+                    setChoice({ type: ConversionChoiceActions.convert_resource })
+                    setLead(props.row.original)
+                  }}
+                >
+                  <ChangeCircle />
                 </IconButton>
               </Tooltip>
             </Stack>
@@ -151,7 +163,8 @@ export default function LeadsPage() {
             <UpdateLeadDialog lead={lead} />
             <ViewLeadDialog lead={lead} />
             <ToogleLeadStatusDialog lead={lead} />
-            <NewActivityDialog id={lead._id}resource_type="lead" />
+            <NewActivityDialog id={lead._id} resource_type="lead" />
+            <ConvertResourceDialog resource_id={lead._id} resource_type="lead" />
           </>
           : null
       }

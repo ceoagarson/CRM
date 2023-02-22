@@ -1,15 +1,16 @@
-import {AddBoxOutlined, Block, CheckCircle, Edit, Visibility } from "@mui/icons-material"
-import { Alert, IconButton, LinearProgress, Stack, Tooltip, Typography } from "@mui/material"
+import { AddBoxOutlined, Block, ChangeCircle,  Edit, Visibility } from "@mui/icons-material"
+import { IconButton, LinearProgress, Stack, Tooltip, Typography } from "@mui/material"
 import { AxiosResponse } from "axios"
 import React, { useContext, useEffect, useState } from "react"
 import { useQuery } from "react-query"
 import { Column } from "react-table"
 import NewActivityDialog from "../components/dialogs/activities/NewActivityDialog"
+import ConvertResourceDialog from "../components/dialogs/conversion/ConvertResourceDialog"
 import ToogleOpportunityStatusDialog from "../components/dialogs/opportunities/ToogleOpportunityStatusDialog"
 import UpdateOpportunityDialog from "../components/dialogs/opportunities/UpdateOpportunityDialog"
 import ViewOpportunityDialog from "../components/dialogs/opportunities/ViewOpportunityDialog"
 import { OpportunityTable } from "../components/tables/opportunity/OpportunityTable"
-import { ActivityChoiceActions, ChoiceContext, OpportunityChoiceActions } from "../contexts/dialogContext"
+import { ActivityChoiceActions, ChoiceContext, ConversionChoiceActions, OpportunityChoiceActions } from "../contexts/dialogContext"
 import { GetOpportunities } from "../services/OpportunityServices"
 import { BackendError } from "../types"
 import { IOpportunity } from "../types/opportunity.type"
@@ -115,7 +116,7 @@ export default function OpportunitiesPage() {
                         setOpportunity(props.row.original)
                       }}
                     >
-                      <CheckCircle />
+                      <Block />
                     </IconButton>
                   </Tooltip>
               }
@@ -128,6 +129,17 @@ export default function OpportunitiesPage() {
                   }}
                 >
                   <AddBoxOutlined />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Convert">
+                <IconButton
+                  color="warning"
+                  onClick={() => {
+                    setChoice({ type: ConversionChoiceActions.convert_resource })
+                    setOpportunity(props.row.original)
+                  }}
+                >
+                  <ChangeCircle />
                 </IconButton>
               </Tooltip>
             </Stack>
@@ -151,7 +163,8 @@ export default function OpportunitiesPage() {
             <UpdateOpportunityDialog opportunity={opportunity} />
             <ViewOpportunityDialog opportunity={opportunity} />
             <ToogleOpportunityStatusDialog opportunity={opportunity} />
-            <NewActivityDialog id={opportunity._id} resource_type="opportunity"/>
+            <NewActivityDialog id={opportunity._id} resource_type="opportunity" />
+            <ConvertResourceDialog resource_id={opportunity._id} resource_type="opportunity" />
           </>
           : null
       }

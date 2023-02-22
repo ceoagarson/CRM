@@ -4,6 +4,8 @@ import React, { useReducer } from "react"
 type UserChoices = "signup" | "login" | "reset_password_mail" | null | "new_user" | "update_user" | "update_profile" | "view_profile" | "update_password" | "reset_password" | "verify_email" | "change_role" | "delete_user" |
   "block_user" | "unblock_user" | "make_admin" | "revoke_permission" | "make_owner"
 
+type ConversionChoices = "convert_resource" | "close"
+
 type LeadChoices = "create_lead" | "update_lead" | "open_close_lead" | "close" | "view_lead"
 
 type AccountChoices = "create_account" | "update_account" | "open_close_account" | "close" | "view_account"
@@ -13,10 +15,14 @@ type OpportunityChoices = "create_opportunity" | "update_opportunity" | "open_cl
 type ActivityChoices = "create_activity" | "update_activity" | "open_close_activity" | "close" | "view_activity" | "delete_activity"
 
 // initial state
-type ChoiceState = UserChoices | LeadChoices | AccountChoices | OpportunityChoices | ActivityChoices
+type ChoiceState = UserChoices | LeadChoices | AccountChoices | OpportunityChoices | ActivityChoices | ConversionChoices
 const initialState: ChoiceState = null
 
 // actions
+export enum ConversionChoiceActions {
+  convert_resource = "convert_resource",
+  close = "close"
+}
 export enum LeadChoiceActions {
   create_lead = "create_lead",
   update_lead = "update_lead",
@@ -69,7 +75,7 @@ export enum UserChoiceActions {
 }
 
 type Action = {
-  type: UserChoiceActions | LeadChoiceActions | AccountChoiceActions | OpportunityChoiceActions | ActivityChoiceActions
+  type: UserChoiceActions | LeadChoiceActions | AccountChoiceActions | OpportunityChoiceActions | ActivityChoiceActions | ConversionChoiceActions
 }
 
 // reducer
@@ -94,7 +100,14 @@ function reducer(state: ChoiceState, action: Action) {
     case UserChoiceActions.revoke_permission: return type
     case UserChoiceActions.delete_user: return type
     case UserChoiceActions.close: return null
+
+    // conversion dialog choices
+    case ConversionChoiceActions.convert_resource: return type
+    case ConversionChoiceActions.close: return null
+
     // lead dialog choices
+
+
     case LeadChoiceActions.create_lead: return type
     case LeadChoiceActions.update_lead: return type
     case LeadChoiceActions.open_close_lead: return type

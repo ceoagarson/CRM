@@ -8,10 +8,10 @@ export const GetLeads = async () => {
   return await apiClient.get(`leads`)
 }
 export const NewLead = async (body: FormData) => {
-  return await apiClient.post("leads",body)
+  return await apiClient.post("leads", body)
 }
 export const UpdateLead = async ({ id, body }: { id: string, body: FormData }) => {
-  return await apiClient.put(`leads/${id}`,body)
+  return await apiClient.put(`leads/${id}`, body)
 }
 export const ToogleLeadStatus = async (id: string) => {
   return await apiClient.patch(`leads/${id}`)
