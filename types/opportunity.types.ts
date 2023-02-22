@@ -34,7 +34,7 @@ type Status = {
     created_at: Date,
     updated_at: Date,
     updated_by: IUser | Types.ObjectId
-    activities: IActivity[] | Types.ObjectId[]
+    activities: Array<IActivity['_id']> 
 }
 export type IOpportunity = BaseOpportunity & AdditionalData & Status
 export type TOpportunityBody = Request['body'] & IOpportunity;

@@ -10,7 +10,7 @@ type BaseOrganization = {
 }
 type AdditionalData = {
     organization_dp: Asset,
-    owners: IUser[] | Types.ObjectId[],
+    owners: Array<IUser['_id']>
     country: string,
     address: string
 }

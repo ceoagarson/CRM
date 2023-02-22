@@ -21,5 +21,5 @@ type Status = {
     updated_at: Date,
     updated_by: IUser | Types.ObjectId,
 }
-export type IActivity = Types.ObjectId & BaseActivity & AdditionalData & Status
+export type IActivity = BaseActivity & AdditionalData & Status
 export type TActivityBody = Request['body'] & IActivity;

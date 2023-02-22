@@ -61,7 +61,7 @@ export const CreateActivity = catchAsyncError(async (req: Request, res: Response
 })
 // update activity only admin can do
 export const UpdateActivity = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    const { activity_type, description,  remarks } = req.body as TActivityBody
+    const { activity_type, description, remarks } = req.body as TActivityBody
     // validations
     if (!activity_type || !description)
         return res.status(400).json({ message: "fill all the required fields" });
@@ -92,10 +92,10 @@ export const ToogleActivityStatus = catchAsyncError(async (req: Request, res: Re
     if (!activity) {
         return res.status(404).json({ message: "activity not found" })
     }
-    activity.status=!activity.status
-    activity.status_changed_by=user._id
+    activity.status = !activity.status
+    activity.status_changed_by = user._id
     await activity.save()
-     res.status(200).json({ message: "activity status updated" })
+    res.status(200).json({ message: "activity status updated" })
 })
 // delete activity
 export const DeleteActivity = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
@@ -127,7 +127,7 @@ export const DeleteActivity = catchAsyncError(async (req: Request, res: Response
         return res.status(404).json({ message: ` ${activity.resource_type} resource not found` })
     }
     Resource.activities = Resource.activities?.filter((item) => {
-        return (item._id.toString() !== activity?._id.toString())
+        return String(item) !== String(activity?._id)
     })
     await Resource.save()
     await activity.remove()

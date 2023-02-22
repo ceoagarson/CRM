@@ -5,7 +5,7 @@ import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { queryClient } from '../../..';
 import { ActivityChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
-import { ToogleActivityStatus } from '../../../services/ActivityServices';
+import { DeleteActivity, ToogleActivityStatus } from '../../../services/ActivityServices';
 import { BackendError } from '../../../types';
 import { IActivity } from '../../../types/activity.type';
 
@@ -13,10 +13,10 @@ function DeleteActivityDialog({ activity }: { activity: IActivity }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
-        (ToogleActivityStatus,
+        (DeleteActivity,
             {
                 onSuccess: () => {
-                    queryClient.invalidateQueries('activitys')
+                    queryClient.invalidateQueries('activities')
                 }
             }
         )
@@ -33,7 +33,7 @@ function DeleteActivityDialog({ activity }: { activity: IActivity }) {
             onClose={() => setChoice({ type: ActivityChoiceActions.close })}
         >
             <DialogTitle textAlign="center">
-            {activity.status ? "Close Activity" : "Open Activity"}
+                {activity.status ? "Close Activity" : "Open Activity"}
             </DialogTitle>
             {
                 isError ? (
@@ -45,7 +45,7 @@ function DeleteActivityDialog({ activity }: { activity: IActivity }) {
             {
                 isSuccess ? (
                     <Alert color="success">
-                       Updated successfully
+                        Deleted successfully
                     </Alert>
                 ) : null
             }
@@ -62,14 +62,14 @@ function DeleteActivityDialog({ activity }: { activity: IActivity }) {
             >
                 <Button fullWidth variant="outlined" color="error"
                     onClick={() => {
-                        setChoice({ type: ActivityChoiceActions.close })
+                       
                         mutate(activity._id)
                     }}
                     disabled={isLoading}
                 >
                     {isLoading ? <CircularProgress /> :
-                        null}
-                    {activity.status ? "Close" : "Open"}
+                        "Delete"
+                    }
                 </Button>
                 <Button fullWidth variant="contained"
                     disabled={isLoading}

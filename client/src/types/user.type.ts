@@ -11,8 +11,6 @@ type BaseUser = {
     organization: IOrganization,
 }
 type AdditionalData = {
-    alternate_mobile: number,
-    alternate_email: string,
     dp: Asset,
     roles: Types.Array<string>
 }

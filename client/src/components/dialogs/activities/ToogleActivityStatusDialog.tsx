@@ -15,7 +15,7 @@ function ToogleActivityStatusDialog({ activity }: { activity: IActivity }) {
         (ToogleActivityStatus,
             {
                 onSuccess: () => {
-                    queryClient.invalidateQueries('activitys')
+                    queryClient.invalidateQueries('activities')
                 }
             }
         )
@@ -61,7 +61,7 @@ function ToogleActivityStatusDialog({ activity }: { activity: IActivity }) {
             >
                 <Button fullWidth variant="outlined" color="error"
                     onClick={() => {
-                        setChoice({ type: ActivityChoiceActions.open_close_activity })
+                       
                         mutate(activity._id)
                     }}
                     disabled={isLoading}

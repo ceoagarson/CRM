@@ -396,10 +396,18 @@ export const MakeOwner = catchAsyncError(async (req: Request, res: Response, nex
 
     if (user.roles?.includes("owner"))
         return res.status(404).json({ message: "already a owner" })
+    let organization = await Organization.findById(user.organization._id)
+    if (!organization)
+        return res.status(404).json({ message: "you are not a member of any organization" })
     user.roles?.push("owner")
     if (req.user)
         user.updated_by = req.user._id
     await user.save();
+    organization.owners.push(user._id)
+    organization.updated_at = new Date(Date.now())
+    if (req.user)
+        organization.updated_by = req.user?._id
+    await organization.save();
     res.status(200).json({ message: "new owner created successfully" });
 })
 
@@ -460,6 +468,16 @@ export const RevokePermissions = catchAsyncError(async (req: Request, res: Respo
         roles: ["user"],
         updated_by: req.user?._id
     })
+    let organization = await Organization.findById(user.organization._id)
+    if (!organization)
+        return res.status(404).json({ message: "you are not a member of any organization" })
+    organization.owners = organization.owners.filter((owner => {
+        return String(owner) !== String(user?._id)
+    }))
+    organization.updated_at = new Date(Date.now())
+    if (req.user)
+        organization.updated_by = req.user?._id
+    await organization.save();
     res.status(200).json({ message: "user permissions revoked successfully" });
 })
 

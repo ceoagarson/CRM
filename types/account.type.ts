@@ -33,7 +33,7 @@ type Status = {
     created_at: Date,
     updated_at: Date,
     updated_by: IUser | Types.ObjectId
-    activities: IActivity[] | Types.ObjectId[]
+    activities: Array<IActivity['_id']> 
 }
 export type IAccount = BaseAccount & AdditionalData & Status
 export type TAccountBody = Request['body'] & IAccount;

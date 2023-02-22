@@ -133,10 +133,16 @@ export default function UsersPage() {
                 Cell: (props) => {
                     if (props.row.original.email_verified)
                         return (
-                            <Typography variant="body1">{"verified"}</Typography>
+                            <Stack>
+                                <Typography variant="body1">{props.row.original.mobile}</Typography>
+                                <Typography variant="caption">{"verified"}</Typography>
+                            </Stack>
                         )
                     return (
-                        <Typography variant="body1">{"not verified"}</Typography>
+                        <Stack>
+                            <Typography variant="body1">{props.row.original.mobile}</Typography>
+                            <Typography sx={{ color: "red" }} variant="caption">{"not verified"}</Typography>
+                        </Stack>
                     )
                 }
             },
@@ -201,7 +207,8 @@ export default function UsersPage() {
                         <Stack direction="row">
                             {/* view icon */}
                             <Tooltip title="view">
-                                <IconButton size="medium"
+                                <IconButton
+                                    color="info" size="medium"
                                     onClick={() => {
                                         setChoice({ type: UserChoiceActions.view_profile })
                                         setUser(props.row.original)
@@ -214,7 +221,8 @@ export default function UsersPage() {
                                     <>
                                         {/* edit icon */}
                                         <Tooltip title="edit">
-                                            <IconButton size="medium"
+                                            <IconButton
+                                                color="success" size="medium"
                                                 onClick={() => {
                                                     setChoice({ type: UserChoiceActions.update_user })
                                                     setUser(props.row.original)
@@ -227,6 +235,7 @@ export default function UsersPage() {
                                             CellUser.created_by._id === CellUser._id ? null :
                                                 <>
                                                     < Tooltip title="Revoke Permissions "><IconButton size="medium"
+                                                        color="error"
                                                         onClick={() => {
 
                                                             setChoice({ type: UserChoiceActions.revoke_permission })
@@ -243,6 +252,7 @@ export default function UsersPage() {
                                             CellUser.created_by._id === CellUser._id ? null :
                                                 <Tooltip title="make owner">
                                                     <IconButton size="medium"
+                                                        color="success"
                                                         onClick={() => {
 
                                                             setChoice({ type: UserChoiceActions.make_owner })
@@ -258,6 +268,7 @@ export default function UsersPage() {
                                             CellUser.created_by._id === CellUser._id ? null :
 
                                                 <Tooltip title="make admin"><IconButton size="medium"
+                                                    color="info"
                                                     onClick={() => {
                                                         setChoice({ type: UserChoiceActions.make_admin })
                                                         setRowId(props.row.original._id)
@@ -275,7 +286,8 @@ export default function UsersPage() {
                                                 <>
                                                     {
                                                         CellUser?.is_active ?
-                                                            <Tooltip title="block"><IconButton size="medium"
+                                                            <Tooltip title="block"><IconButton
+                                                                color="error" size="medium"
                                                                 onClick={() => {
                                                                     setChoice({ type: UserChoiceActions.block_user })
                                                                     setRowId(props.row.original._id)
@@ -286,7 +298,9 @@ export default function UsersPage() {
                                                             </Tooltip>
                                                             :
                                                             < Tooltip title="unblock">
-                                                                <IconButton size="medium"
+                                                                <IconButton
+                                                                    color="warning"
+                                                                    size="medium"
                                                                     onClick={() => {
                                                                         setChoice({ type: UserChoiceActions.unblock_user })
                                                                         setRowId(props.row.original._id)
