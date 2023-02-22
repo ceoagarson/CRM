@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTitle, Button, DialogActions, Avatar, Typography } from '@mui/material';
+import { Dialog, DialogContent, DialogTitle, Button, DialogActions, Avatar, Typography, Box } from '@mui/material';
 import { Stack } from '@mui/system';
 import { useContext } from 'react';
 import { OpportunityChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
@@ -14,13 +14,20 @@ function ViewOpportunityDialog({ opportunity }: { opportunity: IOpportunity }) {
       >
         <DialogTitle textAlign={"center"}>Opportunity</DialogTitle>
         <DialogContent>
-          <Stack>
-            <Avatar src={opportunity.dp.url} />
-            <Typography variant="h6">{opportunity.name}</Typography>
-          </Stack>
+          <Box>
+            <Stack p={2} justifyContent="center" alignItems="center">
+              <Avatar src={opportunity.dp?.url} sx={{ height: "150px", width: "150px" }} alt="opportunity pic" />
+            </Stack>
+            <Stack direction="column" justifyContent="center" alignItems="center">
+              <Typography variant="h6" component="h2">
+                {opportunity.customer_name}</Typography>
+              <Typography variant="caption" component="p">
+                {opportunity.name}</Typography>
+            </Stack>
+          </Box>
         </DialogContent>
         <DialogActions>
-          <Button fullWidth onClick={() => setChoice({ type: OpportunityChoiceActions.close })}>Cancel</Button>
+          <Button fullWidth onClick={() => setChoice({ type: OpportunityChoiceActions.close })}>Close</Button>
         </DialogActions>
       </Dialog>
     </>

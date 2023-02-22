@@ -83,6 +83,10 @@ export default function UsersPage() {
                         return (
                             <Stack>
                                 <Avatar
+                                    onClick={() => {
+                                        setChoice({ type: UserChoiceActions.view_profile })
+                                        setUser(props.row.original)
+                                    }}
                                     alt="display picture" src={props.row.original.dp?.url} />
                                 <Typography variant="caption" sx={{
                                     color: "green"
@@ -92,6 +96,10 @@ export default function UsersPage() {
                     return (
                         <Stack>
                             <Avatar
+                                onClick={() => {
+                                    setChoice({ type: UserChoiceActions.view_profile })
+                                    setUser(props.row.original)
+                                }}
                                 alt="display picture" src={props.row.original.dp?.url} />
                             <Typography variant="caption" sx={{
                                 color: "red"

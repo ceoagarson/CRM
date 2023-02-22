@@ -1,6 +1,6 @@
-import { Dialog, DialogContent, DialogTitle, Button, Typography, Avatar} from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, Button, Typography, Avatar, Paper, Box } from '@mui/material'
 import { Stack } from '@mui/system'
-import { useContext,  useState } from 'react'
+import { useContext, useState } from 'react'
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { UserContext } from '../../../contexts/userContext'
 import UpdateProfileForm from '../../forms/user/UpdateProfileForm'
@@ -8,9 +8,9 @@ import UpdateProfileForm from '../../forms/user/UpdateProfileForm'
 function UpdateProfileDialog() {
     const [isEditing, setIsEditing] = useState(false)
     const { choice, setChoice } = useContext(ChoiceContext)
-    const {user}=useContext(UserContext)
+    const { user } = useContext(UserContext)
     return (
-        <Dialog open={choice === UserChoiceActions.update_profile ? true : false}
+        <Dialog fullScreen open={choice === UserChoiceActions.update_profile ? true : false}
             onClose={() => setChoice({ type: UserChoiceActions.close })}
         >
             {isEditing ?
@@ -26,38 +26,18 @@ function UpdateProfileDialog() {
                         null
                 }
                 {
-                    !isEditing ?
-                        <>
-                            <Stack
-                                justifyContent={"center"}
-                                alignItems="center"
-                            >
-                                <Avatar src={user?.dp?.url} alt="avatar" />
-                                <Typography variant="subtitle2">
-                                    {user?.username}
-                                </Typography>
+                    !isEditing && user ?
+                        <Box>
+                            <Stack p={2} justifyContent="center" alignItems="center">
+                                <Avatar src={user?.dp?.url} sx={{ height: "150px", width: "150px" }} alt="profile pic" />
                             </Stack>
-                            <Stack>
-                                <Typography
-                                    sx={{
-                                        letterSpacing: 1,
-                                        gap: 1,
-                                        padding: 1
-                                    }}
-                                    variant="subtitle1">
-                                    Email : {user?.email}
-                                </Typography>
-                                <Typography
-                                    sx={{
-                                        letterSpacing: 1,
-                                        gap: 1,
-                                        padding: 1
-                                    }}
-                                    variant="subtitle1">
-                                    Organization : {user?.organization?.organization_name}
-                                </Typography>
+                            <Stack direction="column" justifyContent="center" alignItems="center">
+                                <Typography variant="h6" component="h2">
+                                    {user?.username}</Typography>
+                                <Typography variant="caption" component="p">
+                                    {user?.roles.toString()}</Typography>
                             </Stack>
-                        </>
+                        </Box>
                         : null
                 }
 

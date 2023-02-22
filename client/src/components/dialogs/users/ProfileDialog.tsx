@@ -4,8 +4,6 @@ import { useContext } from 'react'
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { IUser } from '../../../types/user.type'
 
-
-
 function ProfileDialog({ profile }: { profile: IUser }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     return (
@@ -17,36 +15,16 @@ function ProfileDialog({ profile }: { profile: IUser }) {
             </DialogTitle>
             <DialogContent>
                 <Box>
-                    <Stack
-                        justifyContent={"center"}
-                        alignItems="center"
-                    >
-                        <Avatar src={profile?.dp?.url} alt="avatar" />
-                        <Typography variant="subtitle2">
-                            {profile?.username}
-                        </Typography>
+                    <Stack p={2} justifyContent="center" alignItems="center">
+                        <Avatar src={profile?.dp?.url} sx={{ height: "150px", width: "150px" }} alt="profile pic" />
                     </Stack>
-                    <Stack>
-                        <Typography
-                            sx={{
-                                letterSpacing: 1,
-                                gap: 1,
-                                padding: 1
-                            }}
-                            variant="subtitle1">
-                            Email : {profile?.email}
-                        </Typography>
-                        <Typography
-                            sx={{
-                                letterSpacing: 1,
-                                gap: 1,
-                                padding: 1
-                            }}
-                            variant="subtitle1">
-                            Organization : {profile?.organization?.organization_name}
-                        </Typography>
+                    <Stack direction="column" justifyContent="center" alignItems="center">
+                        <Typography variant="h6" component="h2">
+                            {profile?.username}</Typography>
+                        <Typography variant="caption" component="p">
+                            {profile?.roles.toString()}</Typography>
                     </Stack>
-                </Box >
+                </Box>
             </DialogContent>
             <DialogActions>
                 <Button
