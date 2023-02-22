@@ -1,5 +1,8 @@
 import { apiClient } from "../utils/AxiosInterceptor"
 
+export type Resource_Type = "lead" | "account" | "opportunity"
+export type Activity_Type = "visited" | "telephonic" | ""
+
 export const GetActivity = async (id: string) => {
   return await apiClient.get(`activities/${id}`)
 }
@@ -11,18 +14,18 @@ export const GetActivities = async () => {
 }
 export const NewActivity = async ({ id, body }: {
   id: string, body: {
-    type: string,
+    activity_type: Activity_Type,
     description: string,
     remarks: string,
-    resource_type: string
+    resource_type: Resource_Type
   }
 }) => {
-  return await apiClient.post(`activities/:${id}`, body)
+  return await apiClient.post(`activities/${id}`, body)
 }
 
 export const UpdateActivity = async ({ id, body }: {
   id: string, body: {
-    type: string,
+    activity_type: string,
     description: string,
     remarks: string
   }

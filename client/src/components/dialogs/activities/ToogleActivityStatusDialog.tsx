@@ -6,16 +6,16 @@ import { queryClient } from '../../..';
 import { ActivityChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { ToogleActivityStatus } from '../../../services/ActivityServices';
 import { BackendError } from '../../../types';
-import { IActivity} from '../../../types/activity.type';
+import { IActivity } from '../../../types/activity.type';
 
-function ToogleActivityStatusDialog({ activity }: { activity: IActivity}) {
+function ToogleActivityStatusDialog({ activity }: { activity: IActivity }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
         (ToogleActivityStatus,
             {
                 onSuccess: () => {
-                    queryClient.invalidateQueries('activities')
+                    queryClient.invalidateQueries('activitys')
                 }
             }
         )
@@ -28,7 +28,7 @@ function ToogleActivityStatusDialog({ activity }: { activity: IActivity}) {
     }, [setChoice, isSuccess])
 
     return (
-        <Dialog open={choice === ActivityChoiceActions.view_activity ? true : false}
+        <Dialog open={choice === ActivityChoiceActions.open_close_activity ? true : false}
             onClose={() => setChoice({ type: ActivityChoiceActions.close })}
         >
             <DialogTitle textAlign="center">

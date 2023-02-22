@@ -81,20 +81,7 @@ function UpdateProfileForm({ user }: { user: IUser }) {
 
   return (
     <form onSubmit={formik.handleSubmit}>
-      {
-        isError ? (
-          <Alert color="error">
-            {error?.response.data.message}
-          </Alert>
-        ) : null
-      }
-      {
-        isSuccess ? (
-          <Alert color="success">
-            profile updated successfully
-          </Alert>
-        ) : null
-      }
+
       <Stack
         direction="column"
         gap={2}>
@@ -113,7 +100,7 @@ function UpdateProfileForm({ user }: { user: IUser }) {
           }
           {...formik.getFieldProps('email')}
         />
-         <TextField
+        <TextField
           variant='standard'
           focused
           required
@@ -152,6 +139,20 @@ function UpdateProfileForm({ user }: { user: IUser }) {
             }
           }}
         />
+        {
+          isError ? (
+            <Alert color="error">
+              {error?.response.data.message}
+            </Alert>
+          ) : null
+        }
+        {
+          isSuccess ? (
+            <Alert color="success">
+              profile updated successfully
+            </Alert>
+          ) : null
+        }
         <Button variant="contained" color="primary" type="submit"
           disabled={Boolean(isLoading)}
           fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Update"}</Button>

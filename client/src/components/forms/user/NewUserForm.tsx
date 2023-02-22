@@ -106,20 +106,7 @@ function NewUserForm() {
 
     return (
         <form onSubmit={formik.handleSubmit}>
-            {
-                isError ? (
-                    <Alert color="error">
-                        {error?.response.data.message}
-                    </Alert>
-                ) : null
-            }
-            {
-                isSuccess ? (
-                    <Alert color="success">
-                        new user created successfully
-                    </Alert>
-                ) : null
-            }
+
             <Stack
                 direction="column"
                 gap={2}
@@ -222,7 +209,20 @@ function NewUserForm() {
                         }
                     }}
                 />
-
+                {
+                    isError ? (
+                        <Alert color="error">
+                            {error?.response.data.message}
+                        </Alert>
+                    ) : null
+                }
+                {
+                    isSuccess ? (
+                        <Alert color="success">
+                            new user created successfully
+                        </Alert>
+                    ) : null
+                }
                 <Button variant="contained" color="primary" type="submit"
                     disabled={Boolean(isLoading)}
                     fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Register"}

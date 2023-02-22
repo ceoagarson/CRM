@@ -6,43 +6,40 @@ import { useMutation } from 'react-query';
 import * as Yup from "yup"
 import { queryClient } from '../../..';
 import { ActivityChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
-import { NewActivity } from '../../../services/ActivityServices';
+import { Activity_Type, NewActivity, Resource_Type } from '../../../services/ActivityServices';
 import { BackendError } from '../../../types';
-import { ILead } from '../../../types/lead.type';
+import { IActivity } from '../../../types/activity.type';
 
 
-function NewActivityForm({ id }: { id: string }) {
+function NewActivityForm({ id, resource_type }: { id: string, resource_type: Resource_Type }) {
   const { mutate, isLoading, isSuccess, isError, error } = useMutation
-    <AxiosResponse<ILead>, BackendError, {
+    <AxiosResponse<IActivity>, BackendError, {
       id: string, body: {
-        type: string,
+        activity_type: Activity_Type,
         description: string,
         remarks: string,
-        resource_type: string
+        resource_type: Resource_Type
       }
     }>
     (NewActivity, {
-      onSuccess: () => queryClient.invalidateQueries('leads')
+      onSuccess: () => queryClient.invalidateQueries('activities')
     })
 
   const { setChoice } = useContext(ChoiceContext)
 
   const formik = useFormik<{
-    type: string,
+    activity_type: Activity_Type,
     description: string,
-    remarks: string,
-    resource_type: string
+    remarks: string
   }>({
     initialValues: {
-      type: "",
+      activity_type: "",
       description: "",
-      remarks: "",
-      resource_type: ""
+      remarks: ""
     },
     validationSchema: Yup.object({
-      type: Yup.string()
+      activity_type: Yup.string()
         .required('Required field'),
-      resource_type: Yup.string().required("required field"),
       description: Yup.string().required("required field")
         .min(20, 'Must be 20 characters or more')
         .max(1000, 'Must be 1000 characters or less'),
@@ -51,12 +48,19 @@ function NewActivityForm({ id }: { id: string }) {
         .max(500, 'Must be 500 characters or less')
     }),
     onSubmit: (values: {
-      type: string,
+      activity_type: Activity_Type,
       description: string,
-      remarks: string,
-      resource_type: string
+      remarks: string
     }) => {
-      mutate({ id: id, body: values })
+      mutate({
+        id: id, 
+        body: {
+          activity_type:values.activity_type,
+          description:values.description,
+          remarks:values.remarks,
+          resource_type: resource_type
+        }
+      })
     }
   });
 
@@ -89,7 +93,7 @@ function NewActivityForm({ id }: { id: string }) {
         gap={2}
         py={2}
       >
-        {/* type */}
+        {/* activity type */}
         <TextField
           variant='standard'
           select
@@ -99,58 +103,25 @@ function NewActivityForm({ id }: { id: string }) {
           focused
           required
           error={
-            formik.touched.type && formik.errors.type ? true : false
+            formik.touched.activity_type && formik.errors.activity_type ? true : false
           }
-          id="type"
-          label="type"
+          id="activity_type"
+          label="activity_type"
           fullWidth
           helperText={
-            formik.touched.type && formik.errors.type ? formik.errors.type : ""
+            formik.touched.activity_type && formik.errors.activity_type ? formik.errors.activity_type : ""
           }
-          {...formik.getFieldProps('type')}
+          {...formik.getFieldProps('activity_type')}
         >
           <option value="">
-            <Typography p={2} variant="body2">Select</Typography>
+            Select
           </option>
           <option value="telephonic">
-            <Typography p={2} variant="body2">telephonic</Typography>
+            telephonic
           </option><option value="visited">
-            <Typography p={2} variant="body2">visited</Typography>
+            visited
           </option>
         </TextField>
-        {/* resource_type */}
-        <TextField
-          variant='standard'
-          select
-          SelectProps={{
-            native: true
-          }}
-          focused
-          required
-          error={
-            formik.touched.resource_type && formik.errors.resource_type ? true : false
-          }
-          id="resource_type"
-          label="resource_type"
-          fullWidth
-          helperText={
-            formik.touched.resource_type && formik.errors.resource_type ? formik.errors.resource_type : ""
-          }
-          {...formik.getFieldProps('resource_type')}
-        >
-          <option value="">
-            <Typography p={2} variant="body2">Select</Typography>
-          </option>
-          <option value="lead">
-            <Typography p={2} variant="body2">lead</Typography>
-          </option><option value="account">
-            <Typography p={2} variant="body2">account</Typography>
-          </option>
-          <option value="opportunity">
-            <Typography p={2} variant="body2">opportunity</Typography>
-          </option>
-        </TextField>
-
         {/* description */}
         <TextField
           variant='standard'

@@ -352,7 +352,7 @@ function NewLeadForm() {
           {...formik.getFieldProps('probability')}
         >
           <option value="">
-            Select
+            Select  
           </option>
           <option value="easy">
             easy

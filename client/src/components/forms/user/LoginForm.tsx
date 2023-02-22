@@ -3,12 +3,12 @@ import { Alert, Button, CircularProgress, IconButton, InputAdornment, TextField 
 import { Stack } from '@mui/system';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
-import {  UserActions, UserContext } from '../../../contexts/userContext';
+import { UserActions, UserContext } from '../../../contexts/userContext';
 import { paths } from '../../../Routes';
 import { Login } from '../../../services/UserServices';
 import { BackendError } from '../../../types';
@@ -71,20 +71,7 @@ function LoginForm() {
 
   return (
     <form onSubmit={formik.handleSubmit}>
-      {
-        isError ? (
-          <Alert color="error">
-            {error?.response.data.message}
-          </Alert>
-        ) : null
-      }
-      {
-        isSuccess ? (
-          <Alert color="success">
-            logged in successfully
-          </Alert>
-        ) : null
-      }
+
       <Stack
         direction="column"
         pt={2}
@@ -132,7 +119,20 @@ function LoginForm() {
           }}
           {...formik.getFieldProps('password')}
         />
-
+        {
+          isError ? (
+            <Alert color="error">
+              {error?.response.data.message}
+            </Alert>
+          ) : null
+        }
+        {
+          isSuccess ? (
+            <Alert color="success">
+              logged in successfully
+            </Alert>
+          ) : null
+        }
         <Button variant="contained"
           disabled={Boolean(isLoading)}
           color="primary" type="submit" fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Login"}

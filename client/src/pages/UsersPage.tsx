@@ -1,4 +1,4 @@
-import { AssuredWorkloadOutlined, AttributionOutlined, BlockOutlined, CancelOutlined, CheckCircleOutline, DeleteOutlined, EditOutlined, Visibility } from '@mui/icons-material'
+import { AssuredWorkloadOutlined, AttributionOutlined, BlockOutlined, CancelOutlined, CheckCircleOutline, EditOutlined, Visibility } from '@mui/icons-material'
 import { Alert, Avatar, IconButton, LinearProgress, Tooltip, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
@@ -6,7 +6,6 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
 import { Column } from 'react-table'
 import BlockUserDialog from '../components/dialogs/users/BlockUserDialog'
-import DeleteUserDialog from '../components/dialogs/users/DeleteUserDialog'
 import MakeAdminDialog from '../components/dialogs/users/MakeAdminDialog'
 import MakeOwnerDialog from '../components/dialogs/users/MakeOwnerDialog'
 import ProfileDialog from '../components/dialogs/users/ProfileDialog'
@@ -15,7 +14,7 @@ import UnBlockUserDialog from '../components/dialogs/users/UnBlockUserDialog'
 import UpdateUserDialog from '../components/dialogs/users/UpdateUserDialog'
 import { UserTable } from '../components/tables/user/UserTable'
 import { UserChoiceActions, ChoiceContext } from '../contexts/dialogContext'
-import {  UserContext } from '../contexts/userContext'
+import { UserContext } from '../contexts/userContext'
 import { GetUsers } from '../services/UserServices'
 import { BackendError } from '../types'
 import { IUser } from '../types/user.type'
@@ -50,6 +49,7 @@ export default function UsersPage() {
                 accessor: 'username',
                 Cell: (props) => {
                     let roles = props.row.original.roles
+                    let CellUser = props.row.original
                     return (
                         <Stack>
                             {
@@ -58,10 +58,17 @@ export default function UsersPage() {
                                     :
                                     <Typography >{props.row.original.username}</Typography>
                             }
+                            {
+                                CellUser.created_by._id === CellUser._id ?
+                                    <Typography variant="caption" component="span">
+                                        {"Primary Owner"}
+                                    </Typography> :
+                                    <Typography variant="caption" component="span">
+                                        {roles?.toString()}
+                                    </Typography>
 
-                            <Typography variant="caption" component="span">
-                                {roles?.toString()}
-                            </Typography>
+                            }
+
                         </Stack >
                     )
                 }
@@ -119,30 +126,54 @@ export default function UsersPage() {
                 }
 
             },
+            // mobile
+            {
+                Header: 'Mobile',
+                accessor: 'mobile',
+                Cell: (props) => {
+                    if (props.row.original.email_verified)
+                        return (
+                            <Typography variant="body1">{"verified"}</Typography>
+                        )
+                    return (
+                        <Typography variant="body1">{"not verified"}</Typography>
+                    )
+                }
+            },
             // created by
             {
                 Header: 'Created By',
                 accessor: 'created_by',
                 Cell: (props) => {
-                    return (
-                        <Typography sx={{ fontWeight: "bold" }}>{props.row.original.created_by?.username}</Typography>
-                    )
-                }
-
-            },
-            // joined date
-            {
-                Header: 'Joined Date',
-                accessor: 'created_at',
-                Cell: (props) => {
                     let date = null
                     if (props.row.original.created_at)
                         date = new Date(props.row.original.created_at).toLocaleDateString()
                     return (
-                        <Typography variant="body1">{date}</Typography>
+                        <Stack>
+                            <Typography sx={{ fontWeight: "bold" }}>{props.row.original.created_by.username}</Typography>
+                            <Typography variant="caption" component="span">
+                                {date}
+                            </Typography>
+                        </Stack >
                     )
                 }
-
+            },
+            // updated by
+            {
+                Header: 'Last Updated',
+                accessor: 'updated_by',
+                Cell: (props) => {
+                    let date = null
+                    date = new Date(props.row.original.updated_at).toLocaleDateString()
+                    return (
+                        <Stack>
+                            <Typography sx={{ fontWeight: "bold" }}>{props.row.original.updated_by.username}</Typography>
+                            <Typography variant="caption" component="span">
+                                {date}
+                            </Typography>
+                        </Stack >
+                    )
+                }
             },
             // logindate
             {
@@ -158,6 +189,7 @@ export default function UsersPage() {
                 }
 
             },
+
             // actions
             {
                 Header: "Allowed Actions",
@@ -177,88 +209,98 @@ export default function UsersPage() {
                                     <Visibility />
                                 </IconButton>
                             </Tooltip>
-                            {/* delete icon */}
                             {
-                                (CellUser.created_by?._id === loggedInUser?._id) ?
-                                    <Tooltip title="delete">
-                                        <IconButton size="medium"
-                                            onClick={() => {
-                                                setChoice({ type: UserChoiceActions.delete_user })
-                                                setRowId(props.row.original._id)
-                                            }} color="error">
-                                            <DeleteOutlined />
-                                        </IconButton>
-                                    </Tooltip>
-                                    : null
-                            }
-                            {loggedInUser?.roles?.includes("owner") ?
-                                <>
-                                    {/* edit icon */}
-                                    <Tooltip title="edit">
-                                        <IconButton size="medium"
-                                            onClick={() => {
-                                                setChoice({ type: UserChoiceActions.update_user })
-                                                setUser(props.row.original)
-                                            }}>
-                                            <EditOutlined />
-                                        </IconButton>
-                                    </Tooltip>
-                                    {/* revoke */}
-                                    < Tooltip title="Revoke Permissions "><IconButton size="medium"
-                                        onClick={() => {
-
-                                            setChoice({ type: UserChoiceActions.revoke_permission })
-                                            setRowId(props.row.original._id)
-                                        }}>
-                                        <CancelOutlined />
-                                    </IconButton>
-                                    </Tooltip>
-                                    {/* make owner */}
-                                    <Tooltip title="make owner">
-                                        <IconButton size="medium"
-                                            onClick={() => {
-
-                                                setChoice({ type: UserChoiceActions.make_owner })
-                                                setRowId(props.row.original._id)
-                                            }}>
-                                            <AssuredWorkloadOutlined />
-                                        </IconButton>
-                                    </Tooltip>
-                                    {/* make admin */}
-                                    <Tooltip title="make admin"><IconButton size="medium"
-                                        onClick={() => {
-                                            setChoice({ type: UserChoiceActions.make_admin })
-                                            setRowId(props.row.original._id)
-                                        }}>
-                                        <AttributionOutlined />
-                                    </IconButton>
-                                    </Tooltip>
-
-                                    {/* block */}
-                                    {
-                                        CellUser?.is_active ?
-                                            <Tooltip title="block"><IconButton size="medium"
+                                loggedInUser?.roles?.includes("owner") ?
+                                    <>
+                                        {/* edit icon */}
+                                        <Tooltip title="edit">
+                                            <IconButton size="medium"
                                                 onClick={() => {
-                                                    setChoice({ type: UserChoiceActions.block_user })
-                                                    setRowId(props.row.original._id)
-                                                }}
-                                            >
-                                                <BlockOutlined />
+                                                    setChoice({ type: UserChoiceActions.update_user })
+                                                    setUser(props.row.original)
+                                                }}>
+                                                <EditOutlined />
                                             </IconButton>
-                                            </Tooltip>
-                                            :
-                                            < Tooltip title="unblock">
-                                                <IconButton size="medium"
+                                        </Tooltip>
+                                        {/* revoke */}
+                                        {
+                                            CellUser.created_by._id === CellUser._id ? null :
+                                                <>
+                                                    < Tooltip title="Revoke Permissions "><IconButton size="medium"
+                                                        onClick={() => {
+
+                                                            setChoice({ type: UserChoiceActions.revoke_permission })
+                                                            setRowId(props.row.original._id)
+                                                        }}>
+                                                        <CancelOutlined />
+                                                    </IconButton>
+                                                    </Tooltip>
+                                                </>
+                                        }
+
+                                        {/* make owner */}
+                                        {
+                                            CellUser.created_by._id === CellUser._id ? null :
+                                                <Tooltip title="make owner">
+                                                    <IconButton size="medium"
+                                                        onClick={() => {
+
+                                                            setChoice({ type: UserChoiceActions.make_owner })
+                                                            setRowId(props.row.original._id)
+                                                        }}>
+                                                        <AssuredWorkloadOutlined />
+                                                    </IconButton>
+                                                </Tooltip>
+                                        }
+
+                                        {/* make admin */}
+                                        {
+                                            CellUser.created_by._id === CellUser._id ? null :
+
+                                                <Tooltip title="make admin"><IconButton size="medium"
                                                     onClick={() => {
-                                                        setChoice({ type: UserChoiceActions.unblock_user })
+                                                        setChoice({ type: UserChoiceActions.make_admin })
                                                         setRowId(props.row.original._id)
                                                     }}>
-                                                    <CheckCircleOutline />
+                                                    <AttributionOutlined />
                                                 </IconButton>
-                                            </Tooltip>
-                                    }
-                                </>
-                                : null
+                                                </Tooltip>
+                                        }
+
+                                        {/* block */}
+                                        {
+
+                                            CellUser.created_by._id === CellUser._id ?
+                                                null :
+                                                <>
+                                                    {
+                                                        CellUser?.is_active ?
+                                                            <Tooltip title="block"><IconButton size="medium"
+                                                                onClick={() => {
+                                                                    setChoice({ type: UserChoiceActions.block_user })
+                                                                    setRowId(props.row.original._id)
+                                                                }}
+                                                            >
+                                                                <BlockOutlined />
+                                                            </IconButton>
+                                                            </Tooltip>
+                                                            :
+                                                            < Tooltip title="unblock">
+                                                                <IconButton size="medium"
+                                                                    onClick={() => {
+                                                                        setChoice({ type: UserChoiceActions.unblock_user })
+                                                                        setRowId(props.row.original._id)
+                                                                    }}>
+                                                                    <CheckCircleOutline />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                    }
+
+                                                </>
+                                        }
+
+                                    </>
+                                    : null
                             }
                         </Stack >
                     )
@@ -298,7 +340,6 @@ export default function UsersPage() {
             {
                 rowid ?
                     <>
-                        <DeleteUserDialog id={rowid} />
                         <BlockUserDialog id={rowid} />
                         <UnBlockUserDialog id={rowid} />
                         <MakeAdminDialog id={rowid} />

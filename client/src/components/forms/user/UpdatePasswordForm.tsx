@@ -8,7 +8,7 @@ import { useMutation } from 'react-query';
 import * as Yup from 'yup';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { UpdatePassword } from '../../../services/UserServices';
-import { BackendError,Target } from '../../../types';
+import { BackendError, Target } from '../../../types';
 
 
 function UpdatePasswordForm() {
@@ -69,20 +69,7 @@ function UpdatePasswordForm() {
 
     return (
         <form onSubmit={formik.handleSubmit}>
-            {
-                isError ? (
-                    <Alert color="error">
-                        {error?.response.data.message}
-                    </Alert>
-                ) : null
-            }
-            {
-                isSuccess ? (
-                    <Alert color="success">
-                        updated password successfully
-                    </Alert>
-                ) : null
-            }
+
             <Stack
                 direction="column"
                 pt={2}
@@ -170,6 +157,20 @@ function UpdatePasswordForm() {
                     }}
                     {...formik.getFieldProps('confirmPassword')}
                 />
+                {
+                    isError ? (
+                        <Alert color="error">
+                            {error?.response.data.message}
+                        </Alert>
+                    ) : null
+                }
+                {
+                    isSuccess ? (
+                        <Alert color="success">
+                            updated password successfully
+                        </Alert>
+                    ) : null
+                }
                 <Button variant="contained"
                     disabled={Boolean(isLoading)}
                     color="primary" type="submit" fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Update"}</Button>

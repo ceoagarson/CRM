@@ -21,7 +21,7 @@ export const CreateActivity = catchAsyncError(async (req: Request, res: Response
         return res.status(403).json({ message: "activity id not valid" })
     let types = ["telephonic", "visited"]
     if (!types.includes(activity_type))
-        return res.status(403).json({ message: "activity type not exists" })
+        return res.status(403).json({ message: "activity type must be telephonic or visited" })
     if (resource_type == "lead") {
         Resource = await Lead.findById(id)
         if (!Resource)

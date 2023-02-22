@@ -80,6 +80,7 @@ export const SignUp = catchAsyncError(
         sendUserToken(res, owner.getAccessToken())
         await owner.save()
         organization = await organization.save()
+        owner = await User.findById(owner._id).populate('organization').populate("created_by").populate("updated_by") || owner
         res.status(201).json({ owner, organization })
     })
 

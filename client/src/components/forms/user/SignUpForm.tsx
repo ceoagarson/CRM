@@ -14,21 +14,21 @@ import { BackendError, Target } from '../../../types';
 import { IUser } from '../../../types/user.type';
 
 type TFormData = {
-  organization_name:string
+  organization_name: string
   organization_email: string,
   organization_mobile: string,
   username: string,
-  email:string
-  password:string
+  email: string
+  password: string
   mobile: string
   dp: string | Blob | File
 }
 
 function OwnerSignUpForm() {
   const goto = useNavigate()
-  const { dispatch } = useContext(UserContext)
+  const { dispatch} = useContext(UserContext)
   const { mutate, data, isLoading, isSuccess, isError, error } = useMutation
-    <AxiosResponse<{ owner: IUser }>, BackendError, FormData>
+    <AxiosResponse<{owner: IUser}>, BackendError, FormData>
     (Signup)
   const { setChoice } = useContext(ChoiceContext)
 
@@ -137,20 +137,7 @@ function OwnerSignUpForm() {
 
   return (
     <form onSubmit={formik.handleSubmit}>
-      {
-        isError ? (
-          <Alert color="error">
-            {error?.response.data.message}
-          </Alert>
-        ) : null
-      }
-      {
-        isSuccess ? (
-          <Alert color="success">
-            New Organizataion and It's owner created Successfully
-          </Alert>
-        ) : null
-      }
+
       <Stack
         direction="column"
         gap={2}
@@ -299,6 +286,20 @@ function OwnerSignUpForm() {
             }
           }}
         />
+        {
+          isError ? (
+            <Alert color="error">
+              {error?.response.data.message}
+            </Alert>
+          ) : null
+        }
+        {
+          isSuccess ? (
+            <Alert color="success">
+              New Organizataion and It's owner created Successfully
+            </Alert>
+          ) : null
+        }
         <Button variant="contained"
           disabled={Boolean(isLoading)}
           color="primary" type="submit" fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Register"}</Button>

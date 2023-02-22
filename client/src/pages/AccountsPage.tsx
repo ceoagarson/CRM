@@ -151,7 +151,7 @@ export default function AccountsPage() {
             <UpdateAccountDialog account={account} />
             <ViewAccountDialog account={account} />
             <ToogleAccountStatusDialog account={account} />
-            <NewActivityDialog id={account._id} />
+            <NewActivityDialog id={account._id} resource_type="account" />
           </>
           : null
       } 

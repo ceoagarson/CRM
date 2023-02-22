@@ -8,7 +8,7 @@ function UpdateActivityDialog({ activity }: { activity: IActivity }) {
   const { choice, setChoice } = useContext(ChoiceContext)
   return (
     <>
-      <Dialog open={choice === ActivityChoiceActions.create_activity ? true : false}
+      <Dialog open={choice === ActivityChoiceActions.update_activity ? true : false}
         onClose={() => setChoice({ type: ActivityChoiceActions.close })}
         scroll="paper"
       >

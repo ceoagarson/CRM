@@ -47,20 +47,7 @@ function ResetPasswordSendMailForm() {
   }, [setChoice, goto, isSuccess])
   return (
     <form onSubmit={formik.handleSubmit}>
-      {
-        isError ? (
-          <Alert color="error">
-            {error?.response.data.message}
-          </Alert>
-        ) : null
-      }
-      {
-        isSuccess ? (
-          <Alert color="success">
-            reset password mail sent successfully
-          </Alert>
-        ) : null
-      }
+
       <Stack
         direction="column"
         pt={2}
@@ -81,7 +68,20 @@ function ResetPasswordSendMailForm() {
           }
           {...formik.getFieldProps('email')}
         />
-
+        {
+          isError ? (
+            <Alert color="error">
+              {error?.response.data.message}
+            </Alert>
+          ) : null
+        }
+        {
+          isSuccess ? (
+            <Alert color="success">
+              reset password mail sent successfully
+            </Alert>
+          ) : null
+        }
         <Button variant="contained"
           disabled={Boolean(isLoading)}
           color="primary" type="submit" fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Send"}

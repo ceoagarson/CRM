@@ -70,20 +70,7 @@ function ResetPasswordForm({ token }: { token: string }) {
   return (
 
     <form onSubmit={formik.handleSubmit}>
-      {
-        isError ? (
-          <Alert color="error">
-            {error?.response.data.message}
-          </Alert>
-        ) : null
-      }
-      {
-        isSuccess ? (
-          <Alert color="success">
-            Reset password successfully
-          </Alert>
-        ) : null
-      }
+
       <Stack
         direction="column"
         pt={2}
@@ -143,11 +130,24 @@ function ResetPasswordForm({ token }: { token: string }) {
           }}
           {...formik.getFieldProps('confirmPassword')}
         />
-
+        {
+          isError ? (
+            <Alert color="error">
+              {error?.response.data.message}
+            </Alert>
+          ) : null
+        }
+        {
+          isSuccess ? (
+            <Alert color="success">
+              Reset password successfully
+            </Alert>
+          ) : null
+        }
         <Button variant="contained"
           disabled={Boolean(isLoading)}
           color="primary" type="submit" fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Reset"}
-          </Button>
+        </Button>
       </Stack>
     </form>
   )

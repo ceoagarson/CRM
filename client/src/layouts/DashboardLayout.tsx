@@ -3,8 +3,8 @@ import { paths } from '../Routes';
 import { Stack } from '@mui/system';
 import styled from '@emotion/styled';
 import { Avatar, Box, Button, IconButton, Tooltip, Typography } from '@mui/material';
-import { useContext} from 'react';
-import {  UserContext } from '../contexts/userContext';
+import { useContext } from 'react';
+import { UserContext } from '../contexts/userContext';
 import { AccountCircle } from '@mui/icons-material';
 import { UserChoiceActions, ChoiceContext } from '../contexts/dialogContext';
 import LoginDialog from '../components/dialogs/users/LoginDialog';
@@ -89,7 +89,7 @@ export default function DashboardLayout() {
                       <Menu />
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title="open settings">
+                  <Tooltip title={user.username || "open settings"}>
                     <IconButton
                       onClick={(e) => setMenu({ type: MenuActions.user_menu, payload: { type: MenuActions.user_menu, anchorEl: e.currentTarget } })
                       }

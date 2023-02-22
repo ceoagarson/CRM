@@ -9,14 +9,13 @@ import { ActivityChoiceActions, ChoiceContext } from '../../../contexts/dialogCo
 import { UpdateActivity } from '../../../services/ActivityServices';
 import { BackendError } from '../../../types';
 import { IActivity } from '../../../types/activity.type';
-import { ILead } from '../../../types/lead.type';
 
 
 function UpdateActivityForm({ activity }: { activity: IActivity }) {
   const { mutate, isLoading, isSuccess, isError, error } = useMutation
-    <AxiosResponse<ILead>, BackendError, {
+    <AxiosResponse<IActivity>, BackendError, {
       id: string, body: {
-        type: string,
+        activity_type: string,
         description: string,
         remarks: string
       }
@@ -28,17 +27,17 @@ function UpdateActivityForm({ activity }: { activity: IActivity }) {
   const { setChoice } = useContext(ChoiceContext)
 
   const formik = useFormik<{
-    type: string,
+    activity_type: string,
     description: string,
     remarks: string
   }>({
     initialValues: {
-      type: activity.activity_type,
+      activity_type: activity.activity_type,
       description: activity.description,
       remarks: activity.remarks
     },
     validationSchema: Yup.object({
-      type: Yup.string()
+      activity_type: Yup.string()
         .required('Required field'),
       description: Yup.string().required("required field")
         .min(20, 'Must be 20 characters or more')
@@ -48,7 +47,7 @@ function UpdateActivityForm({ activity }: { activity: IActivity }) {
         .max(500, 'Must be 500 characters or less')
     }),
     onSubmit: (values: {
-      type: string,
+      activity_type: string,
       description: string,
       remarks: string
     }) => {
@@ -95,23 +94,23 @@ function UpdateActivityForm({ activity }: { activity: IActivity }) {
           focused
           required
           error={
-            formik.touched.type && formik.errors.type ? true : false
+            formik.touched.activity_type && formik.errors.activity_type ? true : false
           }
-          id="type"
-          label="type"
+          id="activity_type"
+          label="activity_type"
           fullWidth
           helperText={
-            formik.touched.type && formik.errors.type ? formik.errors.type : ""
+            formik.touched.activity_type && formik.errors.activity_type ? formik.errors.activity_type : ""
           }
-          {...formik.getFieldProps('type')}
+          {...formik.getFieldProps('activity_type')}
         >
           <option value="">
-            <Typography p={2} variant="body2">Select</Typography>
+            Select
           </option>
           <option value="telephonic">
-            <Typography p={2} variant="body2">telephonic</Typography>
+            telephonic
           </option><option value="visited">
-            <Typography p={2} variant="body2">visited</Typography>
+            visited
           </option>
         </TextField>
 

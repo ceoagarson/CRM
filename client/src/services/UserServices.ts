@@ -35,10 +35,7 @@ export const GetUsers = async () => {
 export const GetUser = async (id: string) => {
   return await apiClient.get(`users/${id}`)
 }
-// delete user
-export const DeleteUser = async (id: string) => {
-  return await apiClient.delete(`users/${id}`)
-}
+
 // block user
 export const BlockUser = async (id: string) => {
   return await apiClient.patch(`owner/block/user/${id}`)

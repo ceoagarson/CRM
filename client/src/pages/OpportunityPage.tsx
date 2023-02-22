@@ -151,7 +151,7 @@ export default function OpportunitiesPage() {
             <UpdateOpportunityDialog opportunity={opportunity} />
             <ViewOpportunityDialog opportunity={opportunity} />
             <ToogleOpportunityStatusDialog opportunity={opportunity} />
-            <NewActivityDialog id={opportunity._id} />
+            <NewActivityDialog id={opportunity._id} resource_type="opportunity"/>
           </>
           : null
       }

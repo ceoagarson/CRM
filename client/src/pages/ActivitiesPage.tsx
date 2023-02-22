@@ -1,30 +1,31 @@
-import {AddBoxOutlined, Block, CheckCircle, Edit, Visibility } from "@mui/icons-material"
+import { Block, CheckCircle, Delete, Edit, Visibility } from "@mui/icons-material"
 import {  IconButton, LinearProgress, Stack, Tooltip, Typography } from "@mui/material"
 import { AxiosResponse } from "axios"
 import React, { useContext, useEffect, useState } from "react"
 import { useQuery } from "react-query"
 import { Column } from "react-table"
+import DeleteActivityDialog from "../components/dialogs/activities/DeleteActivityDialog"
 import NewActivityDialog from "../components/dialogs/activities/NewActivityDialog"
-import ToogleLeadStatusDialog from "../components/dialogs/leads/ToogleLeadStatusDialog"
-import UpdateLeadDialog from "../components/dialogs/leads/UpdateLeadDialog"
-import ViewLeadDialog from "../components/dialogs/leads/ViewLeadDialog"
-import { LeadTable } from "../components/tables/lead/LeadTable"
-import { ActivityChoiceActions, ChoiceContext, LeadChoiceActions } from "../contexts/dialogContext"
-import { GetLeads } from "../services/LeadsServices"
+import ToogleActivityStatusDialog from "../components/dialogs/activities/ToogleActivityStatusDialog"
+import UpdateActivityDialog from "../components/dialogs/activities/UpdateActivityDialog"
+import ViewActivityDialog from "../components/dialogs/activities/ViewActivityDialog"
+import { ActivityTable } from "../components/tables/table/ActivityTable"
+import { ActivityChoiceActions, ChoiceContext } from "../contexts/dialogContext"
+import { GetActivities } from "../services/ActivityServices"
 import { BackendError } from "../types"
-import { ILead } from "../types/lead.type"
+import { IActivity } from "../types/activity.type"
 
-export default function LeadsPage() {
+export default function ActivitiesPage() {
   const { setChoice } = useContext(ChoiceContext)
-  const [lead, setLead] = useState<ILead>()
+  const [activity, setActivity] = useState<IActivity>()
   const { data, isSuccess, isLoading } = useQuery
-    <AxiosResponse<ILead[]>, BackendError>("leads", GetLeads, {
+    <AxiosResponse<IActivity[]>, BackendError>("activities", GetActivities, {
       refetchOnMount: true
     })
-  const [DATA, setDATA] = useState<ILead[]>([])
+  const [DATA, setDATA] = useState<IActivity[]>([])
   const MemoData = React.useMemo(() => DATA, [DATA])
 
-  const MemoColumns: Column<ILead>[] = React.useMemo(
+  const MemoColumns: Column<IActivity>[] = React.useMemo(
     () => [
       {
         Header: "Index",
@@ -34,10 +35,6 @@ export default function LeadsPage() {
         Cell: (props) => {
           return <Typography variant="body1" component="span" pr={2}>{props.row.index + 1}</Typography>
         }
-      },
-      {
-        Header: 'Name',
-        accessor: 'name'
       },
       {
         Header: 'Status',
@@ -60,11 +57,7 @@ export default function LeadsPage() {
           )
         }
       },
-      // email
-      {
-        Header: 'Email',
-        accessor: 'email'
-      },
+     
       //actions
       {
         Header: 'Actions',
@@ -76,8 +69,8 @@ export default function LeadsPage() {
               <Tooltip title="edit">
                 <IconButton color="secondary"
                   onClick={() => {
-                    setChoice({ type: LeadChoiceActions.update_lead })
-                    setLead(props.row.original)
+                    setChoice({ type: ActivityChoiceActions.update_activity })
+                    setActivity(props.row.original)
                   }}
                 >
                   <Edit />
@@ -87,8 +80,8 @@ export default function LeadsPage() {
               <Tooltip title="view">
                 <IconButton color="primary"
                   onClick={() => {
-                    setChoice({ type: LeadChoiceActions.view_lead })
-                    setLead(props.row.original)
+                    setChoice({ type: ActivityChoiceActions.view_activity })
+                    setActivity(props.row.original)
                   }}
                 >
                   <Visibility />
@@ -100,8 +93,8 @@ export default function LeadsPage() {
                     <IconButton
                       color="error"
                       onClick={() => {
-                        setChoice({ type: LeadChoiceActions.open_close_lead })
-                        setLead(props.row.original)
+                        setChoice({ type: ActivityChoiceActions.open_close_activity })
+                        setActivity(props.row.original)
                       }}
                     ><Block />
                     </IconButton>
@@ -111,8 +104,8 @@ export default function LeadsPage() {
                     <IconButton
                       color="success"
                       onClick={() => {
-                        setChoice({ type: LeadChoiceActions.open_close_lead })
-                        setLead(props.row.original)
+                        setChoice({ type: ActivityChoiceActions.open_close_activity })
+                        setActivity(props.row.original)
                       }}
                     >
                       <CheckCircle />
@@ -121,13 +114,13 @@ export default function LeadsPage() {
               }
               <Tooltip title="New Activity">
                 <IconButton
-                  color="success"
+                  color="error"
                   onClick={() => {
-                    setChoice({ type: ActivityChoiceActions.create_activity })
-                    setLead(props.row.original)
+                    setChoice({ type: ActivityChoiceActions.delete_activity })
+                    setActivity(props.row.original)
                   }}
                 >
-                  <AddBoxOutlined />
+                  <Delete />
                 </IconButton>
               </Tooltip>
             </Stack>
@@ -144,17 +137,17 @@ export default function LeadsPage() {
   }, [isSuccess, data])
   return (
     <>
-      < LeadTable data={MemoData} columns={MemoColumns} />
+      <ActivityTable data={MemoData} columns={MemoColumns} />
       {
-        lead ?
+        activity ?
           <>
-            <UpdateLeadDialog lead={lead} />
-            <ViewLeadDialog lead={lead} />
-            <ToogleLeadStatusDialog lead={lead} />
-            <NewActivityDialog id={lead._id}resource_type="lead" />
+            <UpdateActivityDialog activity={activity} />
+            <ViewActivityDialog activity={activity} />
+            <ToogleActivityStatusDialog activity={activity} />
+            <DeleteActivityDialog activity={activity} />
           </>
           : null
-      }
+      } 
       {
         isLoading && <LinearProgress />
       }

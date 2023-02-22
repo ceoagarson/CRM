@@ -6,7 +6,7 @@ import { UserContext } from './contexts/userContext'
 import { DashboardLayout } from './layouts'
 import EmailVerifyPage from './pages/EmailVerifyPage'
 const AccountsPage = React.lazy(() => import('./pages/AccountsPage'))
-const ActivityPage = React.lazy(() => import('./pages/ActivityPage'))
+const ActivitiesPage = React.lazy(() => import('./pages/ActivitiesPage'))
 const DashBoardPage = React.lazy(() => import('./pages/DashBoardPage'))
 const HomePage = React.lazy(() => import('./pages/HomePage'))
 const LeadsPage = React.lazy(() => import('./pages/LeadsPage'))
@@ -67,7 +67,7 @@ function AppRoutes() {
             />
             <Route
               path={paths.activities} element={
-                <Suspense fallback={<LinearProgress />}><ActivityPage /></Suspense>
+                <Suspense fallback={<LinearProgress />}><ActivitiesPage /></Suspense>
               }
             />
             <Route

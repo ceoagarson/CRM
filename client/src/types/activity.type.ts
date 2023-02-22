@@ -6,7 +6,9 @@ type BaseActivity = {
     activity_type: "telephonic" | "visited",
     description: string,
     resource_id:string,
-    resource_type: "lead" | "account" | "opportunity"
+    resource_type: "lead" | "account" | "opportunity",
+      // for react table actions
+      actions: any
 }
 type AdditionalData = {
     remarks: string,
