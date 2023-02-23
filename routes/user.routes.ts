@@ -1,6 +1,6 @@
 import express from "express";
 import multer from "multer";
-import { SignUp, DeleteUser, GetProfile, GetUser, GetUsers, Login, Logout, NewUser, ResetPassword, SendPasswordResetMail, SendVerifyEmail, updatePassword, UpdateProfile, UpdateUser, MakeOwner, VerifyEmail, MakeAdmin, BlockUser, UnBlockUser, RevokePermissions } from "../controllers/user.controller";
+import { SignUp,  GetProfile, GetUser, GetUsers, Login, Logout, NewUser, ResetPassword, SendPasswordResetMail, SendVerifyEmail, updatePassword, UpdateProfile, UpdateUser, MakeOwner, VerifyEmail, MakeAdmin, BlockUser, UnBlockUser, RevokePermissions } from "../controllers/user.controller";
 import { isAdmin, isAuthenticatedUser, isOwner } from "../middlewares/auth.middleware";
 
 const router = express.Router()
@@ -12,8 +12,7 @@ router.route("/users")
     .post(isAuthenticatedUser, isAdmin, upload.single("dp"), NewUser)
 router.route("/users/:id")
     .get(isAuthenticatedUser, GetUser)
-    .put(isAuthenticatedUser, isAdmin, upload.single("dp"), UpdateUser)
-    .delete(isAuthenticatedUser, isAdmin, isOwner, DeleteUser)
+    .put(isAuthenticatedUser, isAdmin,isOwner, upload.single("dp"), UpdateUser)
 
 router.patch("/owner/update/role/admin/:id", isAuthenticatedUser, isAdmin, isOwner, MakeAdmin)
 router.patch("/owner/update/role/owner/:id", isAuthenticatedUser, isAdmin, isOwner, MakeOwner)
@@ -27,7 +26,7 @@ router.route("/profile")
     .put(isAuthenticatedUser, upload.single("dp"), UpdateProfile)
     .patch(isAuthenticatedUser, updatePassword)
 
-router.post("/email/verify", SendVerifyEmail)
+router.post("/email/verify",isAuthenticatedUser, SendVerifyEmail)
 router.patch("/email/verify/:token", VerifyEmail)
 router.post("/password/reset", SendPasswordResetMail)
 router.patch("/password/reset/:token", ResetPassword)

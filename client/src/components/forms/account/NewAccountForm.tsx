@@ -1,4 +1,4 @@
-import { Alert,  Button, CircularProgress, Stack, TextField } from '@mui/material';
+import { Alert, Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useEffect, useContext } from 'react';
@@ -53,7 +53,7 @@ function NewAccountForm() {
       probability: "",
       customer_name: "",
       address: "",
-      country: "",
+      country: "india",
       alternate_mobile: "",
       alternate_email: "",
       customer_designination: "",
@@ -409,19 +409,16 @@ function NewAccountForm() {
             formik.touched.country && formik.errors.country ? true : false
           }
           id="country"
-          label="country"
+          label="Select Country"
           fullWidth
           helperText={
             formik.touched.country && formik.errors.country ? formik.errors.country : ""
           }
           {...formik.getFieldProps('country')}
         >
-          <option value="">
-            Select Country
-          </option>
           {
             Countries.map(country => {
-              return (<option key={country.unicode} value={country.name}>
+              return (<option key={country.unicode} value={country.name.toLowerCase()}>
                 {country.name}
               </option>)
             })

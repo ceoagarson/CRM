@@ -5,7 +5,7 @@ import SearchBar from './SearchBar';
 import TableCheckBox from '../utils/TableCheckBox';
 import TableMenu from './TableMenu';
 import { Stack } from '@mui/system';
-import { color1, color2, colorHover, headColor } from '../../../utils/colors';
+import { color1, color2, headColor } from '../../../utils/colors';
 import { ArrowDropDown, ArrowDropUp } from '@mui/icons-material';
 import { IUser } from '../../../types/user.type';
 
@@ -109,7 +109,7 @@ export function UserTable({ data, columns }: Props) {
                                 {headerGroup.headers.map
                                     ((column) => (
                                         <TableCell
-                                            sx={{ bgcolor: headColor }}
+                                            sx={{ bgcolor: headColor, textTransform: "uppercase" }}
                                             {...column.getHeaderProps(column.getSortByToggleProps())}
                                             title=""                                    >
                                             <Stack
@@ -145,37 +145,37 @@ export function UserTable({ data, columns }: Props) {
                                     {...row.getRowProps()}>
                                     {row.cells.map((cell) => {
                                         return (
-                                            <TableCell
-                                                {...cell.getCellProps()}
-                                                onDoubleClick={(e) => {
-                                                    navigator.clipboard.writeText(e.currentTarget.innerText)
-                                                }}
+                                            <TableCell sx={{ textTransform: "uppercase", fontWeight:"bold" }}
+                                    {...cell.getCellProps()}
+                                    onDoubleClick={(e) => {
+                                        navigator.clipboard.writeText(e.currentTarget.innerText)
+                                    }}
 
                                             >
-                                                {cell.render('Cell')}
-                                            </TableCell>
-
-                                        )
-                                    })}
-
-                                </TableRow>
+                                    {cell.render('Cell')}
+                                </TableCell>
 
                             )
                         })}
-                    </TableBody>
-                </Table>
-            </Box>
-            {/* pagination */}
-            <Pagination
-                pageIndex={pageIndex}
-                pageSize={pageSize}
-                canPreviousPage={canPreviousPage}
-                canNextPage={canNextPage} pageOptions={pageOptions}
-                pageCount={pageCount}
-                gotoPage={gotoPage}
-                nextPage={nextPage}
-                previousPage={previousPage} setPageSize={setPageSize}
-            />
+
+                    </TableRow>
+
+                    )
+                        })}
+                </TableBody>
+            </Table>
+        </Box>
+            {/* pagination */ }
+    <Pagination
+        pageIndex={pageIndex}
+        pageSize={pageSize}
+        canPreviousPage={canPreviousPage}
+        canNextPage={canNextPage} pageOptions={pageOptions}
+        pageCount={pageCount}
+        gotoPage={gotoPage}
+        nextPage={nextPage}
+        previousPage={previousPage} setPageSize={setPageSize}
+    />
         </>
     )
 }

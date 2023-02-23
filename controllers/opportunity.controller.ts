@@ -144,17 +144,7 @@ export const ToogleOpportunityStatus = catchAsyncError(async (req: Request, res:
     }).then(() => res.status(200).json({ message: "opportunity status updated" }))
 })
 
-// Delete opportunity
-export const DeleteOpportunity = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params.id;
-    if (!isMongoId(id)) return res.status(403).json({ message: "opportunity id not valid" })
-    let opportunity = await Opportunity.findById(id);
-    if (!opportunity) {
-        return res.status(404).json({ message: "opportunity not found" })
-    }
-    await opportunity.remove()
-    res.status(200).json({ message: "opportunity deleted permanently" })
-})
+
 // get a opportunity anyone can do in the organization
 export const GetOpportunity = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;

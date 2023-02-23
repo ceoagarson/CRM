@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTitle, Button, Typography, Avatar, Paper, Box } from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, Button, Typography, Avatar,  Box } from '@mui/material'
 import { Stack } from '@mui/system'
 import { useContext, useState } from 'react'
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'

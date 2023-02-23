@@ -1,5 +1,5 @@
-import { AddBoxOutlined, Block,  ChangeCircle,  Edit,   Visibility } from "@mui/icons-material"
-import { IconButton, LinearProgress, Stack, Tooltip, Typography } from "@mui/material"
+import { AddBoxOutlined, Block, ChangeCircle, Edit, Visibility } from "@mui/icons-material"
+import { Avatar, IconButton, LinearProgress, Stack, Tooltip, Typography } from "@mui/material"
 import { AxiosResponse } from "axios"
 import React, { useContext, useEffect, useState } from "react"
 import { useQuery } from "react-query"
@@ -11,6 +11,7 @@ import UpdateLeadDialog from "../components/dialogs/leads/UpdateLeadDialog"
 import ViewLeadDialog from "../components/dialogs/leads/ViewLeadDialog"
 import { LeadTable } from "../components/tables/lead/LeadTable"
 import { ActivityChoiceActions, ChoiceContext, ConversionChoiceActions, LeadChoiceActions } from "../contexts/dialogContext"
+import { UserContext } from "../contexts/userContext"
 import { GetLeads } from "../services/LeadsServices"
 import { BackendError } from "../types"
 import { ILead } from "../types/lead.type"
@@ -18,6 +19,7 @@ import { ILead } from "../types/lead.type"
 export default function LeadsPage() {
   const { setChoice } = useContext(ChoiceContext)
   const [lead, setLead] = useState<ILead>()
+  const { user: loggedInUser } = useContext(UserContext)
   const { data, isSuccess, isLoading } = useQuery
     <AxiosResponse<ILead[]>, BackendError>("leads", GetLeads, {
       refetchOnMount: true
@@ -27,6 +29,7 @@ export default function LeadsPage() {
 
   const MemoColumns: Column<ILead>[] = React.useMemo(
     () => [
+      // index 
       {
         Header: "Index",
         accessor: "_id",
@@ -36,27 +39,44 @@ export default function LeadsPage() {
           return <Typography variant="body1" component="span" pr={2}>{props.row.index + 1}</Typography>
         }
       },
+      // lead name
       {
-        Header: 'Name',
-        accessor: 'name'
-      },
-      {
-        Header: 'Status',
-        accessor: 'status',
+        Header: 'Lead Name',
+        accessor: 'name',
         Cell: (props) => {
-          let status = props.row.original.status
-          let username = props.row.original.status_changed_by.username
-          if (status)
-            return (
-              <Stack>
-                <Typography variant="button" sx={{ color: "green", fontWeight: "bold" }}>Open</Typography>
-                <Typography variant="caption">{username}</Typography>
-              </Stack>
-            )
           return (
-            <Stack>
-              <Typography variant="button" sx={{ color: "red" }}>Closed</Typography>
-              <Typography variant="caption">{username}</Typography>
+            <Stack direction="row"
+              spacing={2}
+              justifyContent="left"
+              alignItems="center"
+            >
+              <Stack
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Avatar
+                  onClick={() => {
+                    setChoice({ type: LeadChoiceActions.view_lead })
+                    setLead(props.row.original)
+                  }}
+                  alt="display picture" src={props.row.original.dp?.url} />
+                {
+                  props.row.original.status ?
+                    <Typography variant="caption" sx={{
+                      color: "green", fontWeight: "bold"
+                    }}>open</Typography>
+                    : <Typography variant="caption" sx={{
+                      color: "red", fontWeight: "bold"
+                    }}>closed</Typography>
+
+                }
+              </Stack >
+              <Stack>
+                <Typography sx={{ fontWeight: "bold" }}>{props.row.original.name}</Typography>
+                <Typography variant="caption" component="span">
+                  {props.row.original.customer_name}<b>({props.row.original.customer_designination})</b>
+                </Typography>
+              </Stack >
             </Stack>
           )
         }
@@ -64,7 +84,99 @@ export default function LeadsPage() {
       // email
       {
         Header: 'Email',
-        accessor: 'email'
+        accessor: 'email',
+        Cell: (props) => {
+          return (
+            <Stack>
+              <Typography variant="body1" sx={{ fontWeight: "bold" }}>{props.row.original.email}</Typography>
+              <Typography variant="caption">{props.row.original.alternate_email}</Typography>
+            </Stack>
+          )
+        }
+      },
+      //mobile
+      {
+        Header: 'Mobile',
+        accessor: 'mobile',
+        Cell: (props) => {
+          return (
+            <Stack>
+              <Typography variant="body1" sx={{ fontWeight: "bold" }} >{props.row.original.mobile}</Typography>
+              <Typography variant="caption">{props.row.original.alternate_mobile}</Typography>
+            </Stack>
+          )
+        }
+      },
+      // lead_source
+      {
+        Header: 'Lead Source',
+        accessor: 'lead_source',
+        Cell: (props) => {
+          return (
+            <Stack>
+              <Typography variant="body1" sx={{ fontWeight: "bold" }}>{props.row.original.lead_source}</Typography>
+            </Stack>
+          )
+        }
+      },
+      // lead_owner
+      {
+        Header: 'Lead Owner',
+        accessor: 'lead_owner',
+        Cell: (props) => {
+          return (
+            <Stack>
+              <Typography variant="body1" sx={{ fontWeight: "bold" }}>{props.row.original.lead_owner.username}</Typography>
+              <Typography variant="caption">{props.row.original.lead_owner.roles.toString()}</Typography>
+              <Typography variant="caption" component="span">
+                {new Date(props.row.original.created_at).toLocaleDateString()}
+              </Typography>
+            </Stack>
+          )
+        }
+      },
+      // lead_owner
+      {
+        Header: 'Address',
+        accessor: 'city',
+        Cell: (props) => {
+          return (
+            <Stack>
+              <Typography variant="body1" sx={{ fontWeight: "bold" }}>{props.row.original.state}</Typography>
+              <Typography variant="caption">{props.row.original.city}</Typography>
+            </Stack>
+          )
+        }
+      },
+      // status updated
+      {
+        Header: 'Status UpdatedBy',
+        accessor: 'status',
+        Cell: (props) => {
+          let username = props.row.original.status_changed_by.username
+          return (
+            <Stack>
+              <Typography variant="body1" sx={{ fontWeight: "bold" }}>{username}</Typography>
+              <Typography variant="caption">{props.row.original.status_changed_by.roles.toString()}</Typography>
+              <Typography variant="caption">{new Date(props.row.original.updated_at).toLocaleString()}</Typography>
+            </Stack>
+          )
+        }
+      },
+      // last  updated
+      {
+        Header: 'Last Updated',
+        accessor: 'updated_at',
+        Cell: (props) => {
+          let username = props.row.original.updated_by.username
+          return (
+            <Stack>
+              <Typography variant="body1" sx={{ fontWeight: "bold" }}>{username}</Typography>
+              <Typography variant="caption">{props.row.original.updated_by.roles.toString()}</Typography>
+              <Typography variant="caption">{new Date(props.row.original.updated_at).toLocaleString()}</Typography>
+            </Stack>
+          )
+        }
       },
       //actions
       {
@@ -74,16 +186,61 @@ export default function LeadsPage() {
           let open = props.row.original.status
           return (
             <Stack direction="row" spacing={1}>
-              <Tooltip title="edit">
-                <IconButton color="secondary"
-                  onClick={() => {
-                    setChoice({ type: LeadChoiceActions.update_lead })
-                    setLead(props.row.original)
-                  }}
-                >
-                  <Edit />
-                </IconButton>
-              </Tooltip>
+              {
+                loggedInUser?.roles.includes("admin") ?
+                  <>
+                    <Tooltip title="edit">
+                      <IconButton color="secondary"
+                        onClick={() => {
+                          setChoice({ type: LeadChoiceActions.update_lead })
+                          setLead(props.row.original)
+                        }}
+                      >
+                        <Edit />
+                      </IconButton>
+                    </Tooltip>
+                    {
+                      open ?
+                        <Tooltip title="Close">
+                          <IconButton
+                            color="error"
+                            onClick={() => {
+                              setChoice({ type: LeadChoiceActions.open_close_lead })
+                              setLead(props.row.original)
+                            }}
+                          ><Block />
+                          </IconButton>
+                        </Tooltip>
+                        :
+                        <Tooltip title="Open">
+                          <IconButton
+                            color="success"
+                            onClick={() => {
+                              setChoice({ type: LeadChoiceActions.open_close_lead })
+                              setLead(props.row.original)
+                            }}
+                          >
+                            <Block />
+                          </IconButton>
+                        </Tooltip>
+                    }
+                    <Tooltip title="Convert">
+                      <IconButton
+                        color="warning"
+                        onClick={() => {
+                          setChoice({ type: ConversionChoiceActions.convert_resource })
+                          setLead(props.row.original)
+                        }}
+                      >
+                        <ChangeCircle />
+                      </IconButton>
+                    </Tooltip>
+                  </>
+                  :
+                  null
+
+              }
+
 
               <Tooltip title="view">
                 <IconButton color="primary"
@@ -95,31 +252,7 @@ export default function LeadsPage() {
                   <Visibility />
                 </IconButton>
               </Tooltip>
-              {
-                open ?
-                  <Tooltip title="Close">
-                    <IconButton
-                      color="error"
-                      onClick={() => {
-                        setChoice({ type: LeadChoiceActions.open_close_lead })
-                        setLead(props.row.original)
-                      }}
-                    ><Block />
-                    </IconButton>
-                  </Tooltip>
-                  :
-                  <Tooltip title="Open">
-                    <IconButton
-                      color="success"
-                      onClick={() => {
-                        setChoice({ type: LeadChoiceActions.open_close_lead })
-                        setLead(props.row.original)
-                      }}
-                    >
-                      <Block />
-                    </IconButton>
-                  </Tooltip>
-              }
+
               <Tooltip title="New Activity">
                 <IconButton
                   color="success"
@@ -131,24 +264,13 @@ export default function LeadsPage() {
                   <AddBoxOutlined />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Convert">
-                <IconButton
-                  color="warning"
-                  onClick={() => {
-                    setChoice({ type: ConversionChoiceActions.convert_resource })
-                    setLead(props.row.original)
-                  }}
-                >
-                  <ChangeCircle />
-                </IconButton>
-              </Tooltip>
+
             </Stack>
           )
         }
       },
-
     ]
-    , [setChoice]
+    , [setChoice,loggedInUser]
   )
   useEffect(() => {
     if (isSuccess)

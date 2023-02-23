@@ -422,9 +422,6 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
           }
           {...formik.getFieldProps('country')}
         >
-          <option value="">
-            Select Country
-          </option>
           {
             Countries.map(country => {
               return (<option key={country.unicode} value={String(country.name).toLowerCase()}>

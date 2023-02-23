@@ -144,17 +144,7 @@ export const ToogleAccountStatus = catchAsyncError(async (req: Request, res: Res
     }).then(() => res.status(200).json({ message: "account status updated" }))
 })
 
-// Delete account
-export const DeleteAccount = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params.id;
-    if (!isMongoId(id)) return res.status(403).json({ message: "account id not valid" })
-    let account = await Account.findById(id);
-    if (!account) {
-        return res.status(404).json({ message: "account not found" })
-    }
-    await account.remove()
-    res.status(200).json({ message: "account deleted permanently" })
-})
+
 // get a account anyone can do in the organization
 export const GetAccount = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;

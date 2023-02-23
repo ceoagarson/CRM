@@ -1,4 +1,4 @@
-import { AssuredWorkloadOutlined, AttributionOutlined, BlockOutlined, CancelOutlined, CheckCircleOutline, EditOutlined, Visibility } from '@mui/icons-material'
+import { AssuredWorkloadOutlined, AttributionOutlined, Block, BlockOutlined, CancelOutlined, EditOutlined, Visibility } from '@mui/icons-material'
 import { Alert, Avatar, IconButton, LinearProgress, Tooltip, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
@@ -51,36 +51,11 @@ export default function UsersPage() {
                     let roles = props.row.original.roles
                     let CellUser = props.row.original
                     return (
-                        <Stack>
-                            {
-                                roles?.includes("admin") ?
-                                    <Typography sx={{ fontWeight: "bold" }}>{props.row.original.username}</Typography>
-                                    :
-                                    <Typography >{props.row.original.username}</Typography>
-                            }
-                            {
-                                CellUser.created_by._id === CellUser._id ?
-                                    <Typography variant="caption" component="span">
-                                        {"Primary Owner"}
-                                    </Typography> :
-                                    <Typography variant="caption" component="span">
-                                        {roles?.toString()}
-                                    </Typography>
-
-                            }
-
-                        </Stack >
-                    )
-                }
-            },
-            // picture
-            {
-                Header: 'Picture',
-                accessor: 'dp',
-                disableSortBy: true,
-                Cell: (props) => {
-                    if (props.row.original.is_active)
-                        return (
+                        <Stack direction="row"
+                            spacing={2}
+                            justifyContent="left"
+                            alignItems="center"
+                        >
                             <Stack>
                                 <Avatar
                                     onClick={() => {
@@ -88,26 +63,39 @@ export default function UsersPage() {
                                         setUser(props.row.original)
                                     }}
                                     alt="display picture" src={props.row.original.dp?.url} />
-                                <Typography variant="caption" sx={{
-                                    color: "green"
-                                }}>active</Typography>
+                                {
+                                    props.row.original.is_active ?
+                                        <Typography variant="caption" sx={{
+                                            color: "green",fontWeight:"bold"
+                                        }}>active</Typography>
+                                        : <Typography variant="caption" sx={{
+                                            color: "red",fontWeight:"bold"
+                                        }}>blocked</Typography>
+
+                                }
                             </Stack >
-                        )
-                    return (
-                        <Stack>
-                            <Avatar
-                                onClick={() => {
-                                    setChoice({ type: UserChoiceActions.view_profile })
-                                    setUser(props.row.original)
-                                }}
-                                alt="display picture" src={props.row.original.dp?.url} />
-                            <Typography variant="caption" sx={{
-                                color: "red"
-                            }}>blocked</Typography >
+                            <Stack>
+                                {
+                                    roles?.includes("admin") ?
+                                        <Typography sx={{ fontWeight: "bold" }}>{props.row.original.username}</Typography>
+                                        :
+                                        <Typography >{props.row.original.username}</Typography>
+                                }
+                                {
+                                    CellUser.created_by._id === CellUser._id ?
+                                        <Typography variant="caption" component="span">
+                                            {"Primary Owner"}
+                                        </Typography> :
+                                        <Typography variant="caption" component="span">
+                                            {roles?.toString()}
+                                        </Typography>
+
+                                }
+
+                            </Stack >
                         </Stack>
                     )
                 }
-
             },
             // email
             {
@@ -117,7 +105,7 @@ export default function UsersPage() {
                     if (props.row.original.email_verified)
                         return (
                             <Stack>
-                                <Typography variant="body1">{props.row.original.email}</Typography>
+                                <Typography variant="body1" sx={{ fontWeight: "bold" }}>{props.row.original.email}</Typography>
                                 <Typography variant="caption" sx={{
                                     color: "green"
                                 }}>verified</Typography >
@@ -125,7 +113,7 @@ export default function UsersPage() {
                         )
                     return (
                         <Stack>
-                            <Typography variant="body1">{props.row.original.email}</Typography>
+                            <Typography variant="body1" sx={{ fontWeight: "bold" }}>{props.row.original.email}</Typography>
                             <Typography variant="caption" sx={{
                                 color: "red"
                             }}>not verified</Typography >
@@ -142,13 +130,13 @@ export default function UsersPage() {
                     if (props.row.original.email_verified)
                         return (
                             <Stack>
-                                <Typography variant="body1">{props.row.original.mobile}</Typography>
+                                <Typography variant="body1" sx={{ fontWeight: "bold" }}>{props.row.original.mobile}</Typography>
                                 <Typography variant="caption">{"verified"}</Typography>
                             </Stack>
                         )
                     return (
                         <Stack>
-                            <Typography variant="body1">{props.row.original.mobile}</Typography>
+                            <Typography variant="body1" sx={{ fontWeight: "bold" }}>{props.row.original.mobile}</Typography>
                             <Typography sx={{ color: "red" }} variant="caption">{"not verified"}</Typography>
                         </Stack>
                     )
@@ -313,7 +301,7 @@ export default function UsersPage() {
                                                                         setChoice({ type: UserChoiceActions.unblock_user })
                                                                         setRowId(props.row.original._id)
                                                                     }}>
-                                                                    <CheckCircleOutline />
+                                                                    <Block />
                                                                 </IconButton>
                                                             </Tooltip>
                                                     }

@@ -1,9 +1,9 @@
 import express from "express";
 import { ConvertResource } from "../controllers/conversion.controller";
-import { isAuthenticatedUser } from "../middlewares/auth.middleware";
+import { isAdmin, isAuthenticatedUser} from "../middlewares/auth.middleware";
 
 const router = express.Router()
 
-router.post("/convert/:id", isAuthenticatedUser, ConvertResource)
+router.post("/convert/:id", isAuthenticatedUser, isAdmin, ConvertResource)
 
 export default router

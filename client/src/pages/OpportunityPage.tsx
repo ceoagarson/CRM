@@ -1,5 +1,5 @@
-import { AddBoxOutlined, Block, ChangeCircle,  Edit, Visibility } from "@mui/icons-material"
-import { IconButton, LinearProgress, Stack, Tooltip, Typography } from "@mui/material"
+import { AddBoxOutlined, Block, ChangeCircle, Edit, Visibility } from "@mui/icons-material"
+import { Avatar, IconButton, LinearProgress, Stack, Tooltip, Typography } from "@mui/material"
 import { AxiosResponse } from "axios"
 import React, { useContext, useEffect, useState } from "react"
 import { useQuery } from "react-query"
@@ -11,12 +11,15 @@ import UpdateOpportunityDialog from "../components/dialogs/opportunities/UpdateO
 import ViewOpportunityDialog from "../components/dialogs/opportunities/ViewOpportunityDialog"
 import { OpportunityTable } from "../components/tables/opportunity/OpportunityTable"
 import { ActivityChoiceActions, ChoiceContext, ConversionChoiceActions, OpportunityChoiceActions } from "../contexts/dialogContext"
+import { UserContext } from "../contexts/userContext"
 import { GetOpportunities } from "../services/OpportunityServices"
 import { BackendError } from "../types"
 import { IOpportunity } from "../types/opportunity.type"
 
 export default function OpportunitiesPage() {
   const { setChoice } = useContext(ChoiceContext)
+  const { user: loggedInUser } = useContext(UserContext)
+
   const [opportunity, setOpportunity] = useState<IOpportunity>()
   const { data, isSuccess, isLoading } = useQuery
     <AxiosResponse<IOpportunity[]>, BackendError>("opportunities", GetOpportunities, {
@@ -36,27 +39,44 @@ export default function OpportunitiesPage() {
           return <Typography variant="body1" component="span" pr={2}>{props.row.index + 1}</Typography>
         }
       },
+      // opportunity name
       {
-        Header: 'Name',
-        accessor: 'name'
-      },
-      {
-        Header: 'Status',
-        accessor: 'status',
+        Header: 'Opportunity Name',
+        accessor: 'name',
         Cell: (props) => {
-          let status = props.row.original.status
-          let username = props.row.original.status_changed_by.username
-          if (status)
-            return (
-              <Stack>
-                <Typography variant="button" sx={{ color: "green", fontWeight: "bold" }}>Open</Typography>
-                <Typography variant="caption">{username}</Typography>
-              </Stack>
-            )
           return (
-            <Stack>
-              <Typography variant="button" sx={{ color: "red" }}>Closed</Typography>
-              <Typography variant="caption">{username}</Typography>
+            <Stack direction="row"
+              spacing={2}
+              justifyContent="left"
+              alignItems="center"
+            >
+              <Stack
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Avatar
+                  onClick={() => {
+                    setChoice({ type: OpportunityChoiceActions.view_opportunity })
+                    setOpportunity(props.row.original)
+                  }}
+                  alt="display picture" src={props.row.original.dp?.url} />
+                {
+                  props.row.original.status ?
+                    <Typography variant="caption" sx={{
+                      color: "green", fontWeight: "bold"
+                    }}>open</Typography>
+                    : <Typography variant="caption" sx={{
+                      color: "red", fontWeight: "bold"
+                    }}>closed</Typography>
+
+                }
+              </Stack >
+              <Stack>
+                <Typography sx={{ fontWeight: "bold" }}>{props.row.original.name}</Typography>
+                <Typography variant="caption" component="span">
+                  {props.row.original.customer_name}<b>({props.row.original.customer_designination})</b>
+                </Typography>
+              </Stack >
             </Stack>
           )
         }
@@ -64,7 +84,98 @@ export default function OpportunitiesPage() {
       // email
       {
         Header: 'Email',
-        accessor: 'email'
+        accessor: 'email',
+        Cell: (props) => {
+          return (
+            <Stack>
+              <Typography variant="body1" sx={{ fontWeight: "bold" }}>{props.row.original.email}</Typography>
+              <Typography variant="caption">{props.row.original.alternate_email}</Typography>
+            </Stack>
+          )
+        }
+      },
+      {
+        Header: 'Mobile',
+        accessor: 'mobile',
+        Cell: (props) => {
+          return (
+            <Stack>
+              <Typography variant="body1" sx={{ fontWeight: "bold" }} >{props.row.original.mobile}</Typography>
+              <Typography variant="caption">{props.row.original.alternate_mobile}</Typography>
+            </Stack>
+          )
+        }
+      },
+      // opportunity_source
+      {
+        Header: 'Opportunity Source',
+        accessor: 'opportunity_source',
+        Cell: (props) => {
+          return (
+            <Stack>
+              <Typography variant="body1" sx={{ fontWeight: "bold" }}>{props.row.original.opportunity_source}</Typography>
+            </Stack>
+          )
+        }
+      },
+      // opportunity_owner
+      {
+        Header: 'Opportunity Owner',
+        accessor: 'opportunity_owner',
+        Cell: (props) => {
+          return (
+            <Stack>
+              <Typography variant="body1" sx={{ fontWeight: "bold" }}>{props.row.original.opportunity_owner.username}</Typography>
+              <Typography variant="caption">{props.row.original.opportunity_owner.roles.toString()}</Typography>
+              <Typography variant="caption" component="span">
+                {new Date(props.row.original.created_at).toLocaleDateString()}
+              </Typography>
+            </Stack>
+          )
+        }
+      },
+      // opportunity_owner
+      {
+        Header: 'Address',
+        accessor: 'city',
+        Cell: (props) => {
+          return (
+            <Stack>
+              <Typography variant="body1" sx={{ fontWeight: "bold" }}>{props.row.original.state}</Typography>
+              <Typography variant="caption">{props.row.original.city}</Typography>
+            </Stack>
+          )
+        }
+      },
+      // status updated
+      {
+        Header: 'Status UpdatedBy',
+        accessor: 'status',
+        Cell: (props) => {
+          let username = props.row.original.status_changed_by.username
+          return (
+            <Stack>
+              <Typography variant="body1" sx={{ fontWeight: "bold" }}>{username}</Typography>
+              <Typography variant="caption">{props.row.original.status_changed_by.roles.toString()}</Typography>
+              <Typography variant="caption">{new Date(props.row.original.updated_at).toLocaleString()}</Typography>
+            </Stack>
+          )
+        }
+      },
+      // last  updated
+      {
+        Header: 'Last Updated',
+        accessor: 'updated_at',
+        Cell: (props) => {
+          let username = props.row.original.updated_by.username
+          return (
+            <Stack>
+              <Typography variant="body1" sx={{ fontWeight: "bold" }}>{username}</Typography>
+              <Typography variant="caption">{props.row.original.updated_by.roles.toString()}</Typography>
+              <Typography variant="caption">{new Date(props.row.original.updated_at).toLocaleString()}</Typography>
+            </Stack>
+          )
+        }
       },
       //actions
       {
@@ -74,16 +185,61 @@ export default function OpportunitiesPage() {
           let open = props.row.original.status
           return (
             <Stack direction="row" spacing={1}>
-              <Tooltip title="edit">
-                <IconButton color="secondary"
-                  onClick={() => {
-                    setChoice({ type: OpportunityChoiceActions.update_opportunity })
-                    setOpportunity(props.row.original)
-                  }}
-                >
-                  <Edit />
-                </IconButton>
-              </Tooltip>
+              {
+                loggedInUser?.roles.includes("admin") ?
+
+                  <>
+                    <Tooltip title="edit">
+                      <IconButton color="secondary"
+                        onClick={() => {
+                          setChoice({ type: OpportunityChoiceActions.update_opportunity })
+                          setOpportunity(props.row.original)
+                        }}
+                      >
+                        <Edit />
+                      </IconButton>
+                    </Tooltip>
+                    {
+                      open ?
+                        <Tooltip title="Close">
+                          <IconButton
+                            color="error"
+                            onClick={() => {
+                              setChoice({ type: OpportunityChoiceActions.open_close_opportunity })
+                              setOpportunity(props.row.original)
+                            }}
+                          ><Block />
+                          </IconButton>
+                        </Tooltip>
+                        :
+                        <Tooltip title="Open">
+                          <IconButton
+                            color="success"
+                            onClick={() => {
+                              setChoice({ type: OpportunityChoiceActions.open_close_opportunity })
+                              setOpportunity(props.row.original)
+                            }}
+                          >
+                            <Block />
+                          </IconButton>
+                        </Tooltip>
+
+                    }
+                    <Tooltip title="Convert">
+                      <IconButton
+                        color="warning"
+                        onClick={() => {
+                          setChoice({ type: ConversionChoiceActions.convert_resource })
+                          setOpportunity(props.row.original)
+                        }}
+                      >
+                        <ChangeCircle />
+                      </IconButton>
+                    </Tooltip>
+                  </>
+                  : null
+              }
+
 
               <Tooltip title="view">
                 <IconButton color="primary"
@@ -95,31 +251,7 @@ export default function OpportunitiesPage() {
                   <Visibility />
                 </IconButton>
               </Tooltip>
-              {
-                open ?
-                  <Tooltip title="Close">
-                    <IconButton
-                      color="error"
-                      onClick={() => {
-                        setChoice({ type: OpportunityChoiceActions.open_close_opportunity })
-                        setOpportunity(props.row.original)
-                      }}
-                    ><Block />
-                    </IconButton>
-                  </Tooltip>
-                  :
-                  <Tooltip title="Open">
-                    <IconButton
-                      color="success"
-                      onClick={() => {
-                        setChoice({ type: OpportunityChoiceActions.open_close_opportunity })
-                        setOpportunity(props.row.original)
-                      }}
-                    >
-                      <Block />
-                    </IconButton>
-                  </Tooltip>
-              }
+
               <Tooltip title="New Activity">
                 <IconButton
                   color="success"
@@ -131,24 +263,14 @@ export default function OpportunitiesPage() {
                   <AddBoxOutlined />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Convert">
-                <IconButton
-                  color="warning"
-                  onClick={() => {
-                    setChoice({ type: ConversionChoiceActions.convert_resource })
-                    setOpportunity(props.row.original)
-                  }}
-                >
-                  <ChangeCircle />
-                </IconButton>
-              </Tooltip>
+
             </Stack>
           )
         }
       },
 
     ]
-    , [setChoice]
+    , [setChoice,loggedInUser]
   )
   useEffect(() => {
     if (isSuccess)

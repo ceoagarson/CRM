@@ -109,7 +109,7 @@ export function LeadTable({ data, columns }: Props) {
                                 {headerGroup.headers.map
                                     ((column) => (
                                         <TableCell
-                                            sx={{ bgcolor: headColor }}
+                                            sx={{ bgcolor: headColor,textTransform:"uppercase" }}
                                             {...column.getHeaderProps(column.getSortByToggleProps())}
                                             title=""                                    >
                                             <Stack
@@ -145,7 +145,7 @@ export function LeadTable({ data, columns }: Props) {
                                     {...row.getRowProps()}>
                                     {row.cells.map((cell) => {
                                         return (
-                                            <TableCell
+                                            <TableCell sx={{ textTransform: "uppercase"}}
                                                 {...cell.getCellProps()}
                                                 onDoubleClick={(e) => {
                                                     navigator.clipboard.writeText(e.currentTarget.innerText)

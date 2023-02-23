@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import isMongoId from "validator/lib/isMongoId";
 import { catchAsyncError } from "../middlewares/catchAsyncError.middleware.ts";
 import Account from "../models/account.model";
+import { Activity } from "../models/activity.model";
 import Lead from "../models/lead.model";
 import Opportunity from "../models/opportunity.model";
 import { handleAccountToLeadConversion, handleAccountToOpportunityConversion, handleLeadToAccountConversion, handleLeadToOpportunityConversion, handleOpportunityToAccountConversion, handleOpportunityToLeadConversion } from "../utils/Conversion";
@@ -29,17 +30,21 @@ export const ConvertResource = catchAsyncError(async (req: Request, res: Respons
                 let account = handleLeadToAccountConversion({ lead: Resource, user: req.user })
                 await account.save()
                 await Lead.findByIdAndRemove(Resource._id)
+                await Activity.updateMany({ resource_id: resource_id }, { resource_type: target_resource_type })
                 return res.status(201).json(account)
             }
             if (target_resource_type === "opportunity") {
                 let opportunity = handleLeadToOpportunityConversion({ lead: Resource, user: req.user })
                 await opportunity.save()
                 await Lead.findByIdAndRemove(Resource._id)
+                await Activity.updateMany({ resource_id: resource_id }, { resource_type: target_resource_type })
                 return res.status(201).json(opportunity)
             }
         }
     }
     else if (resource_type === "account") {
+        if (!req.user.roles.includes("owner"))
+            return res.status(403).json({ message: "must be owner" })
         let Resource = await Account.findById(resource_id)
         if (!Resource)
             return res.status(404).json({ message: `${resource_type} resource not found` })
@@ -48,6 +53,7 @@ export const ConvertResource = catchAsyncError(async (req: Request, res: Respons
                 let lead = handleAccountToLeadConversion({ account: Resource, user: req.user })
                 await lead.save()
                 await Account.findByIdAndRemove(Resource._id)
+                await Activity.updateMany({ resource_id: resource_id }, { resource_type: target_resource_type })
                 return res.status(201).json(lead)
             }
 
@@ -55,6 +61,7 @@ export const ConvertResource = catchAsyncError(async (req: Request, res: Respons
                 let opportunity = handleAccountToOpportunityConversion({ account: Resource, user: req.user })
                 await opportunity.save()
                 await Account.findByIdAndRemove(Resource._id)
+                await Activity.updateMany({ resource_id: resource_id }, { resource_type: target_resource_type })
                 return res.status(201).json(opportunity)
             }
         }
@@ -68,6 +75,7 @@ export const ConvertResource = catchAsyncError(async (req: Request, res: Respons
                 let lead = handleOpportunityToLeadConversion({ opportunity: Resource, user: req.user })
                 await lead.save()
                 await Opportunity.findByIdAndRemove(Resource._id)
+                await Activity.updateMany({ resource_id: resource_id }, { resource_type: target_resource_type })
                 return res.status(201).json(lead)
             }
             if (target_resource_type == "account") {
@@ -75,6 +83,7 @@ export const ConvertResource = catchAsyncError(async (req: Request, res: Respons
                 let account = handleOpportunityToAccountConversion({ opportunity: Resource, user: req.user })
                 await account.save()
                 await Opportunity.findByIdAndRemove(Resource._id)
+                await Activity.updateMany({ resource_id: resource_id }, { resource_type: target_resource_type })
                 return res.status(201).json(account)
             }
         }

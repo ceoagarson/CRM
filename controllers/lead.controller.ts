@@ -144,17 +144,7 @@ export const ToogleLeadStatus = catchAsyncError(async (req: Request, res: Respon
     }).then(() => res.status(200).json({ message: "lead status updated" }))
 })
 
-// Delete lead
-export const DeleteLead = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params.id;
-    if (!isMongoId(id)) return res.status(403).json({ message: "lead id not valid" })
-    let lead = await Lead.findById(id);
-    if (!lead) {
-        return res.status(404).json({ message: "lead not found" })
-    }
-    await lead.remove()
-    res.status(200).json({ message: "lead deleted permanently" })
-})
+
 // get a lead anyone can do in the organization
 export const GetLead = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;

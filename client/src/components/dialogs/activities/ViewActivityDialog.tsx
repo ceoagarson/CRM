@@ -1,8 +1,5 @@
 import { Dialog, DialogContent, DialogTitle, Button, Typography, Stack, Box } from '@mui/material'
-import { AxiosResponse } from 'axios';
-import { useContext, useEffect } from 'react';
-import { useMutation } from 'react-query';
-import { queryClient } from '../../..';
+import { useContext } from 'react';
 import { ActivityChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { IActivity } from '../../../types/activity.type';
 

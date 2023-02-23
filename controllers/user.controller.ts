@@ -207,23 +207,6 @@ export const UpdateUser = catchAsyncError(async (req: Request, res: Response, ne
         updated_at: new Date(Date.now()),
     }).then(() => res.status(200).json({ message: "user updated" }))
 })
-// delete user only organization admin
-export const DeleteUser = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params.id;
-    if (!isMongoId(id))
-        return res.status(400).json({ message: "user id not valid" })
-    let user = await User.findOne({ _id: id, organization: req.user?.organization });
-    if (!user) {
-        return res.status(404).json({ message: "user not found" })
-    }
-    if (String(user.created_by) === String(user._id))
-        return res.status(403).json({ message: "not allowed contact crm administrator" })
-
-    await destroyFile(user.dp?.public_id || "");
-    await User.findByIdAndRemove(id).then(() => {
-        res.status(200).json({ message: "user permanently deleted" })
-    })
-})
 
 // get profile 
 export const GetProfile = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {

@@ -54,7 +54,6 @@ function TableMenu({ columns, selectedFlatRows }: Props) {
         let data: SelectedData[] = []
         selectedFlatRows.map((item) => {
             const user = item.original
-            let lastlogin = undefined
             let created_at = undefined
             return data.push({
                 email: user.email,

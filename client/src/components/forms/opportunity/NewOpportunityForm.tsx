@@ -53,7 +53,7 @@ function NewOpportunityForm() {
       probability: "",
       customer_name: "",
       address: "",
-      country: "",
+      country: "india",
       alternate_mobile: "",
       alternate_email: "",
       customer_designination: "",
@@ -416,12 +416,9 @@ function NewOpportunityForm() {
           }
           {...formik.getFieldProps('country')}
         >
-          <option value="">
-            Select Country
-          </option>
           {
             Countries.map(country => {
-              return (<option key={country.unicode} value={country.name}>
+              return (<option key={country.unicode} value={country.name.toLowerCase()}>
                 {country.name}
               </option>)
             })

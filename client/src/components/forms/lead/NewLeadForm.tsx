@@ -1,4 +1,4 @@
-import { Alert, Avatar, Button, CircularProgress, Stack, TextField, Typography } from '@mui/material';
+import { Alert,  Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useEffect, useContext } from 'react';
@@ -53,7 +53,7 @@ function NewLeadForm() {
       probability: "",
       customer_name: "",
       address: "",
-      country: "",
+      country: "india",
       alternate_mobile: "",
       alternate_email: "",
       customer_designination: "",
@@ -416,12 +416,9 @@ function NewLeadForm() {
           }
           {...formik.getFieldProps('country')}
         >
-          <option value="">
-            Select Country
-          </option>
           {
             Countries.map(country => {
-              return (<option key={country.unicode} value={country.name}>
+              return (<option key={country.unicode} value={country.name.toLowerCase()}>
                 {country.name}
               </option>)
             })

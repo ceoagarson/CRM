@@ -6,7 +6,6 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../utils/ExportToExcel';
 import { IActivity } from '../../../types/activity.type';
 import { MenuActions, MenuContext } from '../../../contexts/menuContext';
-import { ChoiceContext } from '../../../contexts/dialogContext';
 
 type Props = {
     columns: ColumnInstance<IActivity>[],
@@ -31,7 +30,6 @@ function TableMenu({ columns, selectedFlatRows }: Props) {
     const [toogleCol, setToogleCol] = useState(false)
     const [selectedData, setSelectedData] = useState<SelectedData[]>([])
     const [sent, setSent] = useState(false)
-    const { setChoice } = useContext(ChoiceContext)
 
 
     function handleExcel() {
@@ -52,8 +50,6 @@ function TableMenu({ columns, selectedFlatRows }: Props) {
     useEffect(() => {
         let data: SelectedData[] = []
         selectedFlatRows.map((item) => {
-            const user = item.original
-            let lastlogin = undefined
             let created_at = undefined
             return data.push({
                 createdAt: created_at

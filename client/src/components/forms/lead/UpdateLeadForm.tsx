@@ -415,16 +415,14 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
             formik.touched.country && formik.errors.country ? true : false
           }
           id="country"
-          label="country"
+          label="Select Country"
           fullWidth
           helperText={
             formik.touched.country && formik.errors.country ? formik.errors.country : ""
           }
           {...formik.getFieldProps('country')}
         >
-          <option value="">
-            Select Country
-          </option>
+         
           {
             Countries.map(country => {
               return (<option key={country.unicode} value={String(country.name).toLowerCase()}>

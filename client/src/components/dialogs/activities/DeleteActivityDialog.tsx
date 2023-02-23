@@ -5,11 +5,10 @@ import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { queryClient } from '../../..';
 import { ActivityChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
-import { DeleteActivity, ToogleActivityStatus } from '../../../services/ActivityServices';
+import { DeleteActivity } from '../../../services/ActivityServices';
 import { BackendError } from '../../../types';
-import { IActivity } from '../../../types/activity.type';
 
-function DeleteActivityDialog({ activity }: { activity: IActivity }) {
+function DeleteActivityDialog({ id }: { id: string }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
@@ -33,7 +32,7 @@ function DeleteActivityDialog({ activity }: { activity: IActivity }) {
             onClose={() => setChoice({ type: ActivityChoiceActions.close })}
         >
             <DialogTitle textAlign="center">
-                {activity.status ? "Close Activity" : "Open Activity"}
+                Delete Activity
             </DialogTitle>
             {
                 isError ? (
@@ -51,7 +50,7 @@ function DeleteActivityDialog({ activity }: { activity: IActivity }) {
             }
             <DialogContent>
                 <Typography variant="body1" color="error">
-                    Warning ! This will dangerous action.
+                    Warning ! This is a dangerous action.
                 </Typography>
             </DialogContent>
             <Stack
@@ -62,8 +61,8 @@ function DeleteActivityDialog({ activity }: { activity: IActivity }) {
             >
                 <Button fullWidth variant="outlined" color="error"
                     onClick={() => {
-                       
-                        mutate(activity._id)
+
+                        mutate(id)
                     }}
                     disabled={isLoading}
                 >
