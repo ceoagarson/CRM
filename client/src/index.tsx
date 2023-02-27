@@ -6,7 +6,6 @@ import { UserProvider } from "./contexts/userContext";
 import { BrowserRouter } from "react-router-dom";
 import { ChoiceProvider } from "./contexts/dialogContext";
 import { MenuProvider } from "./contexts/menuContext";
-import React from "react";
 
 
 export const queryClient = new QueryClient({
@@ -27,9 +26,7 @@ root.render(
       <UserProvider>
         <ChoiceProvider>
           <MenuProvider>
-            <React.StrictMode>
-            <App />
-            </React.StrictMode>
+              <App />
           </MenuProvider>
         </ChoiceProvider>
       </UserProvider>

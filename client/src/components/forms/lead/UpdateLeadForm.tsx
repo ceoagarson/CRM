@@ -157,20 +157,7 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
 
   return (
     <form onSubmit={formik.handleSubmit}>
-      {
-        isError ? (
-          <Alert color="error">
-            {error?.response.data.message}
-          </Alert>
-        ) : null
-      }
-      {
-        isSuccess ? (
-          <Alert color="success">
-            lead updated successfully
-          </Alert>
-        ) : null
-      }
+
       <Stack
         gap={2}
         py={2}
@@ -335,7 +322,7 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
                 {state.state}
               </option>)
             })
-          } 
+          }
         </TextField>
         {/* probability */}
         <TextField
@@ -422,7 +409,7 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
           }
           {...formik.getFieldProps('country')}
         >
-         
+
           {
             Countries.map(country => {
               return (<option key={country.unicode} value={String(country.name).toLowerCase()}>
@@ -510,6 +497,20 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
           {...formik.getFieldProps('remarks')}
         />
       </Stack>
+      {
+        isError ? (
+          <Alert color="error">
+            {error?.response.data.message}
+          </Alert>
+        ) : null
+      }
+      {
+        isSuccess ? (
+          <Alert color="success">
+            lead updated successfully
+          </Alert>
+        ) : null
+      }
       <Button variant="contained" color="primary" type="submit"
         disabled={Boolean(isLoading)}
         fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Update"}

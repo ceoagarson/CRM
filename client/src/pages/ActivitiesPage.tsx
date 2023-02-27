@@ -44,7 +44,7 @@ export default function ActivitiesPage() {
         Cell: (props) => {
           return (
             <Stack>
-              <Typography variant="body1" sx={{ fontWeight: "bold" }}>{props.row.original.activity_type}</Typography>
+              <Typography variant="body1" sx={{ textTransform: "capitalize" }}>{props.row.original.activity_type}</Typography>
               <Stack direction="row" spacing={2}>
                 <Typography variant="caption" component="span">
                   <i>{props.row.original.resource_type}</i>
@@ -53,6 +53,16 @@ export default function ActivitiesPage() {
                   {new Date(props.row.original.created_at).toLocaleDateString()}
                 </Typography>
               </Stack>
+              {
+                props.row.original.status ?
+                  <Typography variant="caption" sx={{
+                    color: "green", textTransform: "capitalize"
+                  }}>open</Typography>
+                  : <Typography variant="caption" sx={{
+                    color: "red", textTransform: "capitalize"
+                  }}>closed</Typography>
+
+              }
             </Stack>
           )
         }
@@ -64,7 +74,7 @@ export default function ActivitiesPage() {
         Cell: (props) => {
           return (
             <Stack>
-              <Typography variant="body2">{props.row.original.description.slice(0, 20)}...</Typography>
+              <Typography sx={{ textTransform: "capitalize" }} variant="body2">{props.row.original.description.slice(0, 20)}...</Typography>
             </Stack>
           )
         }
@@ -76,7 +86,7 @@ export default function ActivitiesPage() {
         Cell: (props) => {
           return (
             <Stack>
-              <Typography variant="body2">{props.row.original.remarks?.slice(0, 20)}...</Typography>
+              <Typography sx={{ textTransform: "capitalize" }} variant="body2">{props.row.original.remarks?.slice(0, 20)}...</Typography>
             </Stack>
           )
         }
@@ -88,7 +98,7 @@ export default function ActivitiesPage() {
         Cell: (props) => {
           return (
             <Stack>
-              <Typography variant="body1" sx={{ fontWeight: "bold" }}>{props.row.original.activity_owner.username}</Typography>
+              <Typography variant="body1" sx={{ textTransform: "capitalize" }}>{props.row.original.activity_owner.username}</Typography>
               <Typography variant="caption">{props.row.original.activity_owner.roles.toString()}</Typography>
             </Stack>
           )
@@ -103,7 +113,7 @@ export default function ActivitiesPage() {
           let username = props.row.original.status_changed_by.username
           return (
             <Stack>
-              <Typography variant="body1" sx={{ fontWeight: "bold" }}>{username}</Typography>
+              <Typography variant="body1" sx={{ textTransform: "capitalize" }}>{username}</Typography>
               <Typography variant="caption">{props.row.original.status_changed_by.roles.toString()}</Typography>
               <Typography variant="caption">{new Date(props.row.original.updated_at).toLocaleString()}</Typography>
             </Stack>
@@ -118,7 +128,7 @@ export default function ActivitiesPage() {
           let username = props.row.original.updated_by.username
           return (
             <Stack>
-              <Typography variant="body1" sx={{ fontWeight: "bold" }}>{username}</Typography>
+              <Typography variant="body1" sx={{ textTransform: "capitalize" }}>{username}</Typography>
               <Typography variant="caption">{props.row.original.updated_by.roles.toString()}</Typography>
               <Typography variant="caption">{new Date(props.row.original.updated_at).toLocaleString()}</Typography>
             </Stack>
@@ -183,17 +193,19 @@ export default function ActivitiesPage() {
                           </IconButton>
                         </Tooltip>
                     }
-                    <Tooltip title="Delete Activity">
-                      <IconButton
-                        color="error"
-                        onClick={() => {
-                          setChoice({ type: ActivityChoiceActions.delete_activity })
-                          setActivity(props.row.original)
-                        }}
-                      >
-                        <Delete />
-                      </IconButton>
-                    </Tooltip>
+                    {loggedInUser.roles.includes("owner") ?
+                      <Tooltip title="Delete Activity">
+                        <IconButton
+                          color="error"
+                          onClick={() => {
+                            setChoice({ type: ActivityChoiceActions.delete_activity })
+                            setActivity(props.row.original)
+                          }}
+                        >
+                          <Delete />
+                        </IconButton>
+                      </Tooltip>
+                      : null}
                   </> : null
               }
 
@@ -204,7 +216,7 @@ export default function ActivitiesPage() {
       },
 
     ]
-    , [setChoice,loggedInUser]
+    , [setChoice, loggedInUser]
   )
   useEffect(() => {
     if (isSuccess)

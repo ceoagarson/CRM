@@ -63,18 +63,18 @@ export default function AccountsPage() {
                 {
                   props.row.original.status ?
                     <Typography variant="caption" sx={{
-                      color: "green", fontWeight: "bold"
+                      color: "green",
                     }}>open</Typography>
                     : <Typography variant="caption" sx={{
-                      color: "red", fontWeight: "bold"
-                    }}>closed</Typography>
+                      color: "red",
+                    }}>closed</Typography>  
 
                 }
               </Stack >
               <Stack>
-                <Typography sx={{ fontWeight: "bold" }}>{props.row.original.name}</Typography>
-                <Typography variant="caption" component="span">
-                  {props.row.original.customer_name}<b>({props.row.original.customer_designination})</b>
+                <Typography sx={{ textTransform:"capitalize"}}>{props.row.original.name}</Typography>
+                <Typography sx={{textTransform:"capitalize"}} variant="caption" component="span">
+                  {props.row.original.customer_name}<i>({props.row.original.customer_designination})</i>
                 </Typography>
               </Stack >
             </Stack>
@@ -88,7 +88,7 @@ export default function AccountsPage() {
         Cell: (props) => {
           return (
             <Stack>
-              <Typography variant="body1" sx={{ fontWeight: "bold" }}>{props.row.original.email}</Typography>
+              <Typography variant="body1" sx={{ }}>{props.row.original.email}</Typography>
               <Typography variant="caption">{props.row.original.alternate_email}</Typography>
             </Stack>
           )
@@ -101,7 +101,7 @@ export default function AccountsPage() {
         Cell: (props) => {
           return (
             <Stack>
-              <Typography variant="body1" sx={{ fontWeight: "bold" }} >{props.row.original.mobile}</Typography>
+              <Typography variant="body1" sx={{ }} >{props.row.original.mobile}</Typography>
               <Typography variant="caption">{props.row.original.alternate_mobile}</Typography>
             </Stack>
           )
@@ -114,7 +114,7 @@ export default function AccountsPage() {
         Cell: (props) => {
           return (
             <Stack>
-              <Typography variant="body1" sx={{ fontWeight: "bold" }}>{props.row.original.account_source}</Typography>
+              <Typography  sx={{ textTransform:"capitalize" }} variant="body1"  >{props.row.original.account_source}</Typography>
             </Stack>
           )
         }
@@ -126,7 +126,7 @@ export default function AccountsPage() {
         Cell: (props) => {
           return (
             <Stack>
-              <Typography variant="body1" sx={{ fontWeight: "bold" }}>{props.row.original.account_owner.username}</Typography>
+              <Typography variant="body1" sx={{ textTransform:"capitalize"}}>{props.row.original.account_owner.username}</Typography>
               <Typography variant="caption">{props.row.original.account_owner.roles.toString()}</Typography>
               <Typography variant="caption" component="span">
                 {new Date(props.row.original.created_at).toLocaleDateString()}
@@ -142,8 +142,8 @@ export default function AccountsPage() {
         Cell: (props) => {
           return (
             <Stack>
-              <Typography variant="body1" sx={{ fontWeight: "bold" }}>{props.row.original.state}</Typography>
-              <Typography variant="caption">{props.row.original.city}</Typography>
+              <Typography variant="body1" sx={{ textTransform:"capitalize"}}>{props.row.original.state}</Typography>
+              <Typography sx={{textTransform:"capitalize"}} variant="caption">{props.row.original.city}</Typography>
             </Stack>
           )
         }
@@ -156,7 +156,7 @@ export default function AccountsPage() {
           let username = props.row.original.status_changed_by.username
           return (
             <Stack>
-              <Typography variant="body1" sx={{ fontWeight: "bold" }}>{username}</Typography>
+              <Typography variant="body1" sx={{ textTransform:"capitalize"}}>{username}</Typography>
               <Typography variant="caption">{props.row.original.status_changed_by.roles.toString()}</Typography>
               <Typography variant="caption">{new Date(props.row.original.updated_at).toLocaleString()}</Typography>
             </Stack>
@@ -171,7 +171,7 @@ export default function AccountsPage() {
           let username = props.row.original.updated_by.username
           return (
             <Stack>
-              <Typography variant="body1" sx={{ fontWeight: "bold" }}>{username}</Typography>
+              <Typography variant="body1" sx={{textTransform:"capitalize" }}>{username}</Typography>
               <Typography variant="caption">{props.row.original.updated_by.roles.toString()}</Typography>
               <Typography variant="caption">{new Date(props.row.original.updated_at).toLocaleString()}</Typography>
             </Stack>
@@ -188,7 +188,7 @@ export default function AccountsPage() {
             <Stack direction="row" spacing={1}>
 
               <Tooltip title="view">
-                <IconButton color="primary"
+                <IconButton  color="primary"
                   onClick={() => {
                     setChoice({ type: AccountChoiceActions.view_account })
                     setAccount(props.row.original)

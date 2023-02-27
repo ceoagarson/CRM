@@ -109,7 +109,7 @@ export function UserTable({ data, columns }: Props) {
                                 {headerGroup.headers.map
                                     ((column) => (
                                         <TableCell
-                                            sx={{ bgcolor: headColor, textTransform: "uppercase" }}
+                                            sx={{ bgcolor: headColor }}
                                             {...column.getHeaderProps(column.getSortByToggleProps())}
                                             title=""                                    >
                                             <Stack
@@ -145,37 +145,32 @@ export function UserTable({ data, columns }: Props) {
                                     {...row.getRowProps()}>
                                     {row.cells.map((cell) => {
                                         return (
-                                            <TableCell sx={{ textTransform: "uppercase", fontWeight:"bold" }}
-                                    {...cell.getCellProps()}
-                                    onDoubleClick={(e) => {
-                                        navigator.clipboard.writeText(e.currentTarget.innerText)
-                                    }}
+                                            <TableCell
+                                                {...cell.getCellProps()} >
+                                                {cell.render('Cell')}
+                                            </TableCell>
 
-                                            >
-                                    {cell.render('Cell')}
-                                </TableCell>
+                                        )
+                                    })}
+
+                                </TableRow>
 
                             )
                         })}
-
-                    </TableRow>
-
-                    )
-                        })}
-                </TableBody>
-            </Table>
-        </Box>
-            {/* pagination */ }
-    <Pagination
-        pageIndex={pageIndex}
-        pageSize={pageSize}
-        canPreviousPage={canPreviousPage}
-        canNextPage={canNextPage} pageOptions={pageOptions}
-        pageCount={pageCount}
-        gotoPage={gotoPage}
-        nextPage={nextPage}
-        previousPage={previousPage} setPageSize={setPageSize}
-    />
+                    </TableBody>
+                </Table>
+            </Box>
+            {/* pagination */}
+            <Pagination
+                pageIndex={pageIndex}
+                pageSize={pageSize}
+                canPreviousPage={canPreviousPage}
+                canNextPage={canNextPage} pageOptions={pageOptions}
+                pageCount={pageCount}
+                gotoPage={gotoPage}
+                nextPage={nextPage}
+                previousPage={previousPage} setPageSize={setPageSize}
+            />
         </>
     )
 }

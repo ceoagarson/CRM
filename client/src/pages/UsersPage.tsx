@@ -66,25 +66,23 @@ export default function UsersPage() {
                                 {
                                     props.row.original.is_active ?
                                         <Typography variant="caption" sx={{
-                                            color: "green",fontWeight:"bold"
-                                        }}>active</Typography>
+                                            color: "green",                                        }}>active</Typography>
                                         : <Typography variant="caption" sx={{
-                                            color: "red",fontWeight:"bold"
-                                        }}>blocked</Typography>
+                                            color: "red",                                        }}>blocked</Typography>
 
                                 }
                             </Stack >
                             <Stack>
                                 {
                                     roles?.includes("admin") ?
-                                        <Typography sx={{ fontWeight: "bold" }}>{props.row.original.username}</Typography>
+                                        <Typography sx={{ textTransform: "capitalize", color: "green" }}>{props.row.original.username}</Typography>
                                         :
-                                        <Typography >{props.row.original.username}</Typography>
+                                        <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.username}</Typography>
                                 }
                                 {
                                     CellUser.created_by._id === CellUser._id ?
                                         <Typography variant="caption" component="span">
-                                            {"Primary Owner"}
+                                            {"primary owner"}
                                         </Typography> :
                                         <Typography variant="caption" component="span">
                                             {roles?.toString()}
@@ -105,7 +103,7 @@ export default function UsersPage() {
                     if (props.row.original.email_verified)
                         return (
                             <Stack>
-                                <Typography variant="body1" sx={{ fontWeight: "bold" }}>{props.row.original.email}</Typography>
+                                <Typography variant="body1" sx={{}}>{props.row.original.email}</Typography>
                                 <Typography variant="caption" sx={{
                                     color: "green"
                                 }}>verified</Typography >
@@ -113,7 +111,7 @@ export default function UsersPage() {
                         )
                     return (
                         <Stack>
-                            <Typography variant="body1" sx={{ fontWeight: "bold" }}>{props.row.original.email}</Typography>
+                            <Typography variant="body1" sx={{}}>{props.row.original.email}</Typography>
                             <Typography variant="caption" sx={{
                                 color: "red"
                             }}>not verified</Typography >
@@ -130,13 +128,13 @@ export default function UsersPage() {
                     if (props.row.original.email_verified)
                         return (
                             <Stack>
-                                <Typography variant="body1" sx={{ fontWeight: "bold" }}>{props.row.original.mobile}</Typography>
+                                <Typography variant="body1" sx={{}}>{props.row.original.mobile}</Typography>
                                 <Typography variant="caption">{"verified"}</Typography>
                             </Stack>
                         )
                     return (
                         <Stack>
-                            <Typography variant="body1" sx={{ fontWeight: "bold" }}>{props.row.original.mobile}</Typography>
+                            <Typography variant="body1" sx={{}}>{props.row.original.mobile}</Typography>
                             <Typography sx={{ color: "red" }} variant="caption">{"not verified"}</Typography>
                         </Stack>
                     )
@@ -152,7 +150,7 @@ export default function UsersPage() {
                         date = new Date(props.row.original.created_at).toLocaleDateString()
                     return (
                         <Stack>
-                            <Typography sx={{ fontWeight: "bold" }}>{props.row.original.created_by.username}</Typography>
+                            <Typography sx={{textTransform: "capitalize"}}>{props.row.original.created_by.username}</Typography>
                             <Typography variant="caption" component="span">
                                 {date}
                             </Typography>
@@ -169,7 +167,7 @@ export default function UsersPage() {
                     date = new Date(props.row.original.updated_at).toLocaleDateString()
                     return (
                         <Stack>
-                            <Typography sx={{ fontWeight: "bold" }}>{props.row.original.updated_by.username}</Typography>
+                            <Typography sx={{textTransform: "capitalize"}}>{props.row.original.updated_by.username}</Typography>
                             <Typography variant="caption" component="span">
                                 {date}
                             </Typography>

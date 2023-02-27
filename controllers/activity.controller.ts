@@ -137,7 +137,7 @@ export const DeleteActivity = catchAsyncError(async (req: Request, res: Response
 export const GetActivity = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "activity id not valid" })
-    let activity = await Activity.findById(id).populate("activity_owner").populate("status_changed_by").populate("updated_by")
+    let activity = await Activity.findOne({ _id: id, organization: req.user?.organization }).populate("activity_owner").populate("status_changed_by").populate("updated_by")
     if (!activity) {
         return res.status(404).json({ message: "activity not found" })
     }
@@ -145,7 +145,7 @@ export const GetActivity = catchAsyncError(async (req: Request, res: Response, n
 })
 // get all activities  anyone can do in the organization
 export const GetActivities = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    let activities = await Activity.find().populate("activity_owner").populate("status_changed_by").populate("updated_by")
+    let activities = await Activity.find({ organization: req.user?.organization }).populate("activity_owner").populate("status_changed_by").populate("updated_by")
     if (!activities) {
         return res.status(404).json({ message: "activities not found" })
     }

@@ -1,4 +1,4 @@
-import { Alert,  Button, CircularProgress, Stack, TextField } from '@mui/material';
+import { Alert, Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useEffect, useContext } from 'react';
@@ -151,20 +151,7 @@ function NewLeadForm() {
 
   return (
     <form onSubmit={formik.handleSubmit}>
-      {
-        isError ? (
-          <Alert color="error">
-            {error?.response.data.message}
-          </Alert>
-        ) : null
-      }
-      {
-        isSuccess ? (
-          <Alert color="success">
-            new lead created successfully
-          </Alert>
-        ) : null
-      }
+
       <Stack
         gap={2}
         py={2}
@@ -352,7 +339,7 @@ function NewLeadForm() {
           {...formik.getFieldProps('probability')}
         >
           <option value="">
-            Select  
+            Select
           </option>
           <option value="easy">
             easy
@@ -503,6 +490,20 @@ function NewLeadForm() {
           {...formik.getFieldProps('remarks')}
         />
       </Stack>
+      {
+        isError ? (
+          <Alert color="error">
+            {error?.response.data.message}
+          </Alert>
+        ) : null
+      }
+      {
+        isSuccess ? (
+          <Alert color="success">
+            new lead created successfully
+          </Alert>
+        ) : null
+      }
       <Button variant="contained" color="primary" type="submit"
         disabled={Boolean(isLoading)}
         fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Create"}

@@ -109,7 +109,7 @@ export function AccountTable({ data, columns }: Props) {
                                 {headerGroup.headers.map
                                     ((column) => (
                                         <TableCell
-                                            sx={{ bgcolor: headColor, textTransform: "uppercase" }}
+                                            sx={{ bgcolor: headColor }}
                                             {...column.getHeaderProps(column.getSortByToggleProps())}
                                             title=""                                    >
                                             <Stack
@@ -145,12 +145,8 @@ export function AccountTable({ data, columns }: Props) {
                                     {...row.getRowProps()}>
                                     {row.cells.map((cell) => {
                                         return (
-                                            <TableCell sx={{ textTransform: "uppercase" }}
+                                            <TableCell 
                                                 {...cell.getCellProps()}
-                                                onDoubleClick={(e) => {
-                                                    navigator.clipboard.writeText(e.currentTarget.innerText)
-                                                }}
-
                                             >
                                                 {cell.render('Cell')}
                                             </TableCell>

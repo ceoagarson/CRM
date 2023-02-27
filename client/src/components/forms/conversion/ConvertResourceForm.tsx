@@ -52,20 +52,7 @@ export default function ConvertResourceForm({ id, resource_type }: { id: string,
     return (
         <form onSubmit={formik.handleSubmit}>
             <Stack gap={2} >
-                {
-                    isError ? (
-                        <Alert color="error">
-                            {error?.response.data.message}
-                        </Alert>
-                    ) : null
-                }
-                {
-                    isSuccess ? (
-                        <Alert color="success">
-                            Resource Converted successfully
-                        </Alert>
-                    ) : null
-                }
+
                 <TextField
                     select
                     SelectProps={{
@@ -108,6 +95,20 @@ export default function ConvertResourceForm({ id, resource_type }: { id: string,
                     fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Convert"}
                 </Button>
             </Stack>
+            {
+                isError ? (
+                    <Alert color="error">
+                        {error?.response.data.message}
+                    </Alert>
+                ) : null
+            }
+            {
+                isSuccess ? (
+                    <Alert color="success">
+                        Resource Converted successfully
+                    </Alert>
+                ) : null
+            }
         </form>
     )
 }

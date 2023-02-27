@@ -66,26 +66,13 @@ function UpdateActivityForm({ activity }: { activity: IActivity }) {
 
   return (
     <form onSubmit={formik.handleSubmit}>
-      {
-        isError ? (
-          <Alert color="error">
-            {error?.response.data.message}
-          </Alert>
-        ) : null
-      }
-      {
-        isSuccess ? (
-          <Alert color="success">
-            actiivity updated successfully
-          </Alert>
-        ) : null
-      }
+
       <Stack
         gap={2}
         py={2}
       >
-         {/* type */}
-         <TextField
+        {/* type */}
+        <TextField
           variant='standard'
           select
           SelectProps={{
@@ -152,6 +139,20 @@ function UpdateActivityForm({ activity }: { activity: IActivity }) {
           {...formik.getFieldProps('remarks')}
         />
       </Stack>
+      {
+        isError ? (
+          <Alert color="error">
+            {error?.response.data.message}
+          </Alert>
+        ) : null
+      }
+      {
+        isSuccess ? (
+          <Alert color="success">
+            actiivity updated successfully
+          </Alert>
+        ) : null
+      }
       <Button variant="contained" color="primary" type="submit"
         disabled={Boolean(isLoading)}
         fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Update"}
