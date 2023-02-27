@@ -1,13 +1,5 @@
 ## crm
-`server`
 
-
-
-
-
-`react client`
-
-![Screenshot from 2023-02-15 14-36-37](https://user-images.githubusercontent.com/45355788/219867473-21e5662e-94ca-43ee-96e3-9a7658fc5281.png)
 ![Screenshot from 2023-02-16 10-46-40](https://user-images.githubusercontent.com/45355788/219303012-462f4d44-eef3-4960-b405-4617d82e17ab.png)
 
 # Docs
