@@ -1,4 +1,4 @@
-import {Paper, Typography } from "@mui/material"
+import { Box, Paper, Typography } from "@mui/material"
 import { Stack } from "@mui/system"
 import { AxiosResponse } from "axios"
 import { useEffect, useState } from "react"
@@ -121,77 +121,75 @@ function DashBoardPage() {
 
   return (
     <>
-      <Stack
-        direction={{ xs: 'column', md: 'row' }}
-        justifyContent="space-around"
-        padding={2}
-        spacing={2}
-      >
-        {/* activities */}
-        <Paper elevation={8}>
-          <Stack
-            spacing={2}
-            p={2}
-            direction="column"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Typography variant="h6">{activities?.data.length} Activities</Typography>
-            <Stack direction="row" spacing={2}>
-              <Typography variant="body1" sx={{ color: "green" }}>{activitiesStatus?.open} Open </Typography>
-              <Typography variant="body1" sx={{ color: "red" }}>{activitiesStatus?.closed} Closed</Typography>
+      <Box>
+        <Stack
+          direction={{ xs: 'column', md: 'row' }}
+          justifyContent="space-around"
+          spacing={2}
+          padding={2}
+        >
+          {/* activities */}
+          <Paper sx={{padding:2}}>
+            <Stack
+              spacing={2}
+              direction="column"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Typography variant="h6">{activities?.data.length} Activities</Typography>
+              <Stack direction="row" spacing={2}>
+                <Typography variant="body1" sx={{ color: "green" }}>{activitiesStatus?.open} Open </Typography>
+                <Typography variant="body1" sx={{ color: "red" }}>{activitiesStatus?.closed} Closed</Typography>
+              </Stack>
             </Stack>
-          </Stack>
-        </Paper>
-        {/* leads */}
-        <Paper elevation={8}>
-          <Stack
-            spacing={2}
-            p={2}
-            direction="column"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Typography variant="h6">{leads?.data.length} Leads</Typography>
-            <Stack direction="row" spacing={2}>
-              <Typography variant="body1" sx={{ color: "green" }}>{leadsStatus?.open} Open </Typography>
-              <Typography variant="body1" sx={{ color: "red" }}>{leadsStatus?.closed} Closed</Typography>
+          </Paper>
+          {/* leads */}
+          <Paper sx={{padding:2}}>
+            <Stack
+              spacing={2}
+              direction="column"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Typography variant="h6">{leads?.data.length} Leads</Typography>
+              <Stack direction="row" spacing={2}>
+                <Typography variant="body1" sx={{ color: "green" }}>{leadsStatus?.open} Open </Typography>
+                <Typography variant="body1" sx={{ color: "red" }}>{leadsStatus?.closed} Closed</Typography>
+              </Stack>
             </Stack>
-          </Stack>
-        </Paper>
-        {/* accounts */}
-        <Paper elevation={8}>
-          <Stack
-            spacing={2}
-            p={2}
-            direction="column"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Typography variant="h6">{accounts?.data.length} Accounts</Typography>
-            <Stack direction="row" spacing={2}>
-              <Typography variant="body1" sx={{ color: "green" }}>{accountsStatus?.open} Open </Typography>
-              <Typography variant="body1" sx={{ color: "red" }}>{accountsStatus?.closed} Closed</Typography>
+          </Paper>
+          {/* accounts */}
+          <Paper sx={{padding:2}}>
+            <Stack
+              spacing={2}
+              direction="column"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Typography variant="h6">{accounts?.data.length} Accounts</Typography>
+              <Stack direction="row" spacing={2}>
+                <Typography variant="body1" sx={{ color: "green" }}>{accountsStatus?.open} Open </Typography>
+                <Typography variant="body1" sx={{ color: "red" }}>{accountsStatus?.closed} Closed</Typography>
+              </Stack>
             </Stack>
-          </Stack>
-        </Paper>
-        {/* opportunities */}
-        <Paper elevation={8}>
-          <Stack
-            spacing={2}
-            p={2}
-            direction="column"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Typography variant="h6">{opportunities?.data.length} Opportunities</Typography>
-            <Stack direction="row" spacing={2}>
-              <Typography variant="body1" sx={{ color: "green" }}>{opportunitiesStatus?.open} Open </Typography>
-              <Typography variant="body1" sx={{ color: "red" }}>{opportunitiesStatus?.closed} Closed</Typography>
+          </Paper>
+          {/* opportunities */}
+          <Paper sx={{padding:2}}>
+            <Stack
+              spacing={2}
+              direction="column"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Typography variant="h6">{opportunities?.data.length} Opportunities</Typography>
+              <Stack direction="row" spacing={2}>
+                <Typography variant="body1" sx={{ color: "green" }}>{opportunitiesStatus?.open} Open </Typography>
+                <Typography variant="body1" sx={{ color: "red" }}>{opportunitiesStatus?.closed} Closed</Typography>
+              </Stack>
             </Stack>
-          </Stack>
-        </Paper>
-      </Stack>
+          </Paper>
+        </Stack>
+      </Box>
     </>
   )
 }

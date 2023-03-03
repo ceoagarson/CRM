@@ -87,7 +87,7 @@ function UpdateProfileForm({ user }: { user: IUser }) {
         gap={2}>
         <TextField
           variant='standard'
-          focused
+          
           required
           fullWidth
           error={
@@ -102,7 +102,7 @@ function UpdateProfileForm({ user }: { user: IUser }) {
         />
         <TextField
           variant='standard'
-          focused
+          
           required
           fullWidth
           error={

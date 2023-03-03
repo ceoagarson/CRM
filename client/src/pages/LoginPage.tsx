@@ -14,13 +14,14 @@ function LoginPage() {
                 direction="row"
                 justifyContent="center"
                 alignItems="center"
-                sx={{ height: "100vh", width: '100vw' }}>
+                sx={{ height: "70vh", width: '100vw' }}>
                 <Paper
                     sx={{
                         spacing: 2,
-                        padding: 2
+                        padding: 2,
+                        borderRadius:2
                     }}
-                    elevation={16}>
+                    elevation={8}>
                     <Typography variant="h6" sx={{ textAlign: "center" }}>Login Form</Typography>
                     <LoginForm />
                     <Stack>
@@ -34,8 +35,8 @@ function LoginPage() {
                                 justifyContent: "center"
                             }}
                         >
-                            <Button onClick={() => setChoice({ type: UserChoiceActions.signup })} >Register</Button>{" or "}
-                            <Button onClick={() => setChoice({ type: UserChoiceActions.reset_password_mail })}> Forgot Password</Button>
+                            <Button  onClick={() => setChoice({ type: UserChoiceActions.signup })} >Register</Button>{" or "}
+                            <Button  onClick={() => setChoice({ type: UserChoiceActions.reset_password_mail })}> Forgot Password</Button>
                         </Typography >
                     </Stack>
                 </Paper>

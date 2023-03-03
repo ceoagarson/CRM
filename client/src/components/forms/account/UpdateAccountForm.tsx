@@ -166,7 +166,7 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
         <TextField
           autoFocus
           variant='standard'
-          focused
+          
           fullWidth
           required
           error={
@@ -182,7 +182,7 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
         {/* customer name */}
         <TextField
           variant='standard'
-          focused
+          
           fullWidth
           required
           error={
@@ -199,7 +199,7 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
         {/* customer designiation */}
         <TextField
           variant='standard'
-          focused
+          
           fullWidth
           required
           error={
@@ -215,7 +215,7 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
         {/* mobile */}
         <TextField
           variant='standard'
-          focused
+          
           required
           error={
             formik.touched.mobile && formik.errors.mobile ? true : false
@@ -233,7 +233,7 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
         {/* email */}
         <TextField
           variant='standard'
-          focused
+          
           required
           fullWidth
           error={
@@ -250,7 +250,7 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
         {/* alternate mobile */}
         <TextField
           variant='standard'
-          focused
+          
           fullWidth
           error={
             formik.touched.alternate_mobile && formik.errors.alternate_mobile ? true : false
@@ -265,7 +265,7 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
         {/* alternate_email */}
         <TextField
           variant='standard'
-          focused
+          
           fullWidth
           error={
             formik.touched.alternate_email && formik.errors.alternate_email ? true : false
@@ -280,7 +280,7 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
         {/* city */}
         <TextField
           variant='standard'
-          focused
+          
           required
           fullWidth
           error={
@@ -300,7 +300,7 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
           SelectProps={{
             native: true
           }}
-          focused
+          
           required
           error={
             formik.touched.state && formik.errors.state ? true : false
@@ -331,7 +331,7 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
           SelectProps={{
             native: true
           }}
-          focused
+          
           required
           error={
             formik.touched.probability && formik.errors.probability ? true : false
@@ -363,7 +363,7 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
           SelectProps={{
             native: true
           }}
-          focused
+          
           required
           error={
             formik.touched.account_source && formik.errors.account_source ? true : false
@@ -396,7 +396,7 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
           SelectProps={{
             native: true
           }}
-          focused
+          
           required
           error={
             formik.touched.country && formik.errors.country ? true : false
@@ -448,7 +448,7 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
           variant='standard'
           multiline
           minRows={2}
-          focused
+          
           error={
             formik.touched.address && formik.errors.address ? true : false
           }
@@ -466,7 +466,7 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
           multiline
           minRows={2}
           required
-          focused
+          
           error={
             formik.touched.description && formik.errors.description ? true : false
           }
@@ -483,7 +483,7 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
           variant='standard'
           multiline
           minRows={2}
-          focused
+          
           error={
             formik.touched.remarks && formik.errors.remarks ? true : false
           }

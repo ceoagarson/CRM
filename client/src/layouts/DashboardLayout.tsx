@@ -2,7 +2,7 @@ import { Link, Outlet } from 'react-router-dom';
 import { paths } from '../Routes';
 import { Stack } from '@mui/system';
 import styled from '@emotion/styled';
-import { Avatar, Box,  IconButton, Tooltip, Typography } from '@mui/material';
+import { Avatar, Box, IconButton, Tooltip, Typography } from '@mui/material';
 import { useContext } from 'react';
 import { UserContext } from '../contexts/userContext';
 import ResetPasswordSendMailDialog from '../components/dialogs/users/ResetPasswordSendMailDialog';
@@ -21,17 +21,25 @@ export default function DashboardLayout() {
   const { user } = useContext(UserContext)
   return (
     <>
-      <Box sx={{ bgcolor: 'primary.dark', width: '100%' }}>
+      <Box sx={{ bgcolor: 'rgba(0,0,0,0.8)', width: '100%' }}>
         {/* parent stack */}
         <Stack direction="row" sx={{
           justifyContent: "space-between", alignItems: "center"
         }}
         >
           {/* child stack1 */}
-          <Stack direction="row" gap={2} pl={1} sx={{ maxWidth: "300px", overflow: "hidden" }}>
+          <Stack direction="column" gap={2} pl={1}>
             <StyledLink to={paths.dashboard}>
-              <Stack direction="row" alignItems="center" gap={1}>
-                <Typography variant="h6" component="span"
+              <Stack direction="column"
+               alignItems="center"
+               gap={1}
+               sx={{
+                maxWidth:"70vw",
+                overflow:"hidden"
+               }}>
+                <Typography
+                  variant="h6"
+                  component="h1"
                   letterSpacing={1}
                 >
                   {user ? user.organization?.organization_name.toUpperCase() : "CRM"}

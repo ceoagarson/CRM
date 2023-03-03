@@ -99,7 +99,7 @@ function UpdateUserForm({ user }: Props) {
         >
           <TextField
             variant='standard'
-            focused
+            
             fullWidth
             required
             error={
@@ -114,7 +114,7 @@ function UpdateUserForm({ user }: Props) {
           />
           <TextField
             variant='standard'
-            focused
+            
             fullWidth
             required
             error={
@@ -129,7 +129,7 @@ function UpdateUserForm({ user }: Props) {
           />
           <TextField
             variant='standard'
-            focused
+            
             required
             fullWidth
             error={

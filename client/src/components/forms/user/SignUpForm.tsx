@@ -144,7 +144,7 @@ function OwnerSignUpForm() {
       >
         <TextField
           variant='standard'
-          focused
+          
           autoFocus
           fullWidth
           required
@@ -160,7 +160,7 @@ function OwnerSignUpForm() {
         />
         <TextField
           variant='standard'
-          focused
+          
           required
           fullWidth
           error={
@@ -175,7 +175,7 @@ function OwnerSignUpForm() {
         />
         <TextField
           variant='standard'
-          focused
+          
           required
           fullWidth
           error={
@@ -191,7 +191,7 @@ function OwnerSignUpForm() {
 
         <TextField
           variant='standard'
-          focused
+          
           fullWidth
           required
           error={
@@ -206,7 +206,7 @@ function OwnerSignUpForm() {
         />
         <TextField
           variant='standard'
-          focused
+          
           required
           fullWidth
           error={
@@ -221,7 +221,7 @@ function OwnerSignUpForm() {
         />
         <TextField
           variant='standard'
-          focused
+          
           required
           error={
             formik.touched.password && formik.errors.password ? true : false
@@ -249,7 +249,7 @@ function OwnerSignUpForm() {
         />
         <TextField
           variant='standard'
-          focused
+          
           required
           fullWidth
           error={

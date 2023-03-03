@@ -78,7 +78,7 @@ function UpdateActivityForm({ activity }: { activity: IActivity }) {
           SelectProps={{
             native: true
           }}
-          focused
+          
           required
           error={
             formik.touched.activity_type && formik.errors.activity_type ? true : false
@@ -107,7 +107,7 @@ function UpdateActivityForm({ activity }: { activity: IActivity }) {
           multiline
           minRows={2}
           required
-          focused
+          
           error={
             formik.touched.description && formik.errors.description ? true : false
           }
@@ -125,7 +125,7 @@ function UpdateActivityForm({ activity }: { activity: IActivity }) {
           variant='standard'
           multiline
           minRows={2}
-          focused
+          
           error={
             formik.touched.remarks && formik.errors.remarks ? true : false
           }

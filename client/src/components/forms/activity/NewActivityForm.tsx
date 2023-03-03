@@ -87,7 +87,7 @@ function NewActivityForm({ id, resource_type }: { id: string, resource_type: Res
           SelectProps={{
             native: true
           }}
-          focused
+          
           required
           error={
             formik.touched.activity_type && formik.errors.activity_type ? true : false
@@ -115,7 +115,7 @@ function NewActivityForm({ id, resource_type }: { id: string, resource_type: Res
           multiline
           minRows={2}
           required
-          focused
+          
           error={
             formik.touched.description && formik.errors.description ? true : false
           }
@@ -133,7 +133,7 @@ function NewActivityForm({ id, resource_type }: { id: string, resource_type: Res
           variant='standard'
           multiline
           minRows={2}
-          focused
+          
           error={
             formik.touched.remarks && formik.errors.remarks ? true : false
           }

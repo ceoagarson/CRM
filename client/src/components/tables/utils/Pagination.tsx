@@ -1,6 +1,6 @@
 import { ArrowLeft, ArrowRight, SkipNext, SkipPrevious } from '@mui/icons-material'
 import { IconButton, Paper, Stack, TextField, Typography } from '@mui/material'
-import { blue } from "@mui/material/colors"
+import { headColor } from '../../../utils/colors'
 
 interface Props {
     pageIndex: number,
@@ -28,9 +28,9 @@ function Pagination({
     return (
         <>
             {/* pagination */}
-            <Paper elevation={16}>
+            <Paper elevation={8}>
                 <Stack
-                    bgcolor={blue[600]}
+                    bgcolor={headColor}
                     direction="row"
                     justifyContent="center"
                     alignItems="center"

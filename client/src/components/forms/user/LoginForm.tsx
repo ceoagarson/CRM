@@ -78,7 +78,6 @@ function LoginForm() {
         gap={2}
       >
         <TextField
-          autoFocus
           variant="standard"
           fullWidth
           required
@@ -133,9 +132,9 @@ function LoginForm() {
             </Alert>
           ) : null
         }
-        <Button variant="contained"
+        <Button variant="contained" 
           disabled={Boolean(isLoading)}
-          color="primary" type="submit" fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Login"}
+          type="submit" fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Login"}
         </Button>
       </Stack>
     </form>

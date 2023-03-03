@@ -160,7 +160,7 @@ function NewLeadForm() {
         <TextField
           autoFocus
           variant='standard'
-          focused
+          
           fullWidth
           required
           error={
@@ -176,7 +176,7 @@ function NewLeadForm() {
         {/* customer name */}
         <TextField
           variant='standard'
-          focused
+          
           fullWidth
           required
           error={
@@ -193,7 +193,7 @@ function NewLeadForm() {
         {/* customer designiation */}
         <TextField
           variant='standard'
-          focused
+          
           fullWidth
           required
           error={
@@ -209,7 +209,7 @@ function NewLeadForm() {
         {/* mobile */}
         <TextField
           variant='standard'
-          focused
+          
           required
           error={
             formik.touched.mobile && formik.errors.mobile ? true : false
@@ -227,7 +227,7 @@ function NewLeadForm() {
         {/* email */}
         <TextField
           variant='standard'
-          focused
+          
           required
           fullWidth
           error={
@@ -244,7 +244,7 @@ function NewLeadForm() {
         {/* alternate mobile */}
         <TextField
           variant='standard'
-          focused
+          
           fullWidth
           error={
             formik.touched.alternate_mobile && formik.errors.alternate_mobile ? true : false
@@ -259,7 +259,7 @@ function NewLeadForm() {
         {/* alternate_email */}
         <TextField
           variant='standard'
-          focused
+          
           fullWidth
           error={
             formik.touched.alternate_email && formik.errors.alternate_email ? true : false
@@ -274,7 +274,7 @@ function NewLeadForm() {
         {/* city */}
         <TextField
           variant='standard'
-          focused
+          
           required
           fullWidth
           error={
@@ -390,7 +390,7 @@ function NewLeadForm() {
           SelectProps={{
             native: true
           }}
-          focused
+          
           required
           error={
             formik.touched.country && formik.errors.country ? true : false
@@ -442,7 +442,7 @@ function NewLeadForm() {
           variant='standard'
           multiline
           minRows={2}
-          focused
+          
           error={
             formik.touched.address && formik.errors.address ? true : false
           }
@@ -460,7 +460,7 @@ function NewLeadForm() {
           multiline
           minRows={2}
           required
-          focused
+          
           error={
             formik.touched.description && formik.errors.description ? true : false
           }
@@ -477,7 +477,7 @@ function NewLeadForm() {
           variant='standard'
           multiline
           minRows={2}
-          focused
+          
           error={
             formik.touched.remarks && formik.errors.remarks ? true : false
           }

@@ -114,7 +114,7 @@ function NewUserForm() {
                 <TextField
                     autoFocus
                     variant='standard'
-                    focused
+                    
                     fullWidth
                     required
                     error={
@@ -129,7 +129,7 @@ function NewUserForm() {
                 />
                 <TextField
                     variant='standard'
-                    focused
+                    
                     required
                     fullWidth
                     error={
@@ -144,7 +144,7 @@ function NewUserForm() {
                 />
                 <TextField
                     variant='standard'
-                    focused
+                    
                     required
                     error={
                         formik.touched.password && formik.errors.password ? true : false
@@ -172,7 +172,7 @@ function NewUserForm() {
                 />
                 <TextField
                     variant='standard'
-                    focused
+                    
                     required
                     fullWidth
                     error={
