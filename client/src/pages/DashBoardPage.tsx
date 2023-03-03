@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material"
+import {Paper, Typography } from "@mui/material"
 import { Stack } from "@mui/system"
 import { AxiosResponse } from "axios"
 import { useEffect, useState } from "react"
@@ -7,19 +7,11 @@ import { GetAccounts } from "../services/AccountServices"
 import { GetActivities } from "../services/ActivityServices"
 import { GetLeads } from "../services/LeadsServices"
 import { GetOpportunities } from "../services/OpportunityServices"
-import { GetUsers } from "../services/UserServices"
 import { BackendError } from "../types"
 import { IAccount } from "../types/account.type"
 import { IActivity } from "../types/activity.type"
 import { ILead } from "../types/lead.type"
 import { IOpportunity } from "../types/opportunity.type"
-import { IUser } from "../types/user.type"
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { Pie } from 'react-chartjs-2';
-
-
-
-ChartJS.register(ArcElement, Tooltip, Legend);
 
 
 function DashBoardPage() {
@@ -39,14 +31,8 @@ function DashBoardPage() {
     open: number,
     closed: number
   }>()
-  const [userStatus, setUserStatus] = useState<{
-    active: number,
-    blocked: number,
-    admins: number,
-    owners: number
-  }>()
 
-  const { data: accounts, isSuccess: isAccountsSuccess} = useQuery
+  const { data: accounts, isSuccess: isAccountsSuccess } = useQuery
     <AxiosResponse<IAccount[]>, BackendError>("accounts", GetAccounts)
 
   const { data: opportunities, isSuccess: isOpportunitiesSuccess } = useQuery
@@ -54,37 +40,9 @@ function DashBoardPage() {
   const { data: activities, isSuccess: isActivitySuccess } = useQuery
     <AxiosResponse<IActivity[]>, BackendError>("activities", GetActivities)
 
-  const { data: leads, isSuccess: isLeadsSuccess} = useQuery
+  const { data: leads, isSuccess: isLeadsSuccess } = useQuery
     <AxiosResponse<ILead[]>, BackendError>("leads", GetLeads)
 
-  const { data: users, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<IUser[]>, BackendError>("users", GetUsers)
-
-  // handle users
-  useEffect(() => {
-    if (isUsersSuccess) {
-      let active = 0;
-      let blocked = 0;
-      let admins = 0;
-      let owners = 0;
-      users?.data?.map(user => {
-        if (user.is_active)
-          active++
-        if (user.roles.includes("admin"))
-          admins++
-        if (user.roles.includes("owner"))
-          owners++
-        if (!user.is_active)
-          blocked++
-        return null
-      })
-      setUserStatus({
-        active: active,
-        blocked: blocked,
-        admins: admins,
-        owners: owners,
-      })
-    }
-  }, [users, isUsersSuccess])
 
   // handle leads
   useEffect(() => {
@@ -161,148 +119,79 @@ function DashBoardPage() {
     }
   }, [activities, isActivitySuccess])
 
-  const UsersChartData = {
-    labels: ['active', 'blocked', 'admin', 'owners'],
-    datasets: [
-      {
-        label: '',
-        data: [userStatus?.active, userStatus?.blocked, userStatus?.admins, userStatus?.owners],
-        backgroundColor: [
-          'lightgreen',
-          'red',
-          'lightblue',
-          'lightpink',
-        ],
-        borderColor: [
-          'black',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)'
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
-  const LeadsChartData = {
-    labels: ['active', 'closed'],
-    datasets: [
-      {
-        label: '',
-        data: [leadsStatus?.open, leadsStatus?.closed],
-        backgroundColor: [
-          'lightblue',
-          'red'
-        ],
-        borderColor: [
-          'black',
-          'rgba(54, 162, 235, 1)',
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
-  const AccountsChartData = {
-    labels: ['active', 'closed'],
-    datasets: [
-      {
-        label: '',
-        data: [accountsStatus?.open, accountsStatus?.closed],
-        backgroundColor: [
-          'lightblue',
-          'red'
-        ],
-        borderColor: [
-          'black',
-          'rgba(54, 162, 235, 1)',
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
-  const OpportunitiesChartData = {
-    labels: ['active', 'closed'],
-    datasets: [
-      {
-        label: '',
-        data: [opportunitiesStatus?.open, opportunitiesStatus?.closed],
-        backgroundColor: [
-          'lightblue',
-          'red'
-        ],
-        borderColor: [
-          'black',
-          'rgba(54, 162, 235, 1)',
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
-  const ActivitiesChartData = {
-    labels: ['active', 'closed'],
-    datasets: [
-      {
-        label: '',
-        data: [activitiesStatus?.open, activitiesStatus?.closed],
-        backgroundColor: [
-          'lightblue',
-          'red'
-        ],
-        borderColor: [
-          'black',
-          'rgba(54, 162, 235, 1)',
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
   return (
     <>
-      <Box sx={{ padding: 2 }}>
-        {/* leads ,accounts and opportunties */}
-        <Stack
-          justifyContent="space-between"
-          sx={{ paddingTop: 4 }}
-          direction={{ xs: 'column', sm: 'row' }}
-          spacing={{ xs: 1, sm: 2, md: 4 }}
-        >
-          <Stack direction="column"
-            justifyContent="center" alignItems="center">
-            <Pie data={LeadsChartData} />
-            <Typography variant="button">Leads</Typography>
-
+      <Stack
+        direction={{ xs: 'column', md: 'row' }}
+        justifyContent="space-around"
+        padding={2}
+        spacing={2}
+      >
+        {/* activities */}
+        <Paper elevation={8}>
+          <Stack
+            spacing={2}
+            p={2}
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Typography variant="h6">{activities?.data.length} Activities</Typography>
+            <Stack direction="row" spacing={2}>
+              <Typography variant="body1" sx={{ color: "green" }}>{activitiesStatus?.open} Open </Typography>
+              <Typography variant="body1" sx={{ color: "red" }}>{activitiesStatus?.closed} Closed</Typography>
+            </Stack>
           </Stack>
-          <Stack direction="column"
-            justifyContent="center" alignItems="center">
-            <Pie data={OpportunitiesChartData} />
-            <Typography variant="button">Opportunities</Typography>
+        </Paper>
+        {/* leads */}
+        <Paper elevation={8}>
+          <Stack
+            spacing={2}
+            p={2}
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Typography variant="h6">{leads?.data.length} Leads</Typography>
+            <Stack direction="row" spacing={2}>
+              <Typography variant="body1" sx={{ color: "green" }}>{leadsStatus?.open} Open </Typography>
+              <Typography variant="body1" sx={{ color: "red" }}>{leadsStatus?.closed} Closed</Typography>
+            </Stack>
           </Stack>
-          {/* accounts */}
-          <Stack direction="column"
-            justifyContent="center" alignItems="center">
-            <Pie data={AccountsChartData} />
-            <Typography variant="button">Accounts</Typography>
+        </Paper>
+        {/* accounts */}
+        <Paper elevation={8}>
+          <Stack
+            spacing={2}
+            p={2}
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Typography variant="h6">{accounts?.data.length} Accounts</Typography>
+            <Stack direction="row" spacing={2}>
+              <Typography variant="body1" sx={{ color: "green" }}>{accountsStatus?.open} Open </Typography>
+              <Typography variant="body1" sx={{ color: "red" }}>{accountsStatus?.closed} Closed</Typography>
+            </Stack>
           </Stack>
-        </Stack>
-        {/* users and activities */}
-        <Stack
-          justifyContent="center"
-          alignItems="center"
-          sx={{ paddingTop: 4 }}
-          direction={{ xs: 'column', sm: 'row' }}
-          spacing={{ xs: 1, sm: 2, md: 4 }}
-        >
-          <Stack direction="column"
-            justifyContent="center" alignItems="center">
-            <Pie data={UsersChartData} />
-            <Typography variant="button">Users</Typography>
+        </Paper>
+        {/* opportunities */}
+        <Paper elevation={8}>
+          <Stack
+            spacing={2}
+            p={2}
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Typography variant="h6">{opportunities?.data.length} Opportunities</Typography>
+            <Stack direction="row" spacing={2}>
+              <Typography variant="body1" sx={{ color: "green" }}>{opportunitiesStatus?.open} Open </Typography>
+              <Typography variant="body1" sx={{ color: "red" }}>{opportunitiesStatus?.closed} Closed</Typography>
+            </Stack>
           </Stack>
-          <Stack direction="column"
-            justifyContent="center" alignItems="center">
-            <Pie data={ActivitiesChartData} />
-            <Typography variant="button">Activities</Typography>
-          </Stack>
-        </Stack>
-      </Box>
+        </Paper>
+      </Stack>
     </>
   )
 }

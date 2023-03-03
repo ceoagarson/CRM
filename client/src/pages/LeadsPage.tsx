@@ -55,6 +55,7 @@ export default function LeadsPage() {
                 alignItems="center"
               >
                 <Avatar
+                  sx={{ width: 30, height: 30 }}
                   onClick={() => {
                     setChoice({ type: LeadChoiceActions.view_lead })
                     setLead(props.row.original)
@@ -72,9 +73,11 @@ export default function LeadsPage() {
                 }
               </Stack >
               <Stack>
-                <Typography sx={{textTransform:"capitalize"}}>{props.row.original.name}</Typography>
-                <Typography sx={{textTransform:"capitalize"}} variant="caption" component="span">
-                  {props.row.original.customer_name}<i>({props.row.original.customer_designination})</i>
+                <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.name}</Typography>
+                <Typography sx={{ textTransform: "capitalize" }} variant="caption" component="span">
+                  {props.row.original.customer_name}<strong>
+                    ({props.row.original.customer_designination})
+                  </strong>
                 </Typography>
               </Stack >
             </Stack>
@@ -114,7 +117,7 @@ export default function LeadsPage() {
         Cell: (props) => {
           return (
             <Stack>
-              <Typography  sx={{ textTransform:"capitalize" }} variant="body1">{props.row.original.lead_source}</Typography>
+              <Typography sx={{ textTransform: "capitalize" }} variant="body1">{props.row.original.lead_source}</Typography>
             </Stack>
           )
         }
@@ -126,8 +129,7 @@ export default function LeadsPage() {
         Cell: (props) => {
           return (
             <Stack>
-              <Typography variant="body1" sx={{textTransform:"capitalize"}}>{props.row.original.lead_owner.username}</Typography>
-              <Typography variant="caption">{props.row.original.lead_owner.roles.toString()}</Typography>
+              <Typography variant="body1" sx={{ textTransform: "capitalize" }}>{props.row.original.lead_owner.username}</Typography>
               <Typography variant="caption" component="span">
                 {new Date(props.row.original.created_at).toLocaleDateString()}
               </Typography>
@@ -135,15 +137,15 @@ export default function LeadsPage() {
           )
         }
       },
-      // lead_owner
+      // address
       {
         Header: 'Address',
         accessor: 'city',
         Cell: (props) => {
           return (
             <Stack>
-              <Typography variant="body1" sx={{textTransform:"capitalize"}}>{props.row.original.state}</Typography>
-              <Typography variant="caption" sx={{textTransform:"capitalize"}}>{props.row.original.city}</Typography>
+              <Typography variant="body1" sx={{ textTransform: "capitalize" }}>{props.row.original.state}</Typography>
+              <Typography variant="caption" sx={{ textTransform: "capitalize" }}>{props.row.original.city}</Typography>
             </Stack>
           )
         }
@@ -156,8 +158,7 @@ export default function LeadsPage() {
           let username = props.row.original.status_changed_by.username
           return (
             <Stack>
-              <Typography variant="body1" sx={{textTransform:"capitalize"}}>{username}</Typography>
-              <Typography variant="caption">{props.row.original.status_changed_by.roles.toString()}</Typography>
+              <Typography variant="body1" sx={{ textTransform: "capitalize" }}>{username}</Typography>
               <Typography variant="caption">{new Date(props.row.original.updated_at).toLocaleString()}</Typography>
             </Stack>
           )
@@ -171,8 +172,7 @@ export default function LeadsPage() {
           let username = props.row.original.updated_by.username
           return (
             <Stack>
-              <Typography variant="body1" sx={{textTransform:"capitalize"}}>{username}</Typography>
-              <Typography variant="caption">{props.row.original.updated_by.roles.toString()}</Typography>
+              <Typography variant="body1" sx={{ textTransform: "capitalize" }}>{username}</Typography>
               <Typography variant="caption">{new Date(props.row.original.updated_at).toLocaleString()}</Typography>
             </Stack>
           )

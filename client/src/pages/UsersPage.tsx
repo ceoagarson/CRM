@@ -57,7 +57,8 @@ export default function UsersPage() {
                             alignItems="center"
                         >
                             <Stack>
-                                <Avatar
+                                <Avatar 
+                                sx={{ width: 30, height: 30 }}
                                     onClick={() => {
                                         setChoice({ type: UserChoiceActions.view_profile })
                                         setUser(props.row.original)
@@ -66,9 +67,11 @@ export default function UsersPage() {
                                 {
                                     props.row.original.is_active ?
                                         <Typography variant="caption" sx={{
-                                            color: "green",                                        }}>active</Typography>
+                                            color: "green",
+                                        }}>active</Typography>
                                         : <Typography variant="caption" sx={{
-                                            color: "red",                                        }}>blocked</Typography>
+                                            color: "red",
+                                        }}>blocked</Typography>
 
                                 }
                             </Stack >
@@ -150,7 +153,7 @@ export default function UsersPage() {
                         date = new Date(props.row.original.created_at).toLocaleDateString()
                     return (
                         <Stack>
-                            <Typography sx={{textTransform: "capitalize"}}>{props.row.original.created_by.username}</Typography>
+                            <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.created_by.username}</Typography>
                             <Typography variant="caption" component="span">
                                 {date}
                             </Typography>
@@ -167,7 +170,7 @@ export default function UsersPage() {
                     date = new Date(props.row.original.updated_at).toLocaleDateString()
                     return (
                         <Stack>
-                            <Typography sx={{textTransform: "capitalize"}}>{props.row.original.updated_by.username}</Typography>
+                            <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.updated_by.username}</Typography>
                             <Typography variant="caption" component="span">
                                 {date}
                             </Typography>

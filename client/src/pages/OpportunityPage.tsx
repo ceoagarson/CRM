@@ -55,6 +55,7 @@ export default function OpportunitiesPage() {
                 alignItems="center"
               >
                 <Avatar
+                  sx={{ width: 30, height: 30 }}
                   onClick={() => {
                     setChoice({ type: OpportunityChoiceActions.view_opportunity })
                     setOpportunity(props.row.original)
@@ -63,18 +64,20 @@ export default function OpportunitiesPage() {
                 {
                   props.row.original.status ?
                     <Typography variant="caption" sx={{
-                      color: "green", textTransform:"capitalize"
+                      color: "green", textTransform: "capitalize"
                     }}>open</Typography>
                     : <Typography variant="caption" sx={{
-                      color: "red", textTransform:"capitalize"
+                      color: "red", textTransform: "capitalize"
                     }}>closed</Typography>
 
                 }
               </Stack >
               <Stack>
-                <Typography sx={{ textTransform:"capitalize" }}>{props.row.original.name}</Typography>
-                <Typography sx={{textTransform:"capitalize"}} variant="caption" component="span">
-                  {props.row.original.customer_name}<i>({props.row.original.customer_designination})</i>
+                <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.name}</Typography>
+                <Typography sx={{ textTransform: "capitalize" }} variant="caption" component="span">
+                  {props.row.original.customer_name}<strong>
+                    ({props.row.original.customer_designination})
+                  </strong>
                 </Typography>
               </Stack >
             </Stack>
@@ -113,7 +116,7 @@ export default function OpportunitiesPage() {
         Cell: (props) => {
           return (
             <Stack>
-              <Typography variant="body1" sx={{ textTransform:"capitalize" }}>{props.row.original.opportunity_source}</Typography>
+              <Typography variant="body1" sx={{ textTransform: "capitalize" }}>{props.row.original.opportunity_source}</Typography>
             </Stack>
           )
         }
@@ -125,8 +128,7 @@ export default function OpportunitiesPage() {
         Cell: (props) => {
           return (
             <Stack>
-              <Typography variant="body1" sx={{ textTransform:"capitalize" }}>{props.row.original.opportunity_owner.username}</Typography>
-              <Typography variant="caption">{props.row.original.opportunity_owner.roles.toString()}</Typography>
+              <Typography variant="body1" sx={{ textTransform: "capitalize" }}>{props.row.original.opportunity_owner.username}</Typography>
               <Typography variant="caption" component="span">
                 {new Date(props.row.original.created_at).toLocaleDateString()}
               </Typography>
@@ -141,8 +143,8 @@ export default function OpportunitiesPage() {
         Cell: (props) => {
           return (
             <Stack>
-              <Typography variant="body1" sx={{ textTransform:"capitalize" }}>{props.row.original.state}</Typography>
-              <Typography sx={{textTransform:"capitalize"}} variant="caption">{props.row.original.city}</Typography>
+              <Typography variant="body1" sx={{ textTransform: "capitalize" }}>{props.row.original.state}</Typography>
+              <Typography sx={{ textTransform: "capitalize" }} variant="caption">{props.row.original.city}</Typography>
             </Stack>
           )
         }
@@ -155,8 +157,7 @@ export default function OpportunitiesPage() {
           let username = props.row.original.status_changed_by.username
           return (
             <Stack>
-              <Typography variant="body1" sx={{ textTransform:"capitalize" }}>{username}</Typography>
-              <Typography variant="caption">{props.row.original.status_changed_by.roles.toString()}</Typography>
+              <Typography variant="body1" sx={{ textTransform: "capitalize" }}>{username}</Typography>
               <Typography variant="caption">{new Date(props.row.original.updated_at).toLocaleString()}</Typography>
             </Stack>
           )
@@ -170,8 +171,7 @@ export default function OpportunitiesPage() {
           let username = props.row.original.updated_by.username
           return (
             <Stack>
-              <Typography variant="body1" sx={{ textTransform:"capitalize" }}>{username}</Typography>
-              <Typography variant="caption">{props.row.original.updated_by.roles.toString()}</Typography>
+              <Typography variant="body1" sx={{ textTransform: "capitalize" }}>{username}</Typography>
               <Typography variant="caption">{new Date(props.row.original.updated_at).toLocaleString()}</Typography>
             </Stack>
           )
@@ -270,7 +270,7 @@ export default function OpportunitiesPage() {
       },
 
     ]
-    , [setChoice,loggedInUser]
+    , [setChoice, loggedInUser]
   )
   useEffect(() => {
     if (isSuccess)

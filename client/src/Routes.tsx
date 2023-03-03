@@ -3,21 +3,18 @@ import React, { Suspense, useContext } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import ResetPasswordDialog from './components/dialogs/users/ResetPasswordDialog'
 import { UserContext } from './contexts/userContext'
-import { DashboardLayout } from './layouts'
+import DashboardLayout from './layouts/DashboardLayout'
 import EmailVerifyPage from './pages/EmailVerifyPage'
+import LoginPage from './pages/LoginPage'
 const AccountsPage = React.lazy(() => import('./pages/AccountsPage'))
 const ActivitiesPage = React.lazy(() => import('./pages/ActivitiesPage'))
 const DashBoardPage = React.lazy(() => import('./pages/DashBoardPage'))
-const HomePage = React.lazy(() => import('./pages/HomePage'))
 const LeadsPage = React.lazy(() => import('./pages/LeadsPage'))
 const OpportunityPage = React.lazy(() => import('./pages/OpportunityPage'))
 const UsersPage = React.lazy(() => import('./pages/UsersPage'))
-const HomeLayout = React.lazy(() => import('./layouts/HomeLayout'))
 
 export enum paths {
-  home = "/",
-  about = "about",
-  // dashboard routes
+  login = "/",
   dashboard = "/dashboard",
   leads = "leads",
   accounts = "accounts",
@@ -33,14 +30,7 @@ function AppRoutes() {
     <Routes >
       {
         !user ?
-          <Route>
-            < Route path={paths.home} element={<HomeLayout />}>
-              <Route index element={<HomePage />} />
-              <Route path={paths.about} element={<h1>about page</h1>} />
-            </Route>
-            <Route path={paths.reset_password} element={<ResetPasswordDialog />} />
-            <Route path={paths.verify_email} element={<EmailVerifyPage />} />
-          </Route>
+          <Route path={paths.login} element={<LoginPage />} />
           :
           < Route path={paths.dashboard} element={<DashboardLayout />
           }>
@@ -83,7 +73,9 @@ function AppRoutes() {
           </Route>
 
       }
-      <Route path="*" element={<Navigate to={paths.home} />} />
+      <Route path={paths.reset_password} element={<ResetPasswordDialog />} />
+      <Route path={paths.verify_email} element={<EmailVerifyPage />} />
+      <Route path="*" element={<Navigate to={paths.login} />} />
     </Routes >
   )
 }

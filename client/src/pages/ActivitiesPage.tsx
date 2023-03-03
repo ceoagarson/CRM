@@ -28,6 +28,7 @@ export default function ActivitiesPage() {
 
   const MemoColumns: Column<IActivity>[] = React.useMemo(
     () => [
+      //index 
       {
         Header: "Index",
         accessor: "_id",
@@ -37,22 +38,18 @@ export default function ActivitiesPage() {
           return <Typography variant="body1" component="span" pr={2}>{props.row.index + 1}</Typography>
         }
       },
-      // activity_type
+      // resource type 
       {
-        Header: 'Activity Type',
-        accessor: 'activity_type',
+        Header: 'Resource Type',
+        accessor: 'resource_type',
         Cell: (props) => {
           return (
-            <Stack>
-              <Typography variant="body1" sx={{ textTransform: "capitalize" }}>{props.row.original.activity_type}</Typography>
-              <Stack direction="row" spacing={2}>
-                <Typography variant="caption" component="span">
-                  <i>{props.row.original.resource_type}</i>
-                </Typography>
-                <Typography variant="caption" component="span">
-                  {new Date(props.row.original.created_at).toLocaleDateString()}
-                </Typography>
-              </Stack>
+            <Stack
+              direction="column"
+             >
+              <Typography variant="button" component="span">
+                {props.row.original.resource_type}
+              </Typography>
               {
                 props.row.original.status ?
                   <Typography variant="caption" sx={{
@@ -64,6 +61,23 @@ export default function ActivitiesPage() {
 
               }
             </Stack>
+          ) 
+        }
+      },
+      // activity_type
+      {
+        Header: 'Activity',
+        accessor: 'activity_type',
+        Cell: (props) => {
+          return (
+            <Stack>
+              <Typography variant="body1" sx={{ textTransform: "capitalize" }}>{props.row.original.activity_type}</Typography>
+              <Typography variant="caption" component="span">
+                {new Date(props.row.original.created_at).toLocaleDateString()}
+              </Typography>
+
+
+            </Stack>
           )
         }
       },
@@ -74,11 +88,12 @@ export default function ActivitiesPage() {
         Cell: (props) => {
           return (
             <Stack>
-              <Typography sx={{ textTransform: "capitalize" }} variant="body2">{props.row.original.description.slice(0, 20)}...</Typography>
+              <Typography sx={{ textTransform: "capitalize" }} variant="button">{props.row.original.description.slice(0, 50)}...</Typography>
             </Stack>
           )
         }
       },
+      
       //remarks
       {
         Header: 'Remarks',
@@ -86,7 +101,7 @@ export default function ActivitiesPage() {
         Cell: (props) => {
           return (
             <Stack>
-              <Typography sx={{ textTransform: "capitalize" }} variant="body2">{props.row.original.remarks?.slice(0, 20)}...</Typography>
+              <Typography sx={{ textTransform: "capitalize" }} variant="button">{props.row.original.remarks?.slice(0, 50)}...</Typography>
             </Stack>
           )
         }
@@ -114,7 +129,7 @@ export default function ActivitiesPage() {
           return (
             <Stack>
               <Typography variant="body1" sx={{ textTransform: "capitalize" }}>{username}</Typography>
-              <Typography variant="caption">{props.row.original.status_changed_by.roles.toString()}</Typography>
+
               <Typography variant="caption">{new Date(props.row.original.updated_at).toLocaleString()}</Typography>
             </Stack>
           )
@@ -129,7 +144,6 @@ export default function ActivitiesPage() {
           return (
             <Stack>
               <Typography variant="body1" sx={{ textTransform: "capitalize" }}>{username}</Typography>
-              <Typography variant="caption">{props.row.original.updated_by.roles.toString()}</Typography>
               <Typography variant="caption">{new Date(props.row.original.updated_at).toLocaleString()}</Typography>
             </Stack>
           )

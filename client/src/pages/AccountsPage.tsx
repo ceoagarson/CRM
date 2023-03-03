@@ -55,6 +55,7 @@ export default function AccountsPage() {
                 alignItems="center"
               >
                 <Avatar
+                 sx={{ width: 30, height: 30 }}
                   onClick={() => {
                     setChoice({ type: AccountChoiceActions.view_account })
                     setAccount(props.row.original)
@@ -74,7 +75,9 @@ export default function AccountsPage() {
               <Stack>
                 <Typography sx={{ textTransform:"capitalize"}}>{props.row.original.name}</Typography>
                 <Typography sx={{textTransform:"capitalize"}} variant="caption" component="span">
-                  {props.row.original.customer_name}<i>({props.row.original.customer_designination})</i>
+                  {props.row.original.customer_name}<strong>
+                    ({props.row.original.customer_designination})
+                  </strong>
                 </Typography>
               </Stack >
             </Stack>
@@ -127,7 +130,7 @@ export default function AccountsPage() {
           return (
             <Stack>
               <Typography variant="body1" sx={{ textTransform:"capitalize"}}>{props.row.original.account_owner.username}</Typography>
-              <Typography variant="caption">{props.row.original.account_owner.roles.toString()}</Typography>
+             
               <Typography variant="caption" component="span">
                 {new Date(props.row.original.created_at).toLocaleDateString()}
               </Typography>
@@ -157,7 +160,7 @@ export default function AccountsPage() {
           return (
             <Stack>
               <Typography variant="body1" sx={{ textTransform:"capitalize"}}>{username}</Typography>
-              <Typography variant="caption">{props.row.original.status_changed_by.roles.toString()}</Typography>
+            
               <Typography variant="caption">{new Date(props.row.original.updated_at).toLocaleString()}</Typography>
             </Stack>
           )
@@ -172,7 +175,7 @@ export default function AccountsPage() {
           return (
             <Stack>
               <Typography variant="body1" sx={{textTransform:"capitalize" }}>{username}</Typography>
-              <Typography variant="caption">{props.row.original.updated_by.roles.toString()}</Typography>
+           
               <Typography variant="caption">{new Date(props.row.original.updated_at).toLocaleString()}</Typography>
             </Stack>
           )

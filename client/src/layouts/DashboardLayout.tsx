@@ -2,12 +2,9 @@ import { Link, Outlet } from 'react-router-dom';
 import { paths } from '../Routes';
 import { Stack } from '@mui/system';
 import styled from '@emotion/styled';
-import { Avatar, Box, Button, IconButton, Tooltip, Typography } from '@mui/material';
+import { Avatar, Box,  IconButton, Tooltip, Typography } from '@mui/material';
 import { useContext } from 'react';
 import { UserContext } from '../contexts/userContext';
-import { AccountCircle } from '@mui/icons-material';
-import { UserChoiceActions, ChoiceContext } from '../contexts/dialogContext';
-import LoginDialog from '../components/dialogs/users/LoginDialog';
 import ResetPasswordSendMailDialog from '../components/dialogs/users/ResetPasswordSendMailDialog';
 import SignUpDialog from '../components/dialogs/users/SignUpDialog';
 import UserMenu from '../components/menu/UserMenu';
@@ -22,8 +19,6 @@ export const StyledLink = styled(Link)`
 export default function DashboardLayout() {
   const { setMenu } = useContext(MenuContext)
   const { user } = useContext(UserContext)
-  const { setChoice } = useContext(ChoiceContext)
-
   return (
     <>
       <Box sx={{ bgcolor: 'primary.dark', width: '100%' }}>
@@ -101,17 +96,7 @@ export default function DashboardLayout() {
                 </Stack>
               </>
               :
-              <>
-                {/* login button */}
-                <Button
-                  variant="outlined"
-                  startIcon={<AccountCircle />}
-                  sx={{ color: "white" }}
-                  onClick={() => setChoice({ type: UserChoiceActions.login })}
-                >
-                  Login
-                </Button>
-              </>
+              null
             }
           </Stack >
         </Stack>
@@ -119,7 +104,6 @@ export default function DashboardLayout() {
       <Outlet />
       <DashboardMenu />
       <UserMenu />
-      <LoginDialog />
       <ResetPasswordSendMailDialog />
       <SignUpDialog />
     </>

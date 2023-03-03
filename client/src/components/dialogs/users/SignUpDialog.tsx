@@ -1,10 +1,13 @@
-import { Dialog, DialogContent, DialogTitle, Button, DialogActions, Typography} from '@mui/material';
+import { Dialog, DialogContent, DialogTitle, Button, DialogActions, Typography } from '@mui/material';
 import { useContext } from 'react';
+import {useNavigate } from 'react-router-dom';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
+import { paths } from '../../../Routes';
 import SignUpForm from '../../forms/user/SignUpForm';
 
 function SignUpDialog() {
   const { choice, setChoice } = useContext(ChoiceContext)
+  const goto=useNavigate()
   return (
     <>
       <Dialog open={choice === UserChoiceActions.signup ? true : false}
@@ -27,7 +30,7 @@ function SignUpDialog() {
             }}
           >
 
-            <Button onClick={() => setChoice({ type: UserChoiceActions.login })}>Login</Button>{" or "}
+            <Button onClick={() =>goto(paths.login)}>Login</Button>{" or "}
             <Button onClick={() => setChoice({ type: UserChoiceActions.reset_password_mail })}> Forgot Password</Button>
           </Typography >
         </DialogActions>

@@ -1,7 +1,7 @@
 import React, { useReducer } from "react"
 
 // choices
-type UserChoices = "signup" | "login" | "reset_password_mail" | null | "new_user" | "update_user" | "update_profile" | "view_profile" | "update_password" | "reset_password" | "verify_email" | "change_role" | "delete_user" |
+type UserChoices = "signup"| "reset_password_mail" | null | "new_user" | "update_user" | "update_profile" | "view_profile" | "update_password" | "reset_password" | "verify_email" | "change_role" | "delete_user" |
   "block_user" | "unblock_user" | "make_admin" | "revoke_permission" | "make_owner"
 
 type ConversionChoices = "convert_resource" | "close"
@@ -56,7 +56,6 @@ export enum ActivityChoiceActions {
 
 export enum UserChoiceActions {
   signup = "signup",
-  login = "login",
   reset_password_mail = "reset_password_mail",
   close = "close",
   new_user = "new_user",
@@ -83,7 +82,6 @@ function reducer(state: ChoiceState, action: Action) {
   let type = action.type
   switch (type) {
     // user dialogs choices
-    case UserChoiceActions.login: return type
     case UserChoiceActions.signup: return type
     case UserChoiceActions.reset_password_mail: return type
     case UserChoiceActions.new_user: return type

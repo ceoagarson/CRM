@@ -23,7 +23,7 @@ function UserMenu() {
             dispatch({ type: UserActions.logout })
             setChoice({ type: UserChoiceActions.close })
             setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
-            goto(paths.home)
+            goto(paths.login)
         }
     }, [dispatch, goto, setChoice, setMenu, isSuccess])
     return (
