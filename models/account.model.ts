@@ -91,7 +91,7 @@ const accountSchema = new mongoose.Schema<IAccount, mongoose.Model<IAccount>>({
         lowercase: true,
 
     },
-    customer_designination: {
+    customer_designation: {
         type: String,
         trim: true,
         lowercase: true,

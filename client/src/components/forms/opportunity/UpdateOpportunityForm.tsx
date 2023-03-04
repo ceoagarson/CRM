@@ -27,7 +27,7 @@ type TformData = {
   country: string
   alternate_mobile: string,
   alternate_email: string,
-  customer_designination: string,
+  customer_designation: string,
   opportunity_source: string,
   remarks: string,
 }
@@ -59,7 +59,7 @@ function UpdateOpportunityForm({ opportunity }: { opportunity: IOpportunity }) {
       country: opportunity.country,
       alternate_mobile: String(opportunity.alternate_mobile),
       alternate_email: opportunity.alternate_email,
-      customer_designination: opportunity.customer_designination,
+      customer_designation: opportunity.customer_designation,
       opportunity_source: opportunity.opportunity_source,
       remarks: opportunity.remarks,
     },
@@ -74,7 +74,7 @@ function UpdateOpportunityForm({ opportunity }: { opportunity: IOpportunity }) {
       customer_name: Yup.string().required("required field")
         .min(4, 'Must be 4 characters or more')
         .max(30, 'Must be 30 characters or less'),
-      customer_designination: Yup.string().required("required field"),
+      customer_designation: Yup.string().required("required field"),
       city: Yup.string().required("required field")
         .min(3, 'Must be 3 characters or more')
         .max(30, 'Must be 30 characters or less'),
@@ -137,7 +137,7 @@ function UpdateOpportunityForm({ opportunity }: { opportunity: IOpportunity }) {
       formdata.append("country", values.country)
       formdata.append("alternate_mobile", values.alternate_mobile)
       formdata.append("alternate_email", values.alternate_email)
-      formdata.append("customer_designination", values.customer_designination)
+      formdata.append("customer_designation", values.customer_designation)
       formdata.append("opportunity_source", values.opportunity_source)
       formdata.append("remarks", values.remarks)
       formdata.append("dp", values.dp)
@@ -203,14 +203,14 @@ function UpdateOpportunityForm({ opportunity }: { opportunity: IOpportunity }) {
           fullWidth
           required
           error={
-            formik.touched.customer_designination && formik.errors.customer_designination ? true : false
+            formik.touched.customer_designation && formik.errors.customer_designation ? true : false
           }
-          id="customer_designination"
-          label="customer_designination"
+          id="customer_designation"
+          label="customer_designation"
           helperText={
-            formik.touched.customer_designination && formik.errors.customer_designination ? formik.errors.customer_designination : ""
+            formik.touched.customer_designation && formik.errors.customer_designation ? formik.errors.customer_designation : ""
           }
-          {...formik.getFieldProps('customer_designination')}
+          {...formik.getFieldProps('customer_designation')}
         />
         {/* mobile */}
         <TextField

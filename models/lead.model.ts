@@ -91,7 +91,7 @@ const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
         lowercase: true,
 
     },
-    customer_designination: {
+    customer_designation: {
         type: String,
         trim: true,
         lowercase: true,

@@ -7,7 +7,7 @@ type BaseAccount = {
     _id: string,
     name: string,
     customer_name: string,
-    customer_designination: string,
+    customer_designation: string,
     mobile: number
     email: string
     city: string,

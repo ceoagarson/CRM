@@ -91,7 +91,7 @@ const opportunitySchema = new mongoose.Schema<IOpportunity, mongoose.Model<IOppo
         lowercase: true,
 
     },
-    customer_designination: {
+    customer_designation: {
         type: String,
         trim: true,
         lowercase: true,

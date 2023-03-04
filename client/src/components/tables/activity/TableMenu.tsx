@@ -12,17 +12,16 @@ type Props = {
     selectedFlatRows: Row<IActivity>[]
 }
 type SelectedData = {
-    name?: string,
-    email?: string,
-    dp?: string,
-    email_verified?: Boolean,
-    is_active?: Boolean,
-    last_login?: string,
-    organization?: string,
-    organization_email?: string,
-    roles?: string,
-    createdAt?: string,
-    createdBy?: string
+    activity_type?: string,
+    description?: string,
+    remarks?: string,
+    activity_owner?: string,
+    resource_id?: string,
+    resource_type?: string,
+    status_changed_by?: string,
+    updated_by?: string,
+    updated_at?: string,
+    created_at?: string,
 
 }
 function TableMenu({ columns, selectedFlatRows }: Props) {
@@ -37,7 +36,7 @@ function TableMenu({ columns, selectedFlatRows }: Props) {
         try {
             if (selectedData.length === 0)
                 return alert("please select some rows")
-            ExportToExcel(selectedData, "USERS_DATA")
+            ExportToExcel(selectedData, "activities_data")
             setSent(true)
         }
         catch (err) {
@@ -50,9 +49,18 @@ function TableMenu({ columns, selectedFlatRows }: Props) {
     useEffect(() => {
         let data: SelectedData[] = []
         selectedFlatRows.map((item) => {
-            let created_at = undefined
+            let activity = item.original
             return data.push({
-                createdAt: created_at
+                activity_type: activity.activity_type,
+                description: activity.description,
+                remarks: activity.remarks,
+                activity_owner: activity.activity_owner.username,
+                resource_id: activity.resource_id,
+                resource_type: activity.resource_type,
+                status_changed_by: activity.status_changed_by.username,
+                updated_by: activity.updated_by.username,
+                updated_at: new Date(activity.updated_at).toLocaleDateString(),
+                created_at: new Date(activity.created_at).toLocaleDateString(),
             })
         })
         setSelectedData(data)
@@ -88,7 +96,7 @@ function TableMenu({ columns, selectedFlatRows }: Props) {
                     'aria-labelledby': 'basic-button',
                 }}
             >
-                
+
                 <MenuItem onClick={() => {
                     setToogleCol(true)
                     setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })

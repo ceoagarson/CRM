@@ -76,7 +76,7 @@ export default function OpportunitiesPage() {
                 <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.name}</Typography>
                 <Typography sx={{ textTransform: "capitalize" }} variant="caption" component="span">
                   {props.row.original.customer_name}<strong>
-                    ({props.row.original.customer_designination})
+                    ({props.row.original.customer_designation})
                   </strong>
                 </Typography>
               </Stack >

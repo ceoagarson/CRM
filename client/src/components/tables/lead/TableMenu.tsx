@@ -9,6 +9,7 @@ import { MenuActions, MenuContext } from '../../../contexts/menuContext';
 import { ChoiceContext, LeadChoiceActions } from '../../../contexts/dialogContext';
 import NewLeadDialog from '../../dialogs/leads/NewLeadDialog';
 
+
 type Props = {
     columns: ColumnInstance<ILead>[],
     selectedFlatRows: Row<ILead>[]
@@ -16,15 +17,26 @@ type Props = {
 type SelectedData = {
     name?: string,
     email?: string,
+    mobile?: number,
+    description?: string,
+    city?: string,
+    state?: string,
+    probability?: string,
+    country?: string,
+    lead_owner?: string,
+    customer_name?: string,
+    address?: string,
+    alternate_mobile?: number,
+    alternate_email?: string,
+    customer_designation?: string,
+    lead_source?: string,
+    remarks?: string,
+    status: Boolean,
+    status_changed_by?: string,
+    updated_by?: string,
+    updated_at?: string,
+    created_at?: string,
     dp?: string,
-    email_verified?: Boolean,
-    is_active?: Boolean,
-    last_login?: string,
-    organization?: string,
-    organization_email?: string,
-    roles?: string,
-    createdAt?: string,
-    createdBy?: string
 
 }
 function TableMenu({ columns, selectedFlatRows }: Props) {
@@ -32,7 +44,7 @@ function TableMenu({ columns, selectedFlatRows }: Props) {
     const [toogleCol, setToogleCol] = useState(false)
     const [selectedData, setSelectedData] = useState<SelectedData[]>([])
     const [sent, setSent] = useState(false)
-    const { setChoice } = useContext(ChoiceContext)
+    const {setChoice}=useContext(ChoiceContext)
 
 
     function handleExcel() {
@@ -40,7 +52,7 @@ function TableMenu({ columns, selectedFlatRows }: Props) {
         try {
             if (selectedData.length === 0)
                 return alert("please select some rows")
-            ExportToExcel(selectedData, "USERS_DATA")
+            ExportToExcel(selectedData, "leads_data")
             setSent(true)
         }
         catch (err) {
@@ -53,12 +65,31 @@ function TableMenu({ columns, selectedFlatRows }: Props) {
     useEffect(() => {
         let data: SelectedData[] = []
         selectedFlatRows.map((item) => {
-            const user = item.original
-            let created_at = undefined
+            const lead = item.original
             return data.push({
-                email: user.email,
-                dp: user.dp?.url,
-                createdAt: created_at
+                name:lead.name,
+                email:lead.email,
+                mobile:lead.mobile,
+                description:lead.description,
+                city:lead.city,
+                state:lead.state,
+                probability:lead.probability,
+                country:lead.country,
+                lead_owner:lead.lead_owner.username,
+                customer_name:lead.customer_name,
+                address:lead.address,
+                alternate_mobile:lead.alternate_mobile,
+                alternate_email:lead.alternate_email,
+                customer_designation:lead.customer_designation,
+                lead_source:lead.lead_source,
+                remarks:lead.remarks,
+                status: lead.status,
+                status_changed_by:lead.status_changed_by.username,
+                updated_by:lead.updated_by.username,
+                updated_at:new Date(lead.updated_at).toLocaleDateString(),
+                created_at:new Date(lead.created_at).toLocaleDateString(),
+                dp:lead.dp.url
+
             })
         })
         setSelectedData(data)

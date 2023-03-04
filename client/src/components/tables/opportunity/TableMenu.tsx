@@ -4,10 +4,11 @@ import { ColumnInstance, Row } from 'react-table';
 import ToogleColumns from './ToogleColumns';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../utils/ExportToExcel';
+import { IOpportunity } from '../../../types/opportunity.type';
 import { MenuActions, MenuContext } from '../../../contexts/menuContext';
 import { ChoiceContext, OpportunityChoiceActions } from '../../../contexts/dialogContext';
-import { IOpportunity } from '../../../types/opportunity.type';
 import NewOpportunityDialog from '../../dialogs/opportunities/NewOpportunityDialog';
+
 
 type Props = {
     columns: ColumnInstance<IOpportunity>[],
@@ -16,15 +17,26 @@ type Props = {
 type SelectedData = {
     name?: string,
     email?: string,
+    mobile?: number,
+    description?: string,
+    city?: string,
+    state?: string,
+    probability?: string,
+    country?: string,
+    opportunity_owner?: string,
+    customer_name?: string,
+    address?: string,
+    alternate_mobile?: number,
+    alternate_email?: string,
+    customer_designation?: string,
+    opportunity_source?: string,
+    remarks?: string,
+    status: Boolean,
+    status_changed_by?: string,
+    updated_by?: string,
+    updated_at?: string,
+    created_at?: string,
     dp?: string,
-    email_verified?: Boolean,
-    is_active?: Boolean,
-    last_login?: string,
-    organization?: string,
-    organization_email?: string,
-    roles?: string,
-    createdAt?: string,
-    createdBy?: string
 
 }
 function TableMenu({ columns, selectedFlatRows }: Props) {
@@ -32,7 +44,7 @@ function TableMenu({ columns, selectedFlatRows }: Props) {
     const [toogleCol, setToogleCol] = useState(false)
     const [selectedData, setSelectedData] = useState<SelectedData[]>([])
     const [sent, setSent] = useState(false)
-    const { setChoice } = useContext(ChoiceContext)
+    const {setChoice}=useContext(ChoiceContext)
 
 
     function handleExcel() {
@@ -40,8 +52,7 @@ function TableMenu({ columns, selectedFlatRows }: Props) {
         try {
             if (selectedData.length === 0)
                 return alert("please select some rows")
-            ExportToExcel(selectedData, "USERS_DATA")
-            setSent(true)
+            ExportToExcel(selectedData, "opportunities_data")
         }
         catch (err) {
             setSent(false)
@@ -53,12 +64,31 @@ function TableMenu({ columns, selectedFlatRows }: Props) {
     useEffect(() => {
         let data: SelectedData[] = []
         selectedFlatRows.map((item) => {
-            const user = item.original
-            let created_at = undefined
+            const opportunity = item.original
             return data.push({
-                email: user.email,
-                dp: user.dp?.url,
-                createdAt: created_at
+                name:opportunity.name,
+                email:opportunity.email,
+                mobile:opportunity.mobile,
+                description:opportunity.description,
+                city:opportunity.city,
+                state:opportunity.state,
+                probability:opportunity.probability,
+                country:opportunity.country,
+                opportunity_owner:opportunity.opportunity_owner.username,
+                customer_name:opportunity.customer_name,
+                address:opportunity.address,
+                alternate_mobile:opportunity.alternate_mobile,
+                alternate_email:opportunity.alternate_email,
+                customer_designation:opportunity.customer_designation,
+                opportunity_source:opportunity.opportunity_source,
+                remarks:opportunity.remarks,
+                status: opportunity.status,
+                status_changed_by:opportunity.status_changed_by.username,
+                updated_by:opportunity.updated_by.username,
+                updated_at:new Date(opportunity.updated_at).toLocaleDateString(),
+                created_at:new Date(opportunity.created_at).toLocaleDateString(),
+                dp:opportunity.dp.url
+
             })
         })
         setSelectedData(data)

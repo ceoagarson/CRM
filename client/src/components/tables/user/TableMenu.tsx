@@ -37,7 +37,7 @@ function TableMenu({ columns, selectedFlatRows }: Props) {
         try {
             if (selectedData.length === 0)
                 return alert("please select some rows")
-            ExportToExcel(selectedData, "USERS_DATA")
+            ExportToExcel(selectedData, "users_data")
             setSent(true)
         }
         catch (err) {
