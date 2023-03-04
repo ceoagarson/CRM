@@ -44,7 +44,7 @@ function ToogleActivityStatusDialog({ activity }: { activity: IActivity }) {
             {
                 isSuccess ? (
                     <Alert color="success">
-                       Updated successfully
+                      updated
                     </Alert>
                 ) : null
             }

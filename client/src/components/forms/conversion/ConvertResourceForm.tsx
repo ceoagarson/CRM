@@ -58,13 +58,13 @@ export default function ConvertResourceForm({ id, resource_type }: { id: string,
                     SelectProps={{
                         native: true
                     }}
-                    
+                    focused
                     required
                     error={
                         formik.touched.target_resource_type && formik.errors.target_resource_type ? true : false
                     }
                     id="target_resource_type"
-                    label="target_resource_type"
+                    label="Target Resource Type"
                     fullWidth
                     helperText={
                         formik.touched.target_resource_type && formik.errors.target_resource_type ? formik.errors.target_resource_type : ""

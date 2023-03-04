@@ -44,7 +44,7 @@ function ToogleAccountStatusDialog({ account }: { account: IAccount }) {
             {
                 isSuccess ? (
                     <Alert color="success">
-                       Updated successfully
+                      updated
                     </Alert>
                 ) : null
             }

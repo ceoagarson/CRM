@@ -149,7 +149,7 @@ function UpdateProfileForm({ user }: { user: IUser }) {
         {
           isSuccess ? (
             <Alert color="success">
-              profile updated successfully
+              profile updated 
             </Alert>
           ) : null
         }

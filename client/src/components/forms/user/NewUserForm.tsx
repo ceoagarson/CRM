@@ -219,7 +219,7 @@ function NewUserForm() {
                 {
                     isSuccess ? (
                         <Alert color="success">
-                            new user created successfully
+                            new user created
                         </Alert>
                     ) : null
                 }

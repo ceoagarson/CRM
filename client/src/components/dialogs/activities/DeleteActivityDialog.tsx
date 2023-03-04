@@ -44,7 +44,7 @@ function DeleteActivityDialog({ id }: { id: string }) {
             {
                 isSuccess ? (
                     <Alert color="success">
-                        Deleted successfully
+                        deleted 
                     </Alert>
                 ) : null
             }

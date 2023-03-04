@@ -177,7 +177,7 @@ function UpdateUserForm({ user }: Props) {
           {
             isSuccess ? (
               <Alert color="success">
-                user updated successfully
+                user updated
               </Alert>
             ) : null
           }

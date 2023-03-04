@@ -59,7 +59,7 @@ function EmailVerifySendMailForm() {
         {
           isSuccess ? (
             <Alert color="success">
-              email verification link sent successfully
+              email verification link sent to your provided email
             </Alert>
           ) : null
         }

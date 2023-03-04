@@ -78,7 +78,7 @@ function ResetPasswordSendMailForm() {
         {
           isSuccess ? (
             <Alert color="success">
-              reset password mail sent successfully
+              reset password link sent to your provided email
             </Alert>
           ) : null
         }

@@ -83,7 +83,7 @@ function UpdatePasswordForm() {
                     }
                     id="oldPassword"
                     variant="standard"
-                    label="oldPassword"
+                    label="Old Password"
                     fullWidth
                     helperText={
                         formik.touched.oldPassword && formik.errors.oldPassword ? formik.errors.oldPassword : ""
@@ -137,7 +137,7 @@ function UpdatePasswordForm() {
                     }
                     id="confirmPassword"
                     variant="standard"
-                    label="Password"
+                    label="Confirm Password"
                     fullWidth
                     helperText={
                         formik.touched.confirmPassword && formik.errors.confirmPassword ? formik.errors.confirmPassword : ""
@@ -167,7 +167,7 @@ function UpdatePasswordForm() {
                 {
                     isSuccess ? (
                         <Alert color="success">
-                            updated password successfully
+                            updated password 
                         </Alert>
                     ) : null
                 }

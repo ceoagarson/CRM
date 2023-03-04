@@ -44,7 +44,7 @@ function ToogleLeadStatusDialog({ lead }: { lead: ILead }) {
             {
                 isSuccess ? (
                     <Alert color="success">
-                       Updated successfully
+                       updated 
                     </Alert>
                 ) : null
             }

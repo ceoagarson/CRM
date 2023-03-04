@@ -44,7 +44,7 @@ function ToogleOpportunityStatusDialog({ opportunity }: { opportunity: IOpportun
             {
                 isSuccess ? (
                     <Alert color="success">
-                       Updated successfully
+                       updated 
                     </Alert>
                 ) : null
             }

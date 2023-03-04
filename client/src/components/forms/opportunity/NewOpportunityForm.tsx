@@ -167,7 +167,7 @@ function NewOpportunityForm() {
             formik.touched.name && formik.errors.name ? true : false
           }
           id="name"
-          label="Name"
+          label="Opportunity Name"
           helperText={
             formik.touched.name && formik.errors.name ? formik.errors.name : ""
           }
@@ -183,7 +183,7 @@ function NewOpportunityForm() {
             formik.touched.customer_name && formik.errors.customer_name ? true : false
           }
           id="customer_name"
-          label="customer_name"
+          label="Customer Name"
           helperText={
             formik.touched.customer_name && formik.errors.customer_name ? formik.errors.customer_name : ""
           }
@@ -200,7 +200,7 @@ function NewOpportunityForm() {
             formik.touched.customer_designation && formik.errors.customer_designation ? true : false
           }
           id="customer_designation"
-          label="customer_designation"
+          label="Customer Designiation"
           helperText={
             formik.touched.customer_designation && formik.errors.customer_designation ? formik.errors.customer_designation : ""
           }
@@ -250,7 +250,7 @@ function NewOpportunityForm() {
             formik.touched.alternate_mobile && formik.errors.alternate_mobile ? true : false
           }
           id="alternate_mobile"
-          label="alternate_mobile"
+          label="Alternate Mobile"
           helperText={
             formik.touched.alternate_mobile && formik.errors.alternate_mobile ? formik.errors.alternate_mobile : ""
           }
@@ -265,7 +265,7 @@ function NewOpportunityForm() {
             formik.touched.alternate_email && formik.errors.alternate_email ? true : false
           }
           id="alternate_email"
-          label="alternate_email"
+          label="Alternate Email"
           helperText={
             formik.touched.alternate_email && formik.errors.alternate_email ? formik.errors.alternate_email : ""
           }
@@ -281,7 +281,7 @@ function NewOpportunityForm() {
             formik.touched.city && formik.errors.city ? true : false
           }
           id="city"
-          label="city"
+          label="City"
           helperText={
             formik.touched.city && formik.errors.city ? formik.errors.city : ""
           }
@@ -300,7 +300,7 @@ function NewOpportunityForm() {
             formik.touched.state && formik.errors.state ? true : false
           }
           id="state"
-          label="state"
+          label="State"
           fullWidth
           helperText={
             formik.touched.state && formik.errors.state ? formik.errors.state : ""
@@ -331,7 +331,7 @@ function NewOpportunityForm() {
             formik.touched.probability && formik.errors.probability ? true : false
           }
           id="probability"
-          label="probability"
+          label="Probability"
           fullWidth
           helperText={
             formik.touched.probability && formik.errors.probability ? formik.errors.probability : ""
@@ -363,7 +363,7 @@ function NewOpportunityForm() {
             formik.touched.opportunity_source && formik.errors.opportunity_source ? true : false
           }
           id="opportunity_source"
-          label="opportunity_source"
+          label="Opportunity Source"
           fullWidth
           helperText={
             formik.touched.opportunity_source && formik.errors.opportunity_source ? formik.errors.opportunity_source : ""
@@ -396,7 +396,7 @@ function NewOpportunityForm() {
             formik.touched.country && formik.errors.country ? true : false
           }
           id="country"
-          label="country"
+          label="Country"
           fullWidth
           helperText={
             formik.touched.country && formik.errors.country ? formik.errors.country : ""
@@ -447,7 +447,7 @@ function NewOpportunityForm() {
             formik.touched.address && formik.errors.address ? true : false
           }
           id="address"
-          label="address"
+          label="Address"
           fullWidth
           helperText={
             formik.touched.address && formik.errors.address ? formik.errors.address : ""
@@ -465,7 +465,7 @@ function NewOpportunityForm() {
             formik.touched.description && formik.errors.description ? true : false
           }
           id="description"
-          label="description"
+          label="Description"
           fullWidth
           helperText={
             formik.touched.description && formik.errors.description ? formik.errors.description : ""
@@ -482,7 +482,7 @@ function NewOpportunityForm() {
             formik.touched.remarks && formik.errors.remarks ? true : false
           }
           id="remarks"
-          label="remarks"
+          label="Remarks"
           fullWidth
           helperText={
             formik.touched.remarks && formik.errors.remarks ? formik.errors.remarks : ""
@@ -500,7 +500,7 @@ function NewOpportunityForm() {
       {
         isSuccess ? (
           <Alert color="success">
-            new opportunity created successfully
+            new opportunity created 
           </Alert>
         ) : null
       }

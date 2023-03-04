@@ -47,7 +47,7 @@ function MakeAdminDialog({ id }: { id: string }) {
                     {
                         isSuccess ? (
                             <Alert color="success">
-                                new role created successfully
+                                new admin created 
                             </Alert>
                         ) : null
                     }

@@ -45,7 +45,7 @@ function RevokePermissionsDialog({ id }: { id: string }) {
                 {
                     isSuccess ? (
                         <Alert color="success">
-                            All permissions revoked successfully
+                            all permissions revoked 
                         </Alert>
                     ) : null
                 }

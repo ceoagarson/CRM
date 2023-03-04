@@ -46,7 +46,7 @@ function MakeOwnerDialog({ id }: { id: string }) {
                 {
                     isSuccess ? (
                         <Alert color="success">
-                            new role added successfully
+                            new owner created
                         </Alert>
                     ) : null
                 }

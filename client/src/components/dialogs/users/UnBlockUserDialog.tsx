@@ -45,7 +45,7 @@ function UnBlockUserDialog({ id }: { id: string }) {
                 {
                     isSuccess ? (
                         <Alert color="success">
-                            user activated successfully
+                            user activated 
                         </Alert>
                     ) : null
                 }

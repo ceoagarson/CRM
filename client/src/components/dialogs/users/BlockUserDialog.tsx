@@ -44,13 +44,13 @@ function BlockUserDialog({ id }: { id: string }) {
             {
                 isSuccess ? (
                     <Alert color="success">
-                        user blocked successfully
+                        user blocked 
                     </Alert>
                 ) : null
             }
             <DialogContent>
                 <Typography variant="body1" color="error">
-                    Warning ! This will block user to access this organization.
+                    Warning ! This will block user.
                 </Typography>
             </DialogContent>
             <Stack

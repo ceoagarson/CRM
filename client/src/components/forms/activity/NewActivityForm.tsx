@@ -93,7 +93,7 @@ function NewActivityForm({ id, resource_type }: { id: string, resource_type: Res
             formik.touched.activity_type && formik.errors.activity_type ? true : false
           }
           id="activity_type"
-          label="activity_type"
+          label="Activity Type"
           fullWidth
           helperText={
             formik.touched.activity_type && formik.errors.activity_type ? formik.errors.activity_type : ""
@@ -120,7 +120,7 @@ function NewActivityForm({ id, resource_type }: { id: string, resource_type: Res
             formik.touched.description && formik.errors.description ? true : false
           }
           id="description"
-          label="description"
+          label="Description"
           fullWidth
           helperText={
             formik.touched.description && formik.errors.description ? formik.errors.description : ""
@@ -138,7 +138,7 @@ function NewActivityForm({ id, resource_type }: { id: string, resource_type: Res
             formik.touched.remarks && formik.errors.remarks ? true : false
           }
           id="remarks"
-          label="remarks"
+          label="Remarks"
           fullWidth
           helperText={
             formik.touched.remarks && formik.errors.remarks ? formik.errors.remarks : ""
@@ -157,7 +157,7 @@ function NewActivityForm({ id, resource_type }: { id: string, resource_type: Res
       {
         isSuccess ? (
           <Alert color="success">
-            new actiivity created successfully
+            new actiivity created 
           </Alert>
         ) : null
       }

@@ -110,7 +110,7 @@ function ResetPasswordForm({ token }: { token: string }) {
           }
           id="confirmPassword"
           variant="standard"
-          label="Password"
+          label="Confirm Password"
           fullWidth
           helperText={
             formik.touched.confirmPassword && formik.errors.confirmPassword ? formik.errors.confirmPassword : ""

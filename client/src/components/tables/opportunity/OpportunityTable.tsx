@@ -77,7 +77,7 @@ export function OpportunityTable({ data, columns }: Props) {
                     component={'h1'}
                     sx={{ display: { xs: 'none', sm: 'block' } }}
                 >
-                     Opportunities
+                     OPPORTUNITIES
                 </Typography>
                 <Stack
                     direction="row"

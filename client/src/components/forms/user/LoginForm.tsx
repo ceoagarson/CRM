@@ -65,7 +65,7 @@ function LoginForm() {
         dispatch({ type: UserActions.login, payload: data.data })
         setChoice({ type: UserChoiceActions.close })
         goto(paths.dashboard)
-      }, 1000)
+      }, 400)
     }
   }, [dispatch, goto, setChoice, isSuccess, data])
 
@@ -128,7 +128,7 @@ function LoginForm() {
         {
           isSuccess ? (
             <Alert color="success">
-              logged in successfully
+              logged in 
             </Alert>
           ) : null
         }

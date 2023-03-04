@@ -26,9 +26,9 @@ type TFormData = {
 
 function OwnerSignUpForm() {
   const goto = useNavigate()
-  const { dispatch} = useContext(UserContext)
+  const { dispatch } = useContext(UserContext)
   const { mutate, data, isLoading, isSuccess, isError, error } = useMutation
-    <AxiosResponse<{owner: IUser}>, BackendError, FormData>
+    <AxiosResponse<{ owner: IUser }>, BackendError, FormData>
     (Signup)
   const { setChoice } = useContext(ChoiceContext)
 
@@ -144,7 +144,7 @@ function OwnerSignUpForm() {
       >
         <TextField
           variant='standard'
-          
+
           autoFocus
           fullWidth
           required
@@ -160,7 +160,7 @@ function OwnerSignUpForm() {
         />
         <TextField
           variant='standard'
-          
+
           required
           fullWidth
           error={
@@ -175,7 +175,7 @@ function OwnerSignUpForm() {
         />
         <TextField
           variant='standard'
-          
+
           required
           fullWidth
           error={
@@ -191,7 +191,7 @@ function OwnerSignUpForm() {
 
         <TextField
           variant='standard'
-          
+
           fullWidth
           required
           error={
@@ -206,7 +206,7 @@ function OwnerSignUpForm() {
         />
         <TextField
           variant='standard'
-          
+
           required
           fullWidth
           error={
@@ -221,7 +221,7 @@ function OwnerSignUpForm() {
         />
         <TextField
           variant='standard'
-          
+
           required
           error={
             formik.touched.password && formik.errors.password ? true : false
@@ -249,7 +249,7 @@ function OwnerSignUpForm() {
         />
         <TextField
           variant='standard'
-          
+
           required
           fullWidth
           error={
@@ -296,7 +296,7 @@ function OwnerSignUpForm() {
         {
           isSuccess ? (
             <Alert color="success">
-              New Organizataion and It's owner created Successfully
+              You Created an Organization Successfully
             </Alert>
           ) : null
         }

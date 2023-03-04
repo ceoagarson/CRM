@@ -77,7 +77,7 @@ export function AccountTable({ data, columns }: Props) {
                     component={'h1'}
                     sx={{ display: { xs: 'none', sm: 'block' } }}
                 >
-                    Accounts
+                    ACCOUNTS
                 </Typography>
                 <Stack
                     direction="row"

@@ -77,7 +77,7 @@ export function ActivityTable({ data, columns }: Props) {
                     component={'h1'}
                     sx={{ display: { xs: 'none', sm: 'block' } }}
                 >
-                     Activities
+                     ACTIVITIES
                 </Typography>
                 <Stack
                     direction="row"

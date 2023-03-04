@@ -167,7 +167,7 @@ function NewLeadForm() {
             formik.touched.name && formik.errors.name ? true : false
           }
           id="name"
-          label="Name"
+          label="Lead Name"
           helperText={
             formik.touched.name && formik.errors.name ? formik.errors.name : ""
           }
@@ -183,7 +183,7 @@ function NewLeadForm() {
             formik.touched.customer_name && formik.errors.customer_name ? true : false
           }
           id="customer_name"
-          label="customer_name"
+          label="Customer Name"
           helperText={
             formik.touched.customer_name && formik.errors.customer_name ? formik.errors.customer_name : ""
           }
@@ -200,7 +200,7 @@ function NewLeadForm() {
             formik.touched.customer_designation && formik.errors.customer_designation ? true : false
           }
           id="customer_designation"
-          label="customer_designation"
+          label="Customer Designation"
           helperText={
             formik.touched.customer_designation && formik.errors.customer_designation ? formik.errors.customer_designation : ""
           }
@@ -250,7 +250,7 @@ function NewLeadForm() {
             formik.touched.alternate_mobile && formik.errors.alternate_mobile ? true : false
           }
           id="alternate_mobile"
-          label="alternate_mobile"
+          label="Alternate Mobile"
           helperText={
             formik.touched.alternate_mobile && formik.errors.alternate_mobile ? formik.errors.alternate_mobile : ""
           }
@@ -265,7 +265,7 @@ function NewLeadForm() {
             formik.touched.alternate_email && formik.errors.alternate_email ? true : false
           }
           id="alternate_email"
-          label="alternate_email"
+          label="Alternate Email"
           helperText={
             formik.touched.alternate_email && formik.errors.alternate_email ? formik.errors.alternate_email : ""
           }
@@ -281,7 +281,7 @@ function NewLeadForm() {
             formik.touched.city && formik.errors.city ? true : false
           }
           id="city"
-          label="city"
+          label="City"
           helperText={
             formik.touched.city && formik.errors.city ? formik.errors.city : ""
           }
@@ -300,7 +300,7 @@ function NewLeadForm() {
             formik.touched.state && formik.errors.state ? true : false
           }
           id="state"
-          label="state"
+          label="State"
           fullWidth
           helperText={
             formik.touched.state && formik.errors.state ? formik.errors.state : ""
@@ -331,7 +331,7 @@ function NewLeadForm() {
             formik.touched.probability && formik.errors.probability ? true : false
           }
           id="probability"
-          label="probability"
+          label="Probability"
           fullWidth
           helperText={
             formik.touched.probability && formik.errors.probability ? formik.errors.probability : ""
@@ -363,7 +363,7 @@ function NewLeadForm() {
             formik.touched.lead_source && formik.errors.lead_source ? true : false
           }
           id="lead_source"
-          label="lead_source"
+          label="Lead Source"
           fullWidth
           helperText={
             formik.touched.lead_source && formik.errors.lead_source ? formik.errors.lead_source : ""
@@ -447,7 +447,7 @@ function NewLeadForm() {
             formik.touched.address && formik.errors.address ? true : false
           }
           id="address"
-          label="address"
+          label="Address"
           fullWidth
           helperText={
             formik.touched.address && formik.errors.address ? formik.errors.address : ""
@@ -465,7 +465,7 @@ function NewLeadForm() {
             formik.touched.description && formik.errors.description ? true : false
           }
           id="description"
-          label="description"
+          label="Description"
           fullWidth
           helperText={
             formik.touched.description && formik.errors.description ? formik.errors.description : ""
@@ -482,7 +482,7 @@ function NewLeadForm() {
             formik.touched.remarks && formik.errors.remarks ? true : false
           }
           id="remarks"
-          label="remarks"
+          label="Remarks"
           fullWidth
           helperText={
             formik.touched.remarks && formik.errors.remarks ? formik.errors.remarks : ""
@@ -500,7 +500,7 @@ function NewLeadForm() {
       {
         isSuccess ? (
           <Alert color="success">
-            new lead created successfully
+            new lead created
           </Alert>
         ) : null
       }

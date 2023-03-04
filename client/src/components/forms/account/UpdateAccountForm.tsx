@@ -173,7 +173,7 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
             formik.touched.name && formik.errors.name ? true : false
           }
           id="name"
-          label="Name"
+          label="Account Name"
           helperText={
             formik.touched.name && formik.errors.name ? formik.errors.name : ""
           }
@@ -189,7 +189,7 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
             formik.touched.customer_name && formik.errors.customer_name ? true : false
           }
           id="customer_name"
-          label="customer_name"
+          label="Customer Name"
           helperText={
             formik.touched.customer_name && formik.errors.customer_name ? formik.errors.customer_name : ""
           }
@@ -206,7 +206,7 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
             formik.touched.customer_designation && formik.errors.customer_designation ? true : false
           }
           id="customer_designation"
-          label="customer_designation"
+          label="Customer Designation"
           helperText={
             formik.touched.customer_designation && formik.errors.customer_designation ? formik.errors.customer_designation : ""
           }
@@ -256,7 +256,7 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
             formik.touched.alternate_mobile && formik.errors.alternate_mobile ? true : false
           }
           id="alternate_mobile"
-          label="alternate_mobile"
+          label="Alternate Mobile"
           helperText={
             formik.touched.alternate_mobile && formik.errors.alternate_mobile ? formik.errors.alternate_mobile : ""
           }
@@ -271,7 +271,7 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
             formik.touched.alternate_email && formik.errors.alternate_email ? true : false
           }
           id="alternate_email"
-          label="alternate_email"
+          label="Alternate Email"
           helperText={
             formik.touched.alternate_email && formik.errors.alternate_email ? formik.errors.alternate_email : ""
           }
@@ -287,7 +287,7 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
             formik.touched.city && formik.errors.city ? true : false
           }
           id="city"
-          label="city"
+          label="City"
           helperText={
             formik.touched.city && formik.errors.city ? formik.errors.city : ""
           }
@@ -306,7 +306,7 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
             formik.touched.state && formik.errors.state ? true : false
           }
           id="state"
-          label="state"
+          label="State"
           fullWidth
           helperText={
             formik.touched.state && formik.errors.state ? formik.errors.state : ""
@@ -337,7 +337,7 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
             formik.touched.probability && formik.errors.probability ? true : false
           }
           id="probability"
-          label="probability"
+          label="Probability"
           fullWidth
           helperText={
             formik.touched.probability && formik.errors.probability ? formik.errors.probability : ""
@@ -369,7 +369,7 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
             formik.touched.account_source && formik.errors.account_source ? true : false
           }
           id="account_source"
-          label="account_source"
+          label="Account Source"
           fullWidth
           helperText={
             formik.touched.account_source && formik.errors.account_source ? formik.errors.account_source : ""
@@ -402,7 +402,7 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
             formik.touched.country && formik.errors.country ? true : false
           }
           id="country"
-          label="country"
+          label="Country"
           fullWidth
           helperText={
             formik.touched.country && formik.errors.country ? formik.errors.country : ""
@@ -453,7 +453,7 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
             formik.touched.address && formik.errors.address ? true : false
           }
           id="address"
-          label="address"
+          label="Address"
           fullWidth
           helperText={
             formik.touched.address && formik.errors.address ? formik.errors.address : ""
@@ -471,7 +471,7 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
             formik.touched.description && formik.errors.description ? true : false
           }
           id="description"
-          label="description"
+          label="Description"
           fullWidth
           helperText={
             formik.touched.description && formik.errors.description ? formik.errors.description : ""
@@ -488,7 +488,7 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
             formik.touched.remarks && formik.errors.remarks ? true : false
           }
           id="remarks"
-          label="remarks"
+          label="Remarks"
           fullWidth
           helperText={
             formik.touched.remarks && formik.errors.remarks ? formik.errors.remarks : ""
@@ -506,7 +506,7 @@ function UpdateAccountForm({ account }: { account: IAccount }) {
       {
         isSuccess ? (
           <Alert color="success">
-            account updated successfully
+            account updated 
           </Alert>
         ) : null
       }

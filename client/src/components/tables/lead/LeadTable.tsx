@@ -77,7 +77,7 @@ export function LeadTable({ data, columns }: Props) {
                     component={'h1'}
                     sx={{ display: { xs: 'none', sm: 'block' } }}
                 >
-                     Leads
+                     LEADS
                 </Typography>
                 <Stack
                     direction="row"
