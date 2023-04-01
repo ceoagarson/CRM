@@ -78,7 +78,7 @@ function UpdateActivityForm({ activity }: { activity: IActivity }) {
           SelectProps={{
             native: true
           }}
-          
+          focused
           required
           error={
             formik.touched.activity_type && formik.errors.activity_type ? true : false

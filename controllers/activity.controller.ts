@@ -93,7 +93,7 @@ export const ToogleActivityStatus = catchAsyncError(async (req: Request, res: Re
         return res.status(404).json({ message: "activity not found" })
     }
     activity.status = !activity.status
-    activity.status_changed_by = user._id
+    activity.status_changed_by = user
     await activity.save()
     res.status(200).json({ message: "activity status updated" })
 })

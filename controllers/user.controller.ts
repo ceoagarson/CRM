@@ -71,12 +71,12 @@ export const SignUp = catchAsyncError(
             roles: ["owner", "admin"],
             dp
         })
-        owner.organization = organization._id
-        owner.created_by = owner._id
-        owner.updated_by = owner._id
-        organization.owners = [owner._id]
-        organization.created_by = owner._id
-        organization.updated_by = owner._id
+        owner.organization = organization
+        owner.created_by = owner
+        owner.updated_by = owner
+        organization.owners = [owner]
+        organization.created_by = owner
+        organization.updated_by = owner
         sendUserToken(res, owner.getAccessToken())
         await owner.save()
         organization = await organization.save()
@@ -346,7 +346,7 @@ export const updatePassword = catchAsyncError(async (req: Request, res: Response
     if (!isPasswordMatched)
         return res.status(401).json({ message: "Old password is incorrect" })
     user.password = newPassword;
-    user.updated_by = user._id
+    user.updated_by = user
     await user.save();
     res.status(200).json({ message: "password updated" });
 });
@@ -362,7 +362,7 @@ export const MakeAdmin = catchAsyncError(async (req: Request, res: Response, nex
         return res.status(404).json({ message: "already a admin" })
     user.roles?.push("admin")
     if (req.user)
-        user.updated_by = req.user._id
+        user.updated_by = req.user
     await user.save();
     res.status(200).json({ message: "admin role provided successfully", user });
 })
@@ -384,12 +384,12 @@ export const MakeOwner = catchAsyncError(async (req: Request, res: Response, nex
         return res.status(404).json({ message: "you are not a member of any organization" })
     user.roles?.push("owner")
     if (req.user)
-        user.updated_by = req.user._id
+        user.updated_by = req.user
     await user.save();
-    organization.owners.push(user._id)
+    organization.owners.push(user)
     organization.updated_at = new Date(Date.now())
     if (req.user)
-        organization.updated_by = req.user?._id
+        organization.updated_by = req.user
     await organization.save();
     res.status(200).json({ message: "new owner created successfully" });
 })
@@ -412,7 +412,7 @@ export const BlockUser = catchAsyncError(async (req: Request, res: Response, nex
         return res.status(403).json({ message: "not allowed this operation here, because you may block yourself" })
     user.is_active = false
     if (req.user)
-        user.updated_by = req.user._id
+        user.updated_by = req.user
     await user.save();
     res.status(200).json({ message: "user blocked successfully" });
 })
@@ -429,7 +429,7 @@ export const UnBlockUser = catchAsyncError(async (req: Request, res: Response, n
         return res.status(404).json({ message: "user is already active" })
     user.is_active = true
     if (req.user)
-        user.updated_by = req.user._id
+        user.updated_by = req.user
     await user.save();
     res.status(200).json({ message: "user unblocked successfully" });
 })
@@ -459,7 +459,7 @@ export const RevokePermissions = catchAsyncError(async (req: Request, res: Respo
     }))
     organization.updated_at = new Date(Date.now())
     if (req.user)
-        organization.updated_by = req.user?._id
+        organization.updated_by = req.user
     await organization.save();
     res.status(200).json({ message: "user permissions revoked successfully" });
 })

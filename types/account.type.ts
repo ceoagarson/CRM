@@ -20,8 +20,8 @@ type AdditionalData = {
     alternate_mobile: number,
     alternate_email: string,
     probability: "easy" | "medium" | "hard"
-    account_owner: IUser | Types.ObjectId,
-    organization: IOrganization | Types.ObjectId
+    account_owner: IUser,
+    organization: IOrganization
     dp: Asset
     account_source: string,
     remarks: string,
@@ -29,10 +29,10 @@ type AdditionalData = {
 }
 type Status = {
     status: Boolean,
-    status_changed_by: IUser | Types.ObjectId
+    status_changed_by: IUser
     created_at: Date,
     updated_at: Date,
-    updated_by: IUser | Types.ObjectId
+    updated_by: IUser
     activities: Array<IActivity['_id']> 
 }
 export type IAccount = BaseAccount & AdditionalData & Status

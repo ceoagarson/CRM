@@ -35,7 +35,6 @@ export default function UsersPage() {
             {
                 Header: "Index",
                 accessor: "_id",
-                width: 20,
                 disableSortBy: true,
                 Cell: (props) => {
                     return <Typography variant="body1" component="span" pr={2}>{props.row.index + 1}</Typography>

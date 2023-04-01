@@ -8,7 +8,7 @@ type BaseUser = {
     password: string,
     email: string,
     mobile: number,
-    organization: IOrganization | Types.ObjectId,
+    organization: IOrganization,
 }
 type AdditionalData = {
     dp: Asset,
@@ -18,9 +18,9 @@ type Status = {
     email_verified: Boolean,
     last_login: Date,
     created_at: Date,
-    created_by: IUser | Types.ObjectId,
+    created_by: IUser,
     updated_at: Date,
-    updated_by: IUser | Types.ObjectId
+    updated_by: IUser
     is_active: Boolean,
 }
 type Tokens = {
