@@ -268,7 +268,7 @@ export const Login = catchAsyncError(async (req: Request, res: Response, next: N
 export const Logout = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     if (!req.cookies.accessToken)
         return res.status(200).json({ message: "already logged out" })
-    await deleteToken(res);
+    await deleteToken(res,req.cookies.accessToken);
     res.status(200).json({ message: "logged out" })
 })
 //update profile 

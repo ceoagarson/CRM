@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { catchAsyncError } from "./catchAsyncError.middleware.ts";
 import jwt from "jsonwebtoken";
 import { User } from "../models/user.model";
+import { log } from "console";
 
 let UserTokens: string[] = []//for storing access tokens in memory
 
@@ -66,7 +67,8 @@ export const sendUserToken = (res: Response, accessToken: string) => {
     });
 }
 //logout
-export const deleteToken = async (res: Response) => {
+export const deleteToken = async (res: Response, accessToken: string) => {
+    UserTokens = UserTokens.filter((token) => token !== accessToken)
     const options = {
         maxAge: 0,
         httpOnly: true
