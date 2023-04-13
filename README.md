@@ -5,8 +5,8 @@
 # Docs
 https://documenter.getpostman.com/view/21601681/2s935rJ2Fk
 
-# live ssr project
-https://crm-ts.onrender.com/
+# live  project
+https://agarson.onrender.com/
 # required env variables
 HOST=localhost
 PORT=5000
