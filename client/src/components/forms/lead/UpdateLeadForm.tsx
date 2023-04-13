@@ -7,7 +7,7 @@ import * as Yup from "yup"
 import { queryClient } from '../../..';
 import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { UpdateLead } from '../../../services/LeadsServices';
-import { BackendError, Target } from '../../../types';
+import { BackendError } from '../../../types';
 import { ILead } from '../../../types/lead.type';
 import { Countries } from '../../../utils/countries';
 import { Source } from '../../../utils/Source';
@@ -15,21 +15,23 @@ import { States } from '../../../utils/states';
 
 type TformData = {
   name: string,
-  email: string,
+  customer_name: string,
+  customer_designation: string,
   mobile: string,
-  dp: string | Blob | File
+  email: string
   city: string,
   state: string,
-  description: string,
-  probability: "easy" | "medium" | "hard" | ""
-  customer_name: string,
+  country: string,
   address: string,
-  country: string
-  alternate_mobile: string,
+  remark: string,
+  work_description: string,
+  turnover: string,
+  lead_type: string,
+  stage: string,
+  alternate_mobile1: string,
+  alternate_mobile2: string,
   alternate_email: string,
-  customer_designation: string,
   lead_source: string,
-  remarks: string,
 }
 
 function UpdateLeadForm({ lead }: { lead: ILead }) {
@@ -43,25 +45,26 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
     })
 
   const { setChoice } = useContext(ChoiceContext)
-
   const formik = useFormik<TformData>({
     initialValues: {
-      name: lead.name,
-      email: lead.email,
+      name:lead.name,
+      customer_name:lead.customer_name,
+      customer_designation:lead.customer_designation,
       mobile: String(lead.mobile),
-      dp: lead.dp.url,
-      city: lead.city,
-      state: lead.state,
-      description: lead.description,
-      probability: lead.probability,
-      customer_name: lead.customer_name,
-      address: lead.address,
-      country: lead.country,
-      alternate_mobile: String(lead.alternate_mobile),
-      alternate_email: lead.alternate_email,
-      customer_designation: lead.customer_designation,
-      lead_source: lead.lead_source,
-      remarks: lead.remarks,
+      email:lead.email,
+      city:lead.city,
+      state:lead.state,
+      country:lead.country,
+      address:lead.address,
+      remark:lead.remarks[lead.remarks.length-1].remark,
+      work_description:lead.work_description,
+      turnover: String(lead.turnover),
+      lead_type:lead.lead_type,
+      stage:lead.stage,
+      alternate_mobile1: String(lead.alternate_mobile1),
+      alternate_mobile2: String(lead.alternate_mobile2),
+      alternate_email:lead.alternate_email,
+      lead_source:lead.lead_source,
     },
     validationSchema: Yup.object({
       name: Yup.string()
@@ -71,6 +74,8 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
       email: Yup.string()
         .email('provide a valid email id')
         .required('Required field'),
+      alternate_email: Yup.string()
+        .email('provide a valid email id'),
       customer_name: Yup.string().required("required field")
         .min(4, 'Must be 4 characters or more')
         .max(30, 'Must be 30 characters or less'),
@@ -81,70 +86,55 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
       state: Yup.string().required("required field")
         .min(3, 'Must be 3 characters or more')
         .max(30, 'Must be 30 characters or less'),
-      probability: Yup.string().required("required field"),
+      lead_type: Yup.string().required("required field"),
+      turnover: Yup.string().required("required field"),
+      stage: Yup.string().required("required field"),
       lead_source: Yup.string().required("required field"),
       country: Yup.string().required("required field"),
-      description: Yup.string().required("required field")
+      work_description: Yup.string().required("required field")
         .min(20, 'Must be 20 characters or more')
         .max(1000, 'Must be 1000 characters or less'),
       address: Yup.string()
         .min(10, 'Must be 10 characters or more')
         .max(300, 'Must be 300 characters or less'),
-      remarks: Yup.string()
+      remark: Yup.string()
         .min(10, 'Must be 10 characters or more')
         .max(500, 'Must be 500 characters or less'),
       mobile: Yup.string()
         .min(10, 'Must be 10 digits')
         .max(10, 'Must be 10 digits')
         .required('Required field'),
-      alternate_mobile: Yup.string()
+      alternate_mobile1: Yup.string()
         .min(10, 'Must be 10 digits')
         .max(10, 'Must be 10 digits'),
-      dp: Yup.mixed<File>()
-        .test("size", "size is allowed only less than 200kb",
-          file => {
-            if (file)
-              if (!file.size) //file not provided
-                return true
-              else
-                return Boolean(file.size <= 1024 * 200)
-            return true
-          }
-        )
-        .test("type", " allowed only .jpg, .jpeg, .png, .gif images",
-          file => {
-            const Allowed = ["image/png", "image/jpg", "image/jpeg", "image/png", "image/gif"]
-            if (file)
-              if (!file.size) //file not provided
-                return true
-              else
-                return Boolean(Allowed.includes(file.type))
-            return true
-          }
-        )
+      alternate_mobile2: Yup.string()
+        .min(10, 'Must be 10 digits')
+        .max(10, 'Must be 10 digits')
     }),
     onSubmit: (values: TformData) => {
       let formdata = new FormData()
-      formdata.append("name", values.name)
-      formdata.append("email", values.email)
-      formdata.append("mobile", values.mobile)
-      formdata.append("city", values.city)
-      formdata.append("state", values.state)
-      formdata.append("description", values.description)
-      formdata.append("probability", values.probability)
-      formdata.append("customer_name", values.customer_name)
-      formdata.append("address", values.address)
-      formdata.append("country", values.country)
-      formdata.append("alternate_mobile", values.alternate_mobile)
-      formdata.append("alternate_email", values.alternate_email)
-      formdata.append("customer_designation", values.customer_designation)
-      formdata.append("lead_source", values.lead_source)
-      formdata.append("remarks", values.remarks)
-      formdata.append("dp", values.dp)
-      mutate({
-        id: lead._id,
-        body: formdata
-      })
+        formdata.append("name", values.name)
+        formdata.append("customer_name", values.customer_name)
+        formdata.append("customer_designation", values.customer_designation)
+        formdata.append("mobile", values.mobile)
+        formdata.append("email", values.email)
+        formdata.append("city", values.city)
+        formdata.append("state", values.state)
+        formdata.append("country", values.country)
+        formdata.append("address", values.address)
+        formdata.append("remark", values.remark)
+        formdata.append("work_description", values.work_description)
+        formdata.append("turnover", values.turnover)
+        formdata.append("lead_type", values.lead_type)
+        formdata.append("stage", values.stage)
+        formdata.append("alternate_mobile1", values.alternate_mobile1)
+        formdata.append("alternate_mobile2", values.alternate_mobile2)
+        formdata.append("alternate_email", values.alternate_email)
+        formdata.append("lead_source", values.lead_source)
+          mutate({
+            id: lead._id,
+            body: formdata
+          })
     }
   });
   useEffect(() => {
@@ -157,7 +147,6 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
 
   return (
     <form onSubmit={formik.handleSubmit}>
-
       <Stack
         gap={2}
         py={2}
@@ -166,7 +155,6 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
         <TextField
           autoFocus
           variant='standard'
-          
           fullWidth
           required
           error={
@@ -182,7 +170,6 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
         {/* customer name */}
         <TextField
           variant='standard'
-          
           fullWidth
           required
           error={
@@ -199,13 +186,12 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
         {/* customer designiation */}
         <TextField
           variant='standard'
-          
           fullWidth
           required
           error={
             formik.touched.customer_designation && formik.errors.customer_designation ? true : false
           }
-          id="Customer Designation"
+          id="customer_designation"
           label="Customer Designation"
           helperText={
             formik.touched.customer_designation && formik.errors.customer_designation ? formik.errors.customer_designation : ""
@@ -215,7 +201,6 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
         {/* mobile */}
         <TextField
           variant='standard'
-          
           required
           error={
             formik.touched.mobile && formik.errors.mobile ? true : false
@@ -233,7 +218,6 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
         {/* email */}
         <TextField
           variant='standard'
-          
           required
           fullWidth
           error={
@@ -250,22 +234,47 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
         {/* alternate mobile */}
         <TextField
           variant='standard'
-          
           fullWidth
           error={
-            formik.touched.alternate_mobile && formik.errors.alternate_mobile ? true : false
+            formik.touched.alternate_mobile1 && formik.errors.alternate_mobile1 ? true : false
           }
-          id="alternate_mobile"
-          label="Alternate Mobile"
+          id="alternate_mobile1"
+          label="Alternate Mobile1"
           helperText={
-            formik.touched.alternate_mobile && formik.errors.alternate_mobile ? formik.errors.alternate_mobile : ""
+            formik.touched.alternate_mobile1 && formik.errors.alternate_mobile1 ? formik.errors.alternate_mobile1 : ""
           }
-          {...formik.getFieldProps('alternate_mobile')}
+          {...formik.getFieldProps('alternate_mobile1')}
+        />
+        {/* alternate mobile */}
+        <TextField
+          variant='standard'
+          fullWidth
+          error={
+            formik.touched.alternate_mobile2 && formik.errors.alternate_mobile2 ? true : false
+          }
+          id="alternate_mobile2"
+          label="Alternate Mobile2"
+          helperText={
+            formik.touched.alternate_mobile2 && formik.errors.alternate_mobile2 ? formik.errors.alternate_mobile2 : ""
+          }
+          {...formik.getFieldProps('alternate_mobile2')}
+        />
+        <TextField
+          variant='standard'
+          fullWidth
+          error={
+            formik.touched.turnover && formik.errors.turnover ? true : false
+          }
+          id="turnover"
+          label="TurnOver"
+          helperText={
+            formik.touched.turnover && formik.errors.turnover ? formik.errors.turnover : ""
+          }
+          {...formik.getFieldProps('turnover')}
         />
         {/* alternate_email */}
         <TextField
           variant='standard'
-          
           fullWidth
           error={
             formik.touched.alternate_email && formik.errors.alternate_email ? true : false
@@ -280,7 +289,6 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
         {/* city */}
         <TextField
           variant='standard'
-          
           required
           fullWidth
           error={
@@ -318,13 +326,13 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
           </option>
           {
             States.map(state => {
-              return (<option key={state.code} value={String(state.state).toLowerCase()}>
+              return (<option key={state.code} value={state.state}>
                 {state.state}
               </option>)
             })
           }
         </TextField>
-        {/* probability */}
+        {/* stage */}
         <TextField
           variant='standard'
           select
@@ -334,25 +342,72 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
           focused
           required
           error={
-            formik.touched.probability && formik.errors.probability ? true : false
+            formik.touched.stage && formik.errors.stage ? true : false
           }
-          id="probability"
-          label="Probability"
+          id="stage"
+          label="Stage"
           fullWidth
           helperText={
-            formik.touched.probability && formik.errors.probability ? formik.errors.probability : ""
+            formik.touched.stage && formik.errors.stage ? formik.errors.stage : ""
           }
-          {...formik.getFieldProps('probability')}
+          {...formik.getFieldProps('stage')}
         >
           <option value="">
             Select
           </option>
-          <option value="easy">
-            easy
-          </option><option value="medium">
-            medium
-          </option><option value="hard">
-            hard
+          <option value="open">
+            open
+          </option>
+          <option value="won">
+            won
+          </option>
+          <option value="won dealer">
+            won dealer
+          </option>
+          <option value="lost">
+            lost
+          </option>
+          <option value="useless">
+            useless
+          </option>
+          <option value="potential">
+            potential
+          </option>
+        </TextField>
+        {/* lead type */}
+        <TextField
+          variant='standard'
+          select
+          SelectProps={{
+            native: true
+          }}
+          focused
+          required
+          error={
+            formik.touched.lead_type && formik.errors.lead_type ? true : false
+          }
+          id="lead_type"
+          label="Stage"
+          fullWidth
+          helperText={
+            formik.touched.lead_type && formik.errors.lead_type ? formik.errors.lead_type : ""
+          }
+          {...formik.getFieldProps('lead_type')}
+        >
+          <option value="">
+            Select
+          </option>
+          <option value="wholesale">
+            wholesale
+          </option>
+          <option value="retail">
+            retail
+          </option>
+          <option value="company">
+            company
+          </option>
+          <option value="mixed">
+            Wholesale + Retail
           </option>
         </TextField>
 
@@ -396,60 +451,33 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
           SelectProps={{
             native: true
           }}
-          
+          focused
           required
           error={
             formik.touched.country && formik.errors.country ? true : false
           }
           id="country"
-          label="Select Country"
+          label="country"
           fullWidth
           helperText={
             formik.touched.country && formik.errors.country ? formik.errors.country : ""
           }
           {...formik.getFieldProps('country')}
         >
-
           {
             Countries.map(country => {
-              return (<option key={country.unicode} value={String(country.name).toLowerCase()}>
+              return (<option key={country.unicode} value={country.name.toLowerCase()}>
                 {country.name}
               </option>)
             })
           }
         </TextField>
-
-        {/*dp  */}
-        <TextField
-          fullWidth
-          error={
-            formik.touched.dp && formik.errors.dp ? true : false
-          }
-          helperText={
-            formik.touched.dp && formik.errors.dp ? String(formik.errors.dp) : ""
-          }
-          label="Display Picture"
-          focused
-          variant='standard'
-          type="file"
-          name="dp"
-          onBlur={formik.handleBlur}
-          onChange={(e) => {
-            e.preventDefault()
-            const target: Target = e.currentTarget
-            let files = target.files
-            if (files) {
-              let file = files[0]
-              formik.setFieldValue("dp", file)
-            }
-          }}
-        />
         {/* address */}
         <TextField
           variant='standard'
           multiline
           minRows={2}
-          
+
           error={
             formik.touched.address && formik.errors.address ? true : false
           }
@@ -461,40 +489,38 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
           }
           {...formik.getFieldProps('address')}
         />
-        {/* description */}
+        {/* work_description */}
         <TextField
           variant='standard'
           multiline
           minRows={2}
           required
-          
           error={
-            formik.touched.description && formik.errors.description ? true : false
+            formik.touched.work_description && formik.errors.work_description ? true : false
           }
-          id="description"
-          label="Description"
+          id="work_description"
+          label="Work Description"
           fullWidth
           helperText={
-            formik.touched.description && formik.errors.description ? formik.errors.description : ""
+            formik.touched.work_description && formik.errors.work_description ? formik.errors.work_description : ""
           }
-          {...formik.getFieldProps('description')}
+          {...formik.getFieldProps('work_description')}
         />
-        {/* remarks */}
+        {/* remark */}
         <TextField
           variant='standard'
           multiline
           minRows={2}
-          
           error={
-            formik.touched.remarks && formik.errors.remarks ? true : false
+            formik.touched.remark && formik.errors.remark ? true : false
           }
-          id="remarks"
-          label="Remarks"
+          id="remark"
+          label="Remark"
           fullWidth
           helperText={
-            formik.touched.remarks && formik.errors.remarks ? formik.errors.remarks : ""
+            formik.touched.remark && formik.errors.remark ? formik.errors.remark : ""
           }
-          {...formik.getFieldProps('remarks')}
+          {...formik.getFieldProps('remark')}
         />
       </Stack>
       {
@@ -507,7 +533,7 @@ function UpdateLeadForm({ lead }: { lead: ILead }) {
       {
         isSuccess ? (
           <Alert color="success">
-            lead updated 
+            new lead created
           </Alert>
         ) : null
       }

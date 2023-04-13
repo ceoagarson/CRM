@@ -1,4 +1,4 @@
-import mongoose, { Types } from "mongoose";
+import mongoose from "mongoose";
 import { ILead } from "../types/lead.type";
 
 const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
@@ -9,12 +9,15 @@ const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
         index: true,
         lowercase: true,
     },
-    email: {
+    customer_name: {
         type: String,
         trim: true,
-        required: true,
-        index: true,
-        lowercase: true
+        lowercase: true,
+    },
+    customer_designation: {
+        type: String,
+        trim: true,
+        lowercase: true,
     },
     mobile: {
         type: Number,
@@ -22,14 +25,13 @@ const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
         index: true,
         required: true,
     },
-    description: {
+    email: {
         type: String,
         trim: true,
-        lowercase: true,
         required: true,
-
+        index: true,
+        lowercase: true
     },
-
     city: {
         type: String,
         trim: true,
@@ -40,17 +42,57 @@ const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
         trim: true,
         lowercase: true
     },
-    // easy,medium,hard
-    probability: {
-        type: String,
-        trim: true,
-        lowercase: true
-    },
     country: {
         type: String,
         trim: true,
         lowercase: true
     },
+    address: {
+        type: String,
+        trim: true,
+        lowercase: true
+    },
+    remarks: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Remark',
+            required: true
+        }
+    ],
+    work_description: {
+        type: String,
+        trim: true,
+        lowercase: true
+    },
+    turnover: {
+        type: String,
+        trim: true,
+        index: true,
+    },
+    lead_type: {
+        type: String,
+        trim: true,
+        lowercase: true
+    },
+    stage: {
+        type: String,
+        trim: true,
+        lowercase: true
+    },
+    alternate_mobile1: {
+        type: Number,
+        trim: true,
+    },
+    alternate_mobile2: {
+        type: Number,
+        trim: true,
+    },
+    alternate_email: {
+        type: String,
+        trim: true,
+        lowercase: true,
+    }
+    ,
     lead_owner: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -61,63 +103,17 @@ const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
         ref: 'Organization',
         required: true
     },
-    customer_name: {
-        type: String,
-        trim: true,
-        lowercase: true,
-    },
-
-    dp: {
-        public_id: { type: String },
-        url: { type: String },
-        size: { type: String },
-        format: { type: String },
-    }
-    ,
-    address: {
-        type: String,
-        trim: true,
-        lowercase: true
-    },
-
-    alternate_mobile: {
-        type: Number,
-        trim: true,
-    },
-
-    alternate_email: {
-        type: String,
-        trim: true,
-        lowercase: true,
-
-    },
-    customer_designation: {
-        type: String,
-        trim: true,
-        lowercase: true,
-    },
     lead_source: {
         type: String,
         trim: true,
         lowercase: true,
     },
-    remarks: {
-        type: String,
-        trim: true,
-        lowercase: true,
-    },
-
-    status: {
-        type: Boolean,
-        default: true,
-        required: true,
-    },
-    status_changed_by: {
+    updated_by: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
-    updated_by: {
+    created_by: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
@@ -126,19 +122,12 @@ const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
         type: Date,
         default: new Date(Date.now()),
         required: true,
-
     },
     updated_at: {
         type: Date,
         default: new Date(Date.now()),
         required: true,
-
-    },
-    activities: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Activity',
-        required: true
-    }]
+    }
 })
 const Lead = mongoose.model<ILead, mongoose.Model<ILead>>("Lead", leadSchema);
 export default Lead;

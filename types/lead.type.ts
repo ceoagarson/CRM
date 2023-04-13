@@ -1,40 +1,35 @@
 import { Types } from "mongoose";
-import { IActivity } from "./activity.type";
-import { Asset } from "./asset.type";
 import { IOrganization } from "./organization.type";
 import { IUser } from "./user.type";
+import { IRemark } from "./remark.type";
 
-type BaseLead = {
+
+export type ILead = {
     _id: Types.ObjectId,
     name: string,
     customer_name: string,
     customer_designation: string,
-    mobile: number
+    mobile: number,
     email: string
     city: string,
     state: string,
+    country: string,
     address: string,
-    description: string,
+    remarks: IRemark[],
+    work_description: string,
+    turnover: string,
+    lead_type: "wholesale" | "retail" | "company" | "mixed"
+    stage: "open" | "won" | "won dealer" | "lost" | "useless" | "potential"
+    alternate_mobile1: number,
+    alternate_mobile2: number,
+    alternate_email: string,
+    lead_owner: IUser,
+    organization: IOrganization
+    lead_source: string,
+    created_at: Date,
+    created_by: IUser,
+    updated_at: Date,
+    updated_by: IUser
 }
 
-type AdditionalData = {
-    alternate_mobile: number,
-    alternate_email: string,
-    probability: "easy" | "medium" | "hard"
-    lead_owner: IUser ,
-    organization: IOrganization 
-    dp: Asset
-    lead_source: string,
-    remarks: string,
-    country: string
-}
-type Status = {
-    status: Boolean,
-    status_changed_by: IUser 
-    created_at: Date,
-    updated_at: Date,
-    updated_by: IUser 
-    activities: Array<IActivity['_id']>  
-}
-export type ILead = BaseLead & AdditionalData & Status
 export type TLeadBody = Request['body'] & ILead;

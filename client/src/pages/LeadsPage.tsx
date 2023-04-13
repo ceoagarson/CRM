@@ -1,20 +1,18 @@
-import { AddBoxOutlined, Block, ChangeCircle, Edit, Visibility } from "@mui/icons-material"
-import { Avatar, IconButton, LinearProgress, Stack, Tooltip, Typography } from "@mui/material"
+import { Comment, Edit, Visibility } from "@mui/icons-material"
+import { IconButton, LinearProgress, Stack, Tooltip, Typography } from "@mui/material"
 import { AxiosResponse } from "axios"
 import React, { useContext, useEffect, useState } from "react"
 import { useQuery } from "react-query"
 import { Column } from "react-table"
-import NewActivityDialog from "../components/dialogs/activities/NewActivityDialog"
-import ConvertResourceDialog from "../components/dialogs/conversion/ConvertResourceDialog"
-import ToogleLeadStatusDialog from "../components/dialogs/leads/ToogleLeadStatusDialog copy"
 import UpdateLeadDialog from "../components/dialogs/leads/UpdateLeadDialog"
 import ViewLeadDialog from "../components/dialogs/leads/ViewLeadDialog"
 import { LeadTable } from "../components/tables/lead/LeadTable"
-import { ActivityChoiceActions, ChoiceContext, ConversionChoiceActions, LeadChoiceActions } from "../contexts/dialogContext"
+import { ChoiceContext, LeadChoiceActions } from "../contexts/dialogContext"
 import { UserContext } from "../contexts/userContext"
 import { GetLeads } from "../services/LeadsServices"
 import { BackendError } from "../types"
 import { ILead } from "../types/lead.type"
+import NewRemarkDialog from "../components/dialogs/leads/NewRemarkDialog"
 
 export default function LeadsPage() {
   const { setChoice } = useContext(ChoiceContext)
@@ -26,17 +24,53 @@ export default function LeadsPage() {
     })
   const [DATA, setDATA] = useState<ILead[]>([])
   const MemoData = React.useMemo(() => DATA, [DATA])
-
   const MemoColumns: Column<ILead>[] = React.useMemo(
     () => [
-      // index 
+      //actions
       {
-        Header: "Index",
-        accessor: "_id",
-        width: 20,
-        disableSortBy: true,
+        Header: 'Actions',
+        accessor: 'actions',
         Cell: (props) => {
-          return <Typography variant="body1" component="span" pr={2}>{props.row.index + 1}</Typography>
+          return (
+            <Stack direction="row" spacing={1}>
+              {
+                loggedInUser?.roles.includes("admin") ?
+                  <Tooltip title="edit">
+                    <IconButton color="secondary"
+                      onClick={() => {
+                        setChoice({ type: LeadChoiceActions.update_lead })
+                        setLead(props.row.original)
+                      }}
+                    >
+                      <Edit />
+                    </IconButton>
+                  </Tooltip>
+                  : null
+              }
+              <Tooltip title="view">
+                <IconButton color="primary"
+                  onClick={() => {
+                    setChoice({ type: LeadChoiceActions.view_lead })
+                    setLead(props.row.original)
+                  }}
+                >
+                  <Visibility />
+                </IconButton>
+              </Tooltip>
+
+              <Tooltip title="Add Remark">
+                <IconButton
+                  color="success"
+                  onClick={() => {
+                    setChoice({ type: LeadChoiceActions.update_remark })
+                    setLead(props.row.original)
+                  }}
+                >
+                  <Comment />
+                </IconButton>
+              </Tooltip>
+            </Stack>
+          )
         }
       },
       // lead name
@@ -50,37 +84,85 @@ export default function LeadsPage() {
               justifyContent="left"
               alignItems="center"
             >
-              <Stack
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Avatar
-                  sx={{ width: 30, height: 30 }}
-                  onClick={() => {
-                    setChoice({ type: LeadChoiceActions.view_lead })
-                    setLead(props.row.original)
-                  }}
-                  alt="display picture" src={props.row.original.dp?.url} />
-                {
-                  props.row.original.status ?
-                    <Typography variant="caption" sx={{
-                      color: "green",
-                    }}>open</Typography>
-                    : <Typography variant="caption" sx={{
-                      color: "red",
-                    }}>closed</Typography>
-
-                }
-              </Stack >
-              <Stack>
+              <Stack direction="column">
                 <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.name}</Typography>
-                <Typography sx={{ textTransform: "capitalize" }} variant="caption" component="span">
-                  {props.row.original.customer_name}<strong>
-                    ({props.row.original.customer_designation})
-                  </strong>
+                <Typography sx={{ textTransform: "capitalize", color: 'grey' }} variant="caption" component="span">
+                  {props.row.original.stage}
                 </Typography>
               </Stack >
             </Stack>
+          )
+        }
+      },
+      //lead_type
+      {
+        Header: 'Lead Type',
+        accessor: 'lead_type',
+        Cell: (props) => {
+          return (
+            <Stack direction="row"
+              spacing={2}
+              justifyContent="left"
+              alignItems="center"
+            >
+              <Stack direction="column">
+                <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.lead_type}-<strong>{props.row.original.turnover}</strong></Typography>
+                <Typography sx={{ textTransform: "capitalize", color: 'grey' }} variant="caption" component="span">
+                  {props.row.original.work_description}
+                </Typography>
+              </Stack >
+            </Stack>
+          )
+        }
+      },
+      //customer
+      {
+        Header: 'Customer',
+        accessor: 'customer_name',
+        Cell: (props) => {
+          return (
+            <Stack direction="row"
+              spacing={2}
+              justifyContent="left"
+              alignItems="center"
+            >
+              <Stack direction="column">
+                <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.customer_name}</Typography>
+                <Typography sx={{ textTransform: "capitalize", color: 'grey' }} variant="caption" component="span">
+                  {props.row.original.customer_designation}
+                </Typography>
+              </Stack >
+            </Stack>
+          )
+        }
+      },
+      //remark
+      {
+        Header: 'Last Remark',
+        accessor: 'remarks',
+        Cell: (props) => {
+          return (
+            <Stack direction="row"
+              spacing={2}
+              justifyContent="left"
+              alignItems="center"
+            >
+              <Stack direction="column">
+                {
+                  props.row.original.remarks.length > 0 ?
+                    <>
+                      <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.remarks[props.row.original.remarks.length - 1].remark}</Typography>
+                      <Typography sx={{ textTransform: "capitalize", color: 'grey' }} variant="caption" component="span">
+                        {new Date(props.row.original.remarks[props.row.original.remarks.length-1].created_at).toLocaleString()}
+                      </Typography>
+                      <Typography sx={{ textTransform: "capitalize", color: 'grey' }} variant="caption" component="span">
+                        {props.row.original.remarks[props.row.original.remarks.length - 1].created_by.username}
+                      </Typography>
+                    </>
+                    : null
+                }
+              </Stack >
+            </Stack >
           )
         }
       },
@@ -97,6 +179,7 @@ export default function LeadsPage() {
           )
         }
       },
+
       //mobile
       {
         Header: 'Mobile',
@@ -105,7 +188,8 @@ export default function LeadsPage() {
           return (
             <Stack>
               <Typography variant="body1" sx={{}} >{props.row.original.mobile}</Typography>
-              <Typography variant="caption">{props.row.original.alternate_mobile}</Typography>
+              <Typography variant="caption">{props.row.original.alternate_mobile1}</Typography>
+              <Typography variant="caption">{props.row.original.alternate_mobile2}</Typography>
             </Stack>
           )
         }
@@ -137,156 +221,25 @@ export default function LeadsPage() {
           )
         }
       },
-      // address
-      {
-        Header: 'Address',
-        accessor: 'city',
-        Cell: (props) => {
-          return (
-            <Stack>
-              <Typography variant="body1" sx={{ textTransform: "capitalize" }}>{props.row.original.state}</Typography>
-              <Typography variant="caption" sx={{ textTransform: "capitalize" }}>{props.row.original.city}</Typography>
-            </Stack>
-          )
-        }
-      },
-      // status updated
-      {
-        Header: 'Status UpdatedBy',
-        accessor: 'status',
-        Cell: (props) => {
-          let username = props.row.original.status_changed_by.username
-          return (
-            <Stack>
-              <Typography variant="body1" sx={{ textTransform: "capitalize" }}>{username}</Typography>
-              <Typography variant="caption">{new Date(props.row.original.updated_at).toLocaleString()}</Typography>
-            </Stack>
-          )
-        }
-      },
-      // last  updated
-      {
-        Header: 'Last Updated',
-        accessor: 'updated_at',
-        Cell: (props) => {
-          let username = props.row.original.updated_by.username
-          return (
-            <Stack>
-              <Typography variant="body1" sx={{ textTransform: "capitalize" }}>{username}</Typography>
-              <Typography variant="caption">{new Date(props.row.original.updated_at).toLocaleString()}</Typography>
-            </Stack>
-          )
-        }
-      },
-      //actions
-      {
-        Header: 'Actions',
-        accessor: 'actions',
-        Cell: (props) => {
-          let open = props.row.original.status
-          return (
-            <Stack direction="row" spacing={1}>
-              {
-                loggedInUser?.roles.includes("admin") ?
-                  <>
-                    <Tooltip title="edit">
-                      <IconButton color="secondary"
-                        onClick={() => {
-                          setChoice({ type: LeadChoiceActions.update_lead })
-                          setLead(props.row.original)
-                        }}
-                      >
-                        <Edit />
-                      </IconButton>
-                    </Tooltip>
-                    {
-                      open ?
-                        <Tooltip title="Close">
-                          <IconButton
-                            color="error"
-                            onClick={() => {
-                              setChoice({ type: LeadChoiceActions.open_close_lead })
-                              setLead(props.row.original)
-                            }}
-                          ><Block />
-                          </IconButton>
-                        </Tooltip>
-                        :
-                        <Tooltip title="Open">
-                          <IconButton
-                            color="success"
-                            onClick={() => {
-                              setChoice({ type: LeadChoiceActions.open_close_lead })
-                              setLead(props.row.original)
-                            }}
-                          >
-                            <Block />
-                          </IconButton>
-                        </Tooltip>
-                    }
-                    <Tooltip title="Convert">
-                      <IconButton
-                        color="warning"
-                        onClick={() => {
-                          setChoice({ type: ConversionChoiceActions.convert_resource })
-                          setLead(props.row.original)
-                        }}
-                      >
-                        <ChangeCircle />
-                      </IconButton>
-                    </Tooltip>
-                  </>
-                  :
-                  null
 
-              }
-
-
-              <Tooltip title="view">
-                <IconButton color="primary"
-                  onClick={() => {
-                    setChoice({ type: LeadChoiceActions.view_lead })
-                    setLead(props.row.original)
-                  }}
-                >
-                  <Visibility />
-                </IconButton>
-              </Tooltip>
-
-              <Tooltip title="New Activity">
-                <IconButton
-                  color="success"
-                  onClick={() => {
-                    setChoice({ type: ActivityChoiceActions.create_activity })
-                    setLead(props.row.original)
-                  }}
-                >
-                  <AddBoxOutlined />
-                </IconButton>
-              </Tooltip>
-
-            </Stack>
-          )
-        }
-      },
     ]
     , [setChoice, loggedInUser]
   )
+
   useEffect(() => {
     if (isSuccess)
       setDATA(data.data)
   }, [isSuccess, data])
+
   return (
     <>
-      < LeadTable data={MemoData} columns={MemoColumns} />
+      <LeadTable data={MemoData} columns={MemoColumns} />
       {
         lead ?
           <>
             <UpdateLeadDialog lead={lead} />
             <ViewLeadDialog lead={lead} />
-            <ToogleLeadStatusDialog lead={lead} />
-            <NewActivityDialog id={lead._id} resource_type="lead" />
-            <ConvertResourceDialog resource_id={lead._id} resource_type="lead" />
+            <NewRemarkDialog lead={lead} />
           </>
           : null
       }

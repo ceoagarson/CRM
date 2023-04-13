@@ -13,7 +13,6 @@ router.route("/users")
 router.route("/users/:id")
     .get(isAuthenticatedUser, GetUser)
     .put(isAuthenticatedUser, isAdmin,isOwner, upload.single("dp"), UpdateUser)
-
 router.patch("/owner/update/role/admin/:id", isAuthenticatedUser, isAdmin, isOwner, MakeAdmin)
 router.patch("/owner/update/role/owner/:id", isAuthenticatedUser, isAdmin, isOwner, MakeOwner)
 router.patch("/owner/block/user/:id", isAuthenticatedUser, isAdmin, isOwner, BlockUser)

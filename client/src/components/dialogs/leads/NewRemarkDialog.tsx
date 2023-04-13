@@ -1,20 +1,20 @@
 import { Dialog, DialogContent, DialogTitle, DialogActions, Typography, CircularProgress } from '@mui/material'
 import { useContext } from 'react'
-import { AccountChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
-import { IAccount } from '../../../types/account.type'
-import UpdateAccountForm from '../../forms/account/UpdateAccountForm'
+import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
+import { ILead } from '../../../types/lead.type'
+import NewRemarkForm from '../../forms/lead/NewRemarkForm'
 
-function UpdateAccountDialog({ account }: { account: IAccount }) {
+function NewRemarkDialog({ lead }: { lead: ILead }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     return (
-        <Dialog  
-        open={choice === AccountChoiceActions.update_account ? true : false}
-            onClose={() => setChoice({ type: AccountChoiceActions.close })}
+        <Dialog
+            open={choice === LeadChoiceActions.update_remark ? true : false}
+            onClose={() => setChoice({ type: LeadChoiceActions.close })}
         >
-            <DialogTitle textAlign="center">Update Account Form</DialogTitle>
+            <DialogTitle textAlign="center">new Remark Form</DialogTitle>
             <DialogContent>
-                {account ?
-                    < UpdateAccountForm account={account} />
+                {lead ?
+                    < NewRemarkForm lead={lead} />
                     : <CircularProgress size="large" />
                 }
             </DialogContent>
@@ -35,4 +35,4 @@ function UpdateAccountDialog({ account }: { account: IAccount }) {
     )
 }
 
-export default UpdateAccountDialog
+export default NewRemarkDialog

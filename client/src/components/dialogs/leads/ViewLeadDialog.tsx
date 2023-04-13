@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTitle, Button, DialogActions, Avatar, Typography, Box } from '@mui/material';
+import { Dialog, DialogContent, DialogTitle, Button, DialogActions, Typography, Box } from '@mui/material';
 import { Stack } from '@mui/system';
 import { useContext } from 'react';
 import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
@@ -15,9 +15,6 @@ function ViewLeadDialog({ lead }: { lead: ILead }) {
         <DialogTitle textAlign={"center"}>Lead</DialogTitle>
         <DialogContent>
           <Box>
-            <Stack p={2} justifyContent="center" alignItems="center">
-              <Avatar src={lead.dp?.url} sx={{ height: "150px", width: "150px" }} alt="lead pic" />
-            </Stack>
             <Stack direction="column" justifyContent="center" alignItems="center">
               <Typography variant="h6" component="h2">
                 {lead.customer_name}</Typography>

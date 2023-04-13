@@ -2,19 +2,15 @@ import { Types } from "mongoose";
 import { Asset } from "./asset.type";
 import { IOrganization } from "./organization.type";
 
-type BaseUser = {
+export type IUser = {
     _id: Types.ObjectId,
     username: string,
     password: string,
     email: string,
     mobile: number,
-    organization: IOrganization,
-}
-type AdditionalData = {
+    organization: IOrganization
     dp: Asset,
     roles: Types.Array<string>
-}
-type Status = {
     email_verified: Boolean,
     last_login: Date,
     created_at: Date,
@@ -22,15 +18,11 @@ type Status = {
     updated_at: Date,
     updated_by: IUser
     is_active: Boolean,
-}
-type Tokens = {
     resetPasswordToken: string | null,
     resetPasswordExpire: Date | null,
     emailVerifyToken: string | null,
     emailVerifyExpire: Date | null,
 }
-
-export type IUser = BaseUser & AdditionalData & Status & Tokens
 
 export type IUserMethods = {
     getAccessToken: () => string,

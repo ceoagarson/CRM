@@ -66,10 +66,6 @@ export default function DashboardLayout() {
 
                   <StyledLink to={paths.users}>Users</StyledLink>
                   <StyledLink to={paths.leads}>Leads</StyledLink>
-                  <StyledLink to={paths.accounts}>Accounts</StyledLink>
-                  <StyledLink to={paths.opportunities}>Opportunities</
-                  StyledLink>
-                  <StyledLink to={paths.activities}>Activities</StyledLink>
                 </Stack>
                 {/* stack2 right icons*/}
                 <Stack

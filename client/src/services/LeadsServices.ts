@@ -13,6 +13,6 @@ export const NewLead = async (body: FormData) => {
 export const UpdateLead = async ({ id, body }: { id: string, body: FormData }) => {
   return await apiClient.put(`leads/${id}`, body)
 }
-export const ToogleLeadStatus = async (id: string) => {
-  return await apiClient.patch(`leads/${id}`)
+export const NewRemark = async ({ id, remark }: { id: string, remark: string }) => {
+  return await apiClient.patch(`leads/${id}`, { remark: remark })
 }

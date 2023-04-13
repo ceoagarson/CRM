@@ -81,7 +81,7 @@ export const SignUp = catchAsyncError(
         await owner.save()
         organization = await organization.save()
         owner = await User.findById(owner._id).populate('organization').populate("created_by").populate("updated_by") || owner
-        res.status(201).json({ owner, organization })
+        res.status(201).json({ owner })
     })
 
 
