@@ -35,7 +35,53 @@ export default function LeadsPage() {
   const MemoData = React.useMemo(() => DATA, [DATA])
   const MemoColumns: Column<ILead>[] = React.useMemo(
     () => [
+      //actions
+      {
+        Header: 'Actions',
+        accessor: 'actions',
+        Cell: (props) => {
+          return (
+            <Stack direction="row" spacing={1}>
+              {
+                loggedInUser?.roles.includes("admin") ?
+                  <Tooltip title="edit">
+                    <IconButton color="secondary"
+                      onClick={() => {
+                        setChoice({ type: LeadChoiceActions.update_lead })
+                        setLead(props.row.original)
+                      }}
+                    >
+                      <Edit />
+                    </IconButton>
+                  </Tooltip>
+                  : null
+              }
+              <Tooltip title="view">
+                <IconButton color="primary"
+                  onClick={() => {
+                    setChoice({ type: LeadChoiceActions.view_lead })
+                    setLead(props.row.original)
+                  }}
+                >
+                  <Visibility />
+                </IconButton>
+              </Tooltip>
 
+              <Tooltip title="Add Remark">
+                <IconButton
+                  color="success"
+                  onClick={() => {
+                    setChoice({ type: LeadChoiceActions.update_remark })
+                    setLead(props.row.original)
+                  }}
+                >
+                  <Comment />
+                </IconButton>
+              </Tooltip>
+            </Stack>
+          )
+        }
+      },
       // lead name
       {
         Header: 'Lead Name',
@@ -146,6 +192,44 @@ export default function LeadsPage() {
           )
         }
       },
+      //city and state 
+      {
+        Header: 'State',
+        accessor: 'city',
+        Cell: (props) => {
+          return (
+            <Stack>
+              <Typography sx={{ textTransform: "capitalize" }} variant="body1">{props.row.original.state}</Typography>
+              <Typography sx={{ textTransform: "capitalize", color: 'grey' }} variant="caption">{props.row.original.city}</Typography>
+            </Stack>
+          )
+        }
+      },
+      //Emails`` 
+      {
+        Header: 'Lead Emails',
+        accessor: 'email',
+        Cell: (props) => {
+          return (
+            <Stack>
+              <Typography sx={{ textTransform: "capitalize" }} variant="body1">{props.row.original.email}</Typography>
+              <Typography sx={{ textTransform: "capitalize", color: 'grey' }} variant="caption">{props.row.original.alternate_email}</Typography>
+            </Stack>
+          )
+        }
+      },
+      //Address
+      {
+        Header: 'Address',
+        accessor: 'address',
+        Cell: (props) => {
+          return (
+            <Stack>
+              <Typography sx={{ textTransform: "capitalize" }} variant="body1">{props.row.original.address.slice(0, 50)}...</Typography>
+            </Stack>
+          )
+        }
+      },
       // lead_source
       {
         Header: 'Lead Source',
@@ -173,54 +257,8 @@ export default function LeadsPage() {
             </Stack>
           )
         }
-      },
-      //actions
-      {
-        Header: 'Actions',
-        accessor: 'actions',
-        Cell: (props) => {
-          return (
-            <Stack direction="row" spacing={1}>
-              {
-                loggedInUser?.roles.includes("admin") ?
-                  <Tooltip title="edit">
-                    <IconButton color="secondary"
-                      onClick={() => {
-                        setChoice({ type: LeadChoiceActions.update_lead })
-                        setLead(props.row.original)
-                      }}
-                    >
-                      <Edit />
-                    </IconButton>
-                  </Tooltip>
-                  : null
-              }
-              <Tooltip title="view">
-                <IconButton color="primary"
-                  onClick={() => {
-                    setChoice({ type: LeadChoiceActions.view_lead })
-                    setLead(props.row.original)
-                  }}
-                >
-                  <Visibility />
-                </IconButton>
-              </Tooltip>
-
-              <Tooltip title="Add Remark">
-                <IconButton
-                  color="success"
-                  onClick={() => {
-                    setChoice({ type: LeadChoiceActions.update_remark })
-                    setLead(props.row.original)
-                  }}
-                >
-                  <Comment />
-                </IconButton>
-              </Tooltip>
-            </Stack>
-          )
-        }
-      },
+      }
+   
     ]
     , [setChoice, loggedInUser]
   )

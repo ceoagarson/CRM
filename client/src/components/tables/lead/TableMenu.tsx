@@ -15,24 +15,28 @@ type Props = {
     selectedFlatRows: Row<ILead>[]
 }
 type SelectedData = {
-    name?: string,
-    email?: string,
-    mobile?: number,
-    work_description?: string,
-    city?: string,
-    state?: string,
-    stage?: string,
-    country?: string,
-    lead_owner?: string,
-    customer_name?: string,
-    address?: string,
-    alternate_mobile1?: number,
-    alternate_email?: string,
-    customer_designation?: string,
-    lead_source?: string,
-    updated_by?: string,
-    updated_at?: string,
-    created_at?: string,
+    name: string,
+    email: string,
+    work_description: string,
+    mobile: number,
+    city: string,
+    state: string,
+    stage: string,
+    country: string,
+    lead_owner: string,
+    customer_name: string,
+    address: string,
+    alternate_mobile1: number,
+    alternate_mobile2: number,
+    alternate_email: string,
+    customer_designation: string,
+    lead_source: string,
+    updated_by: string,
+    updated_at: string,
+    created_at: string,
+    turnover: string,
+    lead_type: string,
+    last_remark: string
 
 }
 function TableMenu({ columns, selectedFlatRows }: Props) {
@@ -40,7 +44,7 @@ function TableMenu({ columns, selectedFlatRows }: Props) {
     const [toogleCol, setToogleCol] = useState(false)
     const [selectedData, setSelectedData] = useState<SelectedData[]>([])
     const [sent, setSent] = useState(false)
-    const {setChoice}=useContext(ChoiceContext)
+    const { setChoice } = useContext(ChoiceContext)
 
 
     function handleExcel() {
@@ -63,24 +67,28 @@ function TableMenu({ columns, selectedFlatRows }: Props) {
         selectedFlatRows.map((item) => {
             const lead = item.original
             return data.push({
-                name:lead.name,
-                email:lead.email,
-                mobile:lead.mobile,
-                work_description:lead.work_description,
-                city:lead.city,
-                state:lead.state,
-                stage:lead.stage,
-                country:lead.country,
-                lead_owner:lead.lead_owner.username,
-                customer_name:lead.customer_name,
-                address:lead.address,
-                alternate_mobile1:lead.alternate_mobile1,
-                alternate_email:lead.alternate_email,
-                customer_designation:lead.customer_designation,
-                lead_source:lead.lead_source,
-                updated_by:lead.updated_by.username,
-                updated_at:new Date(lead.updated_at).toLocaleDateString(),
-                created_at:new Date(lead.created_at).toLocaleDateString(),
+                name: lead.name,
+                email: lead.email,
+                mobile: lead.mobile,
+                work_description: lead.work_description,
+                city: lead.city,
+                state: lead.state,
+                stage: lead.stage,
+                country: lead.country,
+                turnover: lead.turnover,
+                lead_type: lead.lead_type,
+                lead_owner: lead.lead_owner.username,
+                customer_name: lead.customer_name,
+                last_remark: lead.remarks[lead.remarks.length - 1].remark,
+                address: lead.address,
+                alternate_mobile1: lead.alternate_mobile1,
+                alternate_mobile2: lead.alternate_mobile2,
+                alternate_email: lead.alternate_email,
+                customer_designation: lead.customer_designation,
+                lead_source: lead.lead_source,
+                updated_by: lead.updated_by.username,
+                updated_at: new Date(lead.updated_at).toLocaleDateString(),
+                created_at: new Date(lead.created_at).toLocaleDateString(),
             })
         })
         setSelectedData(data)

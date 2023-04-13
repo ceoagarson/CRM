@@ -35,17 +35,14 @@ const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
     city: {
         type: String,
         trim: true,
-        lowercase: true
     },
     state: {
         type: String,
         trim: true,
-        lowercase: true
     },
     country: {
         type: String,
         trim: true,
-        lowercase: true
     },
     address: {
         type: String,

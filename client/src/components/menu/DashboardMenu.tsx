@@ -4,6 +4,7 @@ import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { MenuActions, MenuContext } from '../../contexts/menuContext';
 import { paths } from '../../Routes';
+import { UserContext } from '../../contexts/userContext';
 
 
 export const StyledLink = styled(Link)`
@@ -13,6 +14,7 @@ export const StyledLink = styled(Link)`
 
 function DashboardMenu() {
     const { menu, setMenu } = useContext(MenuContext)
+    const { user } = useContext(UserContext)
     return (
         <Menu
             anchorEl={menu.anchorEl}
@@ -28,12 +30,14 @@ function DashboardMenu() {
             >
                 <StyledLink to={paths.dashboard}>Dashboard</StyledLink>
             </MenuItem>
-            <MenuItem
-                onClick={
-                    () => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
-                }>
-                <StyledLink to={paths.users}>Users</StyledLink>
-            </MenuItem>
+            {user?.roles.includes("owner") ?
+                <MenuItem
+                    onClick={
+                        () => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
+                    }>
+                    <StyledLink to={paths.users}>Users</StyledLink>
+                </MenuItem>
+                : null}
             <MenuItem
                 onClick={
                     () => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })

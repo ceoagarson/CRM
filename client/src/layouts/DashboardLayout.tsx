@@ -31,12 +31,12 @@ export default function DashboardLayout() {
           <Stack direction="column" gap={2} pl={1}>
             <StyledLink to={paths.dashboard}>
               <Stack direction="column"
-               alignItems="center"
-               gap={1}
-               sx={{
-                maxWidth:"70vw",
-                overflow:"hidden"
-               }}>
+                alignItems="center"
+                gap={1}
+                sx={{
+                  maxWidth: "70vw",
+                  overflow: "hidden"
+                }}>
                 <Typography
                   variant="h6"
                   component="h1"
@@ -64,7 +64,7 @@ export default function DashboardLayout() {
                   }}
                 >
 
-                  <StyledLink to={paths.users}>Users</StyledLink>
+                  {user.roles.includes("owner") ? <StyledLink to={paths.users}>Users</StyledLink> : null}
                   <StyledLink to={paths.leads}>Leads</StyledLink>
                 </Stack>
                 {/* stack2 right icons*/}

@@ -117,7 +117,7 @@ export function LeadTable({ data, columns, setFilter }: Props) {
                     height: '70vh'
                 }}>
                 <Table
-                    sx={{ minWidth: "1920px" }}
+                    sx={{ minWidth: "2400px" }}
                     size="small"
                     {...getTableProps()}>
                     <TableHead
