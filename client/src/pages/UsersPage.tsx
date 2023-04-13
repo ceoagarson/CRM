@@ -32,15 +32,6 @@ export default function UsersPage() {
 
     const MemoColumns: Column<IUser>[] = React.useMemo(
         () => [
-            {
-                Header: "Index",
-                accessor: "_id",
-                disableSortBy: true,
-                Cell: (props) => {
-                    return <Typography variant="body1" component="span" pr={2}>{props.row.index + 1}</Typography>
-                }
-            },
-
             // user name
             {
 

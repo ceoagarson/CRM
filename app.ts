@@ -12,7 +12,6 @@ import OrganizationRoutes from "./routes/organization.route"
 import LeadRoutes from "./routes/lead.routes"
 
 
-
 import path from 'path';
 import morgan from "morgan";
 

@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTitle, DialogActions, Typography, CircularProgress } from '@mui/material'
+import { Dialog, DialogContent,  DialogActions, Typography, CircularProgress } from '@mui/material'
 import { useContext } from 'react'
 import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { ILead } from '../../../types/lead.type'
@@ -11,7 +11,6 @@ function NewRemarkDialog({ lead }: { lead: ILead }) {
             open={choice === LeadChoiceActions.update_remark ? true : false}
             onClose={() => setChoice({ type: LeadChoiceActions.close })}
         >
-            <DialogTitle textAlign="center">new Remark Form</DialogTitle>
             <DialogContent>
                 {lead ?
                     < NewRemarkForm lead={lead} />

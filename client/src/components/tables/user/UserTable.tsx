@@ -75,13 +75,11 @@ export function UserTable({ data, columns }: Props) {
                 <Typography
                     variant={'h6'}
                     component={'h1'}
-                    sx={{ display: { xs: 'none', sm: 'block' } }}
                 >
                     USERS
                 </Typography>
                 <Stack
                     direction="row"
-
                 >
                     <SearchBar
                         preGlobalFilteredRows={preGlobalFilteredRows} globalFilter={globalFilter} setGlobalFilter={setGlobalFilter}
@@ -99,7 +97,7 @@ export function UserTable({ data, columns }: Props) {
                     height: '70vh'
                 }}>
                 <Table
-                    sx={{ minWidth: "1920px" }}
+                    sx={{ minWidth: "1500px" }}
                     size="small"
                     {...getTableProps()}>
                     <TableHead

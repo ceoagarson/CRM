@@ -60,7 +60,19 @@ export const CreateLead = catchAsyncError(async (req: Request, res: Response, ne
 export const GetLead = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "lead id not valid" })
-    let lead = await Lead.findById(id).populate('lead_owner').populate('organization').populate('updated_by').populate('created_by').populate('remarks')
+    let lead = await Lead.findById(id).populate('lead_owner').populate('organization').populate('updated_by').populate('created_by').populate({
+        path: 'remarks',
+        populate: [
+            {
+                path: 'created_by',
+                model: 'User'
+            },
+            {
+                path: 'updated_by',
+                model: 'User'
+            }
+        ]
+    })
     if (!lead) {
         return res.status(404).json({ message: "lead not found" })
     }
@@ -68,7 +80,19 @@ export const GetLead = catchAsyncError(async (req: Request, res: Response, next:
 })
 // get all leads  anyone can do in the organization
 export const GetLeads = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    let leads = await Lead.find({ organization: req.user?.organization }).populate('lead_owner').populate('organization').populate('updated_by').populate('created_by').populate('remarks')
+    let leads = await Lead.find({ organization: req.user?.organization }).populate('lead_owner').populate('organization').populate('updated_by').populate('created_by').populate({
+        path: 'remarks',
+        populate: [
+            {
+                path: 'created_by',
+                model: 'User'
+            },
+            {
+                path: 'updated_by',
+                model: 'User'
+            }
+        ]
+    })
     if (!leads) {
         return res.status(404).json({ message: "leads not found" })
     }

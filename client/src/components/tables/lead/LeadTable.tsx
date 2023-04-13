@@ -1,4 +1,4 @@
-import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
+import { Box, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Tooltip, Typography } from '@mui/material'
 import { Column, useTable, useSortBy, usePagination, useGlobalFilter, useRowSelect } from 'react-table'
 import Pagination from '../utils/Pagination';
 import SearchBar from './SearchBar';
@@ -6,15 +6,21 @@ import TableCheckBox from '../utils/TableCheckBox';
 import TableMenu from './TableMenu';
 import { Stack } from '@mui/system';
 import { color1, color2, headColor } from '../../../utils/colors';
-import { ArrowDropDown, ArrowDropUp } from '@mui/icons-material';
+import { ArrowDropDown, ArrowDropUp, FilterList } from '@mui/icons-material';
 import { ILead } from '../../../types/lead.type';
+import { Filter } from '../../../pages/LeadsPage';
+import { useContext } from 'react';
+import { ChoiceContext, LeadChoiceActions } from '../../../contexts/dialogContext';
+import DisplayFilterDialog from '../../dialogs/leads/DisplayFilterDialog';
 
 interface Props {
     data: ILead[],
-    columns: Column<ILead>[]
+    columns: Column<ILead>[],
+    setFilter: React.Dispatch<React.SetStateAction<Filter>>
 }
 
-export function LeadTable({ data, columns }: Props) {
+export function LeadTable({ data, columns, setFilter }: Props) {
+    const { choice, setChoice } = useContext(ChoiceContext)
     const {
         getTableProps,
         getTableBodyProps,
@@ -75,14 +81,26 @@ export function LeadTable({ data, columns }: Props) {
                 <Typography
                     variant={'h6'}
                     component={'h1'}
-                    sx={{ display: { xs: 'none', sm: 'block' } }}
                 >
-                     LEADS
+                    LEADS
                 </Typography>
+
                 <Stack
                     direction="row"
-
                 >
+                    <Tooltip title="Apply filter">
+                        <IconButton
+                            onClick={() => {
+                                setChoice({ type: LeadChoiceActions.display_filter })
+                            }}
+                        >
+                            <FilterList />
+                        </IconButton>
+                    </Tooltip>
+                    {
+                        choice === LeadChoiceActions.display_filter ?
+                            <DisplayFilterDialog setFilter={setFilter} /> : null
+                    }
                     <SearchBar
                         preGlobalFilteredRows={preGlobalFilteredRows} globalFilter={globalFilter} setGlobalFilter={setGlobalFilter}
                     />
@@ -99,7 +117,7 @@ export function LeadTable({ data, columns }: Props) {
                     height: '70vh'
                 }}>
                 <Table
-                     sx={{ minWidth: "1920px" }}
+                    sx={{ minWidth: "1920px" }}
                     size="small"
                     {...getTableProps()}>
                     <TableHead
@@ -109,7 +127,7 @@ export function LeadTable({ data, columns }: Props) {
                                 {headerGroup.headers.map
                                     ((column) => (
                                         <TableCell
-                                            sx={{ bgcolor: headColor}}
+                                            sx={{ bgcolor: headColor }}
                                             {...column.getHeaderProps(column.getSortByToggleProps())}
                                             title=""                                    >
                                             <Stack
@@ -145,9 +163,9 @@ export function LeadTable({ data, columns }: Props) {
                                     {...row.getRowProps()}>
                                     {row.cells.map((cell) => {
                                         return (
-                                            <TableCell 
+                                            <TableCell
                                                 {...cell.getCellProps()}
-                                                
+
 
                                             >
                                                 {cell.render('Cell')}
