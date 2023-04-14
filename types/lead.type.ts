@@ -23,7 +23,7 @@ export type ILead = {
     alternate_mobile1: number,
     alternate_mobile2: number,
     alternate_email: string,
-    lead_owner: IUser,
+    lead_owners: IUser[],
     organization: IOrganization
     lead_source: string,
     created_at: Date,

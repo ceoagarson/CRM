@@ -8,7 +8,7 @@ export type IOrganization = {
     organization_email: string,
     organization_mobile: number,
     organization_dp: Asset,
-    owners: IUser[]
+    owner: IUser,
     country: string,
     address: string
     email_verified: Boolean,

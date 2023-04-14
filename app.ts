@@ -8,7 +8,6 @@ import cors from "cors";
 import { MulterError } from 'multer';
 import { connectDatabase } from './config/db';
 import UserRoutes from "./routes/user.routes"
-import OrganizationRoutes from "./routes/organization.route"
 import LeadRoutes from "./routes/lead.routes"
 
 
@@ -48,7 +47,6 @@ cloudinary.v2.config({
     api_secret: process.env.CLOUDINARY_SECRET_KEY,
 });
 app.use("/api/v1", UserRoutes)
-app.use("/api/v1", OrganizationRoutes)
 app.use("/api/v1", LeadRoutes)
 
 if (ENV === "production") {

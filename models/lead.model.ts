@@ -74,7 +74,8 @@ const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
     stage: {
         type: String,
         trim: true,
-        lowercase: true
+        lowercase: true,
+        default:"open"
     },
     alternate_mobile1: {
         type: Number,
@@ -90,11 +91,13 @@ const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
         lowercase: true,
     }
     ,
-    lead_owner: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
+    lead_owners: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
+        }
+    ],
     organization: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Organization',

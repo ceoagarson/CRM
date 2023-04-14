@@ -6,13 +6,19 @@ import Lead from "../models/lead.model"
 import { User } from "../models/user.model"
 import { TLeadBody } from "../types/lead.type"
 import { Remark } from "../models/remark.model.js"
+import { IUser } from "../types/user.type.js"
+
 
 // create lead any one can do in the organization
 export const CreateLead = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    const { name, mobile, email, work_description, remark } = req.body as TLeadBody & { remark: string }
+    const { name, mobile, email, work_description, remark, owners } = req.body as TLeadBody & { remark: string, owners: string[] }
+    if (!owners)
+        return res.status(400).json({ message: "assign at least one lead owner"});
+    if (owners.length<1)
+        return res.status(400).json({ message: "assign at least one lead owner" });
     const user = await User.findById(req.user?._id)
     if (!user)
-        return res.status(404).json({ message: "please login to access this resource" })
+        return res.status(400).json({ message: "please login to access this resource" })
     // validations
     if (!name || !email || !mobile || !work_description)
         return res.status(400).json({ message: "fill all the required fields" });
@@ -28,10 +34,16 @@ export const CreateLead = catchAsyncError(async (req: Request, res: Response, ne
     if (await Lead.findOne({ mobile: String(mobile).trim(), alternate_mobile1: String(mobile).trim(), alternate_mobile2: String(mobile).trim() }))
         return res.status(403).json({ message: `${mobile} already exists` });
 
+    let lead_owners:IUser[]=[]
+    for(let i=0;i<owners.length;i++){
+        let owner = await User.findById(owners[i])
+        if(owner)
+            lead_owners.push(owner)
+    }
     const lead = new Lead({
         ...req.body,
         organization: user.organization._id,
-        lead_owner: user._id,
+        lead_owners,
         created_by: user._id,
         updated_by: user._id,
         created_at: new Date(Date.now()),
@@ -50,17 +62,13 @@ export const CreateLead = catchAsyncError(async (req: Request, res: Response, ne
         lead.remarks = [new_remark]
     }
     await lead.save()
-    let savedlead = await Lead.findById(lead._id).populate('lead_owner').populate('organization').populate('updated_by').populate('created_by').populate('remarks')
-    if (!lead) {
-        return res.status(404).json({ message: "lead not found" })
-    }
-    return res.status(200).json(savedlead)
+    return res.status(200).json({message:"lead created"})
 })
 // get a lead anyone can do in the organization
 export const GetLead = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "lead id not valid" })
-    let lead = await Lead.findById(id).populate('lead_owner').populate('organization').populate('updated_by').populate('created_by').populate({
+    let lead = await Lead.findById(id).populate('lead_owners').populate('organization').populate('updated_by').populate('created_by').populate({
         path: 'remarks',
         populate: [
             {
@@ -80,7 +88,7 @@ export const GetLead = catchAsyncError(async (req: Request, res: Response, next:
 })
 // get all leads  anyone can do in the organization
 export const GetLeads = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    let leads = await Lead.find({ organization: req.user?.organization }).populate('lead_owner').populate('organization').populate('updated_by').populate('created_by').populate({
+    let leads = await Lead.find({ organization: req.user?.organization }).populate('lead_owners').populate('organization').populate('updated_by').populate('created_by').populate({
         path: 'remarks',
         populate: [
             {
@@ -100,10 +108,16 @@ export const GetLeads = catchAsyncError(async (req: Request, res: Response, next
 })
 // update lead only admin can do
 export const UpdateLead = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    const { name, mobile, email, work_description, remark } = req.body as TLeadBody & { remark: string }
+    const { name, mobile, email, work_description, remark, owners } = req.body as TLeadBody & { remark: string, owners: string[] }
+    console.log(owners, owners.length)
+    if (!owners)
+        return res.status(400).json({ message: "assign at least one lead owner" });
+    if (owners.length < 1)
+        return res.status(400).json({ message: "assign at least one lead owner" });
     const user = await User.findById(req.user?._id)
     if (!user)
-        return res.status(403).json({ message: "please login to access this resource" })
+        return res.status(400).json({ message: "please login to access this resource" })
+
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "lead id not valid" })
     let lead = await Lead.findById(id);
@@ -127,6 +141,11 @@ export const UpdateLead = catchAsyncError(async (req: Request, res: Response, ne
     if (mobile != lead.mobile)
         if (await Lead.findOne({ mobile: String(mobile).trim(), organization: lead.organization?._id }))
             return res.status(403).json({ message: `${mobile} already exists` });
+    let lead_owners: IUser[] = []
+    for (let i = 0; i < owners.length; i++) {
+        let owner = await User.findById(owners[i])
+        if (owner)
+            lead_owners.push(owner)
 
     if (remark) {
         let last_remark = lead.remarks[lead.remarks.length - 1]
@@ -137,14 +156,15 @@ export const UpdateLead = catchAsyncError(async (req: Request, res: Response, ne
             updated_by: req.user
         })
     }
+}
     await Lead.findByIdAndUpdate(lead._id, {
         ...req.body,
+        lead_owners,
         organization: user.organization,
         updated_at: new Date(Date.now()),
         updated_by: user._id
-    }).then(() =>
-        res.status(200).json({ message: "lead updated" })
-    )
+    })
+    return res.status(200).json({ message: "lead updated" })
 })
 
 
@@ -177,53 +197,3 @@ export const NewRemark = catchAsyncError(async (req: Request, res: Response, nex
     await lead.save()
     return res.status(200).json({ message: "new remark added successfully" })
 })
-
-// filter leads anyone can do in the organization
-// export const FilterLeads = catchAsyncError(async (req, res, next) => {
-//     let filter = [];
-//     if (req.query.city)
-//         filter.push({ city: { $regex: req.query.city } });
-//     if (req.query.state) filter.push({ state: { $regex: req.query.state } });
-//     if (req.query.country) filter.push({ country: { $regex: req.query.country } });
-//     if (req.query.lead_owner) filter.push({ lead_owner: { $regex: req.query.lead_owner } });
-//     if (req.query.organization) filter.push({ organization: { $regex: req.query.organization } });
-//     if (req.query.lead_source) filter.push({ lead_source: { $regex: req.query.lead_source } });
-//     console.log(filter)
-//     if (filter.length < 1)
-//         return res.status(400).json({ message: "no filter provided" })
-//     const leads = await Lead.find({
-//         $and: filter,
-//     }).sort({ created_at: -1 });
-//     if (leads.length > 0)
-//         return res.status(200).json(leads);
-//     else
-//         return res.status(404).json({ message: "leads not found" })
-// });
-
-// // fuzzy search leads anyone can do in the organization
-// export const FuzzySearchLeads = catchAsyncError(async (req, res, next) => {
-//     const key = String(req.params.query);
-//     const leads = await Lead.find({
-//         $or: [
-//             { name: { $regex: key } },
-//             { email: { $regex: key } },
-//             { mobile: { $regex: key } },
-//             { city: { $regex: key } },
-//             { state: { $regex: key } },
-//             { work_description: { $regex: key } },
-//             { lead_type: { $regex: key } },
-//             { lead_owner: { $regex: key } },
-//             { customer_name: { $regex: key } },
-//             { address: { $regex: key } },
-//             { country: { $regex: key } },
-//             { alternate_mobile: { $regex: key } },
-//             { alternate_email: { $regex: key } },
-//             { customer_designination: { $regex: key } },
-//             { lead_source: { $regex: key } },
-//             { remarks: { $regex: key } },
-//             { createdOn: { $regex: key } }
-//         ],
-//     }).sort({ createdAt: -1 });
-//     if (leads.length > 0) res.status(200).json({ leads });
-//     else return res.status(404).json({ message: "user not found" });
-// });

@@ -26,31 +26,11 @@ export const isAuthenticatedUser = catchAsyncError(async (req: Request, res: Res
     );
 });
 
-//check owner
-export const isOwner = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    if (req.user?.roles) {
-        if (req.user.roles.includes("owner")) return next();
-        return res.status(403).json({ message: "!must be owner" });
-    }
-    return res.status(401).json({ message: "not authorised to access this resource" });
-});
-
-// crm admin
-export const isCrmAdmin = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    if (req.user?.roles) {
-        if (req.user.roles.includes("crm_admin")) return next();
-        return res.status(403).json({ message: "Not autohorised !  Contact crm Administrator" });
-    }
-    return res.status(401).json({ message: "not authorised to access this resource" });
-});
-
 //check admin
 export const isAdmin = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    if (req.user?.roles) {
-        if (req.user.roles.includes("admin")) return next();
+        if (req.user?.is_admin) 
+            return next();
         return res.status(403).json({ message: "!must be admin" });
-    }
-    return res.status(401).json({ message: "not authorised to access this resource" });
 });
 
 // login

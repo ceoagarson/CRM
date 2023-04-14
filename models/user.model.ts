@@ -42,14 +42,11 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
     size: { type: String },
     format: { type: String },
   },
-  roles: [
-    {
-      type: String,
-      lowercase: true,
-      trim: true,
-      required: true
-    }
-  ],
+  is_admin: {
+    type: Boolean,
+    default: false,
+    required: true,
+  },
   email_verified: {
     type: Boolean,
     default: false,
@@ -89,6 +86,14 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
     ref: 'User',
     required: true
   },
+  lead_fields:[
+   {
+      field :{type : String },
+      readonly:{ type: Boolean },
+      hidden:{type : Boolean },
+      editable:{type : Boolean }
+   }
+  ],
   resetPasswordToken: {
     type: String,
     default:null

@@ -45,13 +45,12 @@ const OrganizationSchema = new mongoose.Schema<IOrganization, mongoose.Model<IOr
         type: Boolean,
         default: false,
     },
-    owners: [
+    owner:
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'IUser',
             required: true
-        }
-    ],
+        },
     is_active: {
         type: Boolean,
         default: true,
