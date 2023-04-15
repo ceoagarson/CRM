@@ -1,10 +1,23 @@
 import { Dialog, DialogContent, DialogTitle, Button, DialogActions } from '@mui/material';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import NewLeadForm from '../../forms/lead/NewLeadForm';
+import { IUser } from '../../../types/user.type';
+import { GetUsers } from '../../../services/UserServices';
+import { BackendError } from '../../../types';
+import { AxiosResponse } from 'axios';
+import { useQuery } from 'react-query';
 
 function NewLeadDialog() {
+  const [users,setUsers]=useState<IUser[]>([])
+  const {data,isSuccess}=useQuery<AxiosResponse<IUser[]>, BackendError>("users", GetUsers, {
+    refetchOnMount: true,
+  })
   const { choice, setChoice } = useContext(ChoiceContext)
+  useEffect(()=>{
+    if(isSuccess)
+    setUsers(data?.data)
+  }, [users, isSuccess,data])
   return (
     <>
       <Dialog  open={choice === LeadChoiceActions.create_lead ? true : false}
@@ -13,7 +26,7 @@ function NewLeadDialog() {
       >
         <DialogTitle textAlign={"center"}>New Lead</DialogTitle>
         <DialogContent>
-          <NewLeadForm />
+          <NewLeadForm users={users}/>
         </DialogContent>
         <DialogActions>
           <Button fullWidth onClick={() => setChoice({ type: LeadChoiceActions.close })}>Cancel</Button>

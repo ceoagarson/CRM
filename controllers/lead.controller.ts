@@ -8,13 +8,12 @@ import { TLeadBody } from "../types/lead.type"
 import { Remark } from "../models/remark.model.js"
 import { IUser } from "../types/user.type.js"
 
-
 // create lead any one can do in the organization
 export const CreateLead = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    const { name, mobile, email, work_description, remark, owners } = req.body as TLeadBody & { remark: string, owners: string[] }
-    if (!owners)
+    const { name, mobile, email, work_description, remark, lead_owners } = req.body as TLeadBody & { remark: string, lead_owners: string[] }
+    if (!lead_owners)
         return res.status(400).json({ message: "assign at least one lead owner"});
-    if (owners.length<1)
+    if (lead_owners.length<1)
         return res.status(400).json({ message: "assign at least one lead owner" });
     const user = await User.findById(req.user?._id)
     if (!user)
@@ -34,16 +33,16 @@ export const CreateLead = catchAsyncError(async (req: Request, res: Response, ne
     if (await Lead.findOne({ mobile: String(mobile).trim(), alternate_mobile1: String(mobile).trim(), alternate_mobile2: String(mobile).trim() }))
         return res.status(403).json({ message: `${mobile} already exists` });
 
-    let lead_owners:IUser[]=[]
-    for(let i=0;i<owners.length;i++){
-        let owner = await User.findById(owners[i])
+    let new_lead_owners:IUser[]=[]
+    for (let i = 0; i < lead_owners.length;i++){
+        let owner = await User.findById(lead_owners[i])
         if(owner)
-            lead_owners.push(owner)
+            new_lead_owners.push(owner)
     }
     const lead = new Lead({
         ...req.body,
         organization: user.organization._id,
-        lead_owners,
+        lead_owners: new_lead_owners,
         created_by: user._id,
         updated_by: user._id,
         created_at: new Date(Date.now()),
@@ -108,11 +107,10 @@ export const GetLeads = catchAsyncError(async (req: Request, res: Response, next
 })
 // update lead only admin can do
 export const UpdateLead = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    const { name, mobile, email, work_description, remark, owners } = req.body as TLeadBody & { remark: string, owners: string[] }
-    console.log(owners, owners.length)
-    if (!owners)
+    const { name, mobile, email, work_description, remark, lead_owners } = req.body as TLeadBody & { remark: string, lead_owners: string[] }
+    if (!lead_owners)
         return res.status(400).json({ message: "assign at least one lead owner" });
-    if (owners.length < 1)
+    if (lead_owners.length < 1)
         return res.status(400).json({ message: "assign at least one lead owner" });
     const user = await User.findById(req.user?._id)
     if (!user)
@@ -141,11 +139,11 @@ export const UpdateLead = catchAsyncError(async (req: Request, res: Response, ne
     if (mobile != lead.mobile)
         if (await Lead.findOne({ mobile: String(mobile).trim(), organization: lead.organization?._id }))
             return res.status(403).json({ message: `${mobile} already exists` });
-    let lead_owners: IUser[] = []
-    for (let i = 0; i < owners.length; i++) {
-        let owner = await User.findById(owners[i])
+    let new_lead_owners: IUser[] = []
+    for (let i = 0; i < lead_owners.length; i++) {
+        let owner = await User.findById(lead_owners[i])
         if (owner)
-            lead_owners.push(owner)
+            new_lead_owners.push(owner)
 
     if (remark) {
         let last_remark = lead.remarks[lead.remarks.length - 1]
@@ -159,7 +157,7 @@ export const UpdateLead = catchAsyncError(async (req: Request, res: Response, ne
 }
     await Lead.findByIdAndUpdate(lead._id, {
         ...req.body,
-        lead_owners,
+        lead_owners: new_lead_owners,
         organization: user.organization,
         updated_at: new Date(Date.now()),
         updated_by: user._id

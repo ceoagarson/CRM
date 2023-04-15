@@ -1,7 +1,6 @@
 import { Fade, IconButton, Menu, MenuItem, Snackbar } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
-import { ColumnInstance, Row } from 'react-table';
-import ToogleColumns from './ToogleColumns';
+import {Row } from 'react-table';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../utils/ExportToExcel';
 import { ILead } from '../../../types/lead.type';
@@ -11,7 +10,6 @@ import NewLeadDialog from '../../dialogs/leads/NewLeadDialog';
 
 
 type Props = {
-    columns: ColumnInstance<ILead>[],
     selectedFlatRows: Row<ILead>[]
 }
 type SelectedData = {
@@ -39,9 +37,8 @@ type SelectedData = {
     last_remark: string
 
 }
-function TableMenu({ columns, selectedFlatRows }: Props) {
+function TableMenu({selectedFlatRows }: Props) {
     const { menu, setMenu } = useContext(MenuContext)
-    const [toogleCol, setToogleCol] = useState(false)
     const [selectedData, setSelectedData] = useState<SelectedData[]>([])
     const [sent, setSent] = useState(false)
     const { setChoice } = useContext(ChoiceContext)
@@ -77,7 +74,7 @@ function TableMenu({ columns, selectedFlatRows }: Props) {
                 country: lead.country,
                 turnover: lead.turnover,
                 lead_type: lead.lead_type,
-                lead_owner: lead.lead_owner.username,
+                lead_owner: lead.lead_owners.toString(),
                 customer_name: lead.customer_name,
                 last_remark: lead.remarks[lead.remarks.length - 1].remark,
                 address: lead.address,
@@ -111,9 +108,7 @@ function TableMenu({ columns, selectedFlatRows }: Props) {
             >
                 <MenuIcon />
             </IconButton>
-            <ToogleColumns columns={columns} open={toogleCol} handleClose={() =>
-                setToogleCol(false)
-            } />
+           
             <Menu
                 anchorEl={menu.anchorEl}
                 open={Boolean(menu.type === MenuActions.lead_table_menu)}
@@ -129,11 +124,6 @@ function TableMenu({ columns, selectedFlatRows }: Props) {
                     setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
                 }}
                 >New Lead</MenuItem>
-                <MenuItem onClick={() => {
-                    setToogleCol(true)
-                    setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
-                }}
-                >Show and hide columns</MenuItem>
                 <MenuItem onClick={handleExcel}
                 >Export To Excel</MenuItem>
             </Menu>

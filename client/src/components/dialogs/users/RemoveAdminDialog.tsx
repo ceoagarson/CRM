@@ -4,14 +4,14 @@ import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { queryClient } from '../../..';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
-import { RevokeUser } from '../../../services/UserServices';
+import { RemoveAdmin } from '../../../services/UserServices';
 import { BackendError } from '../../../types';
 
-function RevokePermissionsDialog({ id }: { id: string }) {
+function RemoveAdminDialog({ id }: { id: string }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
-        (RevokeUser,
+        (RemoveAdmin,
             {
                 onSuccess: () => {
                     queryClient.invalidateQueries('users')
@@ -28,7 +28,7 @@ function RevokePermissionsDialog({ id }: { id: string }) {
     }, [setChoice, isSuccess])
 
     return (
-        <Dialog open={choice === UserChoiceActions.revoke_permission ? true : false}
+        <Dialog open={choice === UserChoiceActions.remove_admin ? true : false}
             onClose={() => setChoice({ type: UserChoiceActions.close })}
         >
             <DialogTitle textAlign="center">
@@ -62,13 +62,13 @@ function RevokePermissionsDialog({ id }: { id: string }) {
             >
                 <Button fullWidth variant="outlined" color="error"
                     onClick={() => {
-                        setChoice({ type: UserChoiceActions.revoke_permission })
+                        setChoice({ type: UserChoiceActions.remove_admin })
                         mutate(id)
                     }}
                     disabled={isLoading}
                 >
                     {isLoading ? <CircularProgress /> :
-                        "Revoke"}
+                        "Remove Admin"}
                 </Button>
                 <Button fullWidth variant="contained"
                     disabled={isLoading}
@@ -78,4 +78,4 @@ function RevokePermissionsDialog({ id }: { id: string }) {
     )
 }
 
-export default RevokePermissionsDialog
+export default RemoveAdminDialog

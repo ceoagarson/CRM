@@ -1,9 +1,8 @@
-import { Types } from "mongoose";
 import { IUser } from "./user.type";
 import { ILead } from "./lead.type";
 
 export type IRemark = {
-    _id: Types.ObjectId,
+    _id: string,
     remark: string,
     lead: ILead,
     created_at: Date,
@@ -11,5 +10,4 @@ export type IRemark = {
     updated_at: Date,
     updated_by: IUser
 }
-
 

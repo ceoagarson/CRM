@@ -1,10 +1,9 @@
-import { Asset } from "./asset.type";
 import { IOrganization } from "./organization.type";
 import { IUser } from "./user.type";
-import {IRemark} from "./remark.type"
+import { IRemark } from "./remark.type";
 
 export type ILead = {
-    _id:string,
+    _id: string,
     name: string,
     customer_name: string,
     customer_designation: string,
@@ -22,14 +21,14 @@ export type ILead = {
     alternate_mobile1: number,
     alternate_mobile2: number,
     alternate_email: string,
-    lead_owner: IUser,
+    lead_owners: IUser[],
     organization: IOrganization
     lead_source: string,
     created_at: Date,
     created_by: IUser,
     updated_at: Date,
     updated_by: IUser,
-    actions?:any
+    // for react table
+    actions?: any
 }
-
 

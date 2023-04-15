@@ -30,7 +30,7 @@ function DashboardMenu() {
             >
                 <StyledLink to={paths.dashboard}>Dashboard</StyledLink>
             </MenuItem>
-            {user?.roles.includes("owner") ?
+            {user?.is_admin ?
                 <MenuItem
                     onClick={
                         () => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })

@@ -7,8 +7,7 @@ export type LeadFieldType = "name" | "customer_name" | "customer_designation" | 
 export type LeadField={
     field: LeadFieldType,
     readonly:Boolean,
-    hidden: Boolean,
-    editable: Boolean
+    hidden: Boolean
 }
 
 export type IUser = {

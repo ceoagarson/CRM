@@ -42,16 +42,7 @@ function UserMenu() {
                     }
                     }
                 >View Profile</MenuItem>
-                {user?.roles?.includes("owner") ?
-                    <MenuItem onClick={() => {
-                        setChoice({ type: UserChoiceActions.new_user })
-                        setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
-
-                    }
-                    }>New User</MenuItem>
-                    :
-                    null
-                }
+               
                 <MenuItem onClick={() => {
                     setChoice({ type: UserChoiceActions.update_password })
                     setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })

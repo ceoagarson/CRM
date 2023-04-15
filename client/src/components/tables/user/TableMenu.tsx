@@ -6,6 +6,8 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../utils/ExportToExcel';
 import { MenuActions, MenuContext } from '../../../contexts/menuContext';
 import { IUser } from '../../../types/user.type';
+import { UserContext } from '../../../contexts/userContext';
+import { ChoiceContext, UserChoiceActions } from '../../../contexts/dialogContext';
 
 type Props = {
     columns: ColumnInstance<IUser>[],
@@ -27,6 +29,8 @@ type SelectedData = {
 }
 function TableMenu({ columns, selectedFlatRows }: Props) {
     const { menu, setMenu } = useContext(MenuContext)
+    const {user}=useContext(UserContext)
+    const { setChoice }=useContext(ChoiceContext)
     const [toogleCol, setToogleCol] = useState(false)
     const [selectedData, setSelectedData] = useState<SelectedData[]>([])
     const [sent, setSent] = useState(false)
@@ -66,7 +70,7 @@ function TableMenu({ columns, selectedFlatRows }: Props) {
                 last_login: lastlogin,
                 organization: user.organization?.organization_name,
                 organization_email: user.organization?.organization_email,
-                roles: user.roles?.toString(),
+                roles: user?.is_admin?"admin":"user",
                 created_at: created_at
             })
         })
@@ -103,6 +107,16 @@ function TableMenu({ columns, selectedFlatRows }: Props) {
                     'aria-labelledby': 'basic-button',
                 }}
             >
+                {user?.is_admin ?
+                    <MenuItem onClick={() => {
+                        setChoice({ type: UserChoiceActions.new_user })
+                        setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
+
+                    }
+                    }>New User</MenuItem>
+                    :
+                    null
+                }
                 <MenuItem onClick={() => {
                     setToogleCol(true)
                     setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })

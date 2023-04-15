@@ -12,6 +12,19 @@ const LeadsDetailContainer = styled.div`
 
 `
 function LeadDetailPage({ lead }: { lead: ILead }) {
+
+    const showLeadOwners=()=>{
+        let leadOwners:string[]=[]
+        if (lead.lead_owners.length)
+        {
+            lead.lead_owners.map((owner)=>{
+                leadOwners.push(owner.username)
+                return null
+            })
+            
+        }
+        return leadOwners.toString()
+    }
     return (
         <MainContainer>
             <Stack direction={"column"}>
@@ -51,7 +64,7 @@ function LeadDetailPage({ lead }: { lead: ILead }) {
                     </Typography>
                     {/* divider */}
                     <Typography sx={{ padding: 2, border: 1, fontWeight: 'bold', backgrounColor: 'lightgrey', textTransform: 'capitalize' }}>
-                        Lead Owner : {lead.lead_owner.username}
+                        Lead Owners : {showLeadOwners()}
                     </Typography>
                     <Typography sx={{ padding: 2, border: 1, fontWeight: 'bold', backgrounColor: 'lightgrey', textTransform: 'capitalize' }}>
                         Created On : {new Date(lead.created_at).toLocaleString()}
@@ -79,7 +92,7 @@ function LeadDetailPage({ lead }: { lead: ILead }) {
                     </Typography>
                 </LeadsDetailContainer>
                 <RemarksContainer>
-                    <Typography variant="h6" sx={{ textAlign: "center" }}>Remarks</Typography>
+                    <Typography variant="h6" sx={{ textAlign: "center" }}>{lead.remarks.length ?"Remarks":"no remarks yet"}</Typography>
                     {lead.remarks.slice(0).reverse().map((remark, index) => {
                         return (<>
                             <Stack key={index}

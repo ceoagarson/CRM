@@ -12,6 +12,7 @@ import { Filter } from '../../../pages/LeadsPage';
 import { useContext } from 'react';
 import { ChoiceContext, LeadChoiceActions } from '../../../contexts/dialogContext';
 import DisplayFilterDialog from '../../dialogs/leads/DisplayFilterDialog';
+import { UserContext } from '../../../contexts/userContext';
 
 interface Props {
     data: ILead[],
@@ -21,6 +22,17 @@ interface Props {
 
 export function LeadTable({ data, columns, setFilter }: Props) {
     const { choice, setChoice } = useContext(ChoiceContext)
+    const { user } = useContext(UserContext)
+
+    const CalculateHiddenColumns = () => {
+        let hidden_fields = ['']
+        user?.lead_fields.map((field) => {
+            if(field.hidden)
+                hidden_fields.push(field.field)
+            return null
+        })
+        return hidden_fields
+    }
     const {
         getTableProps,
         getTableBodyProps,
@@ -38,13 +50,12 @@ export function LeadTable({ data, columns, setFilter }: Props) {
         setGlobalFilter,
         preGlobalFilteredRows,
         globalFilter,
-        allColumns,
         selectedFlatRows,
         state: { pageIndex, pageSize },
     } = useTable({
         data, columns, initialState: {
             pageSize: 10,
-            hiddenColumns: ['']
+            hiddenColumns: CalculateHiddenColumns()
         }
     },
         useGlobalFilter,
@@ -68,6 +79,7 @@ export function LeadTable({ data, columns, setFilter }: Props) {
             ])
         }
     )
+    
     return (
         <>
             {/*heading, search bar and table menu */}
@@ -105,7 +117,6 @@ export function LeadTable({ data, columns, setFilter }: Props) {
                         preGlobalFilteredRows={preGlobalFilteredRows} globalFilter={globalFilter} setGlobalFilter={setGlobalFilter}
                     />
                     <TableMenu
-                        columns={allColumns}
                         selectedFlatRows={selectedFlatRows}
                     />
                 </Stack>

@@ -22,7 +22,7 @@ function ProfileDialog({ profile }: { profile: IUser }) {
                         <Typography variant="h6" component="h2">
                             {profile?.username}</Typography>
                         <Typography variant="caption" component="p">
-                            {profile?.roles.toString()}</Typography>
+                            {profile?.is_admin?"admin":"user"}</Typography>
                     </Stack>
                 </Box>
             </DialogContent>

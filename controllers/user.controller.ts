@@ -70,8 +70,7 @@ export const SignUp = catchAsyncError(
             LeadFields.push({
                 field: field,
                 readonly: false,
-                hidden: false,
-                editable: true,
+                hidden: false
     })
         })
         let owner = new User({
@@ -143,7 +142,6 @@ export const NewUser = catchAsyncError(async (req: Request, res: Response, next:
             field: field,
             readonly: true,
             hidden: false,
-            editable: false,
         })
     })
 
@@ -198,6 +196,7 @@ export const Login = catchAsyncError(async (req: Request, res: Response, next: N
 // update user lead fields and its roles
 export const UpdateLeadFieldRoles = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const { lead_fields } = req.body as TUserBody 
+    console.log(lead_fields)
     if (lead_fields.length===0)
         return res.status(400).json({ message: "please fill all required fields" })
     const id = req.params.id;

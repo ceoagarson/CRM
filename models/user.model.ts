@@ -90,8 +90,7 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
    {
       field :{type : String },
       readonly:{ type: Boolean },
-      hidden:{type : Boolean },
-      editable:{type : Boolean }
+      hidden:{type : Boolean }
    }
   ],
   resetPasswordToken: {

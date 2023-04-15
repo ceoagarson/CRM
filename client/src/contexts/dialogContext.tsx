@@ -1,10 +1,10 @@
 import React, { useReducer } from "react"
 
 // choices
-type UserChoices = "signup"| "reset_password_mail" | null | "new_user" | "update_user" | "update_profile" | "view_profile" | "update_password" | "reset_password" | "verify_email" | "change_role" | "delete_user" |
-  "block_user" | "unblock_user" | "make_admin" | "revoke_permission" | "make_owner"
+type UserChoices = "signup"| "reset_password_mail" | null | "new_user" | "update_user" | "update_profile" | "view_profile" | "update_password" | "reset_password" | "verify_email" | "control_access" | "delete_user" |
+  "block_user" | "unblock_user" | "make_admin" | "remove_admin" 
 
-type LeadChoices = "create_lead" | "update_lead" | "update_remark" | "view_lead" |"close"|"display_filter"
+type LeadChoices = "create_lead" | "update_lead" | "update_remark" | "view_lead" | "close" | "display_filter"
 
 
 // initial state
@@ -34,9 +34,9 @@ export enum UserChoiceActions {
   block_user = "block_user",
   unblock_user = "unblock_user",
   make_admin = "make_admin",
-  revoke_permission = "revoke_permission",
-  make_owner = "make_owner",
-  delete_user = "delete_user"
+  remove_admin = "remove_admin",
+  delete_user = "delete_user",
+  control_access ="control_access"
 }
 
 type Action = {
@@ -60,8 +60,8 @@ function reducer(state: ChoiceState, action: Action) {
     case UserChoiceActions.block_user: return type
     case UserChoiceActions.unblock_user: return type
     case UserChoiceActions.make_admin: return type
-    case UserChoiceActions.make_owner: return type
-    case UserChoiceActions.revoke_permission: return type
+    case UserChoiceActions.control_access: return type
+    case UserChoiceActions.remove_admin: return type
     case UserChoiceActions.delete_user: return type
     case UserChoiceActions.close: return null
 
