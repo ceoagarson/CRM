@@ -87,7 +87,7 @@ export const GetLead = catchAsyncError(async (req: Request, res: Response, next:
 })
 // get all leads  anyone can do in the organization
 export const GetLeads = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    let leads = await Lead.find({ organization: req.user?.organization }).populate('lead_owners').populate('organization').populate('updated_by').populate('created_by').populate({
+    let leads = await Lead.find({ organization: req.user?.organization}).populate('lead_owners').populate('organization').populate('updated_by').populate('created_by').populate({
         path: 'remarks',
         populate: [
             {

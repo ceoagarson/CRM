@@ -2,11 +2,12 @@ import { Fade, IconButton, Menu, MenuItem, Snackbar } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
 import {Row } from 'react-table';
 import { Menu as MenuIcon } from '@mui/icons-material';
-import ExportToExcel from '../utils/ExportToExcel';
-import { ILead } from '../../../types/lead.type';
-import { MenuActions, MenuContext } from '../../../contexts/menuContext';
-import { ChoiceContext, LeadChoiceActions } from '../../../contexts/dialogContext';
-import NewLeadDialog from '../../dialogs/leads/NewLeadDialog';
+import { ILead } from '../../types/lead.type';
+import { MenuActions, MenuContext } from '../../contexts/menuContext';
+import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext';
+import ExportToExcel from '../tables/utils/ExportToExcel';
+import NewLeadDialog from '../dialogs/leads/NewLeadDialog';
+
 
 
 type Props = {
@@ -37,7 +38,7 @@ type SelectedData = {
     last_remark: string
 
 }
-function TableMenu({selectedFlatRows }: Props) {
+function LeadTableMenu({selectedFlatRows }: Props) {
     const { menu, setMenu } = useContext(MenuContext)
     const [selectedData, setSelectedData] = useState<SelectedData[]>([])
     const [sent, setSent] = useState(false)
@@ -132,4 +133,4 @@ function TableMenu({selectedFlatRows }: Props) {
     )
 }
 
-export default TableMenu
+export default LeadTableMenu

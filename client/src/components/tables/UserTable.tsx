@@ -1,38 +1,23 @@
-import { Box, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Tooltip, Typography } from '@mui/material'
+import { Box, Table, TableBody, TableCell, TableHead, TableRow,  Typography } from '@mui/material'
 import { Column, useTable, useSortBy, usePagination, useGlobalFilter, useRowSelect } from 'react-table'
-import Pagination from '../utils/Pagination';
-import SearchBar from './SearchBar';
-import TableCheckBox from '../utils/TableCheckBox';
-import TableMenu from './TableMenu';
+import Pagination from './utils/Pagination';
+import TableCheckBox from './utils/TableCheckBox';
+import UserTableMenu from '../menu/UserTableMenu';
 import { Stack } from '@mui/system';
-import { color1, color2, headColor } from '../../../utils/colors';
-import { ArrowDropDown, ArrowDropUp, FilterList } from '@mui/icons-material';
-import { ILead } from '../../../types/lead.type';
-import { Filter } from '../../../pages/LeadsPage';
-import { useContext } from 'react';
-import { ChoiceContext, LeadChoiceActions } from '../../../contexts/dialogContext';
-import DisplayFilterDialog from '../../dialogs/leads/DisplayFilterDialog';
-import { UserContext } from '../../../contexts/userContext';
+import { color1, color2, headColor } from '../../utils/colors';
+import { ArrowDropDown, ArrowDropUp} from '@mui/icons-material';
+import { IUser } from '../../types/user.type';
+import GlobalFilter from './utils/GlobalFilter';
+
 
 interface Props {
-    data: ILead[],
-    columns: Column<ILead>[],
-    setFilter: React.Dispatch<React.SetStateAction<Filter>>
+    data: IUser[],
+    columns: Column<IUser>[]
 }
 
-export function LeadTable({ data, columns, setFilter }: Props) {
-    const { choice, setChoice } = useContext(ChoiceContext)
-    const { user } = useContext(UserContext)
-
-    const CalculateHiddenColumns = () => {
-        let hidden_fields = ['']
-        user?.lead_fields.map((field) => {
-            if(field.hidden)
-                hidden_fields.push(field.field)
-            return null
-        })
-        return hidden_fields
-    }
+export function UserTable({data,columns}:Props) {
+    
+    // table hook
     const {
         getTableProps,
         getTableBodyProps,
@@ -50,12 +35,13 @@ export function LeadTable({ data, columns, setFilter }: Props) {
         setGlobalFilter,
         preGlobalFilteredRows,
         globalFilter,
+        allColumns,
         selectedFlatRows,
         state: { pageIndex, pageSize },
     } = useTable({
         data, columns, initialState: {
             pageSize: 10,
-            hiddenColumns: CalculateHiddenColumns()
+            hiddenColumns: ['createdAt']
         }
     },
         useGlobalFilter,
@@ -79,7 +65,6 @@ export function LeadTable({ data, columns, setFilter }: Props) {
             ])
         }
     )
-    
     return (
         <>
             {/*heading, search bar and table menu */}
@@ -94,29 +79,16 @@ export function LeadTable({ data, columns, setFilter }: Props) {
                     variant={'h6'}
                     component={'h1'}
                 >
-                    LEADS
+                    USERS
                 </Typography>
-
                 <Stack
                     direction="row"
                 >
-                    <Tooltip title="Apply filter">
-                        <IconButton
-                            onClick={() => {
-                                setChoice({ type: LeadChoiceActions.display_filter })
-                            }}
-                        >
-                            <FilterList />
-                        </IconButton>
-                    </Tooltip>
-                    {
-                        choice === LeadChoiceActions.display_filter ?
-                            <DisplayFilterDialog setFilter={setFilter} /> : null
-                    }
-                    <SearchBar
+                    <GlobalFilter
                         preGlobalFilteredRows={preGlobalFilteredRows} globalFilter={globalFilter} setGlobalFilter={setGlobalFilter}
                     />
-                    <TableMenu
+                    <UserTableMenu
+                        columns={allColumns}
                         selectedFlatRows={selectedFlatRows}
                     />
                 </Stack>
@@ -128,7 +100,7 @@ export function LeadTable({ data, columns, setFilter }: Props) {
                     height: '70vh'
                 }}>
                 <Table
-                    sx={{ minWidth: "2400px" }}
+                    sx={{ minWidth: "1500px" }}
                     size="small"
                     {...getTableProps()}>
                     <TableHead
@@ -175,10 +147,7 @@ export function LeadTable({ data, columns, setFilter }: Props) {
                                     {row.cells.map((cell) => {
                                         return (
                                             <TableCell
-                                                {...cell.getCellProps()}
-
-
-                                            >
+                                                {...cell.getCellProps()} >
                                                 {cell.render('Cell')}
                                             </TableCell>
 
@@ -203,6 +172,7 @@ export function LeadTable({ data, columns, setFilter }: Props) {
                 nextPage={nextPage}
                 previousPage={previousPage} setPageSize={setPageSize}
             />
+
         </>
     )
 }

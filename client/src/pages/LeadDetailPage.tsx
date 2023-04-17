@@ -29,67 +29,84 @@ function LeadDetailPage({ lead }: { lead: ILead }) {
         <MainContainer>
             <Stack direction={"column"}>
                 <LeadsDetailContainer>
-                    <Typography sx={{ padding: 2, border: 1, fontWeight: 'bold', backgrounColor: 'lightgrey', textTransform: 'capitalize' }}>
-                        Lead : {lead.name}
+                    <Typography sx={{border:1, padding: 1,margin:1, fontWeight: 'bold', backgroundColor: 'whitesmoke', textTransform: 'capitalize' }}>
+                        Lead Name : {lead.name}
                     </Typography>
-                    <Typography sx={{ padding: 2, border: 1, fontWeight: 'bold', backgrounColor: 'lightgrey', textTransform: 'capitalize' }}>
-                        Stage : {lead.stage}
+                    <Typography sx={{border:1, padding: 1,margin:1, fontWeight: 'bold', backgroundColor: 'whitesmoke', textTransform: 'capitalize' }}>
+                         Stage : {lead.stage}
                     </Typography>
-                    <Typography sx={{ padding: 2, border: 1, fontWeight: 'bold', backgrounColor: 'lightgrey', textTransform: 'capitalize' }}>
+                    <Typography sx={{border:1, padding: 1,margin:1, fontWeight: 'bold', backgroundColor: 'whitesmoke', textTransform: 'capitalize' }}>
                         Work Description : {lead.work_description}
                     </Typography>
-                    <Typography sx={{ padding: 2, border: 1, fontWeight: 'bold', backgrounColor: 'lightgrey', textTransform: 'capitalize' }}>
+                    <Typography sx={{border:1, padding: 1,margin:1, fontWeight: 'bold', backgroundColor: 'whitesmoke', textTransform: 'capitalize' }}>
                         TurnOver : {lead.turnover}
                     </Typography>
 
-                    <Typography sx={{ padding: 2, border: 1, fontWeight: 'bold', backgrounColor: 'lightgrey', textTransform: 'capitalize' }}>
+                    <Typography sx={{border:1, padding: 1,margin:1, fontWeight: 'bold', backgroundColor: 'whitesmoke', textTransform: 'capitalize' }}>
                         Lead Type : {lead.lead_type}
                     </Typography>
-                    <Typography sx={{ padding: 2, border: 1, fontWeight: 'bold', backgrounColor: 'lightgrey', textTransform: 'capitalize' }}>
+                    <Typography sx={{border:1, padding: 1,margin:1, fontWeight: 'bold', backgroundColor: 'whitesmoke', textTransform: 'capitalize' }}>
                         Customer Name : {lead.customer_name}
                     </Typography>
+                    <Typography sx={{border:1, padding: 1, borderRadius: 1, margin: 1, fontWeight: 'bold', backgroundColor: 'whitesmoke', textTransform: 'capitalize' }}>
+                        Customer Designation : {lead.customer_designation}
+                    </Typography>
                     {/* divider */}
-                    <Typography sx={{ padding: 2, border: 1, fontWeight: 'bold', backgrounColor: 'lightgrey', textTransform: 'capitalize' }}>
+                    <Typography sx={{border:1, padding: 1,margin:1, fontWeight: 'bold', backgroundColor: 'whitesmoke', textTransform: 'capitalize' }}>
                         Mobile : {lead.mobile}
                     </Typography>
-                    <Typography sx={{ padding: 2, border: 1, fontWeight: 'bold', backgrounColor: 'lightgrey', textTransform: 'capitalize' }}>
+                    <Typography sx={{border:1, padding: 1,margin:1, fontWeight: 'bold', backgroundColor: 'whitesmoke', textTransform: 'capitalize' }}>
                         Mobile2 : {lead.alternate_mobile1}
                     </Typography>
                     {/* divider */}
-                    <Typography sx={{ padding: 2, border: 1, fontWeight: 'bold', backgrounColor: 'lightgrey', textTransform: 'capitalize' }}>
+                    <Typography sx={{border:1, padding: 1,margin:1, fontWeight: 'bold', backgroundColor: 'whitesmoke', textTransform: 'capitalize' }}>
                         Mobile3 : {lead.alternate_mobile2}
                     </Typography>
-                    <Typography sx={{ padding: 2, border: 1, fontWeight: 'bold', backgrounColor: 'lightgrey', textTransform: 'capitalize' }}>
+                    <Typography sx={{border:1, padding: 1,margin:1, fontWeight: 'bold', backgroundColor: 'whitesmoke', textTransform: 'capitalize' }}>
                         Lead Source : {lead.lead_source}
                     </Typography>
                     {/* divider */}
-                    <Typography sx={{ padding: 2, border: 1, fontWeight: 'bold', backgrounColor: 'lightgrey', textTransform: 'capitalize' }}>
+                    <Typography sx={{border:1, padding: 1,margin:1, fontWeight: 'bold', backgroundColor: 'whitesmoke', textTransform: 'capitalize' }}>
                         Lead Owners : {showLeadOwners()}
                     </Typography>
-                    <Typography sx={{ padding: 2, border: 1, fontWeight: 'bold', backgrounColor: 'lightgrey', textTransform: 'capitalize' }}>
+                    <Typography sx={{border:1, padding: 1,margin:1, fontWeight: 'bold', backgroundColor: 'whitesmoke', textTransform: 'capitalize' }}>
                         Created On : {new Date(lead.created_at).toLocaleString()}
                     </Typography>
-                    <Typography sx={{ padding: 2, border: 1, fontWeight: 'bold', backgrounColor: 'lightgrey', textTransform: 'capitalize' }}>
-                        Lead Source : {lead.lead_source}
+                    <Typography sx={{border:1, padding: 1, borderRadius: 1, margin: 1, fontWeight: 'bold', backgroundColor: 'whitesmoke', textTransform: 'capitalize' }}>
+                        Created By : {lead.created_by.username}
                     </Typography>
                     {/* divider */}
-                    <Typography sx={{ padding: 2, border: 1, fontWeight: 'bold', backgrounColor: 'lightgrey', textTransform: 'capitalize' }}>
+                    <Typography sx={{border:1, padding: 1,margin:1, fontWeight: 'bold', backgroundColor: 'whitesmoke', textTransform: 'capitalize' }}>
                         Last Updated : {new Date(lead.updated_at).toLocaleString()}
                     </Typography>
-                    <Typography sx={{ padding: 2, border: 1, fontWeight: 'bold', backgrounColor: 'lightgrey', textTransform: 'capitalize' }}>
+                    <Typography sx={{border:1, padding: 1, borderRadius: 1, margin: 1, fontWeight: 'bold', backgroundColor: 'whitesmoke', textTransform: 'capitalize' }}>
+                        Last Updated By : {lead.updated_by.username}
+                    </Typography>
+                    <Typography sx={{border:1, padding: 1,margin:1, fontWeight: 'bold', backgroundColor: 'whitesmoke', textTransform: 'capitalize' }}>
                         Address : {lead.address}
                     </Typography>
-                    <Typography sx={{ padding: 2, border: 1, fontWeight: 'bold', backgrounColor: 'lightgrey', textTransform: 'capitalize' }}>
+                    <Typography sx={{border:1, padding: 1,margin:1, fontWeight: 'bold', backgroundColor: 'whitesmoke', textTransform: 'capitalize' }}>
                         Station : {lead.city}
-                    </Typography>  <Typography sx={{ padding: 2, border: 1, fontWeight: 'bold', backgrounColor: 'lightgrey', textTransform: 'capitalize' }}>
+                    </Typography>  <Typography sx={{border:1, padding: 1,margin:1, fontWeight: 'bold', backgroundColor: 'whitesmoke', textTransform: 'capitalize' }}>
                         State : {lead.state}
                     </Typography>
-                    <Typography sx={{ padding: 2, border: 1, fontWeight: 'bold', backgrounColor: 'lightgrey', textTransform: 'capitalize' }}>
+                    <Typography sx={{border:1, padding: 1,margin:1, fontWeight: 'bold', backgroundColor: 'whitesmoke', textTransform: 'capitalize' }}>
                         Email1 : {lead.email}
                     </Typography>
-                    <Typography sx={{ padding: 2, border: 1, fontWeight: 'bold', backgrounColor: 'lightgrey', textTransform: 'capitalize' }}>
+                    <Typography sx={{border:1, padding: 1,margin:1, fontWeight: 'bold', backgroundColor: 'whitesmoke', textTransform: 'capitalize' }}>
                         Email2 : {lead.alternate_email}
                     </Typography>
+                    <Typography sx={{border:1, padding: 1, borderRadius: 1, margin: 1, fontWeight: 'bold', backgroundColor: 'whitesmoke', textTransform: 'capitalize' }}>
+                        Country : {lead.country}
+                    </Typography>
+                   
+                    <Typography sx={{border:1, padding: 1, borderRadius: 1, margin: 1, fontWeight: 'bold', backgroundColor: 'whitesmoke', textTransform: 'capitalize' }}>
+                        Organization : {lead.organization.organization_name}
+                    </Typography>
+                    
+
+
+
                 </LeadsDetailContainer>
                 <RemarksContainer>
                     <Typography variant="h6" sx={{ textAlign: "center" }}>{lead.remarks.length ?"Remarks":"no remarks yet"}</Typography>
@@ -98,15 +115,15 @@ function LeadDetailPage({ lead }: { lead: ILead }) {
                             <Stack key={index}
                                 direction="column"
                                 gap={1} p={2}
-                                sx={{ border: 1 }}
+                                sx={{backgroundColor:"whitesmoke",margin:1}}
                             >
-                                <Typography variant="subtitle1" sx={{ backgrounColor: 'lightgrey', textTransform: 'capitalize' }}>
+                                <Typography variant="subtitle1" sx={{  textTransform: 'capitalize' }}>
                                     Remark : <b>{remark.remark}</b>
                                 </Typography>
-                                <Typography variant="subtitle1" sx={{ backgrounColor: 'lightgrey', textTransform: 'capitalize' }}>
-                                    Remark Added By: {remark.created_by.username}
+                                <Typography variant="subtitle1" sx={{  textTransform: 'capitalize' }}>
+                                    Remark Added By: <b><u>{remark.created_by.username}</u></b>
                                 </Typography>
-                                <Typography variant="subtitle1" sx={{ backgrounColor: 'lightgrey', textTransform: 'capitalize' }}>
+                                <Typography variant="subtitle1" sx={{  textTransform: 'capitalize' }}>
                                     Remark Added On :<b> {new Date(remark.created_at).toLocaleString()}</b>
                                 </Typography>
                             </Stack>

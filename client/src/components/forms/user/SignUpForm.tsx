@@ -175,7 +175,7 @@ function OwnerSignUpForm() {
         />
         <TextField
           variant='standard'
-
+          type="number"
           required
           fullWidth
           error={
@@ -249,7 +249,7 @@ function OwnerSignUpForm() {
         />
         <TextField
           variant='standard'
-
+          type="number"
           required
           fullWidth
           error={

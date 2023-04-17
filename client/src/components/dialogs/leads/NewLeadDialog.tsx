@@ -21,15 +21,13 @@ function NewLeadDialog() {
   return (
     <>
       <Dialog  open={choice === LeadChoiceActions.create_lead ? true : false}
-        onClose={() => setChoice({ type: LeadChoiceActions.close })}
-        scroll="paper"
       >
         <DialogTitle textAlign={"center"}>New Lead</DialogTitle>
         <DialogContent>
           <NewLeadForm users={users}/>
         </DialogContent>
-        <DialogActions>
-          <Button fullWidth onClick={() => setChoice({ type: LeadChoiceActions.close })}>Cancel</Button>
+        <DialogActions sx={{p:2}}>
+          <Button variant='outlined' fullWidth onClick={() => setChoice({ type: LeadChoiceActions.close })}>Cancel</Button>
         </DialogActions>
       </Dialog>
     </>

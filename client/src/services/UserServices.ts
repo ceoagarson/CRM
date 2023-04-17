@@ -1,5 +1,5 @@
 import { LeadField } from "../types/user.type";
-import { apiClient } from "../utils/AxiosInterceptor";
+import { apiClient } from "./utils/AxiosInterceptor";
 
 // login
 export const Login = async (
@@ -45,7 +45,7 @@ export const BlockUser = async (id: string) => {
 export const UnBlockUser = async (id: string) => {
   return await apiClient.patch(`unblock/user/${id}`)
 }
-// make owner
+// make leads controlled
 export const UpdateUserLeadAccess = async ({ id, leadFields }: { id: string, leadFields: { lead_fields :LeadField[]}}) => {
   return await apiClient.patch(`update-lead-field-roles/user/${id}`,leadFields)
 }
@@ -53,9 +53,9 @@ export const UpdateUserLeadAccess = async ({ id, leadFields }: { id: string, lea
 export const MakeAdmin = async (id: string) => {
   return await apiClient.patch(`make-admin/user/${id}`)
 }
-// revoke permissions of a admin or owner
+// revoke permissions of a admin 
 export const RemoveAdmin = async (id: string) => {
-  return await apiClient.patch(`remove-admin/user/user/${id}`)
+  return await apiClient.patch(`remove-admin/user/${id}`)
 }
 // get profile
 export const GetProfile = async ()=> {

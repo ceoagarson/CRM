@@ -3,8 +3,9 @@ import { Menu, MenuItem } from '@mui/material'
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { MenuActions, MenuContext } from '../../contexts/menuContext';
-import { paths } from '../../Routes';
 import { UserContext } from '../../contexts/userContext';
+import { paths } from '../../Routes';
+
 
 
 export const StyledLink = styled(Link)`

@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTitle, Button, DialogActions } from '@mui/material';
+import { Dialog, DialogContent, DialogTitle, Button, DialogActions, Typography } from '@mui/material';
 import { useContext } from 'react';
 import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { ILead } from '../../../types/lead.type';
@@ -12,12 +12,17 @@ function ViewLeadDialog({ lead }: { lead: ILead }) {
         onClose={() => setChoice({ type: LeadChoiceActions.close })}
         scroll="paper"
       >
-        <DialogTitle textAlign={"center"}>Explore All Lead Details</DialogTitle>
+        <DialogTitle textAlign={"center"}>
+        <Typography component="h1" variant="h6">
+           Explore Selected Lead Details
+        </Typography>
+
+        </DialogTitle>
         <DialogContent>
           <LeadDetailPage lead={lead}/>
         </DialogContent>
         <DialogActions>
-          <Button fullWidth onClick={() => setChoice({ type: LeadChoiceActions.close })}>Close</Button>
+          <Button fullWidth variant="outlined" color="primary" onClick={() => setChoice({ type: LeadChoiceActions.close })}>Close</Button>
         </DialogActions>
       </Dialog>
     </>

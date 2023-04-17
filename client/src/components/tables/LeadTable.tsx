@@ -1,20 +1,35 @@
-import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
-import { Column, useTable, useSortBy, usePagination, useGlobalFilter, useRowSelect } from 'react-table'
-import Pagination from '../utils/Pagination';
-import SearchBar from './SearchBar';
-import TableCheckBox from '../utils/TableCheckBox';
-import TableMenu from './TableMenu';
+import { Box, Table, TableBody, TableCell, TableHead, TableRow,  Typography } from '@mui/material'
+import { Column, useTable, useFilters, useSortBy, usePagination, useGlobalFilter, useRowSelect } from 'react-table'
+import Pagination from './utils/Pagination';
+import TableCheckBox from './utils/TableCheckBox';
+import { ArrowDropDown, ArrowDropUp, } from '@mui/icons-material';
 import { Stack } from '@mui/system';
-import { color1, color2, headColor } from '../../../utils/colors';
-import { ArrowDropDown, ArrowDropUp } from '@mui/icons-material';
-import { IUser } from '../../../types/user.type';
+import { color1, color2, headColor } from '../../utils/colors';
+import { ILead } from '../../types/lead.type';
+import React, { useContext } from 'react';
+import { UserContext } from '../../contexts/userContext';
+import GlobalFilter from './utils/GlobalFilter';
+import LeadTableMenu from '../menu/LeadTableMenu';
+
 
 interface Props {
-    data: IUser[],
-    columns: Column<IUser>[]
+    data: ILead[],
+    columns: Column<ILead>[]
+
 }
 
-export function UserTable({ data, columns }: Props) {
+export function LeadTable({ data, columns}:Props) {
+  const {user}=useContext(UserContext)
+    //find hidden columns
+    const CalculateHiddenColumns = () => {
+        let hidden_fields = ['']
+        user?.lead_fields.map((field) => {
+            if (field.hidden)
+                hidden_fields.push(field.field)
+            return null
+        })
+        return hidden_fields
+    }
     const {
         getTableProps,
         getTableBodyProps,
@@ -32,15 +47,22 @@ export function UserTable({ data, columns }: Props) {
         setGlobalFilter,
         preGlobalFilteredRows,
         globalFilter,
-        allColumns,
         selectedFlatRows,
         state: { pageIndex, pageSize },
     } = useTable({
         data, columns, initialState: {
             pageSize: 10,
-            hiddenColumns: ['createdAt']
-        }
+            hiddenColumns: CalculateHiddenColumns()
+        },
+        defaultColumn: React.useMemo(
+            () => ({
+                // Let's set up our default Filter UI
+                Filter: ""
+            }),
+            []
+        )
     },
+        useFilters,
         useGlobalFilter,
         useSortBy,
         usePagination,
@@ -62,6 +84,8 @@ export function UserTable({ data, columns }: Props) {
             ])
         }
     )
+
+
     return (
         <>
             {/*heading, search bar and table menu */}
@@ -76,16 +100,16 @@ export function UserTable({ data, columns }: Props) {
                     variant={'h6'}
                     component={'h1'}
                 >
-                    USERS
+                    LEADS
                 </Typography>
+
                 <Stack
                     direction="row"
                 >
-                    <SearchBar
+                    <GlobalFilter
                         preGlobalFilteredRows={preGlobalFilteredRows} globalFilter={globalFilter} setGlobalFilter={setGlobalFilter}
                     />
-                    <TableMenu
-                        columns={allColumns}
+                    <LeadTableMenu
                         selectedFlatRows={selectedFlatRows}
                     />
                 </Stack>
@@ -97,7 +121,7 @@ export function UserTable({ data, columns }: Props) {
                     height: '70vh'
                 }}>
                 <Table
-                    sx={{ minWidth: "1500px" }}
+                    sx={{ minWidth: "5000px" }}
                     size="small"
                     {...getTableProps()}>
                     <TableHead
@@ -106,24 +130,29 @@ export function UserTable({ data, columns }: Props) {
                             <TableRow  {...headerGroup.getHeaderGroupProps()}>
                                 {headerGroup.headers.map
                                     ((column) => (
-                                        <TableCell
-                                            sx={{ bgcolor: headColor }}
-                                            {...column.getHeaderProps(column.getSortByToggleProps())}
-                                            title=""                                    >
-                                            <Stack
-                                                direction="row"
-                                                justifyContent="left"
-                                                alignItems="left"
-                                                spacing={2}
-                                            >
-                                                {column.render('Header')}
-                                                {column.isSorted
-                                                    ? column.isSortedDesc
-                                                        ? <ArrowDropDown />
-                                                        : <ArrowDropUp />
-                                                    : ''}
-                                            </Stack>
-                                        </TableCell>
+                                        <>
+                                            <TableCell
+                                                sx={{ bgcolor: headColor }}
+                                                {...column.getHeaderProps(column.getSortByToggleProps())}
+                                                title=""                                    >
+                                                <Stack
+                                                    direction="row"
+                                                    justifyContent="left"
+                                                    alignItems="left"
+                                                    spacing={2}
+                                                >
+                                                    {column.render('Header')}
+                                                    {column.isSorted
+                                                        ? column.isSortedDesc
+                                                            ? <ArrowDropDown />
+                                                            : <ArrowDropUp />
+                                                        : null}
+                                                        {
+                                                            column.canFilter?column.render('Filter'):null
+                                                        }
+                                                </Stack>
+                                            </TableCell>
+                                        </>
                                     ))}
                             </TableRow>
                         ))}
@@ -132,8 +161,6 @@ export function UserTable({ data, columns }: Props) {
                         {page.map(row => {
                             prepareRow(row)
                             return (
-
-
                                 <TableRow sx={{
                                     '&:nth-of-type(odd)': { bgcolor: color1 },
                                     '&:nth-of-type(even)': { bgcolor: color2 },
@@ -144,7 +171,10 @@ export function UserTable({ data, columns }: Props) {
                                     {row.cells.map((cell) => {
                                         return (
                                             <TableCell
-                                                {...cell.getCellProps()} >
+                                                {...cell.getCellProps()}
+
+
+                                            >
                                                 {cell.render('Cell')}
                                             </TableCell>
 
@@ -169,6 +199,7 @@ export function UserTable({ data, columns }: Props) {
                 nextPage={nextPage}
                 previousPage={previousPage} setPageSize={setPageSize}
             />
+           
         </>
     )
 }

@@ -1,5 +1,5 @@
 import { TformData } from "../components/forms/lead/UpdateLeadForm"
-import { apiClient } from "../utils/AxiosInterceptor"
+import { apiClient } from "./utils/AxiosInterceptor"
 
 export const GetLead = async (id: string) => {
   return await apiClient.get(`leads/${id}`)
