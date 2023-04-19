@@ -12,7 +12,7 @@ import { sendEmail } from '../utils/sendEmail.util';
 import { Organization } from '../models/organization.model';
 import { IOrganization } from '../types/organization.type';
 
-let all_fields: LeadFieldType[] = ["name", "customer_name", "customer_designation", "mobile", "email", "city", "state", "country", "address", "remarks", "work_description", "turnover", "lead_type", "stage", "alternate_mobile1", "alternate_mobile2", "alternate_email", "lead_owner", "organization", "lead_source", "created_at", "created_by", "updated_at", "updated_by"]
+let all_fields: LeadFieldType[] = ["name", "customer_name", "customer_designation", "mobile", "email", "city", "state", "country", "address", "remarks", "work_description", "turnover", "lead_type", "stage", "alternate_mobile1", "alternate_mobile2", "alternate_email", "lead_owners", "organization", "lead_source", "created_at", "created_by", "updated_at", "updated_by"]
 
 // Create Owner account
 export const SignUp = catchAsyncError(

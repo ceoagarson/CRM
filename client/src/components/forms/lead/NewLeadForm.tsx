@@ -99,7 +99,7 @@ function NewLeadForm({ users }: { users: IUser[] }) {
       address: Yup.string().required("required field")
         .min(10, 'Must be 10 characters or more')
         .max(300, 'Must be 300 characters or less'),
-      remark: Yup.string().required()
+      remark: Yup.string()
         .min(10, 'Must be 10 characters or more')
         .max(500, 'Must be 500 characters or less'),
       mobile: Yup.string()

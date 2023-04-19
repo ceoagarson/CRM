@@ -5,21 +5,19 @@ import TableCheckBox from './utils/TableCheckBox';
 import { ArrowDropDown, ArrowDropUp, } from '@mui/icons-material';
 import { Stack } from '@mui/system';
 import { color1, color2, headColor } from '../../utils/colors';
-import { ILead } from '../../types/lead.type';
 import React from 'react';
 import GlobalFilter from './utils/GlobalFilter';
-import LeadTableMenu from '../menu/LeadTableMenu';
-import { useLeadFields } from '../hooks/LeadFieldsHook';
+import MachineTableMenu from '../menu/MachineTableMenu';
+import { IMachine } from '../../types/machine.types';
 
 
 interface Props {
-    data: ILead[],
-    columns: Column<ILead>[]
+    data: IMachine[],
+    columns: Column<IMachine>[]
 
 }
 
-export function LeadTable({ data, columns }: Props) {
-    const { hiddenFields} = useLeadFields()
+export function MachineTable({ data, columns }: Props) {
     const {
         getTableProps,
         getTableBodyProps,
@@ -41,8 +39,7 @@ export function LeadTable({ data, columns }: Props) {
         state: { pageIndex, pageSize },
     } = useTable({
         data, columns, initialState: {
-            pageSize: 10,
-            hiddenColumns: hiddenFields
+            pageSize: 10
         },
         defaultColumn: React.useMemo(
             () => ({
@@ -90,7 +87,7 @@ export function LeadTable({ data, columns }: Props) {
                     variant={'h6'}
                     component={'h1'}
                 >
-                    LEADS
+                    Machines
                 </Typography>
 
                 <Stack
@@ -99,7 +96,7 @@ export function LeadTable({ data, columns }: Props) {
                     <GlobalFilter
                         preGlobalFilteredRows={preGlobalFilteredRows} globalFilter={globalFilter} setGlobalFilter={setGlobalFilter}
                     />
-                    <LeadTableMenu
+                    <MachineTableMenu
                         selectedFlatRows={selectedFlatRows}
                     />
                 </Stack>
@@ -111,7 +108,7 @@ export function LeadTable({ data, columns }: Props) {
                     height: '70vh'
                 }}>
                 <Table
-                    sx={{ minWidth: "5000px" }}
+                    sx={{ minWidth: "1200px" }}
                     size="small"
                     {...getTableProps()}>
                     <TableHead

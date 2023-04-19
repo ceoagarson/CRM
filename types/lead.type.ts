@@ -1,7 +1,18 @@
 import { Types } from "mongoose";
 import { IOrganization } from "./organization.type";
 import { IUser } from "./user.type";
-import { IRemark } from "./remark.type";
+
+export type IRemark = {
+    _id: Types.ObjectId,
+    remark: string,
+    lead: ILead,
+    created_at: Date,
+    created_by: IUser,
+    updated_at: Date,
+    updated_by: IUser
+}
+
+export type TRemarkBody = Request['body'] & IRemark;
 
 
 export type ILead = {

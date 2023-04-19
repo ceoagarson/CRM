@@ -12,8 +12,8 @@ import { IUser } from "../types/user.type.js"
 export const CreateLead = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const { name, mobile, email, work_description, remark, lead_owners } = req.body as TLeadBody & { remark: string, lead_owners: string[] }
     if (!lead_owners)
-        return res.status(400).json({ message: "assign at least one lead owner"});
-    if (lead_owners.length<1)
+        return res.status(400).json({ message: "assign at least one lead owner" });
+    if (lead_owners.length < 1)
         return res.status(400).json({ message: "assign at least one lead owner" });
     const user = await User.findById(req.user?._id)
     if (!user)
@@ -33,10 +33,10 @@ export const CreateLead = catchAsyncError(async (req: Request, res: Response, ne
     if (await Lead.findOne({ mobile: String(mobile).trim(), alternate_mobile1: String(mobile).trim(), alternate_mobile2: String(mobile).trim() }))
         return res.status(403).json({ message: `${mobile} already exists` });
 
-    let new_lead_owners:IUser[]=[]
-    for (let i = 0; i < lead_owners.length;i++){
+    let new_lead_owners: IUser[] = []
+    for (let i = 0; i < lead_owners.length; i++) {
         let owner = await User.findById(lead_owners[i])
-        if(owner)
+        if (owner)
             new_lead_owners.push(owner)
     }
     const lead = new Lead({
@@ -61,7 +61,7 @@ export const CreateLead = catchAsyncError(async (req: Request, res: Response, ne
         lead.remarks = [new_remark]
     }
     await lead.save()
-    return res.status(200).json({message:"lead created"})
+    return res.status(200).json({ message: "lead created" })
 })
 // get a lead anyone can do in the organization
 export const GetLead = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
@@ -87,7 +87,7 @@ export const GetLead = catchAsyncError(async (req: Request, res: Response, next:
 })
 // get all leads  anyone can do in the organization
 export const GetLeads = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    let leads = await Lead.find({ organization: req.user?.organization}).populate('lead_owners').populate('organization').populate('updated_by').populate('created_by').populate({
+    let leads = await Lead.find({ organization: req.user?.organization }).populate('lead_owners').populate('organization').populate('updated_by').populate('created_by').populate({
         path: 'remarks',
         populate: [
             {
@@ -103,6 +103,15 @@ export const GetLeads = catchAsyncError(async (req: Request, res: Response, next
     if (!leads) {
         return res.status(404).json({ message: "leads not found" })
     }
+    if (req.user?.is_admin)
+        return res.status(200).json(leads)
+    leads = leads.filter((lead) => {
+        let owners = lead.lead_owners.filter((owner) => {
+            return owner.username === req.user?.username
+        })
+        if (owners.length > 0)
+            return lead
+    })
     return res.status(200).json(leads)
 })
 // update lead only admin can do
@@ -145,16 +154,29 @@ export const UpdateLead = catchAsyncError(async (req: Request, res: Response, ne
         if (owner)
             new_lead_owners.push(owner)
 
-    if (remark) {
-        let last_remark = lead.remarks[lead.remarks.length - 1]
-        await Remark.findByIdAndUpdate(last_remark._id, {
-            remark,
-            lead: lead,
-            updated_at: new Date(Date.now()),
-            updated_by: req.user
-        })
+        if (remark) {
+            if(!lead.remarks.length){
+                let new_remark = new Remark({
+                    remark,
+                    lead: lead,
+                    created_at: new Date(Date.now()),
+                    created_by: user,
+                    updated_at: new Date(Date.now()),
+                    updated_by: user
+                })
+                await new_remark.save()
+                lead.remarks = [new_remark]
+                await lead.save()
+            }
+            let last_remark = lead.remarks[lead.remarks.length - 1]
+            await Remark.findByIdAndUpdate(last_remark._id,{
+                remark :remark,
+                lead :lead,
+                updated_at :new Date(Date.now()),
+                updated_by :user,
+            })
+        }
     }
-}
     await Lead.findByIdAndUpdate(lead._id, {
         ...req.body,
         lead_owners: new_lead_owners,

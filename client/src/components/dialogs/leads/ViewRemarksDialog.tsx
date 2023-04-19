@@ -1,25 +1,19 @@
-import { Dialog, DialogContent, DialogTitle, Button, DialogActions, Typography } from '@mui/material';
+import { Dialog, DialogContent,  Button, DialogActions } from '@mui/material';
 import { useContext } from 'react';
 import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { ILead } from '../../../types/lead.type';
-import LeadDetailPage from '../../../pages/LeadDetailPage';
+import AllRemarksPage from '../../../pages/AllRemarksPage';
 
-function ViewLeadDialog({ lead }: { lead: ILead }) {
+function ViewRemarksDialog({ lead }: { lead: ILead }) {
   const { choice, setChoice } = useContext(ChoiceContext)
   return (
     <>
-      <Dialog open={choice === LeadChoiceActions.view_lead ? true : false}
+      <Dialog open={choice === LeadChoiceActions.view_remarks ? true : false}
         onClose={() => setChoice({ type: LeadChoiceActions.close })}
         scroll="paper"
       >
-        <DialogTitle textAlign={"center"}>
-        <Typography component="h1" variant="h6">
-           Explore Selected Lead Details
-        </Typography>
-
-        </DialogTitle>
         <DialogContent>
-          <LeadDetailPage lead={lead}/>
+          <AllRemarksPage lead={lead}/>
         </DialogContent>
         <DialogActions>
           <Button fullWidth variant="outlined" color="primary" onClick={() => setChoice({ type: LeadChoiceActions.close })}>Close</Button>
@@ -29,4 +23,4 @@ function ViewLeadDialog({ lead }: { lead: ILead }) {
   )
 }
 
-export default ViewLeadDialog
+export default ViewRemarksDialog

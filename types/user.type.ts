@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 import { Asset } from "./asset.type";
 import { IOrganization } from "./organization.type";
 
-export type LeadFieldType = "name" | "customer_name" | "customer_designation" | "mobile" |    "email" | "city" | "state" | "country" | "address" | "remarks" | "work_description" | "turnover" | "lead_type" | "stage" | "alternate_mobile1" | "alternate_mobile2" | "alternate_email" | "lead_owner" | "organization" | "lead_source" | "created_at" | "created_by" | "updated_at" | "updated_by"
+export type LeadFieldType = "name" | "customer_name" | "customer_designation" | "mobile" |    "email" | "city" | "state" | "country" | "address" | "remarks" | "work_description" | "turnover" | "lead_type" | "stage" | "alternate_mobile1" | "alternate_mobile2" | "alternate_email" | "lead_owners" | "organization" | "lead_source" | "created_at" | "created_by" | "updated_at" | "updated_by"
 
 export type LeadField={
     field: LeadFieldType,

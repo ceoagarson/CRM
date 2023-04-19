@@ -8,8 +8,6 @@ import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext';
 import ExportToExcel from '../tables/utils/ExportToExcel';
 import NewLeadDialog from '../dialogs/leads/NewLeadDialog';
 
-
-
 type Props = {
     selectedFlatRows: Row<ILead>[]
 }
@@ -64,6 +62,9 @@ function LeadTableMenu({selectedFlatRows }: Props) {
         let data: SelectedData[] = []
         selectedFlatRows.map((item) => {
             const lead = item.original
+            let last_remark = ""
+            if(lead.remarks.length)
+                last_remark=lead.remarks[lead.remarks.length - 1].remark 
             return data.push({
                 name: lead.name,
                 email: lead.email,
@@ -77,7 +78,7 @@ function LeadTableMenu({selectedFlatRows }: Props) {
                 lead_type: lead.lead_type,
                 lead_owner: lead.lead_owners.toString(),
                 customer_name: lead.customer_name,
-                last_remark: lead.remarks[lead.remarks.length - 1].remark,
+                last_remark: last_remark,
                 address: lead.address,
                 alternate_mobile1: lead.alternate_mobile1,
                 alternate_mobile2: lead.alternate_mobile2,
@@ -106,6 +107,7 @@ function LeadTableMenu({selectedFlatRows }: Props) {
             <IconButton size="medium"
                 onClick={(e) => setMenu({ type: MenuActions.lead_table_menu, payload: { type: MenuActions.lead_table_menu, anchorEl: e.currentTarget } })
                 }
+                sx={{ border: 1, borderRadius: 2, marginLeft: 2 }}
             >
                 <MenuIcon />
             </IconButton>
@@ -119,6 +121,7 @@ function LeadTableMenu({selectedFlatRows }: Props) {
                 MenuListProps={{
                     'aria-labelledby': 'basic-button',
                 }}
+                sx={{ borderRadius: 2 }}
             >
                 <MenuItem onClick={() => {
                     setChoice({ type: LeadChoiceActions.create_lead })

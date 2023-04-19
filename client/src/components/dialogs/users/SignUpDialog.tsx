@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTitle, Button, DialogActions, Typography } from '@mui/material';
+import { Dialog, DialogContent, DialogTitle,  Typography, Stack } from '@mui/material';
 import { useContext } from 'react';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import SignUpForm from '../../forms/user/SignUpForm';
@@ -15,22 +15,33 @@ function SignUpDialog() {
         <DialogContent>
           <SignUpForm />
         </DialogContent>
-        <DialogActions>
-          <Typography
-            variant="button"
-            component="p"
-            sx={{
-              display: "flex",
-              width: "100%",
-              alignItems: "center",
-              justifyContent: "center"
-            }}
+          <Stack
+            alignItems="center"
+            justifyContent="center"
+            gap={1}
+            p={1}
+            direction={"row"}
+            sx={{backgroundColor:"lightgrey"}}
           >
+            <Typography
+              variant="body1"
+              sx={{ cursor: "pointer" }}
+              component="span"
+              onClick={() => setChoice({ type: UserChoiceActions.close })}
+            >
+            <b>Close</b>
+            </Typography >
+            {" or "}
+            <Typography
+              variant="body1"
+              sx={{ cursor: "pointer" }}
+              component="span"
+              onClick={() => setChoice({ type: UserChoiceActions.reset_password_mail })}
+            >
+              Forgot Password
+            </Typography >
 
-            <Button onClick={() => setChoice({ type: UserChoiceActions.close })}>Close</Button>{" or "}
-            <Button onClick={() => setChoice({ type: UserChoiceActions.reset_password_mail })}> Forgot Password</Button>
-          </Typography >
-        </DialogActions>
+          </Stack>
       </Dialog>
     </>
   )

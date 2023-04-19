@@ -1,7 +1,7 @@
 import React, { useReducer } from "react"
 
 type Menu = "user_menu" | "home_menu"
-    | "dashboard_menu" | null | "user_table_menu" | "lead_table_menu" | "account_table_menu" | "opportunity_table_menu"|"activity_table_menu"
+    | "dashboard_menu" | null | "user_table_menu" | "lead_table_menu" | "account_table_menu" | "opportunity_table_menu" | "activity_table_menu" | "machine_table_menu"|"production_table_menu"
 
 type MenuState = {
     type: Menu
@@ -24,7 +24,9 @@ export enum MenuActions {
     lead_table_menu = "lead_table_menu",
     account_table_menu = "account_table_menu",
     activity_table_menu = "activity_table_menu",
-    opportunity_table_menu = "opportunity_table_menu"
+    opportunity_table_menu = "opportunity_table_menu",
+    machine_table_menu ="machine_table_menu",
+    production_table_menu ="production_table_menu"
 }
 type Action = {
     type: MenuActions,
@@ -41,6 +43,8 @@ function reducer(state: MenuState, action: Action) {
         case MenuActions.account_table_menu: return action.payload
         case MenuActions.opportunity_table_menu: return action.payload
         case MenuActions.activity_table_menu: return action.payload
+        case MenuActions.machine_table_menu: return action.payload
+        case MenuActions.production_table_menu: return action.payload
         case MenuActions.close: return action.payload
         default: return state
     }

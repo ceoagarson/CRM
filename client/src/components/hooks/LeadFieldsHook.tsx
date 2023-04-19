@@ -7,7 +7,7 @@ export function useLeadFields() {
             if (field.hidden)
                 return field.field
                 else
-            return undefined
+            return ""
         }) 
 
         let readonlyFields =user?.lead_fields.map((field) => {

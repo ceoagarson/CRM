@@ -4,22 +4,40 @@ import React, { useReducer } from "react"
 type UserChoices = "signup"| "reset_password_mail" | null | "new_user" | "update_user" | "update_profile" | "view_profile" | "update_password" | "reset_password" | "verify_email" | "control_access" | "delete_user" |
   "block_user" | "unblock_user" | "make_admin" | "remove_admin" 
 
-type LeadChoices = "create_lead" | "update_lead" | "update_remark" | "view_lead" | "close" | "display_filter"
+type LeadChoices = "create_lead" | "update_lead" | "update_remark" | "view_remarks" | "close" | "display_filter"
 
+type ProductionChoices = "new_production" | "close" | "select_production_date" | "select_date_range" | "report_machine_wise" |"report_category_wise"
+
+type MachineChoices = "new_machine" | "update_machine" |"close"
 
 // initial state
-type ChoiceState = UserChoices | LeadChoices
+type ChoiceState = UserChoices | LeadChoices | ProductionChoices | MachineChoices
+
 const initialState: ChoiceState = null
 
 export enum LeadChoiceActions {
   create_lead = "create_lead",
   update_lead = "update_lead",
-  view_lead = "view_lead",
+  view_remarks = "view_remarks",
   close ="close",
   display_filter ="display_filter",
   update_remark = "update_remark",
 }
+export enum MachineChoiceActions{
+  update_machine = "update_machine",
+  new_machine = "new_machine",
+  close="close"
+}
+export enum ProductionChoiceActions {
+  new_production="new_production",
+  close = "close",
+  select_date_range ="select_date_range",
+  select_production_date ="select_production_date",
+  report_machine_wise ="report_machine_wise",
+  report_category_wise ="report_category_wise"
+  
 
+}
 export enum UserChoiceActions {
   signup = "signup",
   reset_password_mail = "reset_password_mail",
@@ -40,7 +58,7 @@ export enum UserChoiceActions {
 }
 
 type Action = {
-  type: UserChoiceActions | LeadChoiceActions 
+  type: UserChoiceActions | LeadChoiceActions | ProductionChoiceActions | MachineChoiceActions
 }
 
 // reducer
@@ -68,10 +86,25 @@ function reducer(state: ChoiceState, action: Action) {
     // lead dialog choices
     case LeadChoiceActions.create_lead: return type
     case LeadChoiceActions.update_lead: return type
-    case LeadChoiceActions.view_lead: return type
+    case LeadChoiceActions.view_remarks: return type
     case LeadChoiceActions.update_remark: return type
     case LeadChoiceActions.display_filter: return type
     case LeadChoiceActions.close: return null
+
+    //production dialog choices
+    case ProductionChoiceActions.new_production: return type
+    case ProductionChoiceActions.select_date_range: return type
+    case ProductionChoiceActions.select_production_date: return type
+    case ProductionChoiceActions.report_category_wise: return type
+    case ProductionChoiceActions.report_machine_wise: return type
+    case ProductionChoiceActions.close: return null
+
+    //machine dialog choices
+    case MachineChoiceActions.new_machine: return type
+    case MachineChoiceActions.update_machine: return type
+    case MachineChoiceActions.close: return null
+
+
     default: return state
   }
 }

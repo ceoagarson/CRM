@@ -88,7 +88,7 @@ function UserTableMenu({ columns, selectedFlatRows }: Props) {
                 message="File Exported Successfuly"
             />
 
-            <IconButton size="medium"
+            <IconButton size="medium" sx={{border:1,borderRadius:2,marginLeft:2}}
                 onClick={(e) => setMenu({ type: MenuActions.user_table_menu, payload: { type: MenuActions.user_table_menu, anchorEl: e.currentTarget } })
                 }
             >
@@ -106,6 +106,8 @@ function UserTableMenu({ columns, selectedFlatRows }: Props) {
                 MenuListProps={{
                     'aria-labelledby': 'basic-button',
                 }}
+                sx={{ borderRadius: 2 }}
+
             >
                 {user?.is_admin ?
                     <MenuItem onClick={() => {

@@ -6,6 +6,7 @@ import { UserProvider } from "./contexts/userContext";
 import { BrowserRouter } from "react-router-dom";
 import { ChoiceProvider } from "./contexts/dialogContext";
 import { MenuProvider } from "./contexts/menuContext";
+import { FilterProvider } from "./contexts/filterContext";
 
 
 export const queryClient = new QueryClient({
@@ -24,11 +25,13 @@ root.render(
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <UserProvider>
-        <ChoiceProvider>
-          <MenuProvider>
-              <App />
-          </MenuProvider>
-        </ChoiceProvider>
+        <FilterProvider>
+          <ChoiceProvider>
+            <MenuProvider>
+                <App />
+            </MenuProvider>
+          </ChoiceProvider>
+        </FilterProvider>
       </UserProvider>
     </BrowserRouter>
   </QueryClientProvider>

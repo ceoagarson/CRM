@@ -1,30 +1,26 @@
-import { Comment, Edit, FilterList, Visibility } from "@mui/icons-material"
-import { IconButton, LinearProgress, Snackbar, Stack, Tooltip, Typography } from "@mui/material"
+import { Comment, Edit, Visibility } from "@mui/icons-material"
+import { IconButton, LinearProgress, Stack, Tooltip, Typography } from "@mui/material"
 import { AxiosResponse } from "axios"
 import React, { useContext, useEffect, useState } from "react"
 import { useQuery } from "react-query"
 import { Column } from "react-table"
 import UpdateLeadDialog from "../components/dialogs/leads/UpdateLeadDialog"
-import ViewLeadDialog from "../components/dialogs/leads/ViewLeadDialog"
+import ViewLeadDialog from "../components/dialogs/leads/ViewRemarksDialog"
 import { LeadTable } from "../components/tables/LeadTable"
 import { ChoiceContext, LeadChoiceActions } from "../contexts/dialogContext"
 import { GetLeads } from "../services/LeadsServices"
 import { BackendError } from "../types"
 import { ILead } from "../types/lead.type"
 import NewRemarkDialog from "../components/dialogs/leads/NewRemarkDialog"
-
-export type Filter = {
-  key: string,
-  value: string
-}[]
+import { Filter, FilterContext } from "../contexts/filterContext"
+import FilterMenu from "../components/menu/FilterMenu"
 
 export default function LeadsPage() {
   const { setChoice } = useContext(ChoiceContext)
   const [DATA, setDATA] = useState<ILead[]>([])
   const [remoteBackUpData, setRemoteBackUpData] = useState<ILead[]>([])
-  const [filter, setFilter] = useState<Filter>([])
+  const { filter } = useContext(FilterContext)
   const [lead, setLead] = useState<ILead>()
-  const [snackDisplay, setSnackDisplay] = useState(false)
   const { data: leads, isSuccess, isLoading } = useQuery
     <AxiosResponse<ILead[]>, BackendError>("leads", GetLeads, {
       refetchOnMount: true
@@ -50,10 +46,10 @@ export default function LeadsPage() {
                   <Edit />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="view">
+              <Tooltip title="view remarks">
                 <IconButton color="primary"
                   onClick={() => {
-                    setChoice({ type: LeadChoiceActions.view_lead })
+                    setChoice({ type: LeadChoiceActions.view_remarks })
                     setLead(props.row.original)
                   }}
                 >
@@ -83,11 +79,17 @@ export default function LeadsPage() {
           return (
             <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.name}</Typography>
           )
-        },
-        Filter: (props) => {
-          console.log(props)
+        }
+        ,
+        Filter: () => {
+          let data: Filter = []
+          let unique_data = [...new Set(remoteBackUpData.map(item => item.name))]
+          unique_data.map((item => {
+            data.push({ key: 'name', value: item })
+            return null
+          }))
           return (
-            <FilterList/>
+            <FilterMenu data={data} />
           )
         }
       },
@@ -98,6 +100,17 @@ export default function LeadsPage() {
         Cell: (props) => {
           return (
             <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.stage}</Typography>
+          )
+        },
+        Filter: () => {
+          let data: Filter = []
+          let unique_data = [...new Set(remoteBackUpData.map(item => item.stage))]
+          unique_data.map((item => {
+            data.push({ key: 'stage', value:item })
+            return null
+          }))
+          return (
+            <FilterMenu data={data} />
           )
         }
       },
@@ -348,11 +361,10 @@ export default function LeadsPage() {
         }
       }
     ]
-    , [setChoice]
+    , [setChoice, remoteBackUpData]
   )
- 
- 
-//setup leads
+
+  //setup leads
   useEffect(() => {
     if (isSuccess) {
       setRemoteBackUpData(leads.data)
@@ -360,14 +372,12 @@ export default function LeadsPage() {
     }
   }, [isSuccess, leads])
 
-//setup filter leads
+  //setup filter leads
   useEffect(() => {
     function handleFilter() {
       let filteredData = DATA.filter((item) => {
         return item.customer_name === filter[0].value
       })
-      if (filteredData.length === 0)
-        setSnackDisplay(true)
       setDATA(filteredData)
     }
     if (filter.length > 0)
@@ -375,19 +385,9 @@ export default function LeadsPage() {
     if (filter.length === 0)
       setDATA(remoteBackUpData)
   }, [filter, DATA, remoteBackUpData])
-
-
   return (
     <>
-      <LeadTable data={MemoData} columns={MemoColumns}/>
-      <Snackbar
-        open={snackDisplay}
-        autoHideDuration={6000}
-        onClose={() => setSnackDisplay(false)}
-        sx={{ marginTop: "100px" }}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        message="No Leads found"
-      />
+      <LeadTable data={MemoData} columns={MemoColumns} />
       {
         lead ?
           <>

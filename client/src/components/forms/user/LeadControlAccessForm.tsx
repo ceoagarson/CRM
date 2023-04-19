@@ -5,7 +5,7 @@ import { queryClient } from '../../..';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { UpdateUserLeadAccess } from '../../../services/UserServices';
 import { BackendError } from '../../../types';
-import { Button, Checkbox, FormControlLabel,  Typography, Table, TableBody,  TableRow,  TableCell, Paper, CircularProgress, Stack } from '@mui/material'
+import { Button, Checkbox, FormControlLabel,  Typography, Table, TableBody,  TableRow,  TableCell, Paper, CircularProgress, Stack, Alert } from '@mui/material'
 import { IUser, LeadField, LeadFieldType } from '../../../types/user.type';
 
 
@@ -15,7 +15,7 @@ export const all_fields: LeadFieldType[] = ["name", "customer_name", "customer_d
 function LeadControlAccessForm({user}:{user:IUser}) {
     const { setChoice } = useContext(ChoiceContext)
     const [LeadFields, setLeadFields] = useState(user.lead_fields)
-    const { mutate, isLoading, isSuccess } = useMutation
+    const { mutate, isLoading, isSuccess, isError,error } = useMutation
         < AxiosResponse<any>, BackendError, { id: string, leadFields: {lead_fields:LeadField[]} }>
         (UpdateUserLeadAccess,
             {
@@ -97,10 +97,25 @@ function LeadControlAccessForm({user}:{user:IUser}) {
               </TableBody>
           </Table>
           </Stack>
+
+          {
+              isError ? (
+                  <Alert color="error">
+                      {error?.response.data.message}
+                  </Alert>
+              ) : null
+          }
+          {
+              isSuccess ? (
+                  <Alert color="success">
+                      Access For selected user updated successfully
+                  </Alert>
+              ) : null
+          }
+
          <Stack gap={2} p={2} direction={"row"} alignItems={"center"} justifyContent={"center"}>
               <Button size={"large"}  variant="contained" color="primary"
                   onClick={() => {
-                      setChoice({ type: UserChoiceActions.close })
                       mutate({ id: user._id, leadFields: {lead_fields:LeadFields} })
                   }}
                   disabled={isLoading}
@@ -118,6 +133,7 @@ function LeadControlAccessForm({user}:{user:IUser}) {
                       "Cancel"}
               </Button>
          </Stack>
+         
    </>
   )
 }

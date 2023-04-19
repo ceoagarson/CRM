@@ -1,4 +1,4 @@
-import { Block, EditOutlined, GroupAdd, GroupRemove, Key, RemoveCircle } from '@mui/icons-material'
+import { Block, Edit, GroupAdd, GroupRemove, Key, RemoveCircle } from '@mui/icons-material'
 import { Alert, Avatar, IconButton, LinearProgress, Tooltip, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
@@ -43,12 +43,13 @@ export default function UsersPage() {
                             {/* edit icon */}
                             <Tooltip title="edit">
                                 <IconButton
-                                    color="success" size="medium"
+                                color="success"
+                                     size="medium"
                                     onClick={() => {
                                         setChoice({ type: UserChoiceActions.update_user })
                                         setUser(props.row.original)
                                     }}>
-                                    <EditOutlined />
+                                    <Edit />
                                 </IconButton>
                             </Tooltip>
                             {
@@ -71,7 +72,6 @@ export default function UsersPage() {
                                     </>
                                     :
                                     <Tooltip title="make admin"><IconButton size="medium"
-                                        color="info"
                                         onClick={() => {
                                             setChoice({ type: UserChoiceActions.make_admin })
                                             setRowId(props.row.original._id)
@@ -90,7 +90,7 @@ export default function UsersPage() {
                                             null
                                             :
                                             <Tooltip title="block"><IconButton
-                                                color="error" size="medium"
+                                                size="medium"
                                                 onClick={() => {
                                                     setChoice({ type: UserChoiceActions.block_user })
                                                     setRowId(props.row.original._id)
@@ -123,7 +123,7 @@ export default function UsersPage() {
                                             :
                                             <Tooltip title="Change user Access Control">
                                                 <IconButton
-                                                    color="info" size="medium"
+                                                    color="warning" size="medium"
                                                     onClick={() => {
                                                         setChoice({ type: UserChoiceActions.control_access })
                                                         setUser(props.row.original)

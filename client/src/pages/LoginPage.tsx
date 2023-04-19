@@ -1,4 +1,4 @@
-import { Button, Typography, Stack, Paper } from '@mui/material'
+import {  Typography, Stack, Paper } from '@mui/material'
 import { useContext } from 'react';
 import ResetPasswordSendMailDialog from '../components/dialogs/users/ResetPasswordSendMailDialog';
 import SignUpDialog from '../components/dialogs/users/SignUpDialog';
@@ -24,20 +24,31 @@ function LoginPage() {
                     elevation={8}>
                     <Typography variant="h6" sx={{ textAlign: "center" }}>Login Form</Typography>
                     <LoginForm />
-                    <Stack>
+                    <Stack
+                    alignItems= "center"
+                    justifyContent= "center"
+                    gap={1}
+                    p={1}
+                    direction={"row"}
+                    >
                         <Typography
-                            variant="button"
-                            component="p"
-                            sx={{
-                                display: "flex",
-                                width: "100%",
-                                alignItems: "center",
-                                justifyContent: "center"
-                            }}
+                            variant="body1"
+                            sx={{cursor:"pointer"}}
+                            component="span"
+                            onClick={() => setChoice({ type: UserChoiceActions.signup })}
                         >
-                            <Button  onClick={() => setChoice({ type: UserChoiceActions.signup })} >Register</Button>{" or "}
-                            <Button  onClick={() => setChoice({ type: UserChoiceActions.reset_password_mail })}> Forgot Password</Button>
+                            <b>Register</b>
                         </Typography >
+                        {" or "}
+                        <Typography
+                            variant="body1"
+                            sx={{cursor:"pointer"}}
+                            component="span"
+                            onClick={() => setChoice({ type: UserChoiceActions.reset_password_mail })}
+                        >
+                            Forgot Password
+                        </Typography >
+                       
                     </Stack>
                 </Paper>
             </Stack>
