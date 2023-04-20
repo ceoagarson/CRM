@@ -1,7 +1,6 @@
 import { Types } from "mongoose"
 import { IUser } from "./user.type"
 
-
 export const MachineTypes = ["VER-1 (GF)", "VER-2 (GF)",
     "VER-3 (GF)", "VER-4 (GF)", "VER-5 (GF)",
     "VER-6 (GF)", "LYM-7", "LYM-8", "LYM-9",
