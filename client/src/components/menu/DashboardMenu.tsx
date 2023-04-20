@@ -55,6 +55,12 @@ function DashboardMenu() {
                 onClick={
                     () => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
                 }>
+                <StyledLink to={paths.reports}>Reports</StyledLink>
+            </MenuItem>
+            <MenuItem
+                onClick={
+                    () => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
+                }>
                 <StyledLink to={paths.machines}>Machines</StyledLink>
             </MenuItem>
         </Menu>

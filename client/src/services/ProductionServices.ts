@@ -12,10 +12,4 @@ export const NewProduction = async (body: {
 }) => {
     return await apiClient.post(`productions/${body.machine_id}`, body)
 }
-export const GetProductionByDaterange=async(body:{
-    startDate:Date,
-    endDate:Date
-})=>{
-    return await apiClient.get(`filter/productions?${body.startDate}&${body.endDate}`)
-}
 

@@ -9,6 +9,7 @@ import LoginPage from './pages/LoginPage'
 import DashBoardPage from './pages/DashBoardPage'
 import MachinesPage from './pages/MachinesPage'
 import ProductionPage from './pages/ProductionPage'
+import ReportsPage from './pages/ReportPage'
 const LeadsPage = React.lazy(() => import('./pages/LeadsPage'))
 const UsersPage = React.lazy(() => import('./pages/UsersPage'))
 
@@ -17,6 +18,7 @@ export enum paths {
   dashboard = "/dashboard",
   leads = "leads",
   machines = "machines",
+  reports = "reports",
   users = "users",
   productions = "productions",
   reset_password = "/password/reset/:token",
@@ -61,6 +63,12 @@ function AppRoutes() {
             <Route
               path={paths.machines} element={
                 <Suspense fallback={<LinearProgress />}><MachinesPage /></Suspense>
+
+              }
+            />
+            <Route
+              path={paths.reports} element={
+                <Suspense fallback={<LinearProgress />}><ReportsPage /></Suspense>
 
               }
             />

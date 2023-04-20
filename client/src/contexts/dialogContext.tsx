@@ -4,11 +4,11 @@ import React, { useReducer } from "react"
 type UserChoices = "signup"| "reset_password_mail" | null | "new_user" | "update_user" | "update_profile" | "view_profile" | "update_password" | "reset_password" | "verify_email" | "control_access" | "delete_user" |
   "block_user" | "unblock_user" | "make_admin" | "remove_admin" 
 
-type LeadChoices = "create_lead" | "update_lead" | "update_remark" | "view_remarks" | "close" | "display_filter"
+type LeadChoices = "create_lead" | "update_lead" | "update_remark" | "view_remarks" | null | "display_filter"
 
-type ProductionChoices = "new_production" | "close" | "select_production_date" | "select_date_range" | "report_machine_wise" |"report_category_wise"
+type ProductionChoices = "new_production" | null | "select_production_date" | "view_reports" | "report_machine_wise" |"report_category_wise"
 
-type MachineChoices = "new_machine" | "update_machine" |"close"
+type MachineChoices = "new_machine" | "update_machine" |null
 
 // initial state
 type ChoiceState = UserChoices | LeadChoices | ProductionChoices | MachineChoices
@@ -31,12 +31,10 @@ export enum MachineChoiceActions{
 export enum ProductionChoiceActions {
   new_production="new_production",
   close = "close",
-  select_date_range ="select_date_range",
+  view_reports ="view_reports",
   select_production_date ="select_production_date",
   report_machine_wise ="report_machine_wise",
   report_category_wise ="report_category_wise"
-  
-
 }
 export enum UserChoiceActions {
   signup = "signup",
@@ -93,7 +91,7 @@ function reducer(state: ChoiceState, action: Action) {
 
     //production dialog choices
     case ProductionChoiceActions.new_production: return type
-    case ProductionChoiceActions.select_date_range: return type
+    case ProductionChoiceActions.view_reports: return type
     case ProductionChoiceActions.select_production_date: return type
     case ProductionChoiceActions.report_category_wise: return type
     case ProductionChoiceActions.report_machine_wise: return type
@@ -103,7 +101,6 @@ function reducer(state: ChoiceState, action: Action) {
     case MachineChoiceActions.new_machine: return type
     case MachineChoiceActions.update_machine: return type
     case MachineChoiceActions.close: return null
-
 
     default: return state
   }

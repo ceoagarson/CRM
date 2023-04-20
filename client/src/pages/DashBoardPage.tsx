@@ -1,5 +1,6 @@
 import { Box, Paper, Typography } from "@mui/material"
 import { Stack } from "@mui/system"
+import { darkColor } from "../utils/colors"
 
 function DashBoardPage() {
    return (
@@ -24,7 +25,20 @@ function DashBoardPage() {
             </Stack>
           </Paper>
         </Stack>
+        
       </Box>
+       <Box
+         sx={{
+           width: '100vw',
+           position: "absolute",
+           bottom: 0,
+           textAlign: "center",
+           color: 'white',
+           backgroundColor: darkColor
+         }}>
+         <Typography
+           variant="caption">Copyright &copy; Nishu kumar</Typography>
+       </Box>
     </>
   )
 }
