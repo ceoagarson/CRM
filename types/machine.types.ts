@@ -11,7 +11,7 @@ export const MachineTypes = ["VER-1 (GF)", "VER-2 (GF)",
 export const machine_categories = ["A", "B", "C"]
 
 export type IMachine = {
-    _id: Types.ObjectId,
+    _id: Types.ObjectId,    
     machine: string,
     category: string,
     created_at: Date,
