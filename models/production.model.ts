@@ -3,7 +3,7 @@ import { IProduction } from "../types/production.type";
 
 const ProductionSchema = new mongoose.Schema<IProduction, mongoose.Model<IProduction, {}, {}>, {}>({
     production: {
-        type: Number,
+        type: String,
         required: true,
         trim: true,
         lowercase: true,

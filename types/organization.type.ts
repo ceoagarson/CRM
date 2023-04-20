@@ -6,7 +6,7 @@ export type IOrganization = {
     _id: Types.ObjectId,
     organization_name: string,
     organization_email: string,
-    organization_mobile: number,
+    organization_mobile: string,
     organization_dp: Asset,
     owner: IUser,
     country: string,

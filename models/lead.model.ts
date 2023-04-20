@@ -20,7 +20,7 @@ const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
         lowercase: true,
     },
     mobile: {
-        type: Number,
+        type: String,
         trim: true,
         index: true,
         required: true,
@@ -78,11 +78,11 @@ const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
         default:"open"
     },
     alternate_mobile1: {
-        type: Number,
+        type: String,
         trim: true,
     },
     alternate_mobile2: {
-        type: Number,
+        type: String,
         trim: true,
     },
     alternate_email: {

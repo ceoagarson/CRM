@@ -1,4 +1,6 @@
+import { Types } from "mongoose"
 import { IUser } from "./user.type"
+import { IProduction } from "./production.type"
 
 export const MachineTypes = ["VER-1 (GF)", "VER-2 (GF)",
     "VER-3 (GF)", "VER-4 (GF)", "VER-5 (GF)",
@@ -10,12 +12,12 @@ export const MachineTypes = ["VER-1 (GF)", "VER-2 (GF)",
 export const machine_categories = ["A", "B", "C"]
 
 export type IMachine = {
-    _id: string,
-    machine: string,
+    _id: Types.ObjectId,    
+    name: string,
+    productions:IProduction[],
     category: string,
     created_at: Date,
     created_by: IUser,
     updated_at: Date,
     updated_by: IUser
-    actions?:any
 }

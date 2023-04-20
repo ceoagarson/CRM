@@ -1,14 +1,16 @@
-import { IMachine } from "./machine.types"
+import { Types } from "mongoose"
 import { IUser } from "./user.type"
+import { IMachine } from "./machine.types"
 
 export type IProduction = {
-    _id: string,
-    production: number
+    _id: Types.ObjectId,
+    production: string
     machine: IMachine,
-    created_at: Date,
+    created_at:Date,
     created_by: IUser,
     updated_at: Date,
     updated_by: IUser
-    actions?: any
 }
 
+export type TProductionBody = Request['body'] & IProduction;
+export type TMachineBody = Request['body'] & IMachine;

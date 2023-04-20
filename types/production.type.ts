@@ -4,7 +4,7 @@ import { IMachine } from "./machine.types"
 
 export type IProduction = {
     _id: Types.ObjectId,
-    production: number
+    production: string
     machine: IMachine,
     created_at:Date,
     created_by: IUser,

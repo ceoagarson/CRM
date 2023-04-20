@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { Asset } from "./asset.type";
 import { IOrganization } from "./organization.type";
 
@@ -10,11 +11,11 @@ export type LeadField={
 }
 
 export type IUser = {
-    _id: string,
+    _id: Types.ObjectId,
     username: string,
     password: string,
     email: string,
-    mobile: number,
+    mobile: string,
     organization: IOrganization
     dp: Asset,
     is_admin:Boolean,
@@ -30,8 +31,6 @@ export type IUser = {
     resetPasswordExpire: Date | null,
     emailVerifyToken: string | null,
     emailVerifyExpire: Date | null,
-    // for react table
-    actions?:any
 }
 
 export type IUserMethods = {

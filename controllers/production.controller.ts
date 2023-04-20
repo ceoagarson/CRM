@@ -52,10 +52,13 @@ export const CreateProduction = catchAsyncError(async (req: Request, res: Respon
         updated_by: req.user,
         updated_at: new Date(Date.now()),
     })
+    let productions=machine.productions
+    productions.push(new_Production)
+    machine.productions = productions
+    await machine.save()
     await new_Production.save()
-    return res.status(200).json({ message: "Production created" })
+    return res.status(200).json({ message: "New Production created" })
 })
-
 
 
 export const GetProductions = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
@@ -73,18 +76,6 @@ export const GetProductionsByDate = catchAsyncError(async (req: Request, res: Re
 })
 
 
-
-export const GetProduction = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params.id;
-    if (!isMongoId(id)) return res.status(403).json({ message: "Production id not valid" })
-    let production = await Production.findById(id).populate("Machine").populate("created_by").populate('updated_by')
-    if (!Production)
-        return res.status(404).json({ message: "this production not exists" })
-    return res.status(200).json(production)
-
-})
-
-
 export const GetProductionsByMachine = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const startDate = req.query.startDate
     const endDate = req.query.endDate
@@ -95,24 +86,23 @@ export const GetProductionsByMachine = catchAsyncError(async (req: Request, res:
     if (productions.length) {
         let prevDate = productions[0].created_at
         let machines: IMachineWiseReport['machines'] = []
-
-        let reportIndex = 0
-        productions.map((production,index) => {
-            if (String(prevDate) === String(production.created_at)) {
-                machines.push({ machine: production.machine.machine, production: production.production })
-                console.log(index,production.machine.machine)
-            }
-            else{
-                machines=[]
-                report[reportIndex]={
-                    date:prevDate,
-                    machines:machines
-                }
-                reportIndex++
-                prevDate=production.created_at
-                console.log("running")
-            }
-        })
+        // let reportIndex = 0
+        // productions.map((production,index) => {
+        //     if (String(prevDate) === String(production.created_at)) {
+        //         machines.push({ machine: production.machine.name, production: production.production })
+        //         console.log(index,production.name.machine)
+        //     }
+        //     else{
+        //         machines=[]
+        //         report[reportIndex]={
+        //             date:prevDate,
+        //             machines:machines
+        //         }
+        //         reportIndex++
+        //         prevDate=production.created_at
+        //         console.log("running")
+        //     }
+        // })
     }
     return res.status(200).json(report)
 })

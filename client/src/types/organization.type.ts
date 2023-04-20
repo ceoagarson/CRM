@@ -1,11 +1,12 @@
+import { Types } from "mongoose"
 import { Asset } from "./asset.type"
 import { IUser } from "./user.type"
 
 export type IOrganization = {
-    _id: string,
+    _id: Types.ObjectId,
     organization_name: string,
     organization_email: string,
-    organization_mobile: number,
+    organization_mobile: string,
     organization_dp: Asset,
     owner: IUser,
     country: string,
@@ -23,3 +24,4 @@ export type IOrganization = {
 export type IOrganizationMethods = {
     getEmailVerifyToken: () => string
 }
+export type TOrganizationBody = Request['body'] & IOrganization;

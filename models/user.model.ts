@@ -26,7 +26,7 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
     select: false,
   },
   mobile: {
-    type: Number,
+    type: String,
     trim: true,
     index: true,
     required: true,
@@ -89,8 +89,8 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
   lead_fields:[
    {
       field :{type : String },
-      readonly:{ type: Boolean },
-      hidden:{type : Boolean }
+      readonly:{ type: Boolean,default:true },
+      hidden:{type : Boolean,default:false }
    }
   ],
   resetPasswordToken: {

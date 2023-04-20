@@ -2,7 +2,7 @@ import mongoose from "mongoose"
 import { IMachine } from "../types/machine.types"
 
 const MachineSchema = new mongoose.Schema<IMachine, mongoose.Model<IMachine, {}, {}>, {}>({
-    machine: {
+    name: {
         type: String,
         required: true,
         trim: true,
@@ -34,7 +34,11 @@ const MachineSchema = new mongoose.Schema<IMachine, mongoose.Model<IMachine, {},
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
-    }
+    },
+    productions: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Production',
+    }]
 })
 
 export const Machine = mongoose.model<IMachine, mongoose.Model<IMachine, {}, {}>>("Machine", MachineSchema)

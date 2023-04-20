@@ -15,7 +15,7 @@ export type IUser = {
     username: string,
     password: string,
     email: string,
-    mobile: number,
+    mobile: string,
     organization: IOrganization
     dp: Asset,
     is_admin:Boolean,

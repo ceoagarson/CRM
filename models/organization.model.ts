@@ -18,7 +18,7 @@ const OrganizationSchema = new mongoose.Schema<IOrganization, mongoose.Model<IOr
         lowercase: true
     },
     organization_mobile: {
-        type: Number,
+        type: String,
         trim: true,
         index: true,
         required: true,
