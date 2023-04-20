@@ -12,7 +12,7 @@ export const MachineTypes = ["VER-1 (GF)", "VER-2 (GF)",
 export const machine_categories = ["A", "B", "C"]
 
 export type IMachine = {
-    _id: Types.ObjectId,    
+    _id: string, 
     name: string,
     productions:IProduction[],
     category: string,
@@ -20,4 +20,6 @@ export type IMachine = {
     created_by: IUser,
     updated_at: Date,
     updated_by: IUser
+    // actions
+    actions?: any
 }

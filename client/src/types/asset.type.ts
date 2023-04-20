@@ -1,4 +1,3 @@
-
 export type Asset = {
   public_id: string,
   url: string,

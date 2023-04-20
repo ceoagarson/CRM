@@ -13,7 +13,7 @@ import { NewMachine } from '../../../services/MachineServices';
 function NewMachineForm() {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, {
-            machine: string,
+            name: string,
             category: string }>
         (NewMachine, {
             onSuccess: () => queryClient.invalidateQueries('machines')
@@ -22,22 +22,22 @@ function NewMachineForm() {
     const { setChoice } = useContext(ChoiceContext)
 
     const formik = useFormik<{
-        machine: string,
+        name: string,
         category:string
     }>({
         initialValues: {
-            machine: "",
+            name: "",
             category:"A"
         },
         validationSchema: Yup.object({
-            machine: Yup.string().required("required field"),
+            name: Yup.string().required("required field"),
             category:Yup.string().required()
         }),
         onSubmit: (values: {
-            machine: string,
+            name: string,
             category: string
         }) => {
-            mutate({machine:values.machine,category:values.category})
+            mutate({name:values.name,category:values.category})
         }
     });
 

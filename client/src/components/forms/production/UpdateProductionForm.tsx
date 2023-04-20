@@ -47,7 +47,7 @@ function UpdateProductionForm({ productions }: Props) {
                                     return (
                                         <TableRow key={index}>
                                             <TableCell>{new Date(production.created_at).toDateString()}</TableCell>
-                                            <TableCell>{production.machine.machine.toUpperCase()}</TableCell>
+                                            <TableCell>{production.machine.name.toUpperCase()}</TableCell>
                                             <TableCell>{production.machine.category}</TableCell>
 
                                             <TableCell>

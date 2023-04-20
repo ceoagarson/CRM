@@ -59,7 +59,7 @@ function NewProductionForm({ machines, date }: Props) {
                                     return (
                                         <TableRow key={index}>
                                             <TableCell>{date.toDateString()}</TableCell>
-                                            <TableCell>{machine.machine.toUpperCase()}</TableCell>
+                                            <TableCell>{machine.name.toUpperCase()}</TableCell>
                                             <TableCell>{machine.category}</TableCell>
                                             <TableCell>
                                                 <input type="number" onChange={(e) => {

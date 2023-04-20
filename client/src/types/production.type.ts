@@ -3,7 +3,7 @@ import { IUser } from "./user.type"
 import { IMachine } from "./machine.types"
 
 export type IProduction = {
-    _id: Types.ObjectId,
+    _id: string,
     production: string
     machine: IMachine,
     created_at:Date,

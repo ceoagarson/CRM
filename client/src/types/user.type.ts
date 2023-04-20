@@ -11,7 +11,7 @@ export type LeadField={
 }
 
 export type IUser = {
-    _id: Types.ObjectId,
+    _id: string,
     username: string,
     password: string,
     email: string,
@@ -31,6 +31,8 @@ export type IUser = {
     resetPasswordExpire: Date | null,
     emailVerifyToken: string | null,
     emailVerifyExpire: Date | null,
+    // actions
+    actions?:any
 }
 
 export type IUserMethods = {

@@ -31,7 +31,7 @@ function UpdateMachineForm({machine}:{machine:IMachine}) {
         category: string
     }>({
         initialValues: {
-            machine: machine.machine,
+            machine: machine.name,
             category: machine.category
         },
         validationSchema: Yup.object({

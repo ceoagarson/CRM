@@ -16,7 +16,7 @@ export type TRemarkBody = Request['body'] & IRemark;
 
 
 export type ILead = {
-    _id: Types.ObjectId,
+    _id: string,
     name: string,
     customer_name: string,
     customer_designation: string,
@@ -40,7 +40,9 @@ export type ILead = {
     created_at: Date,
     created_by: IUser,
     updated_at: Date,
-    updated_by: IUser
+    updated_by: IUser,
+    // actions
+    actions?: any
 }
 
 export type TLeadBody = Request['body'] & ILead;

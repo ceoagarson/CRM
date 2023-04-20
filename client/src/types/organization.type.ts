@@ -3,7 +3,7 @@ import { Asset } from "./asset.type"
 import { IUser } from "./user.type"
 
 export type IOrganization = {
-    _id: Types.ObjectId,
+    _id: string,
     organization_name: string,
     organization_email: string,
     organization_mobile: string,
