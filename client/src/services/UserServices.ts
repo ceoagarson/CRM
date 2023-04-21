@@ -68,7 +68,7 @@ export const UpdateProfile = async (body: FormData) => {
 
 // //update password
 export const UpdatePassword = async (body: { oldPassword: string, newPassword: string, confirmPassword: string }) => {
-  return await apiClient.patch("profile", body)
+  return await apiClient.patch("password/update", body)
 };
 // //update password
 export const ResetPassword = async ({ token, body }:

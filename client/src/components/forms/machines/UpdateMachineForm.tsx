@@ -16,7 +16,7 @@ function UpdateMachineForm({machine}:{machine:IMachine}) {
         <AxiosResponse<string>, BackendError, {
             id: string,
             body: {
-                machine: string,
+                name: string,
                 category: string
             }
         }>
@@ -27,11 +27,11 @@ function UpdateMachineForm({machine}:{machine:IMachine}) {
     const { setChoice } = useContext(ChoiceContext)
 
     const formik = useFormik<{
-        machine: string,
+        name: string,
         category: string
     }>({
         initialValues: {
-            machine: machine.name,
+            name: machine.name,
             category: machine.category
         },
         validationSchema: Yup.object({
@@ -39,10 +39,10 @@ function UpdateMachineForm({machine}:{machine:IMachine}) {
             category: Yup.string().required()
         }),
         onSubmit: (values: {
-            machine: string,
+            name: string,
             category: string
         }) => {
-            mutate({ id: machine._id, body: { machine: values.machine, category: values.category }})
+            mutate({ id: machine._id, body: { name: values.name, category: values.category }})
         }
     });
 
@@ -65,15 +65,15 @@ function UpdateMachineForm({machine}:{machine:IMachine}) {
                     required
                     autoFocus
                     error={
-                        formik.touched.machine && formik.errors.machine ? true : false
+                        formik.touched.name && formik.errors.name ? true : false
                     }
-                    id="machine"
+                    id="name"
                     label="Machine"
                     fullWidth
                     helperText={
-                        formik.touched.machine && formik.errors.machine ? formik.errors.machine : ""
+                        formik.touched.name && formik.errors.name ? formik.errors.name : ""
                     }
-                    {...formik.getFieldProps('machine')}
+                    {...formik.getFieldProps('name')}
                 />
                 < TextField
                     variant='standard'

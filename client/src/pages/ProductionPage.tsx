@@ -1,54 +1,48 @@
 import { Stack, Typography } from '@mui/material'
 import { useState, useEffect } from 'react'
-import NewProductionForm from '../components/forms/production/NewProductionForm'
 import { IMachine } from '../types/machine.types'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { AxiosResponse } from 'axios'
 import { BackendError } from '../types'
 import { GetMachines } from '../services/MachineServices'
-import { apiClient } from '../services/utils/AxiosInterceptor'
-import { IProduction } from '../types/production.type'
-import UpdateProductionForm from '../components/forms/production/UpdateProductionForm'
+import { NewProduction } from '../services/ProductionServices'
 
 function ProductionPage() {
   const [date, setDate] = useState<string>()
-  const [DATA, setDATA] = useState<IProduction[]>([])
-  const [machines, setMachines] = useState<IMachine[]>()
-  const { data, isSuccess, isLoading, refetch, isFetched } = useQuery
-    <AxiosResponse<IProduction[]>, BackendError>("productionBydate", async () => {
-      return await apiClient.get(`/bydate/productions/?date=${date}`)
-    }, {
-      enabled: false
-    })
+  const [machines, setMachines] = useState<IMachine[]>([])
 
-  const { data: machinesData, isSuccess: isSuccessMachines, refetch: RefetchMachines } = useQuery
-    <AxiosResponse<IMachine[]>, BackendError>("machines", GetMachines, {
-      enabled: false
-    })
+  // new production 
+  const { mutate } = useMutation
+    <AxiosResponse<string>, BackendError, {
+      machine_id: string, production: string, created_at: Date
+    }>
+    (NewProduction)
+
+  const { data: machinesData, isSuccess: isSuccessMachines, refetch: RefetechMachines } = useQuery
+    <AxiosResponse<IMachine[]>, BackendError>("getmachines", GetMachines, { enabled: false })
+
 
   useEffect(() => {
-    if (isSuccess) {
-      setDATA(data.data)
+    if (date) {
+      RefetechMachines()
     }
-  }, [isSuccess, data])
+  }, [date, RefetechMachines])
 
   useEffect(() => {
-    if (isSuccessMachines)
+    if (isSuccessMachines) {
       setMachines(machinesData.data)
-  }, [isSuccess, machinesData])
+    }
+    if (date && machines.length > 0) {
+      machines.forEach((machine) => {
+        mutate({
+          machine_id: machine._id,
+          production: "0",
+          created_at: new Date(date)
+        })
+      })
+    }
+  }, [isSuccessMachines, machines, date, mutate, machinesData])
 
-  useEffect(() => {
-    if (date)
-      refetch()
-    // eslint-disable-next-line 
-  }, [date])
-
-  useEffect(() => {
-    if (isFetched && date)
-      if (!data?.data.length)
-        RefetchMachines()
-    // eslint-disable-next-line 
-  }, [isFetched, date, data])
   return (
     <>
       {/* date of production */}
@@ -63,13 +57,6 @@ function ProductionPage() {
           setDate(e.currentTarget.value)
         }} />
       </Stack>
-
-      {/* add production form */}
-      {DATA && DATA.length ?
-        <UpdateProductionForm productions={DATA} /> :
-        null
-      }
-      {date && machines && machines.length ? <NewProductionForm machines={machines} date={new Date(date)} /> : null}
     </>
   )
 }

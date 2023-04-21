@@ -1,11 +1,13 @@
 import { useQuery } from "react-query"
-import React, { useState, useEffect } from "react";
+import  React, { useState, useEffect } from "react";
 import { AxiosResponse } from "axios"
 import { BackendError } from "../../types"
-import { apiClient } from "../../services/utils/AxiosInterceptor";
 import { ReportsTable } from "../../components/tables/ReportTable";
-import { LinearProgress, Typography } from "@mui/material";
+import { LinearProgress, Typography} from "@mui/material";
+import { GetProductionByDateRange } from "../../services/ProductionServices";
+import { IProduction } from "../../types/production.type";
 import { Column } from "react-table";
+
 
 type Props = {
   startDate?: string,
@@ -15,35 +17,20 @@ type Props = {
 type IMachineWiseReport = {
   date: Date,
   machines: {
-    machine: string,
-    production: number
-  }[],
-  m1?:any,
-  m2?:any
+    name: string,
+    production: string
+  }[]
 }
 
+
 export default function IMachineWiseReportPage({ startDate, endDate }: Props) {
-  const [DATA, setDATA] = useState<IMachineWiseReport[]>([])
+  const [tableData, setTableData] = useState<IMachineWiseReport[]>([])
   const { data, isSuccess, isLoading, refetch } = useQuery
-    <AxiosResponse<IMachineWiseReport[]>, BackendError>("category_wise_reports", async () => {
-      return await apiClient.get(`filter/machine/reports?startDate=${startDate}&endDate=${endDate}`)
-    }, {
+    <AxiosResponse<IProduction[]>, BackendError>(["category_wise_reports", startDate, endDate], () => GetProductionByDateRange(startDate, endDate), {
       refetchOnMount: true
     })
-
-  const generateMachineColumns =()=> {
-  DATA.forEach((data)=>{
-    data.machines.map((machine,index)=>{
-      return (
-        {
-          Header:machine.machine,
-          accessor:machine.machine
-        }
-      )
-    })
-  })
-  }
-  const MemoData = React.useMemo(() => DATA, [DATA])
+  
+  const MemoData = React.useMemo(() => data, [data])
   const MemoColumns: Column<IMachineWiseReport>[] = React.useMemo(
     () => [
 
@@ -60,30 +47,41 @@ export default function IMachineWiseReportPage({ startDate, endDate }: Props) {
       //Date
       {
         Header: String("ver-1 (gf)").toUpperCase(),
-        accessor: 'm1',
+        accessor: 'machines',
         Cell: (props) => {
           return (
             <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.machines[0].production}</Typography>
           )
         }
-      },
-      {
-        Header: String("ver-2 (gf)").toUpperCase(),
-        accessor: 'm2',
-        Cell: (props) => {
-          return (
-            <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.machines[1].production}</Typography>
-          )
-        }
-      },
+      }
     ]
     , []
   )
 
+ 
   //setup reports
   useEffect(() => {
     if (isSuccess) {
-      setDATA(data.data)
+      let prevDate = data.data[0].created_at
+      let machines: IMachineWiseReport['machines'] = []
+      let reportIndex = 0
+      let report: IMachineWiseReport[] = []
+      data.data.map((item, index) => {
+        if (String(prevDate) === String(item.created_at)) {
+          machines.push({ name: item.machine.name, production: item.production })
+        }
+        else {
+          report[reportIndex] = {
+            date: prevDate,
+            machines: machines
+          }
+          reportIndex++
+          prevDate = item.created_at
+          machines = []
+        }
+        return null
+      })
+      setTableData(report)
     }
   }, [isSuccess, data])
 
@@ -91,10 +89,15 @@ export default function IMachineWiseReportPage({ startDate, endDate }: Props) {
     refetch()
     // eslint-disable-next-line 
   }, [startDate, endDate])
-  console.log(generateMachineColumns())
+
+  useEffect(()=>{
+    if(tableData.length>0)
+      console.log(Object.keys(tableData[0].machines))
+  },[tableData])
+  console.log(tableData)
   return (
     <>
-      <ReportsTable data={MemoData} columns={MemoColumns} />
+      {/* <ReportsTable data={tableData[0].machines} columns={columns} /> */}
       {
         isLoading && <LinearProgress />
       }

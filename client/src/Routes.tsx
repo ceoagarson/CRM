@@ -9,7 +9,7 @@ import LoginPage from './pages/LoginPage'
 import DashBoardPage from './pages/DashBoardPage'
 import MachinesPage from './pages/MachinesPage'
 import ProductionPage from './pages/ProductionPage'
-import ReportsPage from './pages/ReportPage'
+import ReportsPage from './pages/ReportsPage'
 const LeadsPage = React.lazy(() => import('./pages/LeadsPage'))
 const UsersPage = React.lazy(() => import('./pages/UsersPage'))
 

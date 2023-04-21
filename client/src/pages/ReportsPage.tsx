@@ -1,7 +1,7 @@
 import { useContext, useState } from "react"
 import { ProductionChoiceActions } from "../contexts/dialogContext"
 import { ChoiceContext } from "../contexts/dialogContext"
-import { Stack, TextField, Typography } from "@mui/material"
+import { Box, Stack, TextField, Typography } from "@mui/material"
 import CategoryWiseReportPage from "./reports/CategoryWiseReportPage"
 import MachineWiseReportPage from "./reports/MachineWiseReportPage"
 
@@ -52,19 +52,20 @@ function ReportsPage() {
                     <option value="category_wise">Category Wise</option>
                 </TextField>
             </Stack>
-
-            {/* category wise report */}
-            {
-                choice === ProductionChoiceActions.report_category_wise ?
-                    <CategoryWiseReportPage startDate={startDate} endDate={endDate} />
-                    : null
-            }
-            {/* machine wise report */}
-            {
-                choice === ProductionChoiceActions.report_machine_wise ?
-                    <MachineWiseReportPage startDate={startDate} endDate={endDate} />
-                    : null
-            }
+            <Stack sx={{ width: "100%" }}>
+                    {/* category wise report */}
+                    {
+                        choice === ProductionChoiceActions.report_category_wise ?
+                            <CategoryWiseReportPage startDate={startDate} endDate={endDate} />
+                            : null
+                    }
+                    {/* machine wise report */}
+                    {
+                        choice === ProductionChoiceActions.report_machine_wise ?
+                            <MachineWiseReportPage startDate={startDate} endDate={endDate} />
+                            : null
+                    }
+            </Stack>
 
         </>
     )

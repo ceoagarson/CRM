@@ -48,10 +48,10 @@ export default function MachinesPage() {
             // machine
             {
                 Header: 'Machine Name',
-                accessor: 'machine',
+                accessor: 'name',
                 Cell: (props) => {
                     return (
-                        <Typography sx={{ textTransform: "uppercase" }}>{props.row.original.machine}</Typography>
+                        <Typography sx={{ textTransform: "uppercase" }}>{props.row.original.name}</Typography>
                     )
                 }
             },
@@ -62,6 +62,46 @@ export default function MachinesPage() {
                 Cell: (props) => {
                     return (
                         <Typography sx={{ textTransform: "uppercase" }}>{props.row.original.category}</Typography>
+                    )
+                }
+            },
+            // machine category
+            {
+                Header: 'Created At',
+                accessor: 'created_at',
+                Cell: (props) => {
+                    return (
+                        <Typography sx={{ textTransform: "uppercase" }}>{new Date(props.row.original.created_at).toLocaleString()}</Typography>
+                    )
+                }
+            },
+            // machine category
+            {
+                Header: 'Created By',
+                accessor: 'created_by',
+                Cell: (props) => {
+                    return (
+                        <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.created_by.username}</Typography>
+                    )
+                }
+            },
+            // machine category
+            {
+                Header: 'Last Updated At',
+                accessor: 'updated_at',
+                Cell: (props) => {
+                    return (
+                        <Typography sx={{ textTransform: "uppercase" }}>{new Date(props.row.original.updated_at).toLocaleString()}</Typography>
+                    )
+                }
+            },
+            // machine category
+            {
+                Header: 'Last Updated By',
+                accessor: 'updated_by',
+                Cell: (props) => {
+                    return (
+                        <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.updated_by.username}</Typography>
                     )
                 }
             },

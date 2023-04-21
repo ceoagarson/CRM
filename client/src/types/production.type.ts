@@ -1,4 +1,3 @@
-import { Types } from "mongoose"
 import { IUser } from "./user.type"
 import { IMachine } from "./machine.types"
 

@@ -5,21 +5,7 @@ import { IProduction, TProductionBody } from "../types/production.type"
 import { Machine } from "../models/machine.model.js"
 import { Production } from "../models/production.model.js"
 
-type IMachineWiseReport = {
-    date: Date,
-    machines: {
-        machine: string,
-        production: number
-    }[]
-}
 
-type ICategoryWiseReport = {
-    date: Date,
-    categories: {
-        category: string,
-        production: number
-    }[]
-}
 // create Production 
 export const CreateProduction = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const { production, created_at } = req.body as TProductionBody
@@ -61,61 +47,20 @@ export const CreateProduction = catchAsyncError(async (req: Request, res: Respon
 })
 
 
-export const GetProductions = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    let productions = await Production.find().populate("machine").populate("created_by").populate('updated_by')
-    return res.status(200).json(productions)
-})
-
 
 export const GetProductionsByDate = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     let date=req.query.date
     if(!date)
         return res.status(400).json({ message: "provide date" })
-    let productions = await Production.find({created_at:date}).populate("machine").populate("created_by").populate('updated_by')
+    let productions = await Production.find({ created_at: date }).populate("machine").populate("created_by").populate('updated_by')
     return res.status(200).json(productions)
 })
 
-
-export const GetProductionsByMachine = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+export const GetProductionsByDateRange = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const startDate = req.query.startDate
     const endDate = req.query.endDate
     let productions: IProduction[] = await Production.find().populate("machine").populate("created_by").populate('updated_by').find({
         created_at: { $gte: startDate, $lte: endDate },
     }).sort({ created_at: 'asc' })
-    const report: IMachineWiseReport[] = []
-    if (productions.length) {
-        let prevDate = productions[0].created_at
-        let machines: IMachineWiseReport['machines'] = []
-        // let reportIndex = 0
-        // productions.map((production,index) => {
-        //     if (String(prevDate) === String(production.created_at)) {
-        //         machines.push({ machine: production.machine.name, production: production.production })
-        //         console.log(index,production.name.machine)
-        //     }
-        //     else{
-        //         machines=[]
-        //         report[reportIndex]={
-        //             date:prevDate,
-        //             machines:machines
-        //         }
-        //         reportIndex++
-        //         prevDate=production.created_at
-        //         console.log("running")
-        //     }
-        // })
-    }
-    return res.status(200).json(report)
-})
-
-
-
-export const GetProductionsByCategory = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    const startDate = req.query.startDate
-    const endDate = req.query.endDate
-    console.log(startDate, endDate)
-    let productions = await Production.find().populate("machine").populate("created_by").populate('updated_by').find({
-        created_at: { $gte: startDate, $lte: endDate },
-    }).sort({ created_at: 'asc' })
-    const report: ICategoryWiseReport[] = []
-    return res.status(200).json(report)
+    return res.status(200).json(productions)
 })

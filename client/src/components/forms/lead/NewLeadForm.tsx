@@ -60,8 +60,8 @@ function NewLeadForm({ users }: { users: IUser[] }) {
       turnover: " 5 lakhs",
       lead_type: "wholesale",
       stage: "open",
-      alternate_mobile1: "0000000000",
-      alternate_mobile2: "0000000000",
+      alternate_mobile1: "",
+      alternate_mobile2: "",
       alternate_email: "",
       lead_source: "internet",
       lead_owners: [""]

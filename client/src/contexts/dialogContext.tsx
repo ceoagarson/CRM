@@ -6,7 +6,7 @@ type UserChoices = "signup"| "reset_password_mail" | null | "new_user" | "update
 
 type LeadChoices = "create_lead" | "update_lead" | "update_remark" | "view_remarks" | null | "display_filter"
 
-type ProductionChoices = "new_production" | null | "select_production_date" | "view_reports" | "report_machine_wise" |"report_category_wise"
+type ProductionChoices = "new_production_page" | null | "update_production_page" | "update_production" | "report_machine_wise" |"report_category_wise"
 
 type MachineChoices = "new_machine" | "update_machine" |null
 
@@ -29,10 +29,10 @@ export enum MachineChoiceActions{
   close="close"
 }
 export enum ProductionChoiceActions {
-  new_production="new_production",
+  new_production_page="new_production_page",
   close = "close",
-  view_reports ="view_reports",
-  select_production_date ="select_production_date",
+  update_production ="update_production",
+  update_production_page ="update_production_page",
   report_machine_wise ="report_machine_wise",
   report_category_wise ="report_category_wise"
 }
@@ -90,9 +90,9 @@ function reducer(state: ChoiceState, action: Action) {
     case LeadChoiceActions.close: return null
 
     //production dialog choices
-    case ProductionChoiceActions.new_production: return type
-    case ProductionChoiceActions.view_reports: return type
-    case ProductionChoiceActions.select_production_date: return type
+    case ProductionChoiceActions.new_production_page: return type
+    case ProductionChoiceActions.update_production: return type
+    case ProductionChoiceActions.update_production_page: return type
     case ProductionChoiceActions.report_category_wise: return type
     case ProductionChoiceActions.report_machine_wise: return type
     case ProductionChoiceActions.close: return null

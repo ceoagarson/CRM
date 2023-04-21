@@ -61,15 +61,15 @@ function NewMachineForm() {
                     required
                     autoFocus
                     error={
-                        formik.touched.machine && formik.errors.machine ? true : false
+                        formik.touched.name && formik.errors.name ? true : false
                     }
-                    id="machine"
+                    id="name"
                     label="Machine"
                     fullWidth
                     helperText={
-                        formik.touched.machine && formik.errors.machine ? formik.errors.machine : ""
+                        formik.touched.name && formik.errors.name ? formik.errors.name : ""
                     }
-                    {...formik.getFieldProps('machine')}
+                    {...formik.getFieldProps('name')}
                 />
                 < TextField
                     variant='standard'

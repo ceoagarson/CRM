@@ -40,7 +40,7 @@ function MachineTableMenu({ selectedFlatRows }: Props) {
         let data: SelectedData[] = []
         selectedFlatRows.map((item) => {
             return data.push({
-                machine: item.original.machine,
+                machine: item.original.name,
                 category: item.original.category
             })
         })
