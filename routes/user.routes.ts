@@ -8,7 +8,7 @@ const upload = multer({ storage: multer.diskStorage({ destination: "/tmp/" }) })
 
 router.post("/signup", upload.single("dp"), SignUp)
 router.route("/users")
-    .get(isAuthenticatedUser, GetUsers)
+    .get(isAuthenticatedUser, isAdmin, GetUsers)
     .post(isAuthenticatedUser, isAdmin, upload.single("dp"), NewUser)
 router.route("/users/:id")
     .put(isAuthenticatedUser, isAdmin, upload.single("dp"), UpdateUser)

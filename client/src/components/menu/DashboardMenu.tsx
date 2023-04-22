@@ -31,37 +31,42 @@ function DashboardMenu() {
             >
                 <StyledLink to={paths.dashboard}>Dashboard</StyledLink>
             </MenuItem>
-            {user?.is_admin ?
-                <MenuItem
-                    onClick={
-                        () => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
-                    }>
-                    <StyledLink to={paths.users}>Users</StyledLink>
-                </MenuItem>
-                : null}
+            {
+                user?.is_admin ?
+                    <>
+                        <MenuItem
+                            onClick={
+                                () => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
+                            }>
+                            <StyledLink to={paths.users}>Users</StyledLink>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={
+                                () => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
+                            }>
+                            <StyledLink to={paths.productions}>Productions</StyledLink>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={
+                                () => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
+                            }>
+                            <StyledLink to={paths.reports}>Reports</StyledLink>
+                        </MenuItem>
+                        <MenuItem
+                            onClick={
+                                () => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
+                            }>
+                            <StyledLink to={paths.machines}>Machines</StyledLink>
+                        </MenuItem>
+                    </>
+
+                    : null
+            }
             <MenuItem
                 onClick={
                     () => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
                 }>
                 <StyledLink to={paths.leads}>Leads</StyledLink>
-            </MenuItem>
-            <MenuItem
-                onClick={
-                    () => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
-                }>
-                <StyledLink to={paths.productions}>Productions</StyledLink>
-            </MenuItem>
-            <MenuItem
-                onClick={
-                    () => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
-                }>
-                <StyledLink to={paths.reports}>Reports</StyledLink>
-            </MenuItem>
-            <MenuItem
-                onClick={
-                    () => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
-                }>
-                <StyledLink to={paths.machines}>Machines</StyledLink>
             </MenuItem>
         </Menu>
     )

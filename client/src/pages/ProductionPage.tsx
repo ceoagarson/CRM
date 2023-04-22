@@ -1,12 +1,9 @@
 import { Stack, Typography } from '@mui/material'
 import { useState, useEffect } from 'react'
-import { IMachine } from '../types/machine.types'
-import { useMutation, useQuery } from 'react-query'
+import {  useQuery } from 'react-query'
 import { AxiosResponse } from 'axios'
 import { BackendError } from '../types'
-import { GetMachines } from '../services/MachineServices'
-import { NewProduction, GetProductionByDate } from '../services/ProductionServices'
-import { Box, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import {  GetProductionByDate } from '../services/ProductionServices'
 import { IProduction } from '../types/production.type'
 import NewProductionForm from '../components/forms/production/NewProductionForm'
 import UpdateProductionPage from './production/UpdateProductionPage'
@@ -16,10 +13,8 @@ function ProductionPage() {
   const [newProduction, setNewProduction] = useState(false)
   const [productions, setProductions] = useState<IProduction[]>([])
   //fetch production by date selected
-  const { data, isSuccess, isLoading, refetch } = useQuery
-    <AxiosResponse<IProduction[]>, BackendError>(["productionbydate", date], () => GetProductionByDate(date), {
-      enabled: false
-    })
+  const { data, isSuccess, refetch } = useQuery
+    <AxiosResponse<IProduction[]>, BackendError>(["productionBydate", date], () => GetProductionByDate(date))
 
   //fetch production
   useEffect(() => {
@@ -36,6 +31,12 @@ function ProductionPage() {
     if (date) {
       refetch()
     }
+    else{
+      let today = new Date();
+      let dt= today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
+      setDate(dt)
+    }
+    // eslint-disable-next-line
   }, [date])
 
   return (
@@ -48,7 +49,7 @@ function ProductionPage() {
         justifyContent={"center"}
       >
         <Typography variant="h6">Select Date Of Production</Typography>
-        <input type="date" onChange={(e) => {
+        <input defaultValue={date} type="date" onChange={(e) => {
           setDate(e.currentTarget.value)
         }} />
       </Stack>

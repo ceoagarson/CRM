@@ -7,16 +7,12 @@ import { NewProduction } from '../../../services/ProductionServices';
 import { queryClient } from '../../..';
 import { useMutation } from 'react-query';
 import { useState } from "react"
+import { IProduction } from '../../../types/production.type';
 
-type Props = {
-    machine_id: string,
-    production: string,
-    created_at: Date
-}
 
-function UpdateProductionDialog({ machine_id, production, created_at }: Props) {
+function UpdateProductionDialog({ production }: { production :IProduction}) {
     const { choice, setChoice } = useContext(ChoiceContext)
-    const [value, setValue] = useState(production)
+    const [value, setValue] = useState(production.production)
     const { mutate, isLoading,error,isError,isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, {
             machine_id: string, production: string, created_at: Date
@@ -34,6 +30,7 @@ function UpdateProductionDialog({ machine_id, production, created_at }: Props) {
                 <DialogTitle textAlign={"center"}>New Lead</DialogTitle>
                 <DialogContent>
                     <TextField
+                        defaultValue={production.production}
                         label="Production"
                         type='number'
                         disabled={isLoading}
@@ -60,9 +57,9 @@ function UpdateProductionDialog({ machine_id, production, created_at }: Props) {
                         disabled={isLoading}
                         fullWidth onClick={() => {
                             mutate({
-                                machine_id: machine_id,
+                                machine_id: production.machine._id,
                                 production: value,
-                                created_at: created_at
+                                created_at: production.created_at
                             })
                             setChoice({ type: ProductionChoiceActions.close })
                         }

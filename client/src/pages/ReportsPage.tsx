@@ -1,7 +1,7 @@
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { ProductionChoiceActions } from "../contexts/dialogContext"
 import { ChoiceContext } from "../contexts/dialogContext"
-import { Box, Stack, TextField, Typography } from "@mui/material"
+import {  Stack, TextField, Typography } from "@mui/material"
 import CategoryWiseReportPage from "./reports/CategoryWiseReportPage"
 import MachineWiseReportPage from "./reports/MachineWiseReportPage"
 
@@ -9,6 +9,10 @@ function ReportsPage() {
     const [startDate, setStartDate] = useState<string>()
     const [endDate, setEndDate] = useState<string>()
     const { choice, setChoice } = useContext(ChoiceContext)
+    useEffect(() => {
+        setChoice({ type: ProductionChoiceActions.close })
+        // eslint-disable-next-line
+    }, [startDate, endDate])
     return (
         <>
             {/* select date range */}
@@ -53,18 +57,18 @@ function ReportsPage() {
                 </TextField>
             </Stack>
             <Stack sx={{ width: "100%" }}>
-                    {/* category wise report */}
-                    {
-                        choice === ProductionChoiceActions.report_category_wise ?
-                            <CategoryWiseReportPage startDate={startDate} endDate={endDate} />
-                            : null
-                    }
-                    {/* machine wise report */}
-                    {
-                        choice === ProductionChoiceActions.report_machine_wise ?
-                            <MachineWiseReportPage startDate={startDate} endDate={endDate} />
-                            : null
-                    }
+                {/* category wise report */}
+                {
+                    choice === ProductionChoiceActions.report_category_wise ?
+                        <CategoryWiseReportPage startDate={startDate} endDate={endDate} />
+                        : null
+                }
+                {/* machine wise report */}
+                {
+                    choice === ProductionChoiceActions.report_machine_wise ?
+                        <MachineWiseReportPage startDate={startDate} endDate={endDate} />
+                        : null
+                }
             </Stack>
 
         </>

@@ -13,7 +13,6 @@ export const machine_categories = ["A", "B", "C"]
 export type IMachine = {
     _id: string, 
     name: string,
-    productions:IProduction[],
     category: string,
     created_at: Date,
     created_by: IUser,

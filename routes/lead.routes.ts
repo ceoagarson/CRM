@@ -8,7 +8,7 @@ router.route("/leads")
     .get(isAuthenticatedUser, GetLeads)
     .post(isAuthenticatedUser, CreateLead)
 router.route("/leads/:id")
-    .put(isAuthenticatedUser, UpdateLead)
+    .put(isAuthenticatedUser, isAdmin, UpdateLead)
 router.route("/remarks/leads/:id").patch(isAuthenticatedUser, NewRemark)
 
 export default router

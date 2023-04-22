@@ -38,10 +38,6 @@ export const CreateProduction = catchAsyncError(async (req: Request, res: Respon
         updated_by: req.user,
         updated_at: new Date(Date.now()),
     })
-    let productions=machine.productions
-    productions.push(new_Production)
-    machine.productions = productions
-    await machine.save()
     await new_Production.save()
     return res.status(200).json({ message: "New Production created" })
 })

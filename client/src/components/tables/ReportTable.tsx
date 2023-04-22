@@ -1,4 +1,4 @@
-import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
+import { Box, Table, TableBody, TableCell, TableFooter, TableHead, TableRow, Typography } from '@mui/material'
 import { Column, useTable, useFilters, useSortBy, usePagination, useGlobalFilter, useRowSelect } from 'react-table'
 import Pagination from './utils/Pagination';
 import TableCheckBox from './utils/TableCheckBox';
@@ -19,6 +19,7 @@ export function ReportsTable({ data, columns }: Props) {
         getTableProps,
         getTableBodyProps,
         headerGroups,
+        footerGroups,
         prepareRow,
         page,
         canPreviousPage,
@@ -157,6 +158,15 @@ export function ReportsTable({ data, columns }: Props) {
                             )
                         })}
                     </TableBody>
+                    <TableFooter>
+                        {footerGroups.map(group => (
+                            <tr {...group.getFooterGroupProps()}>
+                                {group.headers.map(column => (
+                                    <td {...column.getFooterProps()}>{column.render('Footer')}</td>
+                                ))}
+                            </tr>
+                        ))}
+                    </TableFooter>
                 </Table>
             </Box>
             {/* pagination */}
