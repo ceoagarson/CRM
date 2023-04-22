@@ -13,7 +13,7 @@ function NewProductionForm({ date, createProduction }: { date: string, createPro
     const [remount, setRemount] = useState(true)
     const { data,isSuccess:isSuccessMachines } = useQuery
         <AxiosResponse<IMachine[]>, BackendError>("getmachines", GetMachines)
-    const { mutate, isSuccess,  isError, error } = useMutation<AxiosResponse<string>, BackendError, {
+    const { mutate,  isError, error } = useMutation<AxiosResponse<string>, BackendError, {
         machine_id: string, production: string, created_at: Date
     }>(NewProduction)
     const inputRef = useRef<HTMLInputElement | null>(null)
@@ -34,50 +34,54 @@ function NewProductionForm({ date, createProduction }: { date: string, createPro
     }, [date, inputRef])
 
     return (
-        <Stack direction="column" gap={2}>
-            {isSuccess ? <Typography sx={{ color: "green" }}>Saved Production</Typography> : null}
+        <>
+         
             {isError ? <Typography sx={{ color: "green" }}>Error while saving Production</Typography> : null}
             {error ? <Typography sx={{ color: "green" }}>Error: {error.response.data.message}</Typography> : null}
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Selected Date</TableCell>
-                        <TableCell>Machine Name</TableCell>
-                        <TableCell>Category</TableCell>
-                        <TableCell>
-                            Production
-                        </TableCell>
-                    </TableRow>
-                </TableHead>
-                {
-                    date && createProduction && machines.length > 0 && machines.map((machine, index) => {
-                        return (
-                            <TableRow key={index}>
-                                <TableCell>{new Date(date).toDateString()}</TableCell>
-                                <TableCell>{machine.name.toUpperCase()}</TableCell>
-                                <TableCell>{machine.category}</TableCell>
-                                <TableCell>
-                                    {
-                                        remount ? <TextField variant="standard"
-                                            ref={inputRef}
-                                            type="number"
-                                            onChange={(e) => {
-                                                if (e.currentTarget.value)
-                                                    mutate({
-                                                        machine_id: machine._id,
-                                                        production: String(e.currentTarget.value),
-                                                        created_at: new Date(date)
-                                                    })
-                                            }} />:null
-                                    }
-                                  
-                                </TableCell>
-                            </TableRow>
-                        )
-                    })
-                }
-            </Table >
-        </Stack>
+            <Stack direction="column" gap={2}>
+
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Selected Date</TableCell>
+                            <TableCell>Machine Name</TableCell>
+                            <TableCell>Category</TableCell>
+                            <TableCell>
+                                Production
+                            </TableCell>
+                        </TableRow>
+                    </TableHead>
+                    {
+                        date && createProduction && machines.length > 0 && machines.map((machine, index) => {
+                            return (
+                                <TableRow key={index}>
+                                    <TableCell>{new Date(date).toDateString()}</TableCell>
+                                    <TableCell>{machine.name.toUpperCase()}</TableCell>
+                                    <TableCell>{machine.category}</TableCell>
+                                    <TableCell>
+                                        {
+                                            remount ? <TextField variant="standard"
+                                                ref={inputRef}
+                                                type="number"
+                                                onChange={(e) => {
+                                                    if (e.currentTarget.value)
+                                                        mutate({
+                                                            machine_id: machine._id,
+                                                            production: String(e.currentTarget.value),
+                                                            created_at: new Date(date)
+                                                        })
+                                                }} /> : null
+                                        }
+
+                                    </TableCell>
+                                </TableRow>
+                            )
+                        })
+                    }
+                </Table >
+            </Stack>
+        </>
+       
     )
 }
 

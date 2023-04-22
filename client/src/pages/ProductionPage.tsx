@@ -28,9 +28,16 @@ function ProductionPage() {
   }, [isSuccess, data, productions])
 
   useEffect(() => {
-      refetch()
-    // eslint-disable-next-line
-  }, [date])
+      if (date) {
+        refetch()
+      }
+      else {
+        let today = new Date();
+        let dt = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
+        setDate(dt)
+      }
+      // eslint-disable-next-line
+    }, [date])
 
   return (
     <>
@@ -42,7 +49,7 @@ function ProductionPage() {
         justifyContent={"center"}
       >
         <Typography variant="h6">Select Date Of Production</Typography>
-        <input type="date" onChange={(e) => {
+        <input type="date" defaultValue={date} onChange={(e) => {
           setDate(e.currentTarget.value)
         }} />
       </Stack>
