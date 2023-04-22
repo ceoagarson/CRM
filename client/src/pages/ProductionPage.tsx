@@ -5,43 +5,38 @@ import { useMutation, useQuery } from 'react-query'
 import { AxiosResponse } from 'axios'
 import { BackendError } from '../types'
 import { GetMachines } from '../services/MachineServices'
-import { NewProduction } from '../services/ProductionServices'
+import { NewProduction, GetProductionByDate } from '../services/ProductionServices'
+import { Box, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import { IProduction } from '../types/production.type'
+import NewProductionForm from '../components/forms/production/NewProductionForm'
+import UpdateProductionPage from './production/UpdateProductionPage'
 
 function ProductionPage() {
   const [date, setDate] = useState<string>()
-  const [machines, setMachines] = useState<IMachine[]>([])
+  const [newProduction, setNewProduction] = useState(false)
+  const [productions, setProductions] = useState<IProduction[]>([])
+  //fetch production by date selected
+  const { data, isSuccess, isLoading, refetch } = useQuery
+    <AxiosResponse<IProduction[]>, BackendError>(["productionbydate", date], () => GetProductionByDate(date), {
+      enabled: false
+    })
 
-  // new production 
-  const { mutate } = useMutation
-    <AxiosResponse<string>, BackendError, {
-      machine_id: string, production: string, created_at: Date
-    }>
-    (NewProduction)
-
-  const { data: machinesData, isSuccess: isSuccessMachines, refetch: RefetechMachines } = useQuery
-    <AxiosResponse<IMachine[]>, BackendError>("getmachines", GetMachines, { enabled: false })
-
+  //fetch production
+  useEffect(() => {
+    if (isSuccess && data.data.length > 0) {
+      setNewProduction(false)
+      setProductions(data.data)
+    }
+    if (isSuccess && data.data.length === 0) {
+      setNewProduction(true)
+    }
+  }, [isSuccess, data, productions])
 
   useEffect(() => {
     if (date) {
-      RefetechMachines()
+      refetch()
     }
-  }, [date, RefetechMachines])
-
-  useEffect(() => {
-    if (isSuccessMachines) {
-      setMachines(machinesData.data)
-    }
-    if (date && machines.length > 0) {
-      machines.forEach((machine) => {
-        mutate({
-          machine_id: machine._id,
-          production: "0",
-          created_at: new Date(date)
-        })
-      })
-    }
-  }, [isSuccessMachines, machines, date, mutate, machinesData])
+  }, [date])
 
   return (
     <>
@@ -57,6 +52,9 @@ function ProductionPage() {
           setDate(e.currentTarget.value)
         }} />
       </Stack>
+      {newProduction && date ? <NewProductionForm date={date} createProduction={newProduction} /> : null}
+
+      {date && productions && productions.length > 0 && !newProduction ? <UpdateProductionPage date={date} data={productions} /> : null}
     </>
   )
 }
