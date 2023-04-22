@@ -30,9 +30,7 @@ type ICategoryWiseReport = {
 export default function ICategoryWiseReportPage({ startDate, endDate }: Props) {
   const [tableData, setTableData] = useState<ICategoryWiseReport[]>([])
   const { data, isSuccess, refetch } = useQuery
-    <AxiosResponse<IProduction[]>, BackendError>(["category_wise_reports", startDate, endDate], () => GetProductionByDateRange(startDate, endDate), {
-      refetchOnMount: true
-    })
+    <AxiosResponse<IProduction[]>, BackendError>(["productionsbydaterange", startDate, endDate], () => GetProductionByDateRange(startDate, endDate))
 
   const MemoData = React.useMemo(() => tableData, [tableData])
   const MemoColumns: Column<ICategoryWiseReport>[] = React.useMemo(

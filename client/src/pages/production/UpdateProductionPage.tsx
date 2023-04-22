@@ -7,19 +7,18 @@ import { Edit } from '@mui/icons-material'
 import UpdateProductionDialog from '../../components/dialogs/production/UpdateProductionDialog'
 import { ChoiceContext, ProductionChoiceActions } from '../../contexts/dialogContext'
 
-type Props={
-    date:string,
-    data : IProduction[]
+type Props = {
+    data: IProduction[]
 }
 
-function UpdateProductionPage({date,data}:Props) {
-    const [productions,setProductions]=useState<IProduction[]>([])
-    const [production,setProduction]=useState<IProduction>()
-    const {setChoice}=useContext(ChoiceContext)
+function UpdateProductionPage({ data }: Props) {
+    const [productions, setProductions] = useState<IProduction[]>(data)
+    const [production, setProduction] = useState<IProduction>()
+    const { setChoice } = useContext(ChoiceContext)
     const MemoData = React.useMemo(() => productions, [productions])
     const MemoColumns: Column<IProduction>[] = React.useMemo(
         () => [
-          
+
             // actions
             {
                 Header: "Allowed Actions",
@@ -33,9 +32,10 @@ function UpdateProductionPage({date,data}:Props) {
                                 <IconButton
                                     color="success"
                                     size="medium"
-                                    onClick={()=>{
+                                    onClick={() => {
                                         setProduction(props.row.original)
-                                        setChoice({type:ProductionChoiceActions.update_production})}
+                                        setChoice({ type: ProductionChoiceActions.update_production })
+                                    }
                                     }
                                 >
                                     <Edit />
@@ -45,7 +45,7 @@ function UpdateProductionPage({date,data}:Props) {
                     )
                 }
             },
-            
+
             // machine name
             {
                 Header: 'Machine Name',
@@ -66,7 +66,7 @@ function UpdateProductionPage({date,data}:Props) {
                     )
                 }
             }
-           ,
+            ,
             // production name
             {
                 Header: 'Production',
@@ -94,12 +94,13 @@ function UpdateProductionPage({date,data}:Props) {
     useEffect(()=>{
         setProductions(data)
     }, [data])
-  return (
+    
+    return (
 
-<>
-          <UpdateProductionTable data={MemoData} columns={MemoColumns} />
-          {production ? <UpdateProductionDialog production={production} />:null}
-</>    )
+        <>
+            <UpdateProductionTable data={MemoData} columns={MemoColumns} />
+            {production ? <UpdateProductionDialog production={production} /> : null}
+        </>)
 }
 
 export default UpdateProductionPage

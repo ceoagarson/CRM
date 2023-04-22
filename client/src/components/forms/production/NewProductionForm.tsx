@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react'
+import  { useRef, useEffect, useState } from 'react'
 import { IMachine } from '../../../types/machine.types'
 import { AxiosResponse } from 'axios'
 import { useMutation, useQuery } from 'react-query'
@@ -11,35 +11,24 @@ import { Stack, Table, TableCell, TableHead, TableRow, TextField, Typography } f
 function NewProductionForm({ date, createProduction }: { date: string, createProduction: Boolean }) {
     const [machines, setMachines] = useState<IMachine[]>([])
     const [remount, setRemount] = useState(true)
-    const { data, isSuccess, isError, error } = useQuery
+    const { data,isSuccess:isSuccessMachines } = useQuery
         <AxiosResponse<IMachine[]>, BackendError>("getmachines", GetMachines)
-    const { mutate } = useMutation<AxiosResponse<string>, BackendError, {
+    const { mutate, isSuccess,  isError, error } = useMutation<AxiosResponse<string>, BackendError, {
         machine_id: string, production: string, created_at: Date
     }>(NewProduction)
     const inputRef = useRef<HTMLInputElement | null>(null)
+    
     useEffect(() => {
-        if (isSuccess) {
+        if (isSuccessMachines) {
             setMachines(data.data)
         }
-    }, [isSuccess, machines, date, data])
-
-    useEffect(() => {
-        if (date && createProduction && machines.length > 0) {
-            machines.forEach((machine) => {
-                mutate({
-                    machine_id: machine._id,
-                    production: "0",
-                    created_at: new Date(date)
-                })
-            })
-        }
-    }, [date, createProduction, machines, mutate])
-
+    }, [isSuccessMachines, machines, date, data])
+    
     useEffect(() => {
         setRemount(false)
         setTimeout(()=>{
             setRemount(true)
-        },200)
+        },100)
         inputRef.current?.focus()
         
     }, [date, inputRef])

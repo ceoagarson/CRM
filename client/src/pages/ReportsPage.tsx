@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext,  useState } from "react"
 import { ProductionChoiceActions } from "../contexts/dialogContext"
 import { ChoiceContext } from "../contexts/dialogContext"
 import {  Stack, TextField, Typography } from "@mui/material"
@@ -9,10 +9,6 @@ function ReportsPage() {
     const [startDate, setStartDate] = useState<string>()
     const [endDate, setEndDate] = useState<string>()
     const { choice, setChoice } = useContext(ChoiceContext)
-    useEffect(() => {
-        setChoice({ type: ProductionChoiceActions.close })
-        // eslint-disable-next-line
-    }, [startDate, endDate])
     return (
         <>
             {/* select date range */}
