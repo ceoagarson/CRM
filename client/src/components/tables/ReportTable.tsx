@@ -36,14 +36,7 @@ export function ReportsTable({ data, columns }: Props) {
     } = useTable({
         data, columns, initialState: {
             pageSize: 10
-        },
-        defaultColumn: React.useMemo(
-            () => ({
-                // Let's set up our default Filter UI
-                Filter: ""
-            }),
-            []
-        )
+        }
     },
         useFilters,
         useGlobalFilter,
@@ -98,10 +91,10 @@ export function ReportsTable({ data, columns }: Props) {
             <Box
                 sx={{
                     overflow: "scroll",
-                    height: '70vh'
+                    height: '50vh'
+
                 }}>
                 <Table
-                    sx={{ minWidth: "1200px" }}
                     size="small"
                     {...getTableProps()}>
                     <TableHead
@@ -127,9 +120,7 @@ export function ReportsTable({ data, columns }: Props) {
                                                             ? <ArrowDropDown />
                                                             : <ArrowDropUp />
                                                         : ""}
-                                                    {
-                                                        column.canFilter ? column.render('Filter') : ''
-                                                    }
+                                                
                                                 </Stack>
                                             </TableCell>
                                         </>

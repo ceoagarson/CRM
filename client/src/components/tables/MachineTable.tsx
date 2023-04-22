@@ -40,14 +40,7 @@ export function MachineTable({ data, columns }: Props) {
     } = useTable({
         data, columns, initialState: {
             pageSize: 10
-        },
-        defaultColumn: React.useMemo(
-            () => ({
-                // Let's set up our default Filter UI
-                Filter: ""
-            }),
-            []
-        )
+        }
     },
         useFilters,
         useGlobalFilter,
@@ -134,9 +127,7 @@ export function MachineTable({ data, columns }: Props) {
                                                             ? <ArrowDropDown />
                                                             : <ArrowDropUp />
                                                         : ""}
-                                                    {
-                                                        column.canFilter ? column.render('Filter') : ''
-                                                    }
+                                                    
                                                 </Stack>
                                             </TableCell>
                                         </>

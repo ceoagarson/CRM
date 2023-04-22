@@ -1,9 +1,9 @@
 import { useQuery } from "react-query"
-import  React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { AxiosResponse } from "axios"
 import { BackendError } from "../../types"
 import { ReportsTable } from "../../components/tables/ReportTable";
-import { LinearProgress, Typography} from "@mui/material";
+import {  Typography } from "@mui/material";
 import { GetProductionByDateRange } from "../../services/ProductionServices";
 import { IProduction } from "../../types/production.type";
 import { Column } from "react-table";
@@ -19,18 +19,20 @@ type IMachineWiseReport = {
   machines: {
     name: string,
     production: string
-  }[]
+  }[],
+  m1?: any,
+  m2?: any
 }
 
 
 export default function IMachineWiseReportPage({ startDate, endDate }: Props) {
   const [tableData, setTableData] = useState<IMachineWiseReport[]>([])
-  const { data, isSuccess, isLoading, refetch } = useQuery
+  const { data, isSuccess, refetch } = useQuery
     <AxiosResponse<IProduction[]>, BackendError>(["category_wise_reports", startDate, endDate], () => GetProductionByDateRange(startDate, endDate), {
       refetchOnMount: true
     })
-  
-  const MemoData = React.useMemo(() => data, [data])
+
+  const MemoData = React.useMemo(() => tableData, [tableData])
   const MemoColumns: Column<IMachineWiseReport>[] = React.useMemo(
     () => [
 
@@ -40,25 +42,35 @@ export default function IMachineWiseReportPage({ startDate, endDate }: Props) {
         accessor: 'date',
         Cell: (props) => {
           return (
-            <Typography sx={{ textTransform: "capitalize" }}>{new Date(props.row.original.date).toDateString()}</Typography>
+            <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.date?new Date(props.row.original.date).toLocaleString():""}</Typography>
           )
         }
       },
-      //Date
+      //Machine1
       {
-        Header: String("ver-1 (gf)").toUpperCase(),
-        accessor: 'machines',
+        Header: "m1",
+        accessor: 'm1',
         Cell: (props) => {
           return (
-            <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.machines[0].production}</Typography>
+            <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.machines[0]?props.row.original.machines[0].production:""}</Typography>
           )
         }
-      }
+      },
+      //Machine1
+      {
+        Header: "m2",
+        accessor: 'm2',
+        Cell: (props) => {
+          return (
+            <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.machines[1] ? props.row.original.machines[1].production : ""}</Typography>
+          )
+        }
+      },
     ]
     , []
   )
 
- 
+
   //setup reports
   useEffect(() => {
     if (isSuccess) {
@@ -89,18 +101,12 @@ export default function IMachineWiseReportPage({ startDate, endDate }: Props) {
     refetch()
     // eslint-disable-next-line 
   }, [startDate, endDate])
-
-  useEffect(()=>{
-    if(tableData.length>0)
-      console.log(Object.keys(tableData[0].machines))
-  },[tableData])
-  console.log(tableData)
+console.log(tableData)
   return (
     <>
-      {/* <ReportsTable data={tableData[0].machines} columns={columns} /> */}
-      {
-        isLoading && <LinearProgress />
-      }
+      {tableData.length > 0 ?
+        <ReportsTable data={MemoData} columns={MemoColumns} /> : null}
+     
     </>
   )
 }

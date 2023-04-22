@@ -41,7 +41,6 @@ export function UserTable({data,columns}:Props) {
     } = useTable({
         data, columns, initialState: {
             pageSize: 10,
-            hiddenColumns: ['createdAt']
         }
     },
         useGlobalFilter,

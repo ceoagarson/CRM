@@ -13,7 +13,6 @@ import { IProduction } from '../../types/production.type';
 interface Props {
     data: IProduction[],
     columns: Column<IProduction>[]
-
 }
 
 export function UpdateProductionTable({ data, columns }: Props) {
@@ -34,19 +33,11 @@ export function UpdateProductionTable({ data, columns }: Props) {
         setGlobalFilter,
         preGlobalFilteredRows,
         globalFilter,
-        selectedFlatRows,
         state: { pageIndex, pageSize },
     } = useTable({
         data, columns, initialState: {
             pageSize: 10,
-        },
-        defaultColumn: React.useMemo(
-            () => ({
-                // Let's set up our default Filter UI
-                Filter: ""
-            }),
-            []
-        )
+        }
     },
         useFilters,
         useGlobalFilter,
@@ -86,7 +77,7 @@ export function UpdateProductionTable({ data, columns }: Props) {
                     variant={'h6'}
                     component={'h1'}
                 >
-                    UpdateProductionS
+                    Selected Date Production
                 </Typography>
 
                 <Stack
@@ -101,10 +92,9 @@ export function UpdateProductionTable({ data, columns }: Props) {
             <Box
                 sx={{
                     overflow: "scroll",
-                    height: '70vh'
+                    height: '50vh'
                 }}>
                 <Table
-                    sx={{ minWidth: "5000px" }}
                     size="small"
                     {...getTableProps()}>
                     <TableHead
@@ -130,9 +120,7 @@ export function UpdateProductionTable({ data, columns }: Props) {
                                                             ? <ArrowDropDown />
                                                             : <ArrowDropUp />
                                                         : ""}
-                                                    {
-                                                        column.canFilter ? column.render('Filter') : ''
-                                                    }
+                                                
                                                 </Stack>
                                             </TableCell>
                                         </>

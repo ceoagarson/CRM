@@ -9,7 +9,9 @@ export type IProduction = {
     created_by: IUser,
     updated_at: Date,
     updated_by: IUser,
-    actions?:any
+    //react table args
+    actions?:any,
+    category?:string
 }
 
 export type TProductionBody = Request['body'] & IProduction;
