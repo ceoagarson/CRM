@@ -52,7 +52,7 @@ function UpdateProductionPage({ data }: Props) {
                 accessor: 'machine',
                 Cell: (props) => {
                     return (
-                        <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.machine.name}</Typography>
+                        <Typography sx={{ textTransform: "uppercase" }}>{props.row.original.machine.name}</Typography>
                     )
                 }
             },
@@ -62,7 +62,7 @@ function UpdateProductionPage({ data }: Props) {
                 accessor: 'category',
                 Cell: (props) => {
                     return (
-                        <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.machine.category}</Typography>
+                        <Typography sx={{ textTransform: "uppercase" }}>{props.row.original.machine.category}</Typography>
                     )
                 }
             }
@@ -73,7 +73,7 @@ function UpdateProductionPage({ data }: Props) {
                 accessor: 'production',
                 Cell: (props) => {
                     return (
-                        <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.production}</Typography>
+                        <Typography sx={{ textTransform: "uppercase" }}>{props.row.original.production}</Typography>
                     )
                 }
             },
@@ -83,7 +83,7 @@ function UpdateProductionPage({ data }: Props) {
                 accessor: 'created_at',
                 Cell: (props) => {
                     return (
-                        <Typography sx={{ textTransform: "capitalize" }}>{new Date(props.row.original.machine.created_at).toLocaleDateString()}</Typography>
+                        <Typography sx={{ textTransform: "uppercase" }}>{new Date(props.row.original.machine.created_at).toLocaleDateString()}</Typography>
                     )
                 }
             }
