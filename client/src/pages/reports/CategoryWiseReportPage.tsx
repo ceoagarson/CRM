@@ -47,7 +47,7 @@ export default function ICategoryWiseReportPage({ startDate, endDate }: Props) {
         }
         ,
         Footer: () => {
-          return <Stack sx={{ pt: 2, ml: 2 }} justifyContent={"center"} alignItems={"left"}>Total</Stack>
+          return <Stack sx={{ pt: 2, ml: 2, fontWeight: "bold" }} justifyContent={"center"} alignItems={"left"}>Total</Stack>
         }
       },
       //Machine1
@@ -67,7 +67,7 @@ export default function ICategoryWiseReportPage({ startDate, endDate }: Props) {
             return null
 
           })
-          return <Stack sx={{ pt: 2, ml: 2 }} justifyContent={"center"} alignItems={"left"}>{totalA}</Stack>
+          return <Stack sx={{ pt: 2, ml: 2,fontWeight:"bold",borderBottom:1 }} justifyContent={"center"} alignItems={"left"}>{totalA}</Stack>
         }        
       },
       //Machine1
@@ -86,7 +86,7 @@ export default function ICategoryWiseReportPage({ startDate, endDate }: Props) {
             totalB += Number(row.original.categories[1].production) || 0
             return null
           })
-          return <Stack sx={{ pt: 2, ml: 2 }} justifyContent={"center"} alignItems={"left"}>{totalB}</Stack>
+          return <Stack sx={{ pt: 2, ml: 2,fontWeight:"bold",borderBottom:1 }} justifyContent={"center"} alignItems={"left"}>{totalB}</Stack>
         }   
       },
     ]

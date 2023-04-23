@@ -7,11 +7,11 @@ import * as Yup from "yup"
 import { queryClient } from '../../..';
 import { BackendError } from '../../../types';
 import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext';
-import { IMachine } from '../../../types/machine.types';
 import { UpdateMachine } from '../../../services/MachineServices';
+import { IMachine } from '../../../types/machine.types';
 
 
-function UpdateMachineForm({machine}:{machine:IMachine}) {
+function UpdateMachineForm({ machine }: { machine: IMachine }) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, {
             id: string,
@@ -31,18 +31,24 @@ function UpdateMachineForm({machine}:{machine:IMachine}) {
         category: string
     }>({
         initialValues: {
-            name: machine.name,
+            name: machine.name.toUpperCase(),
             category: machine.category
         },
         validationSchema: Yup.object({
-            machine: Yup.string().required("required field"),
+            name: Yup.string().required("required field"),
             category: Yup.string().required()
         }),
         onSubmit: (values: {
             name: string,
             category: string
         }) => {
-            mutate({ id: machine._id, body: { name: values.name, category: values.category }})
+            mutate({
+                id: machine._id,
+                body: {
+                    name: values.name,
+                    category: values.category
+                }
+            })
         }
     });
 
@@ -60,6 +66,7 @@ function UpdateMachineForm({machine}:{machine:IMachine}) {
                 gap={2}
                 py={2}
             >
+                {/* remarks */}
                 <TextField
                     variant='standard'
                     required

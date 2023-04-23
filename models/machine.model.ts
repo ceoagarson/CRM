@@ -11,6 +11,9 @@ const MachineSchema = new mongoose.Schema<IMachine, mongoose.Model<IMachine, {},
     },
     category: {
         type: String,
+        trim: true,
+        index: true,
+        lowercase: true,
         required: true,
     },
     created_at: {

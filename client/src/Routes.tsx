@@ -14,8 +14,8 @@ const LeadsPage = React.lazy(() => import('./pages/LeadsPage'))
 const UsersPage = React.lazy(() => import('./pages/UsersPage'))
 
 export enum paths {
-  login = "/",
-  dashboard = "/dashboard",
+  login = "/login",
+  dashboard = "/",
   leads = "leads",
   machines = "machines",
   reports = "reports",

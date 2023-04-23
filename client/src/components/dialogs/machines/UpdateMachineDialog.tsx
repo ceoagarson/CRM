@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTitle,   Stack } from '@mui/material'
+import { Dialog, DialogContent, DialogTitle } from '@mui/material'
 import { useContext } from 'react'
 import { ChoiceContext, MachineChoiceActions } from '../../../contexts/dialogContext'
 import { IMachine } from '../../../types/machine.types'
@@ -20,13 +20,6 @@ function UpdateMachineDialog({ machine }: Props) {
             <DialogContent>
                 <UpdateMachineForm machine={machine} />
             </DialogContent>
-            <Stack
-                direction="column"
-                gap={2}
-                padding={2}
-                width="100%"
-            >
-            </Stack >
         </Dialog >
     )
 }

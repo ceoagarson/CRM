@@ -1,87 +1,118 @@
-import  { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { IMachine } from '../../../types/machine.types'
 import { AxiosResponse } from 'axios'
-import { useMutation, useQuery } from 'react-query'
+import { useMutation } from 'react-query'
 import { BackendError } from '../../../types'
-import { GetMachines } from '../../../services/MachineServices'
 import { NewProduction } from '../../../services/ProductionServices'
-import { Stack, Table, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material'
+import { Button, Stack, Table, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material'
 
 
-function NewProductionForm({ date, createProduction }: { date: string, createProduction: Boolean }) {
-    const [machines, setMachines] = useState<IMachine[]>([])
+function NewProductionForm({ date, data }: { date: string, data: IMachine[] }) {
+    const [machines, setMachines] = useState<IMachine[]>(data)
+    const [displayCreateBtn, setDisplayCreateBtn] = useState(true)
     const [remount, setRemount] = useState(true)
-    const { data,isSuccess:isSuccessMachines } = useQuery
-        <AxiosResponse<IMachine[]>, BackendError>("getmachines", GetMachines)
-    const { mutate,  isError, error } = useMutation<AxiosResponse<string>, BackendError, {
+    //new production 
+    const { mutate, isError, error, isSuccess, isLoading } = useMutation<AxiosResponse<string>, BackendError, {
         machine_id: string, production: string, created_at: Date
     }>(NewProduction)
     const inputRef = useRef<HTMLInputElement | null>(null)
-    
-    useEffect(() => {
-        if (isSuccessMachines) {
-            setMachines(data.data)
+
+    function handleCreateTable() {
+        if (date && machines && machines.length) {
+            machines.forEach((machine) => {
+                mutate({
+                    machine_id: machine._id,
+                    production: "0",
+                    created_at: new Date(date)
+                })
+            })
         }
-    }, [isSuccessMachines, machines, date, data])
-    
+    }
+    // setup machines
     useEffect(() => {
+        setMachines(data)
+    }, [data])
+
+    // remount input
+    useEffect(() => {
+        setDisplayCreateBtn(true)
         setRemount(false)
-        setTimeout(()=>{
+        setTimeout(() => {
             setRemount(true)
-        },100)
+        }, 100)
         inputRef.current?.focus()
-        
+
     }, [date, inputRef])
 
     return (
         <>
-         
-            {isError ? <Typography sx={{ color: "green" }}>Error while saving Production</Typography> : null}
-            {error ? <Typography sx={{ color: "green" }}>Error: {error.response.data.message}</Typography> : null}
-            <Stack direction="column" gap={2}>
 
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Selected Date</TableCell>
-                            <TableCell>Machine Name</TableCell>
-                            <TableCell>Category</TableCell>
-                            <TableCell>
-                                Production
-                            </TableCell>
-                        </TableRow>
-                    </TableHead>
-                    {
-                        date && createProduction && machines.length > 0 && machines.map((machine, index) => {
-                            return (
-                                <TableRow key={index}>
-                                    <TableCell>{new Date(date).toDateString()}</TableCell>
-                                    <TableCell>{machine.name.toUpperCase()}</TableCell>
-                                    <TableCell>{machine.category}</TableCell>
+            {isSuccess ? <Typography sx={{ color: "green" }}>Saved Production</Typography> : null}
+            {isLoading ? <Typography sx={{ color: "green" }}>Saving Production</Typography> : null}
+            {isError ? <Typography sx={{ color: "red" }}>Error while saving Production</Typography> : null}
+            {error ? <Typography sx={{ color: "red" }}>Error: {error.response.data.message}</Typography> : null}
+
+            {
+                displayCreateBtn ?
+                    <>
+                        <Stack
+                            direction="column" p={2} justifyContent="center" alignItems="center"
+                        >
+                            <Typography sx={{ color: "grey" }}>No Production Data found on this Date</Typography>
+                            <Button
+                                onClick={() => {
+                                    handleCreateTable()
+                                    setDisplayCreateBtn(false)
+                                }}
+                                color="primary" sx={{ fontWeight: "bold" }}>Create New Production Table</Button>
+                        </Stack>
+                    </>
+                    :
+                    // table
+                    <Stack direction="column" gap={2}>
+
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Selected Date</TableCell>
+                                    <TableCell>Machine Name</TableCell>
+                                    <TableCell>Category</TableCell>
                                     <TableCell>
-                                        {
-                                            remount ? <TextField variant="standard"
-                                                ref={inputRef}
-                                                type="number"
-                                                onChange={(e) => {
-                                                    if (e.currentTarget.value)
-                                                        mutate({
-                                                            machine_id: machine._id,
-                                                            production: String(e.currentTarget.value),
-                                                            created_at: new Date(date)
-                                                        })
-                                                }} /> : null
-                                        }
-
+                                        Production
                                     </TableCell>
                                 </TableRow>
-                            )
-                        })
-                    }
-                </Table >
-            </Stack>
+                            </TableHead>
+                            {
+                                date && machines.length > 0 && machines.map((machine, index) => {
+                                    return (
+                                        <TableRow key={index}>
+                                            <TableCell>{new Date(date).toDateString()}</TableCell>
+                                            <TableCell>{machine.name.toUpperCase()}</TableCell>
+                                            <TableCell>{machine.category}</TableCell>
+                                            <TableCell>
+                                                {
+                                                    remount ? <TextField variant="standard"
+                                                        ref={inputRef}
+                                                        type="number"
+                                                        onChange={(e) => {
+                                                            if (e.currentTarget.value)
+                                                                mutate({
+                                                                    machine_id: machine._id,
+                                                                    production: String(e.currentTarget.value),
+                                                                    created_at: new Date(date)
+                                                                })
+                                                        }} /> : null
+                                                }
+
+                                            </TableCell>
+                                        </TableRow>
+                                    )
+                                })
+                            }
+                        </Table >
+                    </Stack>
+            }
         </>
-       
     )
 }
 

@@ -39,7 +39,7 @@ export function MachineTable({ data, columns }: Props) {
         state: { pageIndex, pageSize },
     } = useTable({
         data, columns, initialState: {
-            pageSize: 10
+            pageSize: 20
         }
     },
         useFilters,
@@ -137,7 +137,7 @@ export function MachineTable({ data, columns }: Props) {
                     </TableHead>
                     <TableBody {...getTableBodyProps()}>
                         {page.map(row => {
-                            prepareRow(row)
+                            prepareRow(row) 
                             return (
                                 <TableRow sx={{
                                     '&:nth-of-type(odd)': { bgcolor: color1 },

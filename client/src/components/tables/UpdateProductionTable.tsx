@@ -36,7 +36,7 @@ export function UpdateProductionTable({ data, columns }: Props) {
         state: { pageIndex, pageSize },
     } = useTable({
         data, columns, initialState: {
-            pageSize: 10,
+            pageSize: 20,
         }
     },
         useFilters,

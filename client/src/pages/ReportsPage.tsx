@@ -1,14 +1,33 @@
-import { useContext,  useState } from "react"
+import { useContext,useEffect, useState } from "react"
 import { ProductionChoiceActions } from "../contexts/dialogContext"
 import { ChoiceContext } from "../contexts/dialogContext"
-import {  Stack, TextField, Typography } from "@mui/material"
+import { Stack, TextField, Typography } from "@mui/material"
 import CategoryWiseReportPage from "./reports/CategoryWiseReportPage"
 import MachineWiseReportPage from "./reports/MachineWiseReportPage"
+import { IMachine } from "../types/machine.types"
+import { AxiosResponse } from "axios"
+import { BackendError } from "../types"
+import { GetMachines } from "../services/MachineServices"
+import { useQuery } from "react-query"
+
 
 function ReportsPage() {
     const [startDate, setStartDate] = useState<string>()
     const [endDate, setEndDate] = useState<string>()
+    const [machines, setMachines] = useState<IMachine[]>([])
     const { choice, setChoice } = useContext(ChoiceContext)
+    //fetch machines available
+    const { data: machinesData, isSuccess: isSuccessMachines } = useQuery
+        <AxiosResponse<IMachine[]>, BackendError>("getmachines", GetMachines)
+
+    //setup machines
+    useEffect(() => {
+        if (isSuccessMachines) {
+            setMachines(machinesData.data)
+        }
+    }, [isSuccessMachines, machinesData])
+
+
     return (
         <>
             {/* select date range */}
@@ -62,7 +81,7 @@ function ReportsPage() {
                 {/* machine wise report */}
                 {
                     choice === ProductionChoiceActions.report_machine_wise ?
-                        <MachineWiseReportPage startDate={startDate} endDate={endDate} />
+                        <MachineWiseReportPage startDate={startDate} endDate={endDate} machinesData={machines} />
                         : null
                 }
             </Stack>

@@ -17,9 +17,7 @@ export default function MachinesPage() {
     const [DATA, setDATA] = useState<IMachine[]>([])
     const [machine, setMachine] = useState<IMachine>()
     const { data: machines, isSuccess, isLoading } = useQuery
-        <AxiosResponse<IMachine[]>, BackendError>("machines", GetMachines, {
-            refetchOnMount: true
-        })
+        <AxiosResponse<IMachine[]>, BackendError>("machines", GetMachines)
     const MemoData = React.useMemo(() => DATA, [DATA])
     const MemoColumns: Column<IMachine>[] = React.useMemo(
         () => [

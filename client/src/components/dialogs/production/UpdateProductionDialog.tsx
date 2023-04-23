@@ -10,10 +10,10 @@ import { useState } from "react"
 import { IProduction } from '../../../types/production.type';
 
 
-function UpdateProductionDialog({ production }: { production :IProduction}) {
+function UpdateProductionDialog({ production }: { production: IProduction }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     const [value, setValue] = useState(production.production)
-    const { mutate, isLoading,error,isError,isSuccess } = useMutation
+    const { mutate, isLoading, error, isError, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, {
             machine_id: string, production: string, created_at: Date
         }>
@@ -32,6 +32,7 @@ function UpdateProductionDialog({ production }: { production :IProduction}) {
                     <TextField
                         defaultValue={production.production}
                         label="Production"
+                        required
                         type='number'
                         disabled={isLoading}
                         variant='standard'
@@ -48,13 +49,13 @@ function UpdateProductionDialog({ production }: { production :IProduction}) {
                 {
                     isSuccess ? (
                         <Alert color="success">
-                          production updated
+                            production updated
                         </Alert>
                     ) : null
                 }
                 <DialogActions sx={{ p: 2 }}>
                     <Button variant='outlined'
-                        disabled={isLoading}
+                        disabled={isLoading || !value}
                         fullWidth onClick={() => {
                             mutate({
                                 machine_id: production.machine._id,

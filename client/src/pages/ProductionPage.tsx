@@ -1,43 +1,68 @@
 import { Stack, Typography } from '@mui/material'
 import { useState, useEffect } from 'react'
-import {  useQuery } from 'react-query'
+import { useQuery } from 'react-query'
 import { AxiosResponse } from 'axios'
 import { BackendError } from '../types'
-import {  GetProductionByDate } from '../services/ProductionServices'
+import { GetProductionByDate } from '../services/ProductionServices'
 import { IProduction } from '../types/production.type'
 import NewProductionForm from '../components/forms/production/NewProductionForm'
 import UpdateProductionPage from './production/UpdateProductionPage'
+import { GetMachines } from '../services/MachineServices'
+import { IMachine } from '../types/machine.types'
 
 function ProductionPage() {
   const [date, setDate] = useState<string>()
-  const [newProduction, setNewProduction] = useState(false)
+  const [display, setDisplay] = useState(false)
+  const [machines, setMachines] = useState<IMachine[]>([])
   const [productions, setProductions] = useState<IProduction[]>([])
+
   //fetch production by date selected
   const { data, isSuccess, refetch } = useQuery
     <AxiosResponse<IProduction[]>, BackendError>(["productionBydate", date], () => GetProductionByDate(date))
 
-  //fetch production
+  //fetch machines available
+  const { data: machinesData, isSuccess: isSuccessMachines } = useQuery
+    <AxiosResponse<IMachine[]>, BackendError>("getmachines", GetMachines)
+
+  //setup machines
+  useEffect(() => {
+    if (isSuccessMachines) {
+      setMachines(machinesData.data)
+    }
+  }, [isSuccessMachines, machinesData])
+
+  //setup production
   useEffect(() => {
     if (isSuccess && data.data.length > 0) {
-      setNewProduction(false)
-      setProductions(data.data)
+      let customData: IProduction[] = []
+      machines.length > 0 && machines.forEach((machine) => {
+        data.data.map((item) => {
+          if (item.machine.name === machine.name)
+            customData.push(item)
+          return null
+        })
+      })
+      setDisplay(false)
+      setProductions(customData)
     }
+
     if (isSuccess && data.data.length === 0) {
-      setNewProduction(true)
+      setProductions([])
+      setDisplay(true)
     }
-  }, [isSuccess, data, productions])
+  }, [isSuccess, data, machines])
+
 
   useEffect(() => {
-      if (date) {
-        refetch()
-      }
-      else {
-        let today = new Date();
-        let dt = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
-        setDate(dt)
-      }
-      // eslint-disable-next-line
-    }, [date])
+    if (date) {
+      refetch()
+    }
+    else {
+      let today = new Date();
+      let dt = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
+      setDate(dt)
+    }
+  }, [date, refetch])
 
   return (
     <>
@@ -53,9 +78,11 @@ function ProductionPage() {
           setDate(e.currentTarget.value)
         }} />
       </Stack>
-      {newProduction && date ? <NewProductionForm date={date} createProduction={newProduction} /> : null}
 
-      {date && productions && productions.length > 0 && !newProduction ? <UpdateProductionPage data={productions} /> : null}
+      {/* new production page */}
+      {date && display && productions.length === 0 ? <NewProductionForm date={date} data={machines} /> : null}
+      {/* update production page */}
+      {date && !display && productions.length > 0 ? <UpdateProductionPage data={productions} /> : null}
     </>
   )
 }

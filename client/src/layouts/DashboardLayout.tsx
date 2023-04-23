@@ -64,19 +64,19 @@ export default function DashboardLayout() {
                   }}
                 >
 
+
                   {
-                    user.is_admin ?
-                      <>
-                        <StyledLink to={paths.users}>Users</StyledLink>
-                        <StyledLink to={paths.productions}>Productions</StyledLink>
-                        <StyledLink to={paths.reports}>Reports</StyledLink>
-                        <StyledLink to={paths.machines}>Machines</StyledLink>
-                      </>
-                      :null
-                     
-                  }
+                    user.is_admin ? <StyledLink to={paths.users}>Users</StyledLink> : null}
+                  {
+                    user.is_admin ? <StyledLink to={paths.productions}>Productions</StyledLink> : null}
+                  {
+                    user.is_admin ? <StyledLink to={paths.reports}>Reports</StyledLink> : null}
+                  {
+                    user.is_admin ? <StyledLink to={paths.machines}>Machines</StyledLink> : null}
+
                   <StyledLink to={paths.leads}>Leads</StyledLink>
                 </Stack>
+
                 {/* stack2 right icons*/}
                 <Stack
                   direction="row"
@@ -114,7 +114,7 @@ export default function DashboardLayout() {
             }
           </Stack >
         </Stack>
-      </Box>
+      </Box >
       <Outlet />
       <DashboardMenu />
       <UserMenu />

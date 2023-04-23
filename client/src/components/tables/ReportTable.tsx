@@ -106,7 +106,10 @@ export function ReportsTable({ data, columns }: Props) {
                                     ((column) => (
                                         <>
                                             <TableCell
-                                                sx={{ bgcolor: headColor }}
+                                                sx={{
+                                                    minWidth: "150px", bgcolor: headColor,
+                                                    textAlign: "center"
+                                                }}
                                                 {...column.getHeaderProps(column.getSortByToggleProps())}
                                                 title=""                                    >
                                                 <Stack
@@ -121,7 +124,7 @@ export function ReportsTable({ data, columns }: Props) {
                                                             ? <ArrowDropDown />
                                                             : <ArrowDropUp />
                                                         : ""}
-                                                
+
                                                 </Stack>
                                             </TableCell>
                                         </>
@@ -143,6 +146,7 @@ export function ReportsTable({ data, columns }: Props) {
                                     {row.cells.map((cell) => {
                                         return (
                                             <TableCell
+                                                sx={{ minWidth: "150px", textAlign: "left",pl:2 }}
                                                 {...cell.getCellProps()}
 
 
