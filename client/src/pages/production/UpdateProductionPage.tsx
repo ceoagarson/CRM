@@ -113,6 +113,7 @@ function UpdateProductionPage({ data }: Props) {
         if (!filter)
             setProductions(preFilteredData)
     }, [filter, preFilteredData, productions])
+
     return (
 
         <>
