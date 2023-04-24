@@ -2,16 +2,21 @@ import React, { useState, useContext, useEffect } from 'react'
 import { IProduction } from '../../types/production.type'
 import { UpdateProductionTable } from '../../components/tables/UpdateProductionTable'
 import { Column } from 'react-table'
-import { IconButton, Stack, Tooltip, Typography } from '@mui/material'
-import { Edit } from '@mui/icons-material'
+import { IconButton, InputAdornment, Stack, TextField, Tooltip, Typography } from '@mui/material'
+import { Edit, Search } from '@mui/icons-material'
 import UpdateProductionDialog from '../../components/dialogs/production/UpdateProductionDialog'
 import { ChoiceContext, ProductionChoiceActions } from '../../contexts/dialogContext'
+import FuzzySearch from 'fuzzy-search'
+import { FilterContext } from '../../contexts/filterContext'
+import { headColor } from '../../utils/colors'
 
 type Props = {
     data: IProduction[]
 }
 
 function UpdateProductionPage({ data }: Props) {
+    const { filter, setFilter } = useContext(FilterContext)
+    const [preFilteredData, setPreFilteredData] = useState<IProduction[]>([])
     const [productions, setProductions] = useState<IProduction[]>(data)
     const [production, setProduction] = useState<IProduction>()
     const { setChoice } = useContext(ChoiceContext)
@@ -93,11 +98,65 @@ function UpdateProductionPage({ data }: Props) {
     )
     useEffect(()=>{
         setProductions(data)
+        setPreFilteredData(data)
     }, [data])
     
+    //set filter
+    useEffect(() => {
+        if (filter) {
+            const searcher = new FuzzySearch(productions, ["machine.name", "category", "production"], {
+                caseSensitive: false,
+            });
+            const result = searcher.search(filter);
+            setProductions(result)
+        }
+        if (!filter)
+            setProductions(preFilteredData)
+    }, [filter, preFilteredData, productions])
     return (
 
         <>
+            {/*heading, search bar and table menu */}
+            <Stack
+                spacing={2}
+                padding={1}
+                direction="row"
+                justifyContent="space-between"
+                width="100vw"
+            >
+                <Typography
+                    variant={'h6'}
+                    component={'h1'}
+                >
+                    Productions
+                </Typography>
+
+                <Stack
+                    direction="row"
+                >
+                    {/* search bar */}
+                    < Stack direction="row" spacing={2} sx={{ bgcolor: headColor }
+                    }>
+                        <TextField
+                            fullWidth
+                            size="small"
+                            onChange={(e) => setFilter(e.currentTarget.value)}
+                            autoFocus
+                            InputProps={{
+                                startAdornment: <InputAdornment position="start">
+                                    <Search />
+                                </InputAdornment>,
+                            }}
+                            placeholder={`${productions.length} records...`}
+                            style={{
+                                fontSize: '1.1rem',
+                                border: '0',
+                            }}
+                        />
+
+                    </Stack >
+                </Stack>
+            </Stack>
             <UpdateProductionTable data={MemoData} columns={MemoColumns} />
             {production ? <UpdateProductionDialog production={production} /> : null}
         </>)

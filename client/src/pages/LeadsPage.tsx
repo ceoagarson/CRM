@@ -1,5 +1,5 @@
-import { Comment, Edit, Visibility } from "@mui/icons-material"
-import { IconButton, LinearProgress, Stack, Tooltip, Typography } from "@mui/material"
+import { Comment, Edit, Search, Visibility } from "@mui/icons-material"
+import { IconButton, InputAdornment, LinearProgress, Stack, TextField, Tooltip, Typography } from "@mui/material"
 import { AxiosResponse } from "axios"
 import React, { useContext, useEffect, useState } from "react"
 import { useQuery } from "react-query"
@@ -12,14 +12,18 @@ import { GetLeads } from "../services/LeadsServices"
 import { BackendError } from "../types"
 import { ILead } from "../types/lead.type"
 import NewRemarkDialog from "../components/dialogs/leads/NewRemarkDialog"
-import { Filter, FilterContext } from "../contexts/filterContext"
-import FilterMenu from "../components/menu/FilterMenu"
+import { SelectionContext } from "../contexts/selectionContext"
+import { FilterContext } from "../contexts/filterContext"
+import FuzzySearch from "fuzzy-search"
+import { headColor } from "../utils/colors"
+import LeadTableMenu from "../components/menu/LeadTableMenu"
 
 export default function LeadsPage() {
+  const { selectedRows } = useContext(SelectionContext)
+  const { filter, setFilter } = useContext(FilterContext)
+  const [preFilteredData, setPreFilteredData] = useState<ILead[]>([])
   const { setChoice } = useContext(ChoiceContext)
   const [DATA, setDATA] = useState<ILead[]>([])
-  const [remoteBackUpData, setRemoteBackUpData] = useState<ILead[]>([])
-  const { filter } = useContext(FilterContext)
   const [lead, setLead] = useState<ILead>()
   const { data: leads, isSuccess, isLoading } = useQuery
     <AxiosResponse<ILead[]>, BackendError>("leads", GetLeads, {
@@ -80,18 +84,6 @@ export default function LeadsPage() {
             <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.name}</Typography>
           )
         }
-        ,
-        Filter: () => {
-          let data: Filter = []
-          let unique_data = [...new Set(remoteBackUpData.map(item => item.name))]
-          unique_data.map((item => {
-            data.push({ key: 'name', value: item })
-            return null
-          }))
-          return (
-            <FilterMenu data={data} />
-          )
-        }
       },
       // stage
       {
@@ -100,17 +92,6 @@ export default function LeadsPage() {
         Cell: (props) => {
           return (
             <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.stage}</Typography>
-          )
-        },
-        Filter: () => {
-          let data: Filter = []
-          let unique_data = [...new Set(remoteBackUpData.map(item => item.stage))]
-          unique_data.map((item => {
-            data.push({ key: 'stage', value:item })
-            return null
-          }))
-          return (
-            <FilterMenu data={data} />
           )
         }
       },
@@ -361,32 +342,76 @@ export default function LeadsPage() {
         }
       }
     ]
-    , [setChoice, remoteBackUpData]
+    , [setChoice]
   )
 
   //setup leads
   useEffect(() => {
     if (isSuccess) {
-      setRemoteBackUpData(leads.data)
       setDATA(leads.data)
+      setPreFilteredData(leads.data)
     }
   }, [isSuccess, leads])
 
-  //setup filter leads
+  //set filter
   useEffect(() => {
-    function handleFilter() {
-      let filteredData = DATA.filter((item) => {
-        return item.customer_name === filter[0].value
-      })
-      setDATA(filteredData)
+    if (filter) {
+      const searcher = new FuzzySearch(DATA, ["name", "customer_name", "customer_designation", "mobile", "email", "city", "state", "country", "address", "remarks", "work_description", "turnover", "lead_type", "stage", "alternate_mobile1", "alternate_mobile2", "alternate_email","organization.organization_name", "lead_source", "created_at", "created_by.username", "updated_at", "updated_by.username"], {
+        caseSensitive: false,
+      });
+      const result = searcher.search(filter);
+      setDATA(result)
     }
-    if (filter.length > 0)
-      handleFilter()
-    if (filter.length === 0)
-      setDATA(remoteBackUpData)
-  }, [filter, DATA, remoteBackUpData])
+    if (!filter)
+      setDATA(preFilteredData)
+  }, [filter, preFilteredData, DATA])
   return (
     <>
+      {/*heading, search bar and table menu */}
+      <Stack
+        spacing={2}
+        padding={1}
+        direction="row"
+        justifyContent="space-between"
+        width="100vw"
+      >
+        <Typography
+          variant={'h6'}
+          component={'h1'}
+        >
+          Leads
+        </Typography>
+
+        <Stack
+          direction="row"
+        >
+          {/* search bar */}
+          < Stack direction="row" spacing={2} sx={{ bgcolor: headColor }
+          }>
+            <TextField
+              fullWidth
+              size="small"
+              onChange={(e) => setFilter(e.currentTarget.value)}
+              autoFocus
+              InputProps={{
+                startAdornment: <InputAdornment position="start">
+                  <Search />
+                </InputAdornment>,
+              }}
+              placeholder={`${DATA.length} records...`}
+              style={{
+                fontSize: '1.1rem',
+                border: '0',
+              }}
+            />
+
+          </Stack >
+          {/* menu  */}
+          <LeadTableMenu
+            selectedFlatRows={selectedRows}
+          />
+        </Stack>
+      </Stack>
       <LeadTable data={MemoData} columns={MemoColumns} />
       {
         lead ?

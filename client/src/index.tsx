@@ -7,6 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 import { ChoiceProvider } from "./contexts/dialogContext";
 import { MenuProvider } from "./contexts/menuContext";
 import { FilterProvider } from "./contexts/filterContext";
+import { SelectionProvider } from "./contexts/selectionContext";
 
 
 export const queryClient = new QueryClient({
@@ -28,7 +29,9 @@ root.render(
         <FilterProvider>
           <ChoiceProvider>
             <MenuProvider>
+              <SelectionProvider>
                 <App />
+              </SelectionProvider>
             </MenuProvider>
           </ChoiceProvider>
         </FilterProvider>

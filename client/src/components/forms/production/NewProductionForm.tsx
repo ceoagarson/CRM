@@ -88,7 +88,7 @@ function NewProductionForm({ date, data }: { date: string, data: IMachine[] }) {
                                         <TableRow key={index}>
                                             <TableCell>{new Date(date).toDateString()}</TableCell>
                                             <TableCell>{machine.name.toUpperCase()}</TableCell>
-                                            <TableCell>{machine.category}</TableCell>
+                                            <TableCell>{machine.category.toUpperCase()}</TableCell>
                                             <TableCell>
                                                 {
                                                     remount ? <TextField variant="standard"

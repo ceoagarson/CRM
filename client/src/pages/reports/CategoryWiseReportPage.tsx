@@ -23,7 +23,8 @@ type ICategoryWiseReport = {
   }[],
   // react table only
   a?: any,
-  b?: any
+  b?: any,
+  c?:any
 }
 
 
@@ -89,6 +90,25 @@ export default function ICategoryWiseReportPage({ startDate, endDate }: Props) {
           return <Stack sx={{ pt: 2, ml: 2,fontWeight:"bold",borderBottom:1 }} justifyContent={"center"} alignItems={"left"}>{totalB}</Stack>
         }   
       },
+      //Machine1
+      {
+        Header: "C",
+        accessor: 'c',
+        Cell: (props) => {
+          return (
+            <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.categories[1] ? props.row.original.categories[2].production : ""}</Typography>
+          )
+        }
+        ,
+        Footer: (props) => {
+          let totalC = 0
+          props.rows.map((row) => {
+            totalC += Number(row.original.categories[2].production) || 0
+            return null
+          })
+          return <Stack sx={{ pt: 2, ml: 2, fontWeight: "bold", borderBottom: 1 }} justifyContent={"center"} alignItems={"left"}>{totalC}</Stack>
+        }
+      },
     ]
     , []
   )
@@ -117,20 +137,25 @@ export default function ICategoryWiseReportPage({ startDate, endDate }: Props) {
         }
         return null
       })
+      console.log(report)
       let categoryReport: ICategoryWiseReport[] = []
       let productionA = 0
       let productionB = 0
+      let productionC = 0
       report.forEach((item) => {
         item.machines.map((machine) => {
-          if (machine.category === "A")
+          if (machine.category === "a")
             productionA += Number(machine.production)
-          if (machine.category === "B")
+          if (machine.category === "b")
             productionB += Number(machine.production)
+          if (machine.category === "c")
+            productionC += Number(machine.production)
           return null
         })
-        categoryReport.push({ date: item.date, categories: [{ category: "A", production: String(productionA) }, { category: "B", production: String(productionB) }] })
+        categoryReport.push({ date: item.date, categories: [{ category: "A", production: String(productionA) }, { category: "B", production: String(productionB)},{ category: "C", production: String(productionC) }] })
         productionA = 0
         productionB = 0
+        productionC = 0
       })
       setTableData(categoryReport)
     }
@@ -143,6 +168,7 @@ export default function ICategoryWiseReportPage({ startDate, endDate }: Props) {
   }, [startDate, endDate])
   return (
     <>
+      {data?.data.length === 0 ? <Typography>No Data Found</Typography> : null}
       {tableData.length > 0 ?
         <ReportsTable data={MemoData} columns={MemoColumns} /> : null}
     </>

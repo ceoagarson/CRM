@@ -509,6 +509,7 @@ export default function IMachineWiseReportPage({ startDate, endDate, machinesDat
   }, [startDate, endDate])
   return (
     <>
+      {data?.data.length === 0 ? <Typography>No Data Found</Typography> : null}
       {tableData.length > 0 ?
         <ReportsTable data={MemoData} columns={MemoColumns} /> : null}
 

@@ -1,15 +1,13 @@
-import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
-import { Column, useTable, useFilters, useSortBy, usePagination, useGlobalFilter, useRowSelect } from 'react-table'
+import { Box, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material'
+import { Column, useTable,  useSortBy, usePagination,  useRowSelect } from 'react-table'
 import Pagination from './utils/Pagination';
 import TableCheckBox from './utils/TableCheckBox';
 import { ArrowDropDown, ArrowDropUp, } from '@mui/icons-material';
 import { Stack } from '@mui/system';
 import { color1, color2, headColor } from '../../utils/colors';
-import React from 'react';
-import GlobalFilter from './utils/GlobalFilter';
-import MachineTableMenu from '../menu/MachineTableMenu';
+import  { useContext, useEffect } from 'react';
 import { IMachine } from '../../types/machine.types';
-
+import { SelectionContext } from '../../contexts/selectionContext';
 
 interface Props {
     data: IMachine[],
@@ -18,6 +16,7 @@ interface Props {
 }
 
 export function MachineTable({ data, columns }: Props) {
+    const {setSelectedRows}=useContext(SelectionContext)
     const {
         getTableProps,
         getTableBodyProps,
@@ -32,9 +31,6 @@ export function MachineTable({ data, columns }: Props) {
         nextPage,
         previousPage,
         setPageSize,
-        setGlobalFilter,
-        preGlobalFilteredRows,
-        globalFilter,
         selectedFlatRows,
         state: { pageIndex, pageSize },
     } = useTable({
@@ -42,8 +38,6 @@ export function MachineTable({ data, columns }: Props) {
             pageSize: 20
         }
     },
-        useFilters,
-        useGlobalFilter,
         useSortBy,
         usePagination,
         useRowSelect,
@@ -64,41 +58,17 @@ export function MachineTable({ data, columns }: Props) {
             ])
         }
     )
-
+useEffect(()=>{
+    setSelectedRows(selectedFlatRows)
+}, [selectedFlatRows, setSelectedRows])
 
     return (
         <>
-            {/*heading, search bar and table menu */}
-            <Stack
-                spacing={2}
-                padding={1}
-                direction="row"
-                justifyContent="space-between"
-                width="100vw"
-            >
-                <Typography
-                    variant={'h6'}
-                    component={'h1'}
-                >
-                    Machines
-                </Typography>
-
-                <Stack
-                    direction="row"
-                >
-                    <GlobalFilter
-                        preGlobalFilteredRows={preGlobalFilteredRows} globalFilter={globalFilter} setGlobalFilter={setGlobalFilter}
-                    />
-                    <MachineTableMenu
-                        selectedFlatRows={selectedFlatRows}
-                    />
-                </Stack>
-            </Stack>
             {/* table */}
             <Box
                 sx={{
                     overflow: "scroll",
-                    height: '70vh'
+                    height: '73.5vh'
                 }}>
                 <Table
                     sx={{ minWidth: "1200px" }}

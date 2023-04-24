@@ -1,12 +1,9 @@
 import { Box, Table, TableBody, TableCell, TableFooter, TableHead, TableRow, Typography } from '@mui/material'
-import { Column, useTable, useFilters, useSortBy, usePagination, useGlobalFilter, useRowSelect } from 'react-table'
+import { Column, useTable,  useSortBy, usePagination } from 'react-table'
 import Pagination from './utils/Pagination';
-import TableCheckBox from './utils/TableCheckBox';
 import { ArrowDropDown, ArrowDropUp, } from '@mui/icons-material';
 import { Stack } from '@mui/system';
 import { color1, color2, headColor } from '../../utils/colors';
-import React from 'react';
-import GlobalFilter from './utils/GlobalFilter';
 
 
 interface Props {
@@ -30,36 +27,14 @@ export function ReportsTable({ data, columns }: Props) {
         nextPage,
         previousPage,
         setPageSize,
-        setGlobalFilter,
-        preGlobalFilteredRows,
-        globalFilter,
         state: { pageIndex, pageSize },
     } = useTable({
         data, columns, initialState: {
             pageSize: 10
         }
     },
-        useFilters,
-        useGlobalFilter,
         useSortBy,
-        usePagination,
-        useRowSelect,
-        hooks => {
-            hooks.visibleColumns.push(columns => [
-                // Let's make a column for selection
-                {
-                    id: 'selection',
-                    Header: ({ getToggleAllRowsSelectedProps }) => (
-                        <TableCheckBox {...getToggleAllRowsSelectedProps()} />
-                    ),
-                    // @ts-ignore for any type for row
-                    Cell: ({ row }) => (
-                        <TableCheckBox {...row.getToggleRowSelectedProps()} />
-                    ),
-                },
-                ...columns,
-            ])
-        }
+        usePagination
     )
 
 
@@ -79,14 +54,6 @@ export function ReportsTable({ data, columns }: Props) {
                 >
                     Reports
                 </Typography>
-
-                <Stack
-                    direction="row"
-                >
-                    <GlobalFilter
-                        preGlobalFilteredRows={preGlobalFilteredRows} globalFilter={globalFilter} setGlobalFilter={setGlobalFilter}
-                    />
-                </Stack>
             </Stack>
             {/* table */}
             <Box

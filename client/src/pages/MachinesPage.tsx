@@ -1,5 +1,6 @@
-import {Edit } from "@mui/icons-material"
-import { IconButton, LinearProgress, Stack, Tooltip, Typography } from "@mui/material"
+import { Edit, Search } from "@mui/icons-material"
+import { IconButton, InputAdornment, LinearProgress, Stack, TextField, Tooltip, Typography } from "@mui/material"
+import FuzzySearch from 'fuzzy-search';
 import { AxiosResponse } from "axios"
 import React, { useContext, useEffect, useState } from "react"
 import { useQuery } from "react-query"
@@ -10,10 +11,17 @@ import { BackendError } from "../types"
 import { GetMachines } from "../services/MachineServices"
 import { MachineTable } from "../components/tables/MachineTable"
 import UpdateMachineDialog from "../components/dialogs/machines/UpdateMachineDialog"
+import { SelectionContext } from "../contexts/selectionContext"
+import MachineTableMenu from "../components/menu/MachineTableMenu"
+import { headColor } from "../utils/colors"
+import { FilterContext } from "../contexts/filterContext"
 
 
 export default function MachinesPage() {
+    const { selectedRows } = useContext(SelectionContext)
+    const { filter, setFilter } = useContext(FilterContext)
     const { setChoice } = useContext(ChoiceContext)
+    const [preFilteredData, setPreFilteredData] = useState<IMachine[]>([])
     const [DATA, setDATA] = useState<IMachine[]>([])
     const [machine, setMachine] = useState<IMachine>()
     const { data: machines, isSuccess, isLoading } = useQuery
@@ -103,19 +111,77 @@ export default function MachinesPage() {
                     )
                 }
             },
-    ]
-    , [setChoice]
-  )
-           
+        ]
+        , [setChoice]
+    )
+
     //setup machines
     useEffect(() => {
         if (isSuccess) {
             setDATA(machines.data)
+            setPreFilteredData(machines.data)
         }
     }, [isSuccess, machines])
 
+    //set filter
+    useEffect(() => {
+        if (filter) {
+            const searcher = new FuzzySearch(DATA, ["name", "category", "created_at", "created_by.username", "updated_at", "updated_by.username"], {
+                caseSensitive: false,
+            });
+            const result = searcher.search(filter);
+            setDATA(result)
+        }
+        if (!filter)
+            setDATA(preFilteredData)
+    }, [filter, preFilteredData,DATA])
     return (
         <>
+            {/*heading, search bar and table menu */}
+            <Stack
+                spacing={2}
+                padding={1}
+                direction="row"
+                justifyContent="space-between"
+                width="100vw"
+            >
+                <Typography
+                    variant={'h6'}
+                    component={'h1'}
+                >
+                    Machines
+                </Typography>
+
+                <Stack
+                    direction="row"
+                >
+                    {/* search bar */}
+                    < Stack direction="row" spacing={2} sx={{ bgcolor: headColor }
+                    }>
+                        <TextField
+                            fullWidth
+                            size="small"
+                            onChange={(e) => setFilter(e.currentTarget.value)}
+                            autoFocus
+                            InputProps={{
+                                startAdornment: <InputAdornment position="start">
+                                    <Search />
+                                </InputAdornment>,
+                            }}
+                            placeholder={`${DATA.length} records...`}
+                            style={{
+                                fontSize: '1.1rem',
+                                border: '0',
+                            }}
+                        />
+
+                    </Stack >
+                    {/* menu  */}
+                    <MachineTableMenu
+                        selectedFlatRows={selectedRows}
+                    />
+                </Stack>
+            </Stack>
             <MachineTable data={MemoData} columns={MemoColumns} />
             {
                 machine ?

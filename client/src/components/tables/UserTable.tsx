@@ -96,7 +96,7 @@ export function UserTable({data,columns}:Props) {
             <Box
                 sx={{
                     overflow: "scroll",
-                    height: '70vh'
+                    height: '73.5vh'
                 }}>
                 <Table
                     sx={{ minWidth: "1500px" }}

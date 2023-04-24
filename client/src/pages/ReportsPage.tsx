@@ -67,8 +67,8 @@ function ReportsPage() {
                     }}
                 >
                     <option value="">Select Category</option>
-                    <option value="machine_wise">Machine Wise</option>
-                    <option value="category_wise">Category Wise</option>
+                    <option value="machine_wise">Machine Wise Production</option>
+                    <option value="category_wise">Category Wise Production</option>
                 </TextField>
             </Stack>
             <Stack sx={{ width: "100%" }}>
