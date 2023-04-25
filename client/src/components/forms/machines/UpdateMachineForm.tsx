@@ -1,17 +1,18 @@
 import { Alert, Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext } from 'react';
+import { useEffect, useContext, useState } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
 import { queryClient } from '../../..';
 import { BackendError } from '../../../types';
 import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext';
 import { UpdateMachine } from '../../../services/MachineServices';
-import { IMachine } from '../../../types/production.type';
+import { ICategory, IMachine } from '../../../types/production.type';
 
 
-function UpdateMachineForm({ machine }: { machine: IMachine }) {
+function UpdateMachineForm({ machine,data }: { machine: IMachine,data:ICategory[] }) {
+    const [categories, setCategories] = useState(data)
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, {
             id: string,
@@ -60,6 +61,10 @@ function UpdateMachineForm({ machine }: { machine: IMachine }) {
         }
     }, [isSuccess, setChoice])
 
+    useEffect(() => {
+        setCategories(data)
+    }, [data])
+
     return (
         <form onSubmit={formik.handleSubmit}>
             <Stack
@@ -101,9 +106,11 @@ function UpdateMachineForm({ machine }: { machine: IMachine }) {
                     }
                     {...formik.getFieldProps('category')}
                 >
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
+                    {
+                        categories.map((category, index) => {
+                            return <option value={category.category}>{category.category.toUpperCase()}</option>
+                        })
+                    }
                 </TextField>
             </Stack>
             {

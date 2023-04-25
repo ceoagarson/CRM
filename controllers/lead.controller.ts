@@ -166,6 +166,22 @@ export const UpdateLead = catchAsyncError(async (req: Request, res: Response, ne
 })
 
 
+//delete lead
+export const DeleteLead = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    if (!isMongoId(id)) return res.status(403).json({ message: "lead id not valid" })
+    let lead = await Lead.findById(id);
+    if (!lead) {
+        return res.status(404).json({ message: "lead not found" })
+    }
+    let remarks=await Remark.find({lead:lead._id})
+    remarks.map(async (remark) => {
+        await remark.remove()
+    })
+    await lead.remove()
+    return res.status(200).json({ message: "lead and related remarks are deleted" })
+})
+
 // add new remarks on lead
 export const NewRemark = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const { remark } = req.body

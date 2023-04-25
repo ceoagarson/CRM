@@ -4,24 +4,31 @@ import React, { useReducer } from "react"
 type UserChoices = "signup"| "reset_password_mail" | null | "new_user" | "update_user" | "update_profile" | "view_profile" | "update_password" | "reset_password" | "verify_email" | "control_access" | "delete_user" |
   "block_user" | "unblock_user" | "make_admin" | "remove_admin" 
 
-type LeadChoices = "create_lead" | "update_lead" | "update_remark" | "view_remarks" | null | "display_filter"
+type LeadChoices = "create_lead" | "update_lead" | "update_remark" | "view_remarks" | null | "display_filter" |"delete_lead"
 
 type ProductionChoices = "new_production_page" | null | "update_production_page" | "update_production" | "report_machine_wise" |"report_category_wise"
 
-type MachineChoices = "new_machine" | "update_machine" |null
+type MachineChoices = "new_machine" | "update_machine" | null
+type CategoryChoices = "new_category" | "update_category" | null
 
 // initial state
-type ChoiceState = UserChoices | LeadChoices | ProductionChoices | MachineChoices
+type ChoiceState = UserChoices | LeadChoices | ProductionChoices | MachineChoices | CategoryChoices
 
 const initialState: ChoiceState = null
 
 export enum LeadChoiceActions {
   create_lead = "create_lead",
   update_lead = "update_lead",
+  delete_lead = "delete_lead",
   view_remarks = "view_remarks",
   close ="close",
   display_filter ="display_filter",
   update_remark = "update_remark",
+}
+export enum CategoryChoiceActions{
+  update_category = "update_category",
+  new_category = "new_category",
+  close = "close"
 }
 export enum MachineChoiceActions{
   update_machine = "update_machine",
@@ -56,7 +63,7 @@ export enum UserChoiceActions {
 }
 
 type Action = {
-  type: UserChoiceActions | LeadChoiceActions | ProductionChoiceActions | MachineChoiceActions
+  type: UserChoiceActions | LeadChoiceActions | ProductionChoiceActions | MachineChoiceActions | CategoryChoiceActions
 }
 
 // reducer
@@ -87,6 +94,7 @@ function reducer(state: ChoiceState, action: Action) {
     case LeadChoiceActions.view_remarks: return type
     case LeadChoiceActions.update_remark: return type
     case LeadChoiceActions.display_filter: return type
+    case LeadChoiceActions.delete_lead: return type
     case LeadChoiceActions.close: return null
 
     //production dialog choices
@@ -101,6 +109,12 @@ function reducer(state: ChoiceState, action: Action) {
     case MachineChoiceActions.new_machine: return type
     case MachineChoiceActions.update_machine: return type
     case MachineChoiceActions.close: return null
+    
+    //category dialog choices
+    case CategoryChoiceActions.new_category: return type
+    case CategoryChoiceActions.update_category: return type
+    case CategoryChoiceActions.close: return null
+
 
     default: return state
   }

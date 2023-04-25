@@ -1,4 +1,4 @@
-import { Comment, Edit, Search, Visibility } from "@mui/icons-material"
+import { Comment, Delete, Edit, Search, Visibility } from "@mui/icons-material"
 import { IconButton, InputAdornment, LinearProgress, Stack, TextField, Tooltip, Typography } from "@mui/material"
 import { AxiosResponse } from "axios"
 import React, { useContext, useEffect, useState } from "react"
@@ -17,8 +17,11 @@ import { FilterContext } from "../contexts/filterContext"
 import FuzzySearch from "fuzzy-search"
 import { headColor } from "../utils/colors"
 import LeadTableMenu from "../components/menu/LeadTableMenu"
+import { UserContext } from "../contexts/userContext"
+import DeleteLeadDialog from "../components/dialogs/leads/DeleteLeadDialog"
 
 export default function LeadsPage() {
+  const { user: LoggedInUser } = useContext(UserContext)
   const { selectedRows } = useContext(SelectionContext)
   const { filter, setFilter } = useContext(FilterContext)
   const [preFilteredData, setPreFilteredData] = useState<ILead[]>([])
@@ -40,6 +43,22 @@ export default function LeadsPage() {
         Cell: (props) => {
           return (
             <Stack direction="row" spacing={1}>
+              {
+                LoggedInUser?.is_admin ?
+                  <Tooltip title="delete">
+                    <IconButton color="error"
+                      onClick={() => {
+                        setChoice({ type: LeadChoiceActions.delete_lead })
+                        setLead(props.row.original)
+                      }}
+                    >
+                      <Delete />
+                    </IconButton>
+                  </Tooltip>
+                  :
+                  null
+              }
+
               <Tooltip title="edit">
                 <IconButton color="secondary"
                   onClick={() => {
@@ -331,7 +350,7 @@ export default function LeadsPage() {
         }
       }
     ]
-    , [setChoice]
+    , [setChoice, LoggedInUser]
   )
 
   //setup leads
@@ -345,7 +364,7 @@ export default function LeadsPage() {
   //set filter
   useEffect(() => {
     if (filter) {
-      const searcher = new FuzzySearch(DATA, ["name", "customer_name", "customer_designation", "mobile", "email", "city", "state", "country", "address", "remarks", "work_description", "turnover", "lead_type", "stage", "alternate_mobile1", "alternate_mobile2", "alternate_email","organization.organization_name", "lead_source", "created_at", "created_by.username", "updated_at", "updated_by.username"], {
+      const searcher = new FuzzySearch(DATA, ["name", "customer_name", "customer_designation", "mobile", "email", "city", "state", "country", "address", "remarks", "work_description", "turnover", "lead_type", "stage", "alternate_mobile1", "alternate_mobile2", "alternate_email", "organization.organization_name", "lead_source", "created_at", "created_by.username", "updated_at", "updated_by.username"], {
         caseSensitive: false,
       });
       const result = searcher.search(filter);
@@ -406,6 +425,7 @@ export default function LeadsPage() {
         lead ?
           <>
             <UpdateLeadDialog lead={lead} />
+            <DeleteLeadDialog lead={lead} />
             <ViewLeadDialog lead={lead} />
             <NewRemarkDialog lead={lead} />
           </>

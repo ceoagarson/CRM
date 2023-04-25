@@ -5,35 +5,29 @@ import { AxiosResponse } from "axios"
 import React, { useContext, useEffect, useState } from "react"
 import { useQuery } from "react-query"
 import { Column } from "react-table"
-import { ChoiceContext, MachineChoiceActions } from "../contexts/dialogContext"
-import { ICategory, IMachine } from '../types/production.type'
+import { ChoiceContext, CategoryChoiceActions } from "../contexts/dialogContext"
+import { ICategory } from '../types/production.type'
 import { BackendError } from "../types"
-import { GetMachines } from "../services/MachineServices"
-import { MachineTable } from "../components/tables/MachineTable"
-import UpdateMachineDialog from "../components/dialogs/machines/UpdateMachineDialog"
 import { SelectionContext } from "../contexts/selectionContext"
-import MachineTableMenu from "../components/menu/MachineTableMenu"
 import { headColor } from "../utils/colors"
 import { FilterContext } from "../contexts/filterContext"
 import { GetCategories } from "../services/ProductionServices";
+import UpdateCategoryDialog from "../components/dialogs/categories/UpdateCategoryDialog";
+import { CategoryTable } from "../components/tables/CategoryTable";
+import CategoryTableMenu from "../components/menu/CategoryTableMenu";
 
 
-export default function MachinesPage() {
+export default function CategoriesPage() {
     const { selectedRows } = useContext(SelectionContext)
     const { filter, setFilter } = useContext(FilterContext)
     const { setChoice } = useContext(ChoiceContext)
-    const [preFilteredData, setPreFilteredData] = useState<IMachine[]>([])
-    const [DATA, setDATA] = useState<IMachine[]>([])
-    const [machine, setMachine] = useState<IMachine>()
-    const [categories, setCategories] = useState<ICategory[]>()
-    const { data: machines, isSuccess, isLoading } = useQuery
-        <AxiosResponse<IMachine[]>, BackendError>("machines", GetMachines)
-
-    const { data: categoriesData } = useQuery
+    const [preFilteredData, setPreFilteredData] = useState<ICategory[]>([])
+    const [DATA, setDATA] = useState<ICategory[]>([])
+    const [category, setCategory] = useState<ICategory>()
+    const { data: categories, isSuccess, isLoading } = useQuery
         <AxiosResponse<ICategory[]>, BackendError>("categories", GetCategories)
-
     const MemoData = React.useMemo(() => DATA, [DATA])
-    const MemoColumns: Column<IMachine>[] = React.useMemo(
+    const MemoColumns: Column<ICategory>[] = React.useMemo(
         () => [
             //actions
             {
@@ -46,8 +40,8 @@ export default function MachinesPage() {
                             <Tooltip title="edit">
                                 <IconButton color="secondary"
                                     onClick={() => {
-                                        setChoice({ type: MachineChoiceActions.update_machine })
-                                        setMachine(props.row.original)
+                                        setChoice({ type: CategoryChoiceActions.update_category })
+                                        setCategory(props.row.original)
                                     }}
                                 >
                                     <Edit />
@@ -57,27 +51,17 @@ export default function MachinesPage() {
                     )
                 }
             },
-            // machine
-            {
-                Header: 'Machine Name',
-                accessor: 'name',
-                Cell: (props) => {
-                    return (
-                        <Typography sx={{ textTransform: "uppercase" }}>{props.row.original.name}</Typography>
-                    )
-                }
-            },
-            // machine category
+            // category
             {
                 Header: 'Category',
                 accessor: 'category',
                 Cell: (props) => {
                     return (
-                        <Typography sx={{ textTransform: "uppercase" }}>{props.row.original.category.category}</Typography>
+                        <Typography sx={{ textTransform: "uppercase" }}>{props.row.original.category}</Typography>
                     )
                 }
             },
-            // machine category
+            //created at
             {
                 Header: 'Created At',
                 accessor: 'created_at',
@@ -87,7 +71,7 @@ export default function MachinesPage() {
                     )
                 }
             },
-            // machine category
+            //created by
             {
                 Header: 'Created By',
                 accessor: 'created_by',
@@ -97,7 +81,7 @@ export default function MachinesPage() {
                     )
                 }
             },
-            // machine category
+            //updated at
             {
                 Header: 'Last Updated At',
                 accessor: 'updated_at',
@@ -107,7 +91,7 @@ export default function MachinesPage() {
                     )
                 }
             },
-            // machine category
+            //updated by
             {
                 Header: 'Last Updated By',
                 accessor: 'updated_by',
@@ -121,26 +105,18 @@ export default function MachinesPage() {
         , [setChoice]
     )
 
-    //setup machines
-    useEffect(() => {
-        if (isSuccess) {
-            setDATA(machines.data)
-            setPreFilteredData(machines.data)
-        }
-    }, [isSuccess, machines])
-
-
     //setup categories
     useEffect(() => {
         if (isSuccess) {
-            setCategories(categoriesData?.data)
+            setDATA(categories.data)
+            setPreFilteredData(categories.data)
         }
-    }, [isSuccess, categoriesData])
+    }, [isSuccess, categories])
 
     //set filter
     useEffect(() => {
         if (filter) {
-            const searcher = new FuzzySearch(DATA, ["name", "category", "created_at", "created_by.username", "updated_at", "updated_by.username"], {
+            const searcher = new FuzzySearch(DATA, ["category", "created_at", "created_by.username", "updated_at", "updated_by.username"], {
                 caseSensitive: false,
             });
             const result = searcher.search(filter);
@@ -163,7 +139,7 @@ export default function MachinesPage() {
                     variant={'h6'}
                     component={'h1'}
                 >
-                    Machines
+                    Categories
                 </Typography>
 
                 <Stack
@@ -191,21 +167,16 @@ export default function MachinesPage() {
 
                     </Stack >
                     {/* menu  */}
-                    {categories ?
-                        <MachineTableMenu
-                            selectedFlatRows={selectedRows}
-                            categories={categories}
-                        />
-                        : null
-                    }
-
+                    <CategoryTableMenu
+                        selectedFlatRows={selectedRows}
+                    />
                 </Stack>
             </Stack>
-            <MachineTable data={MemoData} columns={MemoColumns} />
+            <CategoryTable data={MemoData} columns={MemoColumns} />
             {
-                machine && categories ?
+                category ?
                     <>
-                        <UpdateMachineDialog machine={machine} categories={categories} />
+                        <UpdateCategoryDialog category={category} />
                     </>
                     : null
             }

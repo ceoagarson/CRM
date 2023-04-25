@@ -2,9 +2,13 @@ import { Dialog, DialogContent, DialogTitle } from '@mui/material'
 import { useContext } from 'react'
 import { ChoiceContext, MachineChoiceActions  } from '../../../contexts/dialogContext'
 import NewMachineForm from '../../forms/machines/NewMachineForm';
+import { ICategory } from '../../../types/production.type';
 
+type Props = {
+    categories: ICategory[]
+}
 
-function NewMachineDialog() {
+function NewMachineDialog({ categories }:Props) {
     const { choice, setChoice } = useContext(ChoiceContext)
     return (
         <Dialog open={choice === MachineChoiceActions.new_machine ? true : false}
@@ -14,7 +18,7 @@ function NewMachineDialog() {
                 New Machine
             </DialogTitle>
             <DialogContent>
-                <NewMachineForm/>
+                <NewMachineForm data={categories}/>
             </DialogContent>
         </Dialog >
     )

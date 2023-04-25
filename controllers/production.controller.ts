@@ -47,19 +47,35 @@ export const CreateProduction = catchAsyncError(async (req: Request, res: Respon
 
 
 export const GetProductionsByDate = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    let date=req.query.date
-    if(!date)
+    let date = req.query.date
+    if (!date)
         return res.status(400).json({ message: "provide date" })
-    let productions = await Production.find({ created_at: date }).populate("machine").populate("created_by").populate('updated_by')
+    let productions = await Production.find({ created_at: date }).populate("created_by").populate('updated_by').populate({
+        path: 'machine',
+        populate: [
+            {
+                path: 'category',
+                model: 'Category'
+            }
+        ]
+    })
     return res.status(200).json(productions)
 })
 
 export const GetProductionsByDateRange = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const startDate = req.query.startDate
     const endDate = req.query.endDate
-    let productions: IProduction[] = await Production.find().populate("machine").populate("created_by").populate('updated_by').find({
+    let productions: IProduction[] = await Production.find().populate("created_by").populate('updated_by').find({
         created_at: { $gte: startDate, $lte: endDate },
-    }).sort({ created_at: 'asc' })
+    }).sort({ created_at: 'asc' }).populate({
+        path: 'machine',
+        populate: [
+            {
+                path: 'category',
+                model: 'Category'
+            }
+        ]
+    })
     return res.status(200).json(productions)
 })
 
@@ -112,7 +128,7 @@ export const UpdateMachine = catchAsyncError(async (req: Request, res: Response,
 })
 
 export const GetMachines = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    let names = await Machine.find().populate('updated_by').populate('created_by')
+    let names = await Machine.find().populate('category').populate('updated_by').populate('created_by')
     return res.status(200).json(names)
 })
 

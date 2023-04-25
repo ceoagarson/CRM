@@ -60,6 +60,13 @@ function DashboardMenu() {
                     }>
                     <StyledLink to={paths.machines}>Machines</StyledLink>
                 </MenuItem> : null}
+            {
+                user?.is_admin ? <MenuItem
+                    onClick={
+                        () => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
+                    }>
+                    <StyledLink to={paths.categories}>Categories</StyledLink>
+                </MenuItem> : null}
             <MenuItem
                 onClick={
                     () => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })

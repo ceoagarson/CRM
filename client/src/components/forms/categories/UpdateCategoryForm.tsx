@@ -1,46 +1,48 @@
 import { Alert, Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext, useState } from 'react';
+import { useEffect, useContext } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
 import { queryClient } from '../../..';
 import { BackendError } from '../../../types';
 import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext';
-import { NewMachine } from '../../../services/MachineServices';
 import { ICategory } from '../../../types/production.type';
+import { UpdateCategory } from '../../../services/ProductionServices';
 
 
-function NewMachineForm({ data }: { data: ICategory[] }) {
-    const [categories, setCategories] = useState(data)
+function UpdateCategoryForm({ category }: { category: ICategory }) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, {
-            name: string,
-            category: string
+            id: string,
+            body: {
+                category: string
+            }
         }>
-        (NewMachine, {
-            onSuccess: () => queryClient.invalidateQueries('machines')
+        (UpdateCategory, {
+            onSuccess: () => queryClient.invalidateQueries('categories')
         })
 
     const { setChoice } = useContext(ChoiceContext)
 
     const formik = useFormik<{
-        name: string,
         category: string
     }>({
         initialValues: {
-            name: "",
-            category: "A"
+            category: category.category.toUpperCase()
         },
         validationSchema: Yup.object({
-            name: Yup.string().required("required field"),
             category: Yup.string().required()
         }),
         onSubmit: (values: {
-            name: string,
             category: string
         }) => {
-            mutate({ name: values.name, category: values.category })
+            mutate({
+                id: category._id,
+                body: {
+                    category: values.category
+                }
+            })
         }
     });
 
@@ -52,39 +54,15 @@ function NewMachineForm({ data }: { data: ICategory[] }) {
         }
     }, [isSuccess, setChoice])
 
-    useEffect(() => {
-        setCategories(data)
-    }, [data])
-
     return (
         <form onSubmit={formik.handleSubmit}>
             <Stack
                 gap={2}
                 py={2}
             >
-                {/* remarks */}
-                <TextField
-                    variant='standard'
-                    required
-                    autoFocus
-                    error={
-                        formik.touched.name && formik.errors.name ? true : false
-                    }
-                    id="name"
-                    label="Machine"
-                    fullWidth
-                    helperText={
-                        formik.touched.name && formik.errors.name ? formik.errors.name : ""
-                    }
-                    {...formik.getFieldProps('name')}
-                />
+               
                 < TextField
                     variant='standard'
-                    select
-                    SelectProps={{
-                        native: true
-                    }}
-                    focused
                     required
                     error={
                         formik.touched.category && formik.errors.category ? true : false
@@ -96,13 +74,7 @@ function NewMachineForm({ data }: { data: ICategory[] }) {
                         formik.touched.category && formik.errors.category ? formik.errors.category : ""
                     }
                     {...formik.getFieldProps('category')}
-                >
-                    {
-                        categories.map((category, index) => {
-                            return <option value={category.category}>{category.category.toUpperCase()}</option>
-                        })
-                    }
-                </TextField>
+                />
             </Stack>
             {
                 isError ? (
@@ -114,16 +86,16 @@ function NewMachineForm({ data }: { data: ICategory[] }) {
             {
                 isSuccess ? (
                     <Alert color="success">
-                        new Machine added
+                        Category updated
                     </Alert>
                 ) : null
             }
             <Button variant="contained" color="primary" type="submit"
                 disabled={Boolean(isLoading)}
-                fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Add Machine"}
+                fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Update Category"}
             </Button>
         </form>
     )
 }
 
-export default NewMachineForm
+export default UpdateCategoryForm

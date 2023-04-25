@@ -5,7 +5,7 @@ import { queryClient } from '../../..';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { UpdateUserLeadAccess } from '../../../services/UserServices';
 import { BackendError } from '../../../types';
-import { Button, Checkbox, FormControlLabel,  Typography, Table, TableBody,  TableRow,  TableCell, Paper, CircularProgress, Stack, Alert } from '@mui/material'
+import { Button, Checkbox, FormControlLabel,  Typography, Table, TableBody,  TableRow,  TableCell, CircularProgress, Stack, Alert } from '@mui/material'
 import { IUser, LeadField, LeadFieldType } from '../../../types/user.type';
 
 
@@ -67,7 +67,7 @@ function LeadControlAccessForm({user}:{user:IUser}) {
         <Stack  sx={{maxWidth:'100vw',display:'flex',overflow:'scroll'}}>
           <Table
 
-              sx={{ minWidth: "6500px" }}
+              sx={{ minWidth: "4000px" }}
           >
               <TableBody>
                   <TableRow>
@@ -75,8 +75,8 @@ function LeadControlAccessForm({user}:{user:IUser}) {
                           LeadFields.map((field, index) => {
                               return (
                                   <TableCell key={index} >
-                                      <Paper sx={{ p: 2 }}>
-                                          <Typography sx={{fontWeight:'bold'}}>{field.field.replace("_"," ").toLocaleUpperCase()}</Typography>
+                                         <Stack direction="column">
+                                          <Typography sx={{ fontWeight: 'bold' }}>{field.field.replace("_", " ").toLocaleUpperCase()}</Typography>
                                           <FormControlLabel control={<Checkbox checked={Boolean(field.hidden)} />} onChange={(e) => {
                                               handleHidden(field.field)
                                           }} label="Hidden" />
@@ -86,7 +86,7 @@ function LeadControlAccessForm({user}:{user:IUser}) {
                                               }}
                                               label="Read Only"
                                           />
-                                      </Paper>
+                                         </Stack>
                                   </TableCell>
                               )
                           })

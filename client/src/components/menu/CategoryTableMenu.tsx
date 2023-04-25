@@ -3,20 +3,18 @@ import { useContext, useEffect, useState } from 'react'
 import { Row } from 'react-table';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { MenuActions, MenuContext } from '../../contexts/menuContext';
-import { ChoiceContext,  MachineChoiceActions } from '../../contexts/dialogContext';
+import { ChoiceContext,  CategoryChoiceActions } from '../../contexts/dialogContext';
 import ExportToExcel from '../tables/utils/ExportToExcel';
-import NewMachineDialog from '../dialogs/machines/NewMachineDialog';
-import { ICategory, IMachine } from '../../types/production.type';
+import { ICategory } from '../../types/production.type';
+import NewCategoryDialog from '../dialogs/categories/NewCategoryDialog';
 
 type Props = {
-    selectedFlatRows: Row<IMachine>[],
-    categories: ICategory[]
+    selectedFlatRows: Row<ICategory>[]
 }
 type SelectedData = {
-   machine:string,
    category:string
 }
-function MachineTableMenu({ selectedFlatRows,categories }: Props) {
+function CategoryTableMenu({ selectedFlatRows }: Props) {
     const { menu, setMenu } = useContext(MenuContext)
     const [selectedData, setSelectedData] = useState<SelectedData[]>([])
     const [sent, setSent] = useState(false)
@@ -41,8 +39,7 @@ function MachineTableMenu({ selectedFlatRows,categories }: Props) {
         let data: SelectedData[] = []
         selectedFlatRows.map((item) => {
             return data.push({
-                machine: item.original.name,
-                category: item.original.category.category
+                category: item.original.category
             })
         })
         setSelectedData(data)
@@ -79,16 +76,16 @@ function MachineTableMenu({ selectedFlatRows,categories }: Props) {
                 sx={{ borderRadius: 2 }}
             >
                 <MenuItem onClick={() => {
-                    setChoice({ type:MachineChoiceActions.new_machine })
+                    setChoice({ type:CategoryChoiceActions.new_category })
                     setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
                 }}
-                >New Machine</MenuItem>
+                >New Category</MenuItem>
                 <MenuItem onClick={handleExcel}
                 >Export To Excel</MenuItem>
             </Menu>
-            <NewMachineDialog categories={categories }/>
+            <NewCategoryDialog />
         </>
     )
 }
 
-export default MachineTableMenu
+export default CategoryTableMenu
