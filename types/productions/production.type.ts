@@ -1,5 +1,5 @@
 import { Types } from "mongoose"
-import { IUser } from "./user.type"
+import { IUser } from "../users/user.type"
 import { IMachine } from "./machine.types"
 
 export type IProduction = {
@@ -13,4 +13,3 @@ export type IProduction = {
 }
 
 export type TProductionBody = Request['body'] & IProduction;
-export type TMachineBody = Request['body'] & IMachine;

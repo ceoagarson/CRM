@@ -1,5 +1,5 @@
 import mongoose from "mongoose"
-import { IMachine } from "../types/machine.types"
+import { IMachine } from "../../types/productions/machine.types"
 
 const MachineSchema = new mongoose.Schema<IMachine, mongoose.Model<IMachine, {}, {}>, {}>({
     name: {
@@ -10,11 +10,9 @@ const MachineSchema = new mongoose.Schema<IMachine, mongoose.Model<IMachine, {},
         lowercase: true,
     },
     category: {
-        type: String,
-        trim: true,
-        index: true,
-        lowercase: true,
-        required: true,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category',
+        required: true
     },
     created_at: {
         type: Date,

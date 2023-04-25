@@ -96,11 +96,11 @@ function UpdateProductionPage({ data }: Props) {
         ]
         , [setChoice]
     )
-    useEffect(()=>{
+    useEffect(() => {
         setProductions(data)
         setPreFilteredData(data)
     }, [data])
-    
+
     //set filter
     useEffect(() => {
         if (filter) {

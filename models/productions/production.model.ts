@@ -1,19 +1,17 @@
 import mongoose from "mongoose"
-import { IRemark } from "../types/lead.type"
+import { IProduction } from "../../types/productions/production.type";
 
-const RemarkSchema = new mongoose.Schema<IRemark, mongoose.Model<IRemark, {}, {}>, {}>({
-    remark: {
+const ProductionSchema = new mongoose.Schema<IProduction, mongoose.Model<IProduction, {}, {}>, {}>({
+    production: {
         type: String,
         required: true,
         trim: true,
-        index: true,
         lowercase: true,
     },
     created_at: {
         type: Date,
-        default: new Date(Date.now()),
         required: true,
-
+        index:true
     },
     created_by: {
         type: mongoose.Schema.Types.ObjectId,
@@ -24,18 +22,17 @@ const RemarkSchema = new mongoose.Schema<IRemark, mongoose.Model<IRemark, {}, {}
         type: Date,
         default: new Date(Date.now()),
         required: true,
-
     },
     updated_by: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
-    lead: {
+    machine: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Lead',
+        ref: 'Machine',
         required: true
     }
 })
 
-export const Remark = mongoose.model<IRemark, mongoose.Model<IRemark, {}, {}>>("Remark", RemarkSchema)
+export const Production = mongoose.model<IProduction, mongoose.Model<IProduction, {}, {}>>("Production", ProductionSchema)

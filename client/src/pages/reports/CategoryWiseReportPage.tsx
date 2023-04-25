@@ -144,11 +144,11 @@ export default function ICategoryWiseReportPage({ startDate, endDate }: Props) {
       let productionC = 0
       report.forEach((item) => {
         item.machines.map((machine) => {
-          if (machine.category === "a")
+          if (machine.category.toLowerCase() === "a")
             productionA += Number(machine.production)
-          if (machine.category === "b")
+          if (machine.category.toLowerCase() === "b")
             productionB += Number(machine.production)
-          if (machine.category === "c")
+          if (machine.category.toLowerCase() === "c")
             productionC += Number(machine.production)
           return null
         })

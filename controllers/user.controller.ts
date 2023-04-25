@@ -3,41 +3,33 @@ import isEmail from "validator/lib/isEmail";
 import { uploadFileToCloudinary } from '../utils/uploadFile.util';
 import { catchAsyncError } from '../middlewares/catchAsyncError.middleware.ts';
 import { deleteToken, sendUserToken } from '../middlewares/auth.middleware';
-import { User } from '../models/user.model';
-import { Asset } from '../types/asset.type';
+import { User } from '../models/users/user.model';
+import { Asset } from '../types/users/asset.type';
 import isMongoId from "validator/lib/isMongoId";
 import { destroyFile } from "../utils/destroyFile.util";
-import { LeadField, LeadFieldType, TUserBody } from '../types/user.type';
+import { LeadField, LeadFieldType, TUserBody, all_fields } from '../types/users/user.type';
 import { sendEmail } from '../utils/sendEmail.util';
-import { Organization } from '../models/organization.model';
-import { IOrganization } from '../types/organization.type';
+import { Organization } from '../models/users/organization.model';
+import { IOrganization, TOrganizationBody } from '../types/users/organization.types';
 
-let all_fields: LeadFieldType[] = ["name", "customer_name", "customer_designation", "mobile", "email", "city", "state", "country", "address", "remarks", "work_description", "turnover", "lead_type", "stage", "alternate_mobile1", "alternate_mobile2", "alternate_email", "lead_owners", "organization", "lead_source", "created_at", "created_by", "updated_at", "updated_by"]
 
 // Create Owner account
 export const SignUp = catchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
-        let { username, email, password, organization_name, organization_email, organization_mobile, mobile } = req.body as TUserBody & IOrganization
+        let { username, email, password, organization, mobile } = req.body as TUserBody & IOrganization
         // validations
-        if (!username || !email || !password || !organization_name || !organization_email || !organization_mobile || !mobile)
+        if (!username || !email || !password || !organization|| !mobile)
             return res.status(400).json({ message: "fill all the required fields" });
         if (!isEmail(email))
             return res.status(400).json({ message: "please provide valid email" });
-        if (!isEmail(organization_email))
-            return res.status(400).json({ message: "please provide valid organization email" });
+        if (await Organization.findOne({ organization: organization.toLowerCase().trim() }))
+            return res.status(403).json({ message: `${organization} already exists` });
         if (await User.findOne({ username: username.toLowerCase().trim() }))
             return res.status(403).json({ message: `${username} already exists` });
         if (await User.findOne({ email: email.toLowerCase().trim() }))
             return res.status(403).json({ message: `${email} already exists` });
         if (await User.findOne({ mobile: String(mobile).toLowerCase().trim() }))
             return res.status(403).json({ message: `${mobile} already exists` });
-
-        if (await Organization.findOne({ organization_mobile: String(organization_mobile).toLowerCase().trim() }))
-            return res.status(403).json({ message: `${organization_mobile} already exists` });
-        if (await Organization.findOne({ organization_name: organization_name.toLowerCase().trim() }))
-            return res.status(403).json({ message: `${organization_name} already exists` });
-        if (await Organization.findOne({ organization_email: organization_email.toLowerCase().trim() }))
-            return res.status(403).json({ message: `${organization_email} already exists` });
 
         let dp: Asset = {
             public_id: "",
@@ -59,12 +51,7 @@ export const SignUp = catchAsyncError(
                 return res.status(500).json({ message: "file uploading error" })
             }
         }
-        let organization = new Organization({
-            organization_name,
-            organization_email,
-            organization_mobile
-        })
-
+        
         let LeadFields: LeadField[] = []
         all_fields.map((field) => {
             LeadFields.push({
@@ -73,6 +60,12 @@ export const SignUp = catchAsyncError(
                 hidden: false
             })
         })
+        let new_organization = new Organization({
+            organization,
+            created_at: new Date(Date.now()),
+            updated_at: new Date(Date.now()),
+        })
+        
         let owner = new User({
             username,
             password,
@@ -82,17 +75,17 @@ export const SignUp = catchAsyncError(
             is_admin: true,
             dp
         })
-        owner.organization = organization
+
+        owner.organization = new_organization
         owner.created_by = owner
         owner.updated_by = owner
-        organization.owner = owner
-        organization.created_by = owner
-        organization.updated_by = owner
+        new_organization.created_by = owner
+        new_organization.updated_by = owner
         sendUserToken(res, owner.getAccessToken())
+        await new_organization.save()
         await owner.save()
-        organization = await organization.save()
         owner = await User.findById(owner._id).populate('organization').populate("created_by").populate("updated_by") || owner
-        res.status(201).json({ owner })
+        res.status(201).json(owner)
     })
 
 // create normal user 
@@ -155,7 +148,6 @@ export const NewUser = catchAsyncError(async (req: Request, res: Response, next:
         organization: req.user?.organization,
         created_by: req.user,
         updated_by: req.user,
-        roles: ["user"]
     })
     await user.save()
     return res.status(201).json(user)
@@ -566,3 +558,4 @@ export const VerifyEmail = catchAsyncError(async (req: Request, res: Response, n
         message: `congrats ${user.email} verification successful`
     });
 })
+

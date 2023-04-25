@@ -1,17 +1,19 @@
 import mongoose from "mongoose"
-import { IProduction } from "../types/production.type";
+import { ICategory } from "../../types/productions/category.types"
 
-const ProductionSchema = new mongoose.Schema<IProduction, mongoose.Model<IProduction, {}, {}>, {}>({
-    production: {
+const CategorySchema = new mongoose.Schema<ICategory, mongoose.Model<ICategory, {}, {}>, {}>({
+    category: {
         type: String,
         required: true,
         trim: true,
+        index: true,
         lowercase: true,
     },
     created_at: {
         type: Date,
+        default: new Date(Date.now()),
         required: true,
-        index:true
+
     },
     created_by: {
         type: mongoose.Schema.Types.ObjectId,
@@ -22,17 +24,13 @@ const ProductionSchema = new mongoose.Schema<IProduction, mongoose.Model<IProduc
         type: Date,
         default: new Date(Date.now()),
         required: true,
+
     },
     updated_by: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
-    },
-    machine: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Machine',
-        required: true
     }
 })
 
-export const Production = mongoose.model<IProduction, mongoose.Model<IProduction, {}, {}>>("Production", ProductionSchema)
+export const Category = mongoose.model<ICategory, mongoose.Model<ICategory, {}, {}>>("Category", CategorySchema)
