@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { catchAsyncError } from "./catchAsyncError.middleware.ts";
 import jwt from "jsonwebtoken";
-import { User } from "../models/user.model";
+import { User } from "../models/users/user.model.js";
 
 let UserTokens: string[] = []//for storing access tokens in memory
 

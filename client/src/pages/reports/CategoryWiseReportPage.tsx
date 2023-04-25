@@ -123,12 +123,12 @@ export default function ICategoryWiseReportPage({ startDate, endDate }: Props) {
       let report: IMachineWiseReport[] = []
       data.data.map((item) => {
         if (String(item.created_at) === String(prevDate)) {
-          machines.push({ name: item.machine.name, production: item.production, category: item.machine.category })
+          machines.push({ name: item.machine.name, production: item.production, category: item.machine.category.category })
         }
         else {
           prevDate = item.created_at
           machines = []
-          machines.push({ name: item.machine.name, production: item.production, category: item.machine.category })
+          machines.push({ name: item.machine.name, production: item.production, category: item.machine.category.category })
           reportIndex++
         }
         report[reportIndex] = {
@@ -144,11 +144,11 @@ export default function ICategoryWiseReportPage({ startDate, endDate }: Props) {
       let productionC = 0
       report.forEach((item) => {
         item.machines.map((machine) => {
-          if (machine.category === "a")
+          if (machine.category.toLowerCase() === "a")
             productionA += Number(machine.production)
-          if (machine.category === "b")
+          if (machine.category.toLowerCase() === "b")
             productionB += Number(machine.production)
-          if (machine.category === "c")
+          if (machine.category.toLowerCase() === "c")
             productionC += Number(machine.production)
           return null
         })

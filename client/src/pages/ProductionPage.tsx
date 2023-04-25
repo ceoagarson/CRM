@@ -4,11 +4,10 @@ import { useQuery } from 'react-query'
 import { AxiosResponse } from 'axios'
 import { BackendError } from '../types'
 import { GetProductionByDate } from '../services/ProductionServices'
-import { IProduction } from '../types/production.type'
+import { IMachine, IProduction } from '../types/production.type'
 import NewProductionForm from '../components/forms/production/NewProductionForm'
 import UpdateProductionPage from './production/UpdateProductionPage'
 import { GetMachines } from '../services/MachineServices'
-import { IMachine } from '../types/machine.types'
 
 function ProductionPage() {
   const [date, setDate] = useState<string>()

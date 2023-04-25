@@ -21,7 +21,6 @@ type SelectedData = {
     is_active?: Boolean,
     last_login?: string,
     organization?: string,
-    organization_email?: string,
     roles?: string,
     created_at?: string,
     createdBy?: string
@@ -68,8 +67,7 @@ function UserTableMenu({ columns, selectedFlatRows }: Props) {
                 email_verified: user.email_verified,
                 is_active: user.is_active,
                 last_login: lastlogin,
-                organization: user.organization?.organization_name,
-                organization_email: user.organization?.organization_email,
+                organization: user.organization?.organization,
                 roles: user?.is_admin?"admin":"user",
                 created_at: created_at
             })

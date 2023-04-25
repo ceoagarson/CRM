@@ -9,8 +9,6 @@ import { Button, Checkbox, FormControlLabel,  Typography, Table, TableBody,  Tab
 import { IUser, LeadField, LeadFieldType } from '../../../types/user.type';
 
 
-export const all_fields: LeadFieldType[] = ["name", "customer_name", "customer_designation", "mobile", "email", "city", "state", "country", "address", "remarks", "work_description", "turnover", "lead_type", "stage", "alternate_mobile1", "alternate_mobile2", "alternate_email", "lead_owners", "organization", "lead_source", "created_at", "created_by", "updated_at", "updated_by"]
-
 
 function LeadControlAccessForm({user}:{user:IUser}) {
     const { setChoice } = useContext(ChoiceContext)

@@ -1,14 +1,29 @@
-import { Types } from "mongoose";
-import { Asset } from "./asset.type";
-import { IOrganization } from "./organization.type";
+export type Asset = {
+    public_id: string,
+    url: string,
+    size?: number,
+    format?: string,
+}
 
-export type LeadFieldType = "name" | "customer_name" | "customer_designation" | "mobile" |    "email" | "city" | "state" | "country" | "address" | "remarks" | "work_description" | "turnover" | "lead_type" | "stage" | "alternate_mobile1" | "alternate_mobile2" | "alternate_email" | "lead_owners" | "organization" | "lead_source" | "created_at" | "created_by" | "updated_at" | "updated_by"
+export type LeadFieldType = "name" | "customer_name" | "customer_designation" | "mobile" |    "email" | "city" | "state" | "country" | "address" | "remarks" | "work_description" | "turnover" | "lead_type" | "stage" | "alternate_mobile1" | "alternate_mobile2" | "alternate_email" | "lead_owners" | "lead_source" | "created_at" | "created_by" | "updated_at" | "updated_by"
 
 export type LeadField={
     field: LeadFieldType,
     readonly:Boolean,
     hidden: Boolean
 }
+
+export const all_fields: LeadFieldType[] = ["name", "customer_name", "customer_designation", "mobile", "email", "city", "state", "country", "address", "remarks", "work_description", "turnover", "lead_type", "stage", "alternate_mobile1", "alternate_mobile2", "alternate_email", "lead_owners", "lead_source", "created_at", "created_by", "updated_at", "updated_by"]
+
+export type IOrganization = {
+    _id: string,
+    organization: string,
+    created_at: Date,
+    created_by: IUser,
+    updated_at: Date,
+    updated_by: IUser
+}
+
 
 export type IUser = {
     _id: string,

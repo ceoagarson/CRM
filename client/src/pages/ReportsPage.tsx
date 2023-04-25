@@ -4,11 +4,11 @@ import { ChoiceContext } from "../contexts/dialogContext"
 import { Stack, TextField, Typography } from "@mui/material"
 import CategoryWiseReportPage from "./reports/CategoryWiseReportPage"
 import MachineWiseReportPage from "./reports/MachineWiseReportPage"
-import { IMachine } from "../types/machine.types"
 import { AxiosResponse } from "axios"
 import { BackendError } from "../types"
 import { GetMachines } from "../services/MachineServices"
 import { useQuery } from "react-query"
+import { IMachine } from "../types/production.type"
 
 
 function ReportsPage() {

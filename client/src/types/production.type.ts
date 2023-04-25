@@ -1,5 +1,4 @@
 import { IUser } from "./user.type"
-import { IMachine } from "./machine.types"
 
 export type IProduction = {
     _id: string,
@@ -14,5 +13,24 @@ export type IProduction = {
     category?:string
 }
 
-export type TProductionBody = Request['body'] & IProduction;
-export type TMachineBody = Request['body'] & IMachine;
+export type ICategory = {
+    _id: string,
+    category: string,
+    created_at: Date,
+    created_by: IUser,
+    updated_at: Date,
+    updated_by: IUser
+    actions?: any,
+}
+
+export type IMachine = {
+    _id: string,
+    name: string,
+    category: ICategory,
+    created_at: Date,
+    created_by: IUser,
+    updated_at: Date,
+    updated_by: IUser
+    // actions
+    actions?: any
+}

@@ -290,17 +290,6 @@ export default function LeadsPage() {
           )
         }
       },
-      // organization
-      {
-        Header: 'Organization',
-        disableSortBy: true,
-        accessor: 'organization',
-        Cell: (props) => {
-          return (
-            <Typography sx={{ textTransform: "capitalize" }} variant="body1">{props.row.original.organization.organization_name}</Typography>
-          )
-        }
-      },
       // created_at
       {
         Header: 'Created At',

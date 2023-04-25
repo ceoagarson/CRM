@@ -8,7 +8,7 @@ import { queryClient } from '../../..';
 import { BackendError } from '../../../types';
 import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext';
 import { UpdateMachine } from '../../../services/MachineServices';
-import { IMachine } from '../../../types/machine.types';
+import { IMachine } from '../../../types/production.type';
 
 
 function UpdateMachineForm({ machine }: { machine: IMachine }) {
@@ -32,7 +32,7 @@ function UpdateMachineForm({ machine }: { machine: IMachine }) {
     }>({
         initialValues: {
             name: machine.name.toUpperCase(),
-            category: machine.category
+            category: machine.category.category
         },
         validationSchema: Yup.object({
             name: Yup.string().required("required field"),

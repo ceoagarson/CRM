@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { ILead } from "../types/lead.type";
+import { ILead } from "../../types/leads/lead.type";
 
 const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
     name: {
@@ -98,11 +98,6 @@ const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
             required: true
         }
     ],
-    organization: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Organization',
-        required: true
-    },
     lead_source: {
         type: String,
         trim: true,

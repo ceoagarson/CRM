@@ -1,8 +1,8 @@
 import { Dialog, DialogContent, DialogTitle } from '@mui/material'
 import { useContext } from 'react'
 import { ChoiceContext, MachineChoiceActions } from '../../../contexts/dialogContext'
-import { IMachine } from '../../../types/machine.types'
 import UpdateMachineForm from '../../forms/machines/UpdateMachineForm'
+import { IMachine } from '../../../types/production.type'
 
 type Props = {
     machine:IMachine
