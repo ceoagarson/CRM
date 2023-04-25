@@ -5,9 +5,8 @@ import { BackendError } from "../../types"
 import { ReportsTable } from "../../components/tables/ReportTable";
 import { Stack, Typography } from "@mui/material";
 import { GetProductionByDateRange } from "../../services/ProductionServices";
-import { IProduction } from "../../types/production.type";
+import { IProduction, IMachine } from "../../types/production.type";
 import { Column } from "react-table";
-import { IMachine } from "../../types/machine.types";
 
 
 type Props = {
@@ -74,7 +73,7 @@ export default function IMachineWiseReportPage({ startDate, endDate, machinesDat
       },
       ...customColumns
     ]
-    , []
+    , [customColumns]
   )
 
   //setup machines
@@ -91,12 +90,12 @@ export default function IMachineWiseReportPage({ startDate, endDate, machinesDat
       let report: IMachineWiseReport[] = []
       data.data.map((item, index) => {
         if (String(item.created_at) === String(prevDate)) {
-          machinesPrev.push({ name: item.machine.name, category: item.machine.category, production: item.production })
+          machinesPrev.push({ name: item.machine.name, category: item.machine.category.category, production: item.production })
         }
         else {
           prevDate = item.created_at
           machinesPrev = []
-          machinesPrev.push({ name: item.machine.name, category: item.machine.category, production: item.production })
+          machinesPrev.push({ name: item.machine.name, category: item.machine.category.category, production: item.production })
           reportIndex++
         }
         report[reportIndex] = {

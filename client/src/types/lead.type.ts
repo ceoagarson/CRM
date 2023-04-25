@@ -1,5 +1,4 @@
 import { Types } from "mongoose";
-import { IOrganization } from "./organization.type";
 import { IUser } from "./user.type";
 
 export type IRemark = {
@@ -11,8 +10,6 @@ export type IRemark = {
     updated_at: Date,
     updated_by: IUser
 }
-
-export type TRemarkBody = Request['body'] & IRemark;
 
 
 export type ILead = {
@@ -35,7 +32,6 @@ export type ILead = {
     alternate_mobile2: string,
     alternate_email: string,
     lead_owners: IUser[],
-    organization: IOrganization
     lead_source: string,
     created_at: Date,
     created_by: IUser,
@@ -45,4 +41,3 @@ export type ILead = {
     actions?: any
 }
 
-export type TLeadBody = Request['body'] & ILead;

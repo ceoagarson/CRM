@@ -6,7 +6,7 @@ import { MenuActions, MenuContext } from '../../contexts/menuContext';
 import { ChoiceContext,  MachineChoiceActions } from '../../contexts/dialogContext';
 import ExportToExcel from '../tables/utils/ExportToExcel';
 import NewMachineDialog from '../dialogs/machines/NewMachineDialog';
-import { IMachine } from '../../types/machine.types';
+import { IMachine } from '../../types/production.type';
 
 type Props = {
     selectedFlatRows: Row<IMachine>[]
@@ -41,7 +41,7 @@ function MachineTableMenu({ selectedFlatRows }: Props) {
         selectedFlatRows.map((item) => {
             return data.push({
                 machine: item.original.name,
-                category: item.original.category
+                category: item.original.category.category
             })
         })
         setSelectedData(data)

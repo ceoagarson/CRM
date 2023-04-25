@@ -42,7 +42,7 @@ export default function DashboardLayout() {
                   component="h1"
                   letterSpacing={1}
                 >
-                  {user ? user.organization?.organization_name.toUpperCase() : "CRM"}
+                  {user ? user.organization.organization.toUpperCase() : "Company"}
                 </Typography>
               </Stack>
             </StyledLink>

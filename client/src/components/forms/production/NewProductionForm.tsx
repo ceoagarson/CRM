@@ -1,10 +1,10 @@
 import { useRef, useEffect, useState } from 'react'
-import { IMachine } from '../../../types/machine.types'
 import { AxiosResponse } from 'axios'
 import { useMutation } from 'react-query'
 import { BackendError } from '../../../types'
 import { NewProduction } from '../../../services/ProductionServices'
 import { Button, Stack, Table, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material'
+import { IMachine } from '../../../types/production.type'
 
 
 function NewProductionForm({ date, data }: { date: string, data: IMachine[] }) {
@@ -88,7 +88,7 @@ function NewProductionForm({ date, data }: { date: string, data: IMachine[] }) {
                                         <TableRow key={index}>
                                             <TableCell>{new Date(date).toDateString()}</TableCell>
                                             <TableCell>{machine.name.toUpperCase()}</TableCell>
-                                            <TableCell>{machine.category.toUpperCase()}</TableCell>
+                                            <TableCell>{machine.category.category.toUpperCase()}</TableCell>
                                             <TableCell>
                                                 {
                                                     remount ? <TextField variant="standard"

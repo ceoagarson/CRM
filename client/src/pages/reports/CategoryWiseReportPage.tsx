@@ -123,12 +123,12 @@ export default function ICategoryWiseReportPage({ startDate, endDate }: Props) {
       let report: IMachineWiseReport[] = []
       data.data.map((item) => {
         if (String(item.created_at) === String(prevDate)) {
-          machines.push({ name: item.machine.name, production: item.production, category: item.machine.category })
+          machines.push({ name: item.machine.name, production: item.production, category: item.machine.category.category })
         }
         else {
           prevDate = item.created_at
           machines = []
-          machines.push({ name: item.machine.name, production: item.production, category: item.machine.category })
+          machines.push({ name: item.machine.name, production: item.production, category: item.machine.category.category })
           reportIndex++
         }
         report[reportIndex] = {

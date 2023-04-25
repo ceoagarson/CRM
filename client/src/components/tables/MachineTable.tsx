@@ -6,8 +6,8 @@ import { ArrowDropDown, ArrowDropUp, } from '@mui/icons-material';
 import { Stack } from '@mui/system';
 import { color1, color2, headColor } from '../../utils/colors';
 import  { useContext, useEffect } from 'react';
-import { IMachine } from '../../types/machine.types';
 import { SelectionContext } from '../../contexts/selectionContext';
+import { IMachine } from '../../types/production.type';
 
 interface Props {
     data: IMachine[],

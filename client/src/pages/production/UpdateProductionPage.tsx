@@ -67,7 +67,7 @@ function UpdateProductionPage({ data }: Props) {
                 accessor: 'category',
                 Cell: (props) => {
                     return (
-                        <Typography sx={{ textTransform: "uppercase" }}>{props.row.original.machine.category}</Typography>
+                        <Typography sx={{ textTransform: "uppercase" }}>{props.row.original.machine.category.category}</Typography>
                     )
                 }
             }

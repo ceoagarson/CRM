@@ -6,7 +6,7 @@ import React, { useContext, useEffect, useState } from "react"
 import { useQuery } from "react-query"
 import { Column } from "react-table"
 import { ChoiceContext, MachineChoiceActions } from "../contexts/dialogContext"
-import { IMachine } from "../types/machine.types"
+import { IMachine } from '../types/production.type'
 import { BackendError } from "../types"
 import { GetMachines } from "../services/MachineServices"
 import { MachineTable } from "../components/tables/MachineTable"
@@ -67,7 +67,7 @@ export default function MachinesPage() {
                 accessor: 'category',
                 Cell: (props) => {
                     return (
-                        <Typography sx={{ textTransform: "uppercase" }}>{props.row.original.category}</Typography>
+                        <Typography sx={{ textTransform: "uppercase" }}>{props.row.original.category.category}</Typography>
                     )
                 }
             },
