@@ -7,7 +7,6 @@ import { UserContext } from '../../contexts/userContext';
 import { paths } from '../../Routes';
 
 
-
 export const StyledLink = styled(Link)`
     text-decoration: none;
     color:black;
@@ -38,34 +37,6 @@ function DashboardMenu() {
                         () => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
                     }>
                     <StyledLink to={paths.users}>Users</StyledLink>
-                </MenuItem> : null}
-            {
-                user?.is_admin ? <MenuItem
-                    onClick={
-                        () => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
-                    }>
-                    <StyledLink to={paths.productions}>Productions</StyledLink>
-                </MenuItem> : null}
-            {
-                user?.is_admin ? <MenuItem
-                    onClick={
-                        () => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
-                    }>
-                    <StyledLink to={paths.reports}>Reports</StyledLink>
-                </MenuItem> : null}
-            {
-                user?.is_admin ? <MenuItem
-                    onClick={
-                        () => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
-                    }>
-                    <StyledLink to={paths.machines}>Machines</StyledLink>
-                </MenuItem> : null}
-            {
-                user?.is_admin ? <MenuItem
-                    onClick={
-                        () => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
-                    }>
-                    <StyledLink to={paths.categories}>Categories</StyledLink>
                 </MenuItem> : null}
             <MenuItem
                 onClick={

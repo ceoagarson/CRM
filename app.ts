@@ -9,7 +9,6 @@ import { MulterError } from 'multer';
 import { connectDatabase } from './config/db';
 import UserRoutes from "./routes/user.routes"
 import LeadRoutes from "./routes/lead.routes"
-import ProductionRoutes from "./routes/production.route"
 import path from 'path';
 import morgan from "morgan";
 
@@ -48,7 +47,6 @@ cloudinary.v2.config({
 });
 app.use("/api/v1", UserRoutes)
 app.use("/api/v1", LeadRoutes)
-app.use("/api/v1", ProductionRoutes)
 
 if (ENV === "production") {
     app.use(express.static(path.join(__dirname, "build")))

@@ -44,16 +44,24 @@ export const CreateLead = catchAsyncError(async (req: Request, res: Response, ne
         lead_owners: new_lead_owners,
         created_by: user._id,
         updated_by: user._id,
-        created_at: new Date(Date.now()),
-        updated_at: new Date(Date.now()),
+        created_at: new Date(new Date().toLocaleString('en-US', {
+            timeZone: 'Asia/Calcutta'
+        })),
+        updated_at: new Date(new Date().toLocaleString('en-US', {
+            timeZone: 'Asia/Calcutta'
+        })),
     })
     if (remark) {
         let new_remark = new Remark({
             remark,
             lead: lead,
-            created_at: new Date(Date.now()),
+            created_at: new Date(new Date().toLocaleString('en-US', {
+                timeZone: 'Asia/Calcutta'
+            })),
             created_by: req.user,
-            updated_at: new Date(Date.now()),
+            updated_at: new Date(new Date().toLocaleString('en-US', {
+                timeZone: 'Asia/Calcutta'
+            })),
             updated_by: req.user
         })
         await new_remark.save()
@@ -119,7 +127,7 @@ export const UpdateLead = catchAsyncError(async (req: Request, res: Response, ne
     if ((String(mobile).trim().length !== 10))
         return res.status(403).json({ message: "please provide valid mobile number" });
     if (name !== lead.name)
-        if (await Lead.findOne({ name: name.toLowerCase().trim()}))
+        if (await Lead.findOne({ name: name.toLowerCase().trim() }))
             return res.status(403).json({ message: `${name} already exists` });
     if (email !== lead.email)
         if (await Lead.findOne({ email: email.toLowerCase().trim() }))
@@ -134,13 +142,17 @@ export const UpdateLead = catchAsyncError(async (req: Request, res: Response, ne
             new_lead_owners.push(owner)
 
         if (remark) {
-            if(!lead.remarks.length){
+            if (!lead.remarks.length) {
                 let new_remark = new Remark({
                     remark,
                     lead: lead,
-                    created_at: new Date(Date.now()),
+                    created_at: new Date(new Date().toLocaleString('en-US', {
+                        timeZone: 'Asia/Calcutta'
+                    })),
                     created_by: user,
-                    updated_at: new Date(Date.now()),
+                    updated_at: new Date(new Date().toLocaleString('en-US', {
+                        timeZone: 'Asia/Calcutta'
+                    })),
                     updated_by: user
                 })
                 await new_remark.save()
@@ -148,18 +160,22 @@ export const UpdateLead = catchAsyncError(async (req: Request, res: Response, ne
                 await lead.save()
             }
             let last_remark = lead.remarks[lead.remarks.length - 1]
-            await Remark.findByIdAndUpdate(last_remark._id,{
-                remark :remark,
-                lead :lead,
-                updated_at :new Date(Date.now()),
-                updated_by :user,
+            await Remark.findByIdAndUpdate(last_remark._id, {
+                remark: remark,
+                lead: lead,
+                updated_at: new Date(new Date().toLocaleString('en-US', {
+                    timeZone: 'Asia/Calcutta'
+                })),
+                updated_by: user,
             })
         }
     }
     await Lead.findByIdAndUpdate(lead._id, {
         ...req.body,
         lead_owners: new_lead_owners,
-        updated_at: new Date(Date.now()),
+        updated_at: new Date(new Date().toLocaleString('en-US', {
+            timeZone: 'Asia/Calcutta'
+        })),
         updated_by: user._id
     })
     return res.status(200).json({ message: "lead updated" })
@@ -174,7 +190,7 @@ export const DeleteLead = catchAsyncError(async (req: Request, res: Response, ne
     if (!lead) {
         return res.status(404).json({ message: "lead not found" })
     }
-    let remarks=await Remark.find({lead:lead._id})
+    let remarks = await Remark.find({ lead: lead._id })
     remarks.map(async (remark) => {
         await remark.remove()
     })
@@ -199,9 +215,13 @@ export const NewRemark = catchAsyncError(async (req: Request, res: Response, nex
     let new_remark = new Remark({
         remark,
         lead: lead,
-        created_at: new Date(Date.now()),
+        created_at: new Date(new Date().toLocaleString('en-US', {
+            timeZone: 'Asia/Calcutta'
+        })),
         created_by: req.user,
-        updated_at: new Date(Date.now()),
+        updated_at: new Date(new Date().toLocaleString('en-US', {
+            timeZone: 'Asia/Calcutta'
+        })),
         updated_by: req.user
     })
     await new_remark.save()

@@ -11,7 +11,9 @@ const RemarkSchema = new mongoose.Schema<IRemark, mongoose.Model<IRemark, {}, {}
     },
     created_at: {
         type: Date,
-        default: new Date(Date.now()),
+        default: new Date(new Date().toLocaleString('en-US', {
+            timeZone: 'Asia/Calcutta'
+        })),
         required: true,
 
     },
@@ -22,7 +24,9 @@ const RemarkSchema = new mongoose.Schema<IRemark, mongoose.Model<IRemark, {}, {}
     },
     updated_at: {
         type: Date,
-        default: new Date(Date.now()),
+        default: new Date(new Date().toLocaleString('en-US', {
+            timeZone: 'Asia/Calcutta'
+        })),
         required: true,
 
     },

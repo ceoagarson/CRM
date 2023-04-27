@@ -7,10 +7,6 @@ import DashboardLayout from './layouts/DashboardLayout'
 import EmailVerifyPage from './pages/EmailVerifyPage'
 import LoginPage from './pages/LoginPage'
 import DashBoardPage from './pages/DashBoardPage'
-import MachinesPage from './pages/MachinesPage'
-import ProductionPage from './pages/ProductionPage'
-import ReportsPage from './pages/ReportsPage'
-import CategoriesPage from './pages/CategoriesPage'
 const LeadsPage = React.lazy(() => import('./pages/LeadsPage'))
 const UsersPage = React.lazy(() => import('./pages/UsersPage'))
 
@@ -53,30 +49,6 @@ function AppRoutes() {
             <Route
               path={paths.leads} element={
                 <Suspense fallback={<LinearProgress />}><LeadsPage /></Suspense>
-
-              }
-            />
-            <Route
-              path={paths.productions} element={
-                <Suspense fallback={<LinearProgress />}><ProductionPage /></Suspense>
-
-              }
-            />
-            <Route
-              path={paths.machines} element={
-                <Suspense fallback={<LinearProgress />}><MachinesPage /></Suspense>
-
-              }
-            />
-            <Route
-              path={paths.reports} element={
-                <Suspense fallback={<LinearProgress />}><ReportsPage /></Suspense>
-
-              }
-            />
-            <Route
-              path={paths.categories} element={
-                <Suspense fallback={<LinearProgress />}><CategoriesPage /></Suspense>
 
               }
             />

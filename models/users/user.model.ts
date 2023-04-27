@@ -60,13 +60,17 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
   },
   last_login: {
     type: Date,
-    default: new Date(Date.now()),
+    default: new Date(new Date().toLocaleString('en-US', {
+      timeZone: 'Asia/Calcutta'
+    })),
     required: true,
 
   },
   created_at: {
     type: Date,
-    default: new Date(Date.now()),
+    default: new Date(new Date().toLocaleString('en-US', {
+      timeZone: 'Asia/Calcutta'
+    })),
     required: true,
 
   },
@@ -77,7 +81,9 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
   },
   updated_at: {
     type: Date,
-    default: new Date(Date.now()),
+    default: new Date(new Date().toLocaleString('en-US', {
+      timeZone: 'Asia/Calcutta'
+    })),
     required: true,
 
   },

@@ -12,4 +12,3 @@ export const destroyFile = async (public_id: string) => {
     console.log("could not file may be not available in server", error);
   }
 }
-//

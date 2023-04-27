@@ -18,7 +18,7 @@ export const SignUp = catchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
         let { username, email, password, organization, mobile } = req.body as TUserBody & IOrganization
         // validations
-        if (!username || !email || !password || !organization|| !mobile)
+        if (!username || !email || !password || !organization || !mobile)
             return res.status(400).json({ message: "fill all the required fields" });
         if (!isEmail(email))
             return res.status(400).json({ message: "please provide valid email" });
@@ -51,7 +51,7 @@ export const SignUp = catchAsyncError(
                 return res.status(500).json({ message: "file uploading error" })
             }
         }
-        
+
         let LeadFields: LeadField[] = []
         all_fields.map((field) => {
             LeadFields.push({
@@ -62,10 +62,14 @@ export const SignUp = catchAsyncError(
         })
         let new_organization = new Organization({
             organization,
-            created_at: new Date(Date.now()),
-            updated_at: new Date(Date.now()),
+            created_at: new Date(new Date().toLocaleString('en-US', {
+                timeZone: 'Asia/Calcutta'
+            })),
+            updated_at: new Date(new Date().toLocaleString('en-US', {
+                timeZone: 'Asia/Calcutta'
+            })),
         })
-        
+
         let owner = new User({
             username,
             password,
@@ -181,7 +185,9 @@ export const Login = catchAsyncError(async (req: Request, res: Response, next: N
     if (!isPasswordMatched)
         return res.status(403).json({ message: "Invalid username or password" })
     sendUserToken(res, user.getAccessToken())
-    user.last_login = new Date(Date.now())
+    user.last_login = new Date(new Date().toLocaleString('en-US', {
+        timeZone: 'Asia/Calcutta'
+    }))
     await user.save()
     res.status(200).json(user)
 })
@@ -268,7 +274,9 @@ export const UpdateUser = catchAsyncError(async (req: Request, res: Response, ne
         mobile,
         dp,
         updated_by: req.user?._id,
-        updated_at: new Date(Date.now()),
+        updated_at: new Date(new Date().toLocaleString('en-US', {
+            timeZone: 'Asia/Calcutta'
+        })),
     }).then(() => res.status(200).json({ message: "user updated" }))
 })
 
