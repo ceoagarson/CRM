@@ -27,9 +27,10 @@ const MachineSchema = new mongoose.Schema<IMachine, mongoose.Model<IMachine, {},
     },
     updated_at: {
         type: Date,
-        default: new Date(Date.now()),
+        default: new Date(new Date().toLocaleString('en-US', {
+            timeZone: 'Asia/Calcutta'
+        })),
         required: true,
-
     },
     updated_by: {
         type: mongoose.Schema.Types.ObjectId,

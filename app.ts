@@ -10,8 +10,6 @@ import { connectDatabase } from './config/db';
 import UserRoutes from "./routes/user.routes"
 import LeadRoutes from "./routes/lead.routes"
 import ProductionRoutes from "./routes/production.route"
-
-
 import path from 'path';
 import morgan from "morgan";
 
