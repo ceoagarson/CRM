@@ -1,4 +1,5 @@
-import { apiClient } from "../utils/AxiosInterceptor";
+import { LeadField } from "../types/user.type";
+import { apiClient } from "./utils/AxiosInterceptor";
 
 // login
 export const Login = async (
@@ -38,23 +39,23 @@ export const GetUser = async (id: string) => {
 
 // block user
 export const BlockUser = async (id: string) => {
-  return await apiClient.patch(`owner/block/user/${id}`)
+  return await apiClient.patch(`block/user/${id}`)
 }
 // unblock user
 export const UnBlockUser = async (id: string) => {
-  return await apiClient.patch(`owner/unblock/user/${id}`)
+  return await apiClient.patch(`unblock/user/${id}`)
 }
-// make owner
-export const MakeOwner = async (id: string) => {
-  return await apiClient.patch(`owner/update/role/owner/${id}`)
+// make leads controlled
+export const UpdateUserLeadAccess = async ({ id, leadFields }: { id: string, leadFields: { lead_fields :LeadField[]}}) => {
+  return await apiClient.patch(`update-lead-field-roles/user/${id}`,leadFields)
 }
 // make admin
 export const MakeAdmin = async (id: string) => {
-  return await apiClient.patch(`owner/update/role/admin/${id}`)
+  return await apiClient.patch(`make-admin/user/${id}`)
 }
-// revoke permissions of a admin or owner
-export const RevokeUser = async (id: string) => {
-  return await apiClient.patch(`owner/revoke/user/${id}`)
+// revoke permissions of a admin 
+export const RemoveAdmin = async (id: string) => {
+  return await apiClient.patch(`remove-admin/user/${id}`)
 }
 // get profile
 export const GetProfile = async ()=> {
@@ -67,7 +68,7 @@ export const UpdateProfile = async (body: FormData) => {
 
 // //update password
 export const UpdatePassword = async (body: { oldPassword: string, newPassword: string, confirmPassword: string }) => {
-  return await apiClient.patch("profile", body)
+  return await apiClient.patch("password/update", body)
 };
 // //update password
 export const ResetPassword = async ({ token, body }:

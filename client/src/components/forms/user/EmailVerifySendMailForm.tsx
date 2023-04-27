@@ -10,10 +10,12 @@ import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContex
 import { paths } from '../../../Routes';
 import { SendVerifyEmail } from '../../../services/UserServices';
 import { BackendError } from '../../../types';
+import { UserContext } from '../../../contexts/userContext';
 
 
 function EmailVerifySendMailForm() {
   const goto = useNavigate()
+  const { user } = useContext(UserContext)
   const { mutate, isSuccess, isLoading, isError, error } = useMutation
     <AxiosResponse<string>,
       BackendError,
@@ -23,7 +25,7 @@ function EmailVerifySendMailForm() {
 
   const formik = useFormik({
     initialValues: {
-      email: ''
+      email: user?.email || ""
     },
     validationSchema: Yup.object({
       email: Yup.string()

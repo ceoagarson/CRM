@@ -14,9 +14,7 @@ import { BackendError, Target } from '../../../types';
 import { IUser } from '../../../types/user.type';
 
 type TFormData = {
-  organization_name: string
-  organization_email: string,
-  organization_mobile: string,
+  organization: string
   username: string,
   email: string
   password: string
@@ -28,15 +26,13 @@ function OwnerSignUpForm() {
   const goto = useNavigate()
   const { dispatch } = useContext(UserContext)
   const { mutate, data, isLoading, isSuccess, isError, error } = useMutation
-    <AxiosResponse<{ owner: IUser }>, BackendError, FormData>
+    <AxiosResponse<IUser>, BackendError, FormData>
     (Signup)
   const { setChoice } = useContext(ChoiceContext)
 
   const formik = useFormik<TFormData>({
     initialValues: {
-      organization_name: "",
-      organization_email: "",
-      organization_mobile: "",
+      organization: "",
       username: "",
       email: "",
       password: "",
@@ -44,19 +40,11 @@ function OwnerSignUpForm() {
       dp: ""
     },
     validationSchema: Yup.object({
-      organization_name: Yup
+      organization: Yup
         .string()
         .required('Required field')
         .min(4, 'Must be 4 characters or more')
         .max(30, 'Must be 30 characters or less'),
-      organization_email: Yup.string()
-        .email('provide a valid email id')
-        .required('Required field'),
-      organization_mobile: Yup
-        .string()
-        .min(10, 'Must be 10 digits')
-        .max(10, 'Must be 10 digits ')
-        .required('Required field'),
       mobile: Yup
         .string()
         .min(10, 'Must be 10 digits')
@@ -102,10 +90,8 @@ function OwnerSignUpForm() {
     }),
     onSubmit: (values: TFormData) => {
       let formdata = new FormData()
-      formdata.append("organization_name", values.organization_name)
+      formdata.append("organization", values.organization)
       formdata.append("username", values.username)
-      formdata.append("organization_email", values.organization_email)
-      formdata.append("organization_mobile", values.organization_mobile)
       formdata.append("mobile", values.mobile)
       formdata.append("email", values.email)
       formdata.append("password", values.password)
@@ -128,7 +114,7 @@ function OwnerSignUpForm() {
   useEffect(() => {
     if (isSuccess) {
       setTimeout(() => {
-        dispatch({ type: UserActions.login, payload: data.data.owner })
+        dispatch({ type: UserActions.login, payload: data.data })
         setChoice({ type: UserChoiceActions.close })
         goto(paths.dashboard)
       }, 1000)
@@ -149,45 +135,16 @@ function OwnerSignUpForm() {
           fullWidth
           required
           error={
-            formik.touched.organization_name && formik.errors.organization_name ? true : false
+            formik.touched.organization && formik.errors.organization ? true : false
           }
-          id="organization_name"
+          id="organization"
           label="Organization Name"
           helperText={
-            formik.touched.organization_name && formik.errors.organization_name ? formik.errors.organization_name : ""
+            formik.touched.organization && formik.errors.organization ? formik.errors.organization : ""
           }
-          {...formik.getFieldProps('organization_name')}
+          {...formik.getFieldProps('organization')}
         />
-        <TextField
-          variant='standard'
-
-          required
-          fullWidth
-          error={
-            formik.touched.organization_email && formik.errors.organization_email ? true : false
-          }
-          id="organization_email"
-          label="Organization Email Id"
-          helperText={
-            formik.touched.organization_email && formik.errors.organization_email ? formik.errors.organization_email : ""
-          }
-          {...formik.getFieldProps('organization_email')}
-        />
-        <TextField
-          variant='standard'
-
-          required
-          fullWidth
-          error={
-            formik.touched.organization_mobile && formik.errors.organization_mobile ? true : false
-          }
-          id="organization_mobile"
-          label="Organization Mobile"
-          helperText={
-            formik.touched.organization_mobile && formik.errors.organization_mobile ? formik.errors.organization_mobile : ""
-          }
-          {...formik.getFieldProps('organization_mobile')}
-        />
+        
 
         <TextField
           variant='standard'
@@ -249,7 +206,7 @@ function OwnerSignUpForm() {
         />
         <TextField
           variant='standard'
-
+          type="number"
           required
           fullWidth
           error={

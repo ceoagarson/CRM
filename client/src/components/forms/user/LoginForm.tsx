@@ -34,11 +34,11 @@ function LoginForm() {
       username: Yup.string()
         .min(4, 'Must be 4 characters or more')
         .max(30, 'Must be 30 characters or less')
-        .required('Required field'),
+        .required(),
       password: Yup.string()
         .min(6, 'Must be 6 characters or more')
         .max(30, 'Must be 30 characters or less')
-        .required('Required field')
+        .required()
     }),
     onSubmit: (values: {
       username: string,
@@ -74,13 +74,15 @@ function LoginForm() {
 
       <Stack
         direction="column"
-        pt={2}
+        p={2}
         gap={2}
       >
         <TextField
-          variant="standard"
+          autoFocus
           fullWidth
+          variant="standard"
           required
+          focused
           error={
             formik.touched.username && formik.errors.username ? true : false
           }
@@ -93,11 +95,12 @@ function LoginForm() {
         />
         <TextField
           required
+          variant="standard"
+          focused
           error={
             formik.touched.password && formik.errors.password ? true : false
           }
           id="password"
-          variant="standard"
           label="Password"
           fullWidth
           helperText={

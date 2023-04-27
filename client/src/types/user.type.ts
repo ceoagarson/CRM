@@ -1,20 +1,40 @@
-import { Types } from "mongoose";
-import { Asset } from "./asset.type";
-import { IOrganization } from "./organization.type";
+export type Asset = {
+    public_id: string,
+    url: string,
+    size?: number,
+    format?: string,
+}
 
-type BaseUser = {
+export type LeadFieldType = "name" | "customer_name" | "customer_designation" | "mobile" |    "email" | "city" | "state" | "country" | "address" | "remarks" | "work_description" | "turnover" | "lead_type" | "stage" | "alternate_mobile1" | "alternate_mobile2" | "alternate_email" | "lead_owners" | "lead_source" | "created_at" | "created_by" | "updated_at" | "updated_by"
+
+export type LeadField={
+    field: LeadFieldType,
+    readonly:Boolean,
+    hidden: Boolean
+}
+
+export const all_fields: LeadFieldType[] = ["name", "customer_name", "customer_designation", "mobile", "email", "city", "state", "country", "address", "remarks", "work_description", "turnover", "lead_type", "stage", "alternate_mobile1", "alternate_mobile2", "alternate_email", "lead_owners", "lead_source", "created_at", "created_by", "updated_at", "updated_by"]
+
+export type IOrganization = {
+    _id: string,
+    organization: string,
+    created_at: Date,
+    created_by: IUser,
+    updated_at: Date,
+    updated_by: IUser
+}
+
+
+export type IUser = {
     _id: string,
     username: string,
     password: string,
     email: string,
-    mobile: number,
-    organization: IOrganization,
-}
-type AdditionalData = {
+    mobile: string,
+    organization: IOrganization
     dp: Asset,
-    roles: Types.Array<string>
-}
-type Status = {
+    is_admin:Boolean,
+    lead_fields: LeadField[],
     email_verified: Boolean,
     last_login: Date,
     created_at: Date,
@@ -22,18 +42,13 @@ type Status = {
     updated_at: Date,
     updated_by: IUser
     is_active: Boolean,
-
-    // for react table actions
-    actions: any
-}
-type Tokens = {
     resetPasswordToken: string | null,
     resetPasswordExpire: Date | null,
     emailVerifyToken: string | null,
     emailVerifyExpire: Date | null,
+    // actions
+    actions?:any
 }
-
-export type IUser = BaseUser & AdditionalData & Status & Tokens
 
 export type IUserMethods = {
     getAccessToken: () => string,

@@ -7,138 +7,135 @@ import * as Yup from "yup"
 import { queryClient } from '../../..';
 import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { NewLead } from '../../../services/LeadsServices';
-import { BackendError, Target } from '../../../types';
+import { BackendError } from '../../../types';
 import { ILead } from '../../../types/lead.type';
 import { Countries } from '../../../utils/countries';
 import { Source } from '../../../utils/Source';
 import { States } from '../../../utils/states';
+import { Cities } from '../../../utils/cities';
+import { IUser } from '../../../types/user.type';
 
-type TformData = {
+export type TformData = {
   name: string,
-  email: string,
+  customer_name: string,
+  customer_designation: string,
   mobile: string,
-  dp: string | Blob | File
+  email: string
   city: string,
   state: string,
-  description: string,
-  probability: "easy" | "medium" | "hard" | ""
-  customer_name: string,
+  country: string,
   address: string,
-  country: string
-  alternate_mobile: string,
+  remark: string,
+  work_description: string,
+  turnover: string,
+  lead_type: string,
+  stage: string,
+  alternate_mobile1: string,
+  alternate_mobile2: string,
   alternate_email: string,
-  customer_designation: string,
+  lead_owners: string[],
   lead_source: string,
-  remarks: string,
 }
 
-function NewLeadForm() {
+function NewLeadForm({ users }: { users: IUser[] }) {
   const { mutate, isLoading, isSuccess, isError, error } = useMutation
-    <AxiosResponse<ILead>, BackendError, FormData>
+    <AxiosResponse<ILead>, BackendError, TformData>
     (NewLead, {
       onSuccess: () => queryClient.invalidateQueries('leads')
     })
-
   const { setChoice } = useContext(ChoiceContext)
-
   const formik = useFormik<TformData>({
     initialValues: {
       name: "",
-      email: "",
-      mobile: "",
-      dp: "",
-      city: "",
-      state: "",
-      description: "",
-      probability: "",
       customer_name: "",
-      address: "",
-      country: "india",
-      alternate_mobile: "",
-      alternate_email: "",
       customer_designation: "",
-      lead_source: "",
-      remarks: "",
+      mobile: "",
+      email: "",
+      city: "Ahmedabad",
+      state: "Gujarat",
+      country: "India",
+      address: "",
+      remark: "",
+      work_description: "delaer of safety items",
+      turnover: " 5 lakhs",
+      lead_type: "wholesale",
+      stage: "open",
+      alternate_mobile1: "",
+      alternate_mobile2: "",
+      alternate_email: "",
+      lead_source: "internet",
+      lead_owners: [""]
     },
     validationSchema: Yup.object({
       name: Yup.string()
         .required('Required field')
         .min(4, 'Must be 4 characters or more')
         .max(30, 'Must be 30 characters or less'),
+      lead_owners: Yup.array()
+        .required('Required field'),
       email: Yup.string()
         .email('provide a valid email id')
         .required('Required field'),
-      customer_name: Yup.string().required("required field")
+      alternate_email: Yup.string()
+        .email('provide a valid email id'),
+      customer_name: Yup.string()
         .min(4, 'Must be 4 characters or more')
         .max(30, 'Must be 30 characters or less'),
-      customer_designation: Yup.string().required("required field"),
+      customer_designation: Yup.string(),
       city: Yup.string().required("required field")
         .min(3, 'Must be 3 characters or more')
         .max(30, 'Must be 30 characters or less'),
       state: Yup.string().required("required field")
         .min(3, 'Must be 3 characters or more')
         .max(30, 'Must be 30 characters or less'),
-      probability: Yup.string().required("required field"),
+      lead_type: Yup.string().required("required field"),
+      turnover: Yup.string(),
+      stage: Yup.string().required("required field"),
       lead_source: Yup.string().required("required field"),
       country: Yup.string().required("required field"),
-      description: Yup.string().required("required field")
+      work_description: Yup.string().required("required field")
         .min(20, 'Must be 20 characters or more')
         .max(1000, 'Must be 1000 characters or less'),
-      address: Yup.string()
+      address: Yup.string().required("required field")
         .min(10, 'Must be 10 characters or more')
         .max(300, 'Must be 300 characters or less'),
-      remarks: Yup.string()
+      remark: Yup.string()
         .min(10, 'Must be 10 characters or more')
         .max(500, 'Must be 500 characters or less'),
       mobile: Yup.string()
         .min(10, 'Must be 10 digits')
         .max(10, 'Must be 10 digits')
         .required('Required field'),
-      alternate_mobile: Yup.string()
+      alternate_mobile1: Yup.string()
         .min(10, 'Must be 10 digits')
         .max(10, 'Must be 10 digits'),
-      dp: Yup.mixed<File>()
-        .test("size", "size is allowed only less than 200kb",
-          file => {
-            if (file)
-              if (!file.size) //file not provided
-                return true
-              else
-                return Boolean(file.size <= 1024 * 200)
-            return true
-          }
-        )
-        .test("type", " allowed only .jpg, .jpeg, .png, .gif images",
-          file => {
-            const Allowed = ["image/png", "image/jpg", "image/jpeg", "image/png", "image/gif"]
-            if (file)
-              if (!file.size) //file not provided
-                return true
-              else
-                return Boolean(Allowed.includes(file.type))
-            return true
-          }
-        )
+      alternate_mobile2: Yup.string()
+        .min(10, 'Must be 10 digits')
+        .max(10, 'Must be 10 digits')
     }),
     onSubmit: (values: TformData) => {
-      let formdata = new FormData()
-      formdata.append("name", values.name)
-      formdata.append("email", values.email)
-      formdata.append("mobile", values.mobile)
-      formdata.append("city", values.city)
-      formdata.append("state", values.state)
-      formdata.append("description", values.description)
-      formdata.append("probability", values.probability)
-      formdata.append("customer_name", values.customer_name)
-      formdata.append("address", values.address)
-      formdata.append("country", values.country)
-      formdata.append("alternate_mobile", values.alternate_mobile)
-      formdata.append("alternate_email", values.alternate_email)
-      formdata.append("customer_designation", values.customer_designation)
-      formdata.append("lead_source", values.lead_source)
-      formdata.append("remarks", values.remarks)
-      formdata.append("dp", values.dp)
-      mutate(formdata)
+      let leadData: TformData = {
+        customer_name: values.customer_name,
+        customer_designation: values.customer_designation,
+        mobile: values.mobile,
+        email: values.email,
+        city: values.city,
+        state: values.state,
+        country: values.country,
+        address: values.address,
+        remark: values.remark,
+        work_description: values.work_description,
+        turnover: values.turnover,
+        lead_type: values.lead_type,
+        stage: values.stage,
+        alternate_mobile1: values.alternate_mobile1,
+        alternate_mobile2: values.alternate_mobile2,
+        alternate_email: values.alternate_email,
+        lead_source: values.lead_source,
+        name: values.name,
+        lead_owners: values.lead_owners
+      }
+      mutate(leadData)
     }
   });
   useEffect(() => {
@@ -148,20 +145,19 @@ function NewLeadForm() {
       }, 1000)
     }
   }, [isSuccess, setChoice])
-
   return (
     <form onSubmit={formik.handleSubmit}>
-
       <Stack
         gap={2}
         py={2}
       >
         {/* name */}
+
         <TextField
           autoFocus
           variant='standard'
-          
           fullWidth
+
           required
           error={
             formik.touched.name && formik.errors.name ? true : false
@@ -173,12 +169,14 @@ function NewLeadForm() {
           }
           {...formik.getFieldProps('name')}
         />
+
+
         {/* customer name */}
-        <TextField
+
+        < TextField
           variant='standard'
-          
           fullWidth
-          required
+
           error={
             formik.touched.customer_name && formik.errors.customer_name ? true : false
           }
@@ -190,12 +188,15 @@ function NewLeadForm() {
           {...formik.getFieldProps('customer_name')}
         />
 
+
         {/* customer designiation */}
-        <TextField
+
+
+        < TextField
           variant='standard'
-          
           fullWidth
-          required
+
+
           error={
             formik.touched.customer_designation && formik.errors.customer_designation ? true : false
           }
@@ -206,10 +207,13 @@ function NewLeadForm() {
           }
           {...formik.getFieldProps('customer_designation')}
         />
+
         {/* mobile */}
-        <TextField
+
+
+        < TextField
           variant='standard'
-          
+          type="number"
           required
           error={
             formik.touched.mobile && formik.errors.mobile ? true : false
@@ -223,11 +227,11 @@ function NewLeadForm() {
           {...formik.getFieldProps('mobile')}
         />
 
-
         {/* email */}
-        <TextField
+
+
+        < TextField
           variant='standard'
-          
           required
           fullWidth
           error={
@@ -242,24 +246,67 @@ function NewLeadForm() {
         />
 
         {/* alternate mobile */}
+
+
+
+        < TextField
+          variant='standard'
+          fullWidth
+
+          type="number"
+          error={
+            formik.touched.alternate_mobile1 && formik.errors.alternate_mobile1 ? true : false
+          }
+          id="alternate_mobile1"
+          label="Alternate Mobile1"
+          helperText={
+            formik.touched.alternate_mobile1 && formik.errors.alternate_mobile1 ? formik.errors.alternate_mobile1 : ""
+          }
+          {...formik.getFieldProps('alternate_mobile1')}
+        />
+
+        {/* alternate mobile */}
+
+
+
+        < TextField
+          variant='standard'
+          fullWidth
+          type="number"
+          error={
+            formik.touched.alternate_mobile2 && formik.errors.alternate_mobile2 ? true : false
+          }
+          id="alternate_mobile2"
+          label="Alternate Mobile2"
+          helperText={
+            formik.touched.alternate_mobile2 && formik.errors.alternate_mobile2 ? formik.errors.alternate_mobile2 : ""
+          }
+          {...formik.getFieldProps('alternate_mobile2')}
+        />
+
+        {/* turnover */}
+
         <TextField
           variant='standard'
-          
           fullWidth
           error={
-            formik.touched.alternate_mobile && formik.errors.alternate_mobile ? true : false
+            formik.touched.turnover && formik.errors.turnover ? true : false
           }
-          id="alternate_mobile"
-          label="Alternate Mobile"
+
+          id="turnover"
+          label="TurnOver"
           helperText={
-            formik.touched.alternate_mobile && formik.errors.alternate_mobile ? formik.errors.alternate_mobile : ""
+            formik.touched.turnover && formik.errors.turnover ? formik.errors.turnover : ""
           }
-          {...formik.getFieldProps('alternate_mobile')}
+          {...formik.getFieldProps('turnover')}
         />
+
         {/* alternate_email */}
-        <TextField
+
+
+
+        < TextField
           variant='standard'
-          
           fullWidth
           error={
             formik.touched.alternate_email && formik.errors.alternate_email ? true : false
@@ -271,26 +318,49 @@ function NewLeadForm() {
           }
           {...formik.getFieldProps('alternate_email')}
         />
+
         {/* city */}
-        <TextField
+
+
+        < TextField
           variant='standard'
-          
+          select
+
+          SelectProps={{
+            native: true
+          }}
+          focused
           required
-          fullWidth
           error={
             formik.touched.city && formik.errors.city ? true : false
           }
           id="city"
           label="City"
+          fullWidth
           helperText={
             formik.touched.city && formik.errors.city ? formik.errors.city : ""
           }
           {...formik.getFieldProps('city')}
-        />
+        >
+          <option value="">
+          </option>
+          {
+            Cities.map((city, index: number) => {
+              return (<option key={index} value={city}>
+                {city}
+              </option>)
+            })
+          }
+        </TextField>
+
         {/* state */}
-        <TextField
+
+
+        < TextField
           variant='standard'
           select
+
+
           SelectProps={{
             native: true
           }}
@@ -308,7 +378,7 @@ function NewLeadForm() {
           {...formik.getFieldProps('state')}
         >
           <option value="">
-            Select State
+
           </option>
           {
             States.map(state => {
@@ -318,9 +388,13 @@ function NewLeadForm() {
             })
           }
         </TextField>
-        {/* probability */}
-        <TextField
+
+        {/* stage */}
+
+
+        < TextField
           variant='standard'
+
           select
           SelectProps={{
             native: true
@@ -328,32 +402,91 @@ function NewLeadForm() {
           focused
           required
           error={
-            formik.touched.probability && formik.errors.probability ? true : false
+            formik.touched.stage && formik.errors.stage ? true : false
           }
-          id="probability"
-          label="Probability"
+          id="stage"
+          label="Stage"
           fullWidth
           helperText={
-            formik.touched.probability && formik.errors.probability ? formik.errors.probability : ""
+            formik.touched.stage && formik.errors.stage ? formik.errors.stage : ""
           }
-          {...formik.getFieldProps('probability')}
+          {...formik.getFieldProps('stage')}
         >
           <option value="">
-            Select
+
           </option>
-          <option value="easy">
-            easy
-          </option><option value="medium">
-            medium
-          </option><option value="hard">
-            hard
+          <option value="open">
+            open
+          </option>
+          <option value="won">
+            won
+          </option>
+          <option value="won dealer">
+            won dealer
+          </option>
+          <option value="lost">
+            lost
+          </option>
+          <option value="useless">
+            useless
+          </option>
+          <option value="potential">
+            potential
           </option>
         </TextField>
 
+        {/* lead type */}
+
+
+
+        < TextField
+          variant='standard'
+
+
+          select
+          SelectProps={{
+            native: true
+          }}
+          focused
+          required
+          error={
+            formik.touched.lead_type && formik.errors.lead_type ? true : false
+          }
+
+          id="lead_type"
+          label="Lead Type"
+          fullWidth
+          helperText={
+            formik.touched.lead_type && formik.errors.lead_type ? formik.errors.lead_type : ""
+          }
+          {...formik.getFieldProps('lead_type')}
+        >
+          <option value="">
+
+          </option>
+          <option value="wholesale">
+            wholesale
+          </option>
+          <option value="retail">
+            retail
+          </option>
+          <option value="company">
+            company
+          </option>
+          <option value="mixed">
+            Wholesale + Retail
+          </option>
+        </TextField>
+
+
         {/* lead_source */}
-        <TextField
+
+
+        < TextField
           variant='standard'
           select
+
+
           SelectProps={{
             native: true
           }}
@@ -371,7 +504,6 @@ function NewLeadForm() {
           {...formik.getFieldProps('lead_source')}
         >
           <option value="">
-            Select
           </option>
           {
 
@@ -383,14 +515,19 @@ function NewLeadForm() {
             })
           }
         </TextField>
+
         {/* country */}
-        <TextField
+
+
+
+        < TextField
           variant='standard'
+
           select
           SelectProps={{
             native: true
           }}
-          
+          focused
           required
           error={
             formik.touched.country && formik.errors.country ? true : false
@@ -405,44 +542,22 @@ function NewLeadForm() {
         >
           {
             Countries.map(country => {
-              return (<option key={country.unicode} value={country.name.toLowerCase()}>
+              return (<option key={country.unicode} value={country.name}>
                 {country.name}
               </option>)
             })
           }
         </TextField>
 
-        {/*dp  */}
-        <TextField
-          fullWidth
-          error={
-            formik.touched.dp && formik.errors.dp ? true : false
-          }
-          helperText={
-            formik.touched.dp && formik.errors.dp ? String(formik.errors.dp) : ""
-          }
-          label="Display Picture"
-          focused
-          variant='standard'
-          type="file"
-          name="dp"
-          onBlur={formik.handleBlur}
-          onChange={(e) => {
-            e.preventDefault()
-            const target: Target = e.currentTarget
-            let files = target.files
-            if (files) {
-              let file = files[0]
-              formik.setFieldValue("dp", file)
-            }
-          }}
-        />
         {/* address */}
-        <TextField
+
+        < TextField
+
+
           variant='standard'
           multiline
           minRows={2}
-          
+          required
           error={
             formik.touched.address && formik.errors.address ? true : false
           }
@@ -454,41 +569,86 @@ function NewLeadForm() {
           }
           {...formik.getFieldProps('address')}
         />
-        {/* description */}
-        <TextField
+
+        {/* work_description */}
+
+
+
+        < TextField
           variant='standard'
           multiline
           minRows={2}
+
+
           required
-          
           error={
-            formik.touched.description && formik.errors.description ? true : false
+            formik.touched.work_description && formik.errors.work_description ? true : false
           }
-          id="description"
-          label="Description"
+          id="work_description"
+          label="Work Description"
           fullWidth
           helperText={
-            formik.touched.description && formik.errors.description ? formik.errors.description : ""
+            formik.touched.work_description && formik.errors.work_description ? formik.errors.work_description : ""
           }
-          {...formik.getFieldProps('description')}
+          {...formik.getFieldProps('work_description')}
         />
-        {/* remarks */}
-        <TextField
+
+
+        {/* lead owners */}
+
+
+
+        < TextField
+          variant='standard'
+          select
+          SelectProps={{
+            native: true,
+            multiple: true
+          }}
+          focused
+          required
+          error={
+            formik.touched.lead_owners && formik.errors.lead_owners ? true : false
+          }
+          id="lead_owners"
+          label="Lead Owners"
+          fullWidth
+          helperText={
+            formik.touched.lead_owners && formik.errors.lead_owners ? formik.errors.lead_owners : ""
+          }
+          {...formik.getFieldProps('lead_owners')}
+        >
+          {
+            users.map(user => {
+              return (<option key={user._id} value={user._id}>
+                {user.username}
+              </option>)
+            })
+          }
+        </TextField>
+
+        {/* remark */}
+
+
+        < TextField
           variant='standard'
           multiline
+
+
           minRows={2}
-          
           error={
-            formik.touched.remarks && formik.errors.remarks ? true : false
+            formik.touched.remark && formik.errors.remark ? true : false
           }
-          id="remarks"
-          label="Remarks"
+          id="remark"
+          label="Remark"
           fullWidth
           helperText={
-            formik.touched.remarks && formik.errors.remarks ? formik.errors.remarks : ""
+            formik.touched.remark && formik.errors.remark ? formik.errors.remark : ""
           }
-          {...formik.getFieldProps('remarks')}
+          {...formik.getFieldProps('remark')}
         />
+
+
       </Stack>
       {
         isError ? (
@@ -505,8 +665,8 @@ function NewLeadForm() {
         ) : null
       }
       <Button variant="contained" color="primary" type="submit"
-        disabled={Boolean(isLoading)}
-        fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Create"}
+
+        fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Create Lead"}
       </Button>
     </form>
   )

@@ -18,9 +18,10 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "downlevelIteration":true
   },
   "include": [
     "src"
-, "temp/verify_email.tsx", "src/app/components/reset_password_email.tsx"  ]
+, "temp/verify_email.tsx", "src/app/components/reset_password_email.tsx", "src/components/menu"  ]
 }

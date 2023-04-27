@@ -1,42 +1,97 @@
-import { AddBoxOutlined, Block, ChangeCircle, Edit, Visibility } from "@mui/icons-material"
-import { Avatar, IconButton, LinearProgress, Stack, Tooltip, Typography } from "@mui/material"
+import { Comment, Delete, Edit, Search, Visibility } from "@mui/icons-material"
+import { IconButton, InputAdornment, LinearProgress, Stack, TextField, Tooltip, Typography } from "@mui/material"
 import { AxiosResponse } from "axios"
 import React, { useContext, useEffect, useState } from "react"
 import { useQuery } from "react-query"
 import { Column } from "react-table"
-import NewActivityDialog from "../components/dialogs/activities/NewActivityDialog"
-import ConvertResourceDialog from "../components/dialogs/conversion/ConvertResourceDialog"
-import ToogleLeadStatusDialog from "../components/dialogs/leads/ToogleLeadStatusDialog copy"
 import UpdateLeadDialog from "../components/dialogs/leads/UpdateLeadDialog"
-import ViewLeadDialog from "../components/dialogs/leads/ViewLeadDialog"
-import { LeadTable } from "../components/tables/lead/LeadTable"
-import { ActivityChoiceActions, ChoiceContext, ConversionChoiceActions, LeadChoiceActions } from "../contexts/dialogContext"
-import { UserContext } from "../contexts/userContext"
+import ViewLeadDialog from "../components/dialogs/leads/ViewRemarksDialog"
+import { LeadTable } from "../components/tables/LeadTable"
+import { ChoiceContext, LeadChoiceActions } from "../contexts/dialogContext"
 import { GetLeads } from "../services/LeadsServices"
 import { BackendError } from "../types"
 import { ILead } from "../types/lead.type"
+import NewRemarkDialog from "../components/dialogs/leads/NewRemarkDialog"
+import { SelectionContext } from "../contexts/selectionContext"
+import { FilterContext } from "../contexts/filterContext"
+import FuzzySearch from "fuzzy-search"
+import { headColor } from "../utils/colors"
+import LeadTableMenu from "../components/menu/LeadTableMenu"
+import { UserContext } from "../contexts/userContext"
+import DeleteLeadDialog from "../components/dialogs/leads/DeleteLeadDialog"
 
 export default function LeadsPage() {
+  const { user: LoggedInUser } = useContext(UserContext)
+  const { selectedRows } = useContext(SelectionContext)
+  const { filter, setFilter } = useContext(FilterContext)
+  const [preFilteredData, setPreFilteredData] = useState<ILead[]>([])
   const { setChoice } = useContext(ChoiceContext)
+  const [DATA, setDATA] = useState<ILead[]>([])
   const [lead, setLead] = useState<ILead>()
-  const { user: loggedInUser } = useContext(UserContext)
-  const { data, isSuccess, isLoading } = useQuery
+  const { data: leads, isSuccess, isLoading } = useQuery
     <AxiosResponse<ILead[]>, BackendError>("leads", GetLeads, {
       refetchOnMount: true
     })
-  const [DATA, setDATA] = useState<ILead[]>([])
   const MemoData = React.useMemo(() => DATA, [DATA])
-
   const MemoColumns: Column<ILead>[] = React.useMemo(
     () => [
-      // index 
+      //actions
       {
-        Header: "Index",
-        accessor: "_id",
-        width: 20,
+        Header: 'Actions',
+        accessor: 'actions',
         disableSortBy: true,
         Cell: (props) => {
-          return <Typography variant="body1" component="span" pr={2}>{props.row.index + 1}</Typography>
+          return (
+            <Stack direction="row" spacing={1}>
+              {
+                LoggedInUser?.is_admin ?
+                  <Tooltip title="delete">
+                    <IconButton color="error"
+                      onClick={() => {
+                        setChoice({ type: LeadChoiceActions.delete_lead })
+                        setLead(props.row.original)
+                      }}
+                    >
+                      <Delete />
+                    </IconButton>
+                  </Tooltip>
+                  :
+                  null
+              }
+
+              <Tooltip title="edit">
+                <IconButton color="secondary"
+                  onClick={() => {
+                    setChoice({ type: LeadChoiceActions.update_lead })
+                    setLead(props.row.original)
+                  }}
+                >
+                  <Edit />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="view remarks">
+                <IconButton color="primary"
+                  onClick={() => {
+                    setChoice({ type: LeadChoiceActions.view_remarks })
+                    setLead(props.row.original)
+                  }}
+                >
+                  <Visibility />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Add Remark">
+                <IconButton
+                  color="success"
+                  onClick={() => {
+                    setChoice({ type: LeadChoiceActions.update_remark })
+                    setLead(props.row.original)
+                  }}
+                >
+                  <Comment />
+                </IconButton>
+              </Tooltip>
+            </Stack>
+          )
         }
       },
       // lead name
@@ -45,55 +100,120 @@ export default function LeadsPage() {
         accessor: 'name',
         Cell: (props) => {
           return (
-            <Stack direction="row"
-              spacing={2}
-              justifyContent="left"
-              alignItems="center"
-            >
-              <Stack
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Avatar
-                  sx={{ width: 30, height: 30 }}
-                  onClick={() => {
-                    setChoice({ type: LeadChoiceActions.view_lead })
-                    setLead(props.row.original)
-                  }}
-                  alt="display picture" src={props.row.original.dp?.url} />
-                {
-                  props.row.original.status ?
-                    <Typography variant="caption" sx={{
-                      color: "green",
-                    }}>open</Typography>
-                    : <Typography variant="caption" sx={{
-                      color: "red",
-                    }}>closed</Typography>
-
-                }
-              </Stack >
-              <Stack>
-                <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.name}</Typography>
-                <Typography sx={{ textTransform: "capitalize" }} variant="caption" component="span">
-                  {props.row.original.customer_name}<strong>
-                    ({props.row.original.customer_designation})
-                  </strong>
-                </Typography>
-              </Stack >
-            </Stack>
+            <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.name}</Typography>
           )
         }
       },
-      // email
+      // stage
       {
-        Header: 'Email',
-        accessor: 'email',
+        Header: 'Stage',
+        accessor: 'stage',
         Cell: (props) => {
           return (
-            <Stack>
-              <Typography variant="body1" sx={{}}>{props.row.original.email}</Typography>
-              <Typography variant="caption">{props.row.original.alternate_email}</Typography>
-            </Stack>
+            <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.stage}</Typography>
+          )
+        }
+      },
+      // city
+      {
+        Header: 'City',
+        accessor: 'city',
+        Cell: (props) => {
+          return (
+            <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.city}</Typography>
+          )
+        }
+      },
+      // state name
+      {
+        Header: 'State',
+        accessor: 'state',
+        Cell: (props) => {
+          return (
+            <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.state}</Typography>
+          )
+        }
+      },
+      //lead_type
+      {
+        Header: 'Lead Type',
+        accessor: 'lead_type',
+        disableSortBy: true,
+        Cell: (props) => {
+          return (
+            <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.lead_type}</Typography>
+          )
+        }
+      }
+      ,
+      //lead_Owners
+      {
+        Header: 'Lead Owners',
+        accessor: 'lead_owners',
+        disableSortBy: true,
+        Cell: (props) => {
+          return (
+            <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.lead_owners ? props.row.original.lead_owners.map((owner) => { return owner.username + ", " }) : [""]}</Typography>
+          )
+        }
+      },
+      //country
+
+      //Turn over
+      {
+        Header: 'Turn Over',
+        accessor: 'turnover',
+        Cell: (props) => {
+          return (
+            <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.turnover}</Typography>
+          )
+        }
+      },
+      //Work description
+      {
+        Header: 'Work Description',
+        accessor: 'work_description',
+        Cell: (props) => {
+          return (
+            <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.work_description ? props.row.original.work_description.slice(0, 50) : ""}</Typography>
+          )
+        }
+      },
+
+      //customer name
+      {
+        Header: 'Customer Name',
+        accessor: 'customer_name',
+        Cell: (props) => {
+          return (
+            <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.customer_name}</Typography>
+          )
+        }
+      },
+      //customer_designation
+      {
+        Header: 'Customer Designation',
+        accessor: 'customer_designation',
+        Cell: (props) => {
+          return (
+            <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.customer_designation}</Typography>
+          )
+        }
+      },
+
+      //remark
+      {
+        Header: 'Last Remark',
+        accessor: 'remarks',
+        disableSortBy: true,
+        Cell: (props) => {
+          return (
+            <>
+              {props.row.original.remarks && props.row.original.remarks.length ?
+                <Typography sx={{ textTransform: "capitalize" }}> {props.row.original.remarks[props.row.original.remarks.length - 1].remark.slice(0, 50)}
+                </Typography> : null
+              }
+            </>
           )
         }
       },
@@ -104,8 +224,67 @@ export default function LeadsPage() {
         Cell: (props) => {
           return (
             <Stack>
-              <Typography variant="body1" sx={{}} >{props.row.original.mobile}</Typography>
-              <Typography variant="caption">{props.row.original.alternate_mobile}</Typography>
+              <Typography variant="body1"  >{props.row.original.mobile}</Typography>
+            </Stack>
+          )
+        }
+      }
+      ,
+      //mobile
+      {
+        Header: 'Mobile',
+        accessor: 'alternate_mobile1',
+        Cell: (props) => {
+          return (
+            <Stack>
+              <Typography variant="body1"  >{props.row.original.alternate_mobile1}</Typography>
+            </Stack>
+          )
+        }
+      }
+      ,
+      //mobile
+      {
+        Header: 'Mobile',
+        accessor: 'alternate_mobile2',
+        Cell: (props) => {
+          return (
+            <Stack>
+              <Typography variant="body1"  >{props.row.original.alternate_mobile2}</Typography>
+            </Stack>
+          )
+        }
+      }
+      ,
+      //Email 
+      {
+        Header: 'Email',
+        accessor: 'email',
+        Cell: (props) => {
+          return (
+            <Typography sx={{ textTransform: "capitalize" }} variant="body1">{props.row.original.email}</Typography>
+          )
+        }
+      },
+      //Email 
+      {
+        Header: 'Alternate Email',
+        accessor: 'alternate_email',
+        Cell: (props) => {
+          return (
+            <Typography sx={{ textTransform: "capitalize" }} variant="body1">{props.row.original.alternate_email}</Typography>
+          )
+        }
+      },
+
+      //Address
+      {
+        Header: 'Address',
+        accessor: 'address',
+        Cell: (props) => {
+          return (
+            <Stack>
+              <Typography sx={{ textTransform: "capitalize" }} variant="body1">{props.row.original.address ? props.row.original.address.slice(0, 50) : "..."}</Typography>
             </Stack>
           )
         }
@@ -116,177 +295,139 @@ export default function LeadsPage() {
         accessor: 'lead_source',
         Cell: (props) => {
           return (
-            <Stack>
-              <Typography sx={{ textTransform: "capitalize" }} variant="body1">{props.row.original.lead_source}</Typography>
-            </Stack>
+            <Typography sx={{ textTransform: "capitalize" }} variant="body1">{props.row.original.lead_source}</Typography>
           )
         }
       },
-      // lead_owner
+      // country
       {
-        Header: 'Lead Owner',
-        accessor: 'lead_owner',
+        Header: 'Country',
+        accessor: 'country',
         Cell: (props) => {
           return (
-            <Stack>
-              <Typography variant="body1" sx={{ textTransform: "capitalize" }}>{props.row.original.lead_owner.username}</Typography>
-              <Typography variant="caption" component="span">
-                {new Date(props.row.original.created_at).toLocaleDateString()}
-              </Typography>
-            </Stack>
+            <Typography sx={{ textTransform: "capitalize" }} variant="body1">{props.row.original.country}</Typography>
           )
         }
       },
-      // address
+      // created_at
       {
-        Header: 'Address',
-        accessor: 'city',
+        Header: 'Created At',
+        accessor: 'created_at',
         Cell: (props) => {
           return (
-            <Stack>
-              <Typography variant="body1" sx={{ textTransform: "capitalize" }}>{props.row.original.state}</Typography>
-              <Typography variant="caption" sx={{ textTransform: "capitalize" }}>{props.row.original.city}</Typography>
-            </Stack>
+            <Typography sx={{ textTransform: "capitalize" }} variant="body1">{new Date(props.row.original.created_at).toLocaleString()}</Typography>
           )
         }
       },
-      // status updated
+      // updated_at
       {
-        Header: 'Status UpdatedBy',
-        accessor: 'status',
-        Cell: (props) => {
-          let username = props.row.original.status_changed_by.username
-          return (
-            <Stack>
-              <Typography variant="body1" sx={{ textTransform: "capitalize" }}>{username}</Typography>
-              <Typography variant="caption">{new Date(props.row.original.updated_at).toLocaleString()}</Typography>
-            </Stack>
-          )
-        }
-      },
-      // last  updated
-      {
-        Header: 'Last Updated',
+        Header: 'Updated At',
         accessor: 'updated_at',
         Cell: (props) => {
-          let username = props.row.original.updated_by.username
           return (
-            <Stack>
-              <Typography variant="body1" sx={{ textTransform: "capitalize" }}>{username}</Typography>
-              <Typography variant="caption">{new Date(props.row.original.updated_at).toLocaleString()}</Typography>
-            </Stack>
+            <Typography sx={{ textTransform: "capitalize" }} variant="body1">{new Date(props.row.original.updated_at).toLocaleString()}</Typography>
           )
         }
       },
-      //actions
+      // created_by
       {
-        Header: 'Actions',
-        accessor: 'actions',
+        Header: 'Created By',
+        accessor: 'created_by',
         Cell: (props) => {
-          let open = props.row.original.status
           return (
-            <Stack direction="row" spacing={1}>
-              {
-                loggedInUser?.roles.includes("admin") ?
-                  <>
-                    <Tooltip title="edit">
-                      <IconButton color="secondary"
-                        onClick={() => {
-                          setChoice({ type: LeadChoiceActions.update_lead })
-                          setLead(props.row.original)
-                        }}
-                      >
-                        <Edit />
-                      </IconButton>
-                    </Tooltip>
-                    {
-                      open ?
-                        <Tooltip title="Close">
-                          <IconButton
-                            color="error"
-                            onClick={() => {
-                              setChoice({ type: LeadChoiceActions.open_close_lead })
-                              setLead(props.row.original)
-                            }}
-                          ><Block />
-                          </IconButton>
-                        </Tooltip>
-                        :
-                        <Tooltip title="Open">
-                          <IconButton
-                            color="success"
-                            onClick={() => {
-                              setChoice({ type: LeadChoiceActions.open_close_lead })
-                              setLead(props.row.original)
-                            }}
-                          >
-                            <Block />
-                          </IconButton>
-                        </Tooltip>
-                    }
-                    <Tooltip title="Convert">
-                      <IconButton
-                        color="warning"
-                        onClick={() => {
-                          setChoice({ type: ConversionChoiceActions.convert_resource })
-                          setLead(props.row.original)
-                        }}
-                      >
-                        <ChangeCircle />
-                      </IconButton>
-                    </Tooltip>
-                  </>
-                  :
-                  null
-
-              }
-
-
-              <Tooltip title="view">
-                <IconButton color="primary"
-                  onClick={() => {
-                    setChoice({ type: LeadChoiceActions.view_lead })
-                    setLead(props.row.original)
-                  }}
-                >
-                  <Visibility />
-                </IconButton>
-              </Tooltip>
-
-              <Tooltip title="New Activity">
-                <IconButton
-                  color="success"
-                  onClick={() => {
-                    setChoice({ type: ActivityChoiceActions.create_activity })
-                    setLead(props.row.original)
-                  }}
-                >
-                  <AddBoxOutlined />
-                </IconButton>
-              </Tooltip>
-
-            </Stack>
+            <Typography sx={{ textTransform: "capitalize" }} variant="body1">{props.row.original.created_by.username}</Typography>
           )
         }
       },
+      // updated_by
+      {
+        Header: 'Last Updated By',
+        accessor: 'updated_by',
+        Cell: (props) => {
+          return (
+            <Typography sx={{ textTransform: "capitalize" }} variant="body1">{props.row.original.updated_by.username}</Typography>
+          )
+        }
+      }
     ]
-    , [setChoice, loggedInUser]
+    , [setChoice, LoggedInUser]
   )
+
+  //setup leads
   useEffect(() => {
-    if (isSuccess)
-      setDATA(data.data)
-  }, [isSuccess, data])
+    if (isSuccess) {
+      setDATA(leads.data)
+      setPreFilteredData(leads.data)
+    }
+  }, [isSuccess, leads])
+
+  //set filter
+  useEffect(() => {
+    if (filter) {
+      const searcher = new FuzzySearch(DATA, ["name", "customer_name", "customer_designation", "mobile", "email", "city", "state", "country", "address", "remarks", "work_description", "turnover", "lead_type", "stage", "alternate_mobile1", "alternate_mobile2", "alternate_email", "organization.organization_name", "lead_source", "created_at", "created_by.username", "updated_at", "updated_by.username"], {
+        caseSensitive: false,
+      });
+      const result = searcher.search(filter);
+      setDATA(result)
+    }
+    if (!filter)
+      setDATA(preFilteredData)
+  }, [filter, preFilteredData, DATA])
   return (
     <>
-      < LeadTable data={MemoData} columns={MemoColumns} />
+      {/*heading, search bar and table menu */}
+      <Stack
+        spacing={2}
+        padding={1}
+        direction="row"
+        justifyContent="space-between"
+        width="100vw"
+      >
+        <Typography
+          variant={'h6'}
+          component={'h1'}
+        >
+          Leads
+        </Typography>
+
+        <Stack
+          direction="row"
+        >
+          {/* search bar */}
+          < Stack direction="row" spacing={2} sx={{ bgcolor: headColor }
+          }>
+            <TextField
+              fullWidth
+              size="small"
+              onChange={(e) => setFilter(e.currentTarget.value)}
+              autoFocus
+              InputProps={{
+                startAdornment: <InputAdornment position="start">
+                  <Search />
+                </InputAdornment>,
+              }}
+              placeholder={`${DATA.length} records...`}
+              style={{
+                fontSize: '1.1rem',
+                border: '0',
+              }}
+            />
+
+          </Stack >
+          {/* menu  */}
+          <LeadTableMenu
+            selectedFlatRows={selectedRows}
+          />
+        </Stack>
+      </Stack>
+      <LeadTable data={MemoData} columns={MemoColumns} />
       {
         lead ?
           <>
             <UpdateLeadDialog lead={lead} />
+            <DeleteLeadDialog lead={lead} />
             <ViewLeadDialog lead={lead} />
-            <ToogleLeadStatusDialog lead={lead} />
-            <NewActivityDialog id={lead._id} resource_type="lead" />
-            <ConvertResourceDialog resource_id={lead._id} resource_type="lead" />
+            <NewRemarkDialog lead={lead} />
           </>
           : null
       }

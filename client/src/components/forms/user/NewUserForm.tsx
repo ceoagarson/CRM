@@ -172,7 +172,7 @@ function NewUserForm() {
                 />
                 <TextField
                     variant='standard'
-                    
+                    type="number"
                     required
                     fullWidth
                     error={

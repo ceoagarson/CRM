@@ -35,7 +35,7 @@ function UpdateProfileDialog() {
                                 <Typography variant="h6" component="h2">
                                     {user?.username}</Typography>
                                 <Typography variant="caption" component="p">
-                                    {user?.roles.toString()}</Typography>
+                                    {user?.is_admin?"admin":"user"}</Typography>
                             </Stack>
                         </Box>
                         : null

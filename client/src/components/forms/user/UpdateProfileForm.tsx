@@ -102,7 +102,7 @@ function UpdateProfileForm({ user }: { user: IUser }) {
         />
         <TextField
           variant='standard'
-          
+          type="number"
           required
           fullWidth
           error={

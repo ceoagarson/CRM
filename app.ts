@@ -8,18 +8,13 @@ import cors from "cors";
 import { MulterError } from 'multer';
 import { connectDatabase } from './config/db';
 import UserRoutes from "./routes/user.routes"
-import OrganizationRoutes from "./routes/organization.route"
 import LeadRoutes from "./routes/lead.routes"
-import AccountRoutes from "./routes/account.route"
-import OpportunityRoutes from "./routes/opportunity.route"
-import ActivityRoutes from "./routes/activity.routes"
-import ConversionRoutes from "./routes/conversion.route"
-
-
+import ProductionRoutes from "./routes/production.route"
 import path from 'path';
 import morgan from "morgan";
 
 // app variables
+
 const app = express()
 dotenv.config();
 const PORT = Number(process.env.PORT) || 5000
@@ -52,12 +47,9 @@ cloudinary.v2.config({
     api_secret: process.env.CLOUDINARY_SECRET_KEY,
 });
 app.use("/api/v1", UserRoutes)
-app.use("/api/v1", OrganizationRoutes)
 app.use("/api/v1", LeadRoutes)
-app.use("/api/v1", AccountRoutes)
-app.use("/api/v1", OpportunityRoutes)
-app.use("/api/v1", ActivityRoutes)
-app.use("/api/v1", ConversionRoutes)
+app.use("/api/v1", ProductionRoutes)
+
 if (ENV === "production") {
     app.use(express.static(path.join(__dirname, "build")))
     app.get('*', (req, res) => {

@@ -2,15 +2,16 @@ import { Button, Menu, MenuItem } from '@mui/material'
 import { useContext, useEffect } from 'react'
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
-import { UserChoiceActions, ChoiceContext } from '../../contexts/dialogContext';
 import { MenuActions, MenuContext } from '../../contexts/menuContext';
 import { UserActions, UserContext } from '../../contexts/userContext';
+import { ChoiceContext, UserChoiceActions } from '../../contexts/dialogContext';
 import { paths } from '../../Routes';
-import { Logout } from '../../services/UserServices';
-import EmailVerifySendMailDialog from '../dialogs/users/EmailVerifySendMailDialog';
 import NewUserDialog from '../dialogs/users/NewUserDialog';
-import UpdatePasswordDialog from '../dialogs/users/UpdatePasswordDialog';
+import EmailVerifySendMailDialog from '../dialogs/users/EmailVerifySendMailDialog';
 import UpdateProfileDialog from '../dialogs/users/UpdateProfileDialog';
+import UpdatePasswordDialog from '../dialogs/users/UpdatePasswordDialog';
+import { Logout } from '../../services/UserServices';
+
 
 function UserMenu() {
     const { menu, setMenu } = useContext(MenuContext)
@@ -42,16 +43,7 @@ function UserMenu() {
                     }
                     }
                 >View Profile</MenuItem>
-                {user?.roles?.includes("owner") ?
-                    <MenuItem onClick={() => {
-                        setChoice({ type: UserChoiceActions.new_user })
-                        setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
-
-                    }
-                    }>New User</MenuItem>
-                    :
-                    null
-                }
+               
                 <MenuItem onClick={() => {
                     setChoice({ type: UserChoiceActions.update_password })
                     setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })

@@ -6,21 +6,23 @@ import { UserContext } from './contexts/userContext'
 import DashboardLayout from './layouts/DashboardLayout'
 import EmailVerifyPage from './pages/EmailVerifyPage'
 import LoginPage from './pages/LoginPage'
-const AccountsPage = React.lazy(() => import('./pages/AccountsPage'))
-const ActivitiesPage = React.lazy(() => import('./pages/ActivitiesPage'))
-const DashBoardPage = React.lazy(() => import('./pages/DashBoardPage'))
+import DashBoardPage from './pages/DashBoardPage'
+import MachinesPage from './pages/MachinesPage'
+import ProductionPage from './pages/ProductionPage'
+import ReportsPage from './pages/ReportsPage'
+import CategoriesPage from './pages/CategoriesPage'
 const LeadsPage = React.lazy(() => import('./pages/LeadsPage'))
-const OpportunityPage = React.lazy(() => import('./pages/OpportunityPage'))
 const UsersPage = React.lazy(() => import('./pages/UsersPage'))
 
 export enum paths {
   login = "/",
-  dashboard = "/dashboard",
+  dashboard = "/",
   leads = "leads",
-  accounts = "accounts",
-  activities = "activities",
-  opportunities = "opportunities",
+  machines = "machines",
+  categories = "categories",
+  reports = "reports",
   users = "users",
+  productions = "productions",
   reset_password = "/password/reset/:token",
   verify_email = "/email/verify/:token"
 }
@@ -39,7 +41,6 @@ function AppRoutes() {
                 <Suspense fallback={<LinearProgress />}>
                   <DashBoardPage />
                 </Suspense>
-
               }
             />
             <Route
@@ -56,18 +57,27 @@ function AppRoutes() {
               }
             />
             <Route
-              path={paths.activities} element={
-                <Suspense fallback={<LinearProgress />}><ActivitiesPage /></Suspense>
+              path={paths.productions} element={
+                <Suspense fallback={<LinearProgress />}><ProductionPage /></Suspense>
+
               }
             />
             <Route
-              path={paths.opportunities} element={
-                <Suspense fallback={<LinearProgress />}><OpportunityPage /></Suspense>
+              path={paths.machines} element={
+                <Suspense fallback={<LinearProgress />}><MachinesPage /></Suspense>
+
               }
             />
             <Route
-              path={paths.accounts} element={
-                <Suspense fallback={<LinearProgress />}><AccountsPage /></Suspense>
+              path={paths.reports} element={
+                <Suspense fallback={<LinearProgress />}><ReportsPage /></Suspense>
+
+              }
+            />
+            <Route
+              path={paths.categories} element={
+                <Suspense fallback={<LinearProgress />}><CategoriesPage /></Suspense>
+
               }
             />
           </Route>

@@ -114,7 +114,7 @@ function UpdateUserForm({ user }: Props) {
           />
           <TextField
             variant='standard'
-            
+            type="number"
             fullWidth
             required
             error={

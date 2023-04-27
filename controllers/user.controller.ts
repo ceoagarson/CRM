@@ -3,40 +3,33 @@ import isEmail from "validator/lib/isEmail";
 import { uploadFileToCloudinary } from '../utils/uploadFile.util';
 import { catchAsyncError } from '../middlewares/catchAsyncError.middleware.ts';
 import { deleteToken, sendUserToken } from '../middlewares/auth.middleware';
-import { User } from '../models/user.model';
-import { Asset } from '../types/asset.type';
+import { User } from '../models/users/user.model';
+import { Asset } from '../types/users/asset.type';
 import isMongoId from "validator/lib/isMongoId";
 import { destroyFile } from "../utils/destroyFile.util";
-import { TUserBody } from '../types/user.type';
+import { LeadField, LeadFieldType, TUserBody, all_fields } from '../types/users/user.type';
 import { sendEmail } from '../utils/sendEmail.util';
-import { Organization } from '../models/organization.model';
-import { IOrganization } from '../types/organization.type';
+import { Organization } from '../models/users/organization.model';
+import { IOrganization, TOrganizationBody } from '../types/users/organization.types';
 
 
 // Create Owner account
 export const SignUp = catchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
-        let { username, email, password, organization_name, organization_email, organization_mobile, mobile } = req.body as TUserBody & IOrganization
+        let { username, email, password, organization, mobile } = req.body as TUserBody & IOrganization
         // validations
-        if (!username || !email || !password || !organization_name || !organization_email || !organization_mobile || !mobile)
+        if (!username || !email || !password || !organization|| !mobile)
             return res.status(400).json({ message: "fill all the required fields" });
         if (!isEmail(email))
             return res.status(400).json({ message: "please provide valid email" });
-        if (!isEmail(organization_email))
-            return res.status(400).json({ message: "please provide valid organization email" });
+        if (await Organization.findOne({ organization: organization.toLowerCase().trim() }))
+            return res.status(403).json({ message: `${organization} already exists` });
         if (await User.findOne({ username: username.toLowerCase().trim() }))
             return res.status(403).json({ message: `${username} already exists` });
         if (await User.findOne({ email: email.toLowerCase().trim() }))
             return res.status(403).json({ message: `${email} already exists` });
         if (await User.findOne({ mobile: String(mobile).toLowerCase().trim() }))
             return res.status(403).json({ message: `${mobile} already exists` });
-
-        if (await Organization.findOne({ organization_mobile: String(organization_mobile).toLowerCase().trim() }))
-            return res.status(403).json({ message: `${organization_mobile} already exists` });
-        if (await Organization.findOne({ organization_name: organization_name.toLowerCase().trim() }))
-            return res.status(403).json({ message: `${organization_name} already exists` });
-        if (await Organization.findOne({ organization_email: organization_email.toLowerCase().trim() }))
-            return res.status(403).json({ message: `${organization_email} already exists` });
 
         let dp: Asset = {
             public_id: "",
@@ -58,32 +51,42 @@ export const SignUp = catchAsyncError(
                 return res.status(500).json({ message: "file uploading error" })
             }
         }
-        let organization = new Organization({
-            organization_name,
-            organization_email,
-            organization_mobile
+        
+        let LeadFields: LeadField[] = []
+        all_fields.map((field) => {
+            LeadFields.push({
+                field: field,
+                readonly: false,
+                hidden: false
+            })
         })
+        let new_organization = new Organization({
+            organization,
+            created_at: new Date(Date.now()),
+            updated_at: new Date(Date.now()),
+        })
+        
         let owner = new User({
             username,
             password,
             email,
             mobile,
-            roles: ["owner", "admin"],
+            lead_fields: LeadFields,
+            is_admin: true,
             dp
         })
-        owner.organization = organization
+
+        owner.organization = new_organization
         owner.created_by = owner
         owner.updated_by = owner
-        organization.owners = [owner]
-        organization.created_by = owner
-        organization.updated_by = owner
+        new_organization.created_by = owner
+        new_organization.updated_by = owner
         sendUserToken(res, owner.getAccessToken())
+        await new_organization.save()
         await owner.save()
-        organization = await organization.save()
         owner = await User.findById(owner._id).populate('organization').populate("created_by").populate("updated_by") || owner
-        res.status(201).json({ owner, organization })
+        res.status(201).json(owner)
     })
-
 
 // create normal user 
 export const NewUser = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
@@ -126,18 +129,79 @@ export const NewUser = catchAsyncError(async (req: Request, res: Response, next:
             return res.status(500).json({ message: "file uploading error" })
         }
     }
-    const user = await new User({
+    let LeadFields: LeadField[] = []
+    all_fields.map((field) => {
+        LeadFields.push({
+            field: field,
+            readonly: true,
+            hidden: false,
+        })
+    })
+
+    const user = new User({
         username,
         email,
         password,
         mobile,
         dp,
-        organization: req.user?.organization._id,
-        created_by: req.user._id,
-        updated_by: req.user._id,
-        roles: ["user"]
-    }).save()
-    res.status(201).json(user)
+        lead_fields: LeadFields,
+        organization: req.user?.organization,
+        created_by: req.user,
+        updated_by: req.user,
+    })
+    await user.save()
+    return res.status(201).json(user)
+
+})
+
+// login
+export const Login = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    const { username, password } = req.body as TUserBody & { username: string };
+    if (!username)
+        return res.status(400).json({ message: "please enter username or email" })
+    if (!password)
+        return res.status(400).json({ message: "please enter password" })
+
+    let user = await User.findOne({
+        username: String(username).toLowerCase().trim(),
+    }).select("+password").populate("organization").populate("created_by").populate("updated_by")
+    if (!user) {
+        user = await User.findOne({
+            email: String(username).toLowerCase().trim(),
+        }).select("+password").populate("organization").populate("created_by").populate("updated_by")
+        if (user)
+            if (!user.email_verified)
+                return res.status(403).json({ message: "please verify email id before login" })
+    }
+    if (!user)
+        return res.status(403).json({ message: "Invalid username or password" })
+    if (!user.is_active)
+        return res.status(401).json({ message: "you are blocked, contact admin" })
+    const isPasswordMatched = await user.comparePassword(password);
+    if (!isPasswordMatched)
+        return res.status(403).json({ message: "Invalid username or password" })
+    sendUserToken(res, user.getAccessToken())
+    user.last_login = new Date(Date.now())
+    await user.save()
+    res.status(200).json(user)
+})
+
+
+// update user lead fields and its roles
+export const UpdateLeadFieldRoles = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    const { lead_fields } = req.body as TUserBody
+    if (lead_fields.length === 0)
+        return res.status(400).json({ message: "please fill all required fields" })
+    const id = req.params.id;
+    if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
+    let user = await User.findOne({ _id: id, organization: req.user?.organization });
+    if (!user) {
+        return res.status(404).json({ message: "user not found" })
+    }
+    await User.findByIdAndUpdate(user._id, {
+        lead_fields
+    })
+    res.status(200).json({ message: "user lead fields roles updated" })
 })
 
 // update user only admin can do
@@ -208,23 +272,6 @@ export const UpdateUser = catchAsyncError(async (req: Request, res: Response, ne
     }).then(() => res.status(200).json({ message: "user updated" }))
 })
 
-// get profile 
-export const GetProfile = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    const profile = await User.findById(req.user?._id).populate('organization').populate("created_by").populate("updated_by")
-    if (profile)
-        return res.status(200).json(profile)
-    res.status(403).json({ message: "please login to access the profile" })
-})
-
-// get user only admin can do
-export const GetUser = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    if (!isMongoId(req.params.id))
-        return res.status(400).json({ message: "user id not valid" })
-    const user = await User.findById(req.params.id).populate('organization').populate("created_by").populate("updated_by")
-    if (!user)
-        return res.status(404).json({ message: "user not found" })
-    res.status(200).json(user)
-})
 
 // get all users only admin can do
 export const GetUsers =
@@ -232,45 +279,15 @@ export const GetUsers =
         const users = await User.find({ organization: req.user?.organization }).populate('organization').populate("created_by").populate("updated_by")
         res.status(200).json(users)
     })
-// login 
-export const Login = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    const { username, password } = req.body as TUserBody & { username: string };
-    if (!username)
-        return res.status(400).json({ message: "please enter username or email" })
-    if (!password)
-        return res.status(400).json({ message: "please enter password" })
-
-    let user = await User.findOne({
-        username: String(username).toLowerCase().trim(),
-    }).select("+password").populate("organization").populate("created_by").populate("updated_by")
-    if (!user) {
-        user = await User.findOne({
-            email: String(username).toLowerCase().trim(),
-        }).select("+password").populate("organization").populate("created_by").populate("updated_by")
-        if (user)
-            if (!user.email_verified)
-                return res.status(403).json({ message: "please verify email id before login" })
-    }
-    if (!user)
-        return res.status(403).json({ message: "Invalid username or password" })
-    if (!user.is_active)
-        return res.status(401).json({ message: "you are blocked, contact admin" })
-    const isPasswordMatched = await user.comparePassword(password);
-    if (!isPasswordMatched)
-        return res.status(403).json({ message: "Invalid username or password" })
-    sendUserToken(res, user.getAccessToken())
-    user.last_login = new Date(Date.now())
-    await user.save()
-    res.status(200).json(user)
-})
 
 // logout
 export const Logout = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     if (!req.cookies.accessToken)
         return res.status(200).json({ message: "already logged out" })
-    await deleteToken(res,req.cookies.accessToken);
+    await deleteToken(res, req.cookies.accessToken);
     res.status(200).json({ message: "logged out" })
 })
+
 //update profile 
 export const UpdateProfile = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     let user = await User.findOne({ _id: req.user?._id, organization: req.user?.organization });
@@ -319,7 +336,7 @@ export const UpdateProfile = catchAsyncError(async (req: Request, res: Response,
             email_verified: false,
             updated_by: user.id
         })
-            .then(() => { return res.status(200).json({ message: "user updated" }) })
+            .then(() => { return res.status(200).json({ message: "profile updated" }) })
     }
     await User.findByIdAndUpdate(user.id, {
         email,
@@ -329,6 +346,7 @@ export const UpdateProfile = catchAsyncError(async (req: Request, res: Response,
     })
         .then(() => res.status(200).json({ message: "profile updated" }))
 })
+
 //update password
 export const updatePassword = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const { oldPassword, newPassword, confirmPassword } = req.body as TUserBody & { oldPassword: string, newPassword: string, confirmPassword: string };
@@ -350,6 +368,7 @@ export const updatePassword = catchAsyncError(async (req: Request, res: Response
     await user.save();
     res.status(200).json({ message: "password updated" });
 });
+
 // make admin
 export const MakeAdmin = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
@@ -358,41 +377,15 @@ export const MakeAdmin = catchAsyncError(async (req: Request, res: Response, nex
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }
-    if (user.roles?.includes("admin"))
+    if (user.is_admin)
         return res.status(404).json({ message: "already a admin" })
-    user.roles?.push("admin")
+    user.is_admin = true
     if (req.user)
         user.updated_by = req.user
     await user.save();
-    res.status(200).json({ message: "admin role provided successfully", user });
+    res.status(200).json({ message: "admin role provided successfully" });
 })
-// make owner
-export const MakeOwner = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params.id;
-    if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
-    let user = await User.findOne({ _id: id, organization: req.user?.organization })
-    if (!user) {
-        return res.status(404).json({ message: "user not found" })
-    }
-    if (String(user.created_by._id) === String(user._id))
-        return res.status(403).json({ message: "not allowed contact crm administrator" })
 
-    if (user.roles?.includes("owner"))
-        return res.status(404).json({ message: "already a owner" })
-    let organization = await Organization.findById(user.organization._id)
-    if (!organization)
-        return res.status(404).json({ message: "you are not a member of any organization" })
-    user.roles?.push("owner")
-    if (req.user)
-        user.updated_by = req.user
-    await user.save();
-    organization.owners.push(user)
-    organization.updated_at = new Date(Date.now())
-    if (req.user)
-        organization.updated_by = req.user
-    await organization.save();
-    res.status(200).json({ message: "new owner created successfully" });
-})
 
 // block user
 export const BlockUser = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
@@ -434,8 +427,8 @@ export const UnBlockUser = catchAsyncError(async (req: Request, res: Response, n
     res.status(200).json({ message: "user unblocked successfully" });
 })
 
-// revoke permissions
-export const RevokePermissions = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+// remove admin
+export const RemoveAdmin = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     //update role of user
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
@@ -444,24 +437,17 @@ export const RevokePermissions = catchAsyncError(async (req: Request, res: Respo
         return res.status(404).json({ message: "user not found" })
     }
     if (String(user.created_by._id) === String(user._id))
-        return res.status(403).json({ message: "not allowed contact crm administrator" })
+        return res.status(403).json({ message: "not allowed contact administrator" })
     if (String(user._id) === String(req.user?._id))
         return res.status(403).json({ message: "not allowed this operation here, because you may harm yourself" })
+    user = await User.findById(id)
+    if (!user?.is_admin)
+        res.status(400).json({ message: "you are not an admin" });
     await User.findByIdAndUpdate(id, {
-        roles: ["user"],
-        updated_by: req.user?._id
+        is_admin: false,
+        updated_by: req.user
     })
-    let organization = await Organization.findById(user.organization._id)
-    if (!organization)
-        return res.status(404).json({ message: "you are not a member of any organization" })
-    organization.owners = organization.owners.filter((owner => {
-        return String(owner) !== String(user?._id)
-    }))
-    organization.updated_at = new Date(Date.now())
-    if (req.user)
-        organization.updated_by = req.user
-    await organization.save();
-    res.status(200).json({ message: "user permissions revoked successfully" });
+    res.status(200).json({ message: "admin role removed successfully" });
 })
 
 // sending password reset mail controller
@@ -571,5 +557,5 @@ export const VerifyEmail = catchAsyncError(async (req: Request, res: Response, n
     res.status(200).json({
         message: `congrats ${user.email} verification successful`
     });
-});
+})
 

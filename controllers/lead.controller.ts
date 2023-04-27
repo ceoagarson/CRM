@@ -2,20 +2,24 @@ import { NextFunction, Request, Response } from "express"
 import isEmail from "validator/lib/isEmail"
 import isMongoId from "validator/lib/isMongoId"
 import { catchAsyncError } from "../middlewares/catchAsyncError.middleware.ts"
-import Lead from "../models/lead.model"
-import { User } from "../models/user.model"
-import { Asset } from "../types/asset.type"
-import { ILead, TLeadBody } from "../types/lead.type"
-import { uploadFileToCloudinary } from "../utils/uploadFile.util"
+import Lead from "../models/leads/lead.model.js"
+import { User } from "../models/users/user.model.js"
+import { TLeadBody } from "../types/leads/lead.type.js"
+import { Remark } from "../models/leads/remark.model.js"
+import { IUser } from "../types/users/user.type.js"
 
 // create lead any one can do in the organization
 export const CreateLead = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    const { name, mobile, email, description } = req.body as TLeadBody
+    const { name, mobile, email, work_description, remark, lead_owners } = req.body as TLeadBody & { remark: string, lead_owners: string[] }
+    if (!lead_owners)
+        return res.status(400).json({ message: "assign at least one lead owner" });
+    if (lead_owners.length < 1)
+        return res.status(400).json({ message: "assign at least one lead owner" });
     const user = await User.findById(req.user?._id)
     if (!user)
-        return res.status(404).json({ message: "please login to access this resource" })
+        return res.status(400).json({ message: "please login to access this resource" })
     // validations
-    if (!name || !email || !mobile || !description)
+    if (!name || !email || !mobile || !work_description)
         return res.status(400).json({ message: "fill all the required fields" });
     if (!isEmail(email))
         return res.status(403).json({ message: "please provide valid email" });
@@ -26,50 +30,81 @@ export const CreateLead = catchAsyncError(async (req: Request, res: Response, ne
 
     if (await Lead.findOne({ email: email.toLowerCase().trim() }))
         return res.status(403).json({ message: `${email} already exists` });
-    if (await Lead.findOne({ mobile: String(mobile).trim() }))
+    if (await Lead.findOne({ mobile: String(mobile).trim(), alternate_mobile1: String(mobile).trim(), alternate_mobile2: String(mobile).trim() }))
         return res.status(403).json({ message: `${mobile} already exists` });
 
-    let dp: Asset = {
-        public_id: "",
-        url: "",
-        size: 0,
-        format: ""
+    let new_lead_owners: IUser[] = []
+    for (let i = 0; i < lead_owners.length; i++) {
+        let owner = await User.findById(lead_owners[i])
+        if (owner)
+            new_lead_owners.push(owner)
     }
-    if (req.file) {
-        const allowedFiles = ["image/png", "image/jpeg", "image/gif"];
-        const storageLocation = `crm/users/dp`;
-        if (!allowedFiles.includes(req.file.mimetype))
-            return res.status(400).json({ message: `${req.file.originalname} is not valid, only ${allowedFiles} types are allowed to upload` })
-        if (req.file.size > 200 * 1024)
-            return res.status(400).json({ message: `${req.file.originalname} is too large limit is :200Kb` })
-        const doc = await uploadFileToCloudinary(req.file.path, storageLocation)
-        if (doc)
-            dp = doc
-        else {
-            return res.status(500).json({ message: "file uploading error" })
-        }
-    }
-    const lead = await new Lead({
+    const lead = new Lead({
         ...req.body,
-        dp,
-        description: description,
-        organization: user.organization._id,
-        lead_owner: user._id,
+        lead_owners: new_lead_owners,
         created_by: user._id,
         updated_by: user._id,
         created_at: new Date(Date.now()),
         updated_at: new Date(Date.now()),
-        status_changed_by: user._id
-    }).save()
-    res.status(200).json({ lead })
+    })
+    if (remark) {
+        let new_remark = new Remark({
+            remark,
+            lead: lead,
+            created_at: new Date(Date.now()),
+            created_by: req.user,
+            updated_at: new Date(Date.now()),
+            updated_by: req.user
+        })
+        await new_remark.save()
+        lead.remarks = [new_remark]
+    }
+    await lead.save()
+    return res.status(200).json({ message: "lead created" })
 })
+
+// get all leads  anyone can do in the organization
+export const GetLeads = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    let leads = await Lead.find().populate('lead_owners').populate('updated_by').populate('created_by').populate({
+        path: 'remarks',
+        populate: [
+            {
+                path: 'created_by',
+                model: 'User'
+            },
+            {
+                path: 'updated_by',
+                model: 'User'
+            }
+        ]
+    })
+    if (!leads) {
+        return res.status(404).json({ message: "leads not found" })
+    }
+    if (req.user?.is_admin)
+        return res.status(200).json(leads)
+    leads = leads.filter((lead) => {
+        let owners = lead.lead_owners.filter((owner) => {
+            return owner.username === req.user?.username
+        })
+        if (owners.length > 0)
+            return lead
+    })
+    return res.status(200).json(leads)
+})
+
 // update lead only admin can do
 export const UpdateLead = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    const { name, mobile, email, description } = req.body as TLeadBody
+    const { name, mobile, email, work_description, remark, lead_owners } = req.body as TLeadBody & { remark: string, lead_owners: string[] }
 
+    if (!lead_owners)
+        return res.status(400).json({ message: "assign at least one lead owner" });
+    if (lead_owners.length < 1)
+        return res.status(400).json({ message: "assign at least one lead owner" });
     const user = await User.findById(req.user?._id)
     if (!user)
-        return res.status(403).json({ message: "please login to access this resource" })
+        return res.status(400).json({ message: "please login to access this resource" })
+
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "lead id not valid" })
     let lead = await Lead.findById(id);
@@ -77,142 +112,102 @@ export const UpdateLead = catchAsyncError(async (req: Request, res: Response, ne
         return res.status(404).json({ message: "lead not found" })
     }
     // validations
-    if (!name || !email || !mobile || !description)
+    if (!name || !email || !mobile || !work_description)
         return res.status(400).json({ message: "fill all the required fields" });
     if (!isEmail(email))
         return res.status(403).json({ message: "please provide valid email" });
     if ((String(mobile).trim().length !== 10))
         return res.status(403).json({ message: "please provide valid mobile number" });
     if (name !== lead.name)
-        if (await Lead.findOne({ name: name.toLowerCase().trim(), organization: lead.organization?._id }))
+        if (await Lead.findOne({ name: name.toLowerCase().trim()}))
             return res.status(403).json({ message: `${name} already exists` });
     if (email !== lead.email)
-        if (await Lead.findOne({ email: email.toLowerCase().trim(), organization: lead.organization?._id }))
+        if (await Lead.findOne({ email: email.toLowerCase().trim() }))
             return res.status(403).json({ message: `${email} already exists` });
-    console.log(mobile, lead.mobile)
     if (mobile != lead.mobile)
-        if (await Lead.findOne({ mobile: String(mobile).trim(), organization: lead.organization?._id }))
+        if (await Lead.findOne({ mobile: String(mobile).trim() }))
             return res.status(403).json({ message: `${mobile} already exists` });
+    let new_lead_owners: IUser[] = []
+    for (let i = 0; i < lead_owners.length; i++) {
+        let owner = await User.findById(lead_owners[i])
+        if (owner)
+            new_lead_owners.push(owner)
 
-    let dp: Asset = {
-        public_id: "",
-        url: "",
-        size: 0,
-        format: ""
-    }
-
-    if (req.file) {
-        const allowedFiles = ["image/png", "image/jpeg", "image/gif"];
-        const storageLocation = `crm/leads/dp`;
-        if (!allowedFiles.includes(req.file.mimetype))
-            return res.status(400).json({ message: `${req.file.originalname} is not valid, only ${allowedFiles} types are allowed to upload` })
-        if (req.file.size > 200 * 1024)
-            return res.status(400).json({ message: `${req.file.originalname} is too large limit is :200Kb` })
-        const doc = await uploadFileToCloudinary(req.file.path, storageLocation)
-        if (doc)
-            dp = doc
-        else {
-            return res.status(500).json({ message: "file uploading error" })
+        if (remark) {
+            if(!lead.remarks.length){
+                let new_remark = new Remark({
+                    remark,
+                    lead: lead,
+                    created_at: new Date(Date.now()),
+                    created_by: user,
+                    updated_at: new Date(Date.now()),
+                    updated_by: user
+                })
+                await new_remark.save()
+                lead.remarks = [new_remark]
+                await lead.save()
+            }
+            let last_remark = lead.remarks[lead.remarks.length - 1]
+            await Remark.findByIdAndUpdate(last_remark._id,{
+                remark :remark,
+                lead :lead,
+                updated_at :new Date(Date.now()),
+                updated_by :user,
+            })
         }
     }
     await Lead.findByIdAndUpdate(lead._id, {
         ...req.body,
-        dp,
-        description,
-        organization: user.organization,
+        lead_owners: new_lead_owners,
         updated_at: new Date(Date.now()),
         updated_by: user._id
-    }).then(() =>
-        res.status(200).json({ message: "lead updated" })
-    )
+    })
+    return res.status(200).json({ message: "lead updated" })
 })
-//toogle lead status only admin can do "open",/"close"
-export const ToogleLeadStatus = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    const user = await User.findById(req.user?._id)
-    if (!user)
-        return res.status(403).json({ message: "please login to access this resource" })
+
+
+//delete lead
+export const DeleteLead = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "lead id not valid" })
     let lead = await Lead.findById(id);
     if (!lead) {
         return res.status(404).json({ message: "lead not found" })
     }
-
-    await Lead.findByIdAndUpdate(lead._id, {
-        status: !lead.status,
-        status_changed_by: user._id
-    }).then(() => res.status(200).json({ message: "lead status updated" }))
+    let remarks=await Remark.find({lead:lead._id})
+    remarks.map(async (remark) => {
+        await remark.remove()
+    })
+    await lead.remove()
+    return res.status(200).json({ message: "lead and related remarks are deleted" })
 })
 
-
-// get a lead anyone can do in the organization
-export const GetLead = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+// add new remarks on lead
+export const NewRemark = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    const { remark } = req.body
+    if (!remark) return res.status(403).json({ message: "please fill required fields" })
+    const user = await User.findById(req.user?._id)
+    if (!user)
+        return res.status(403).json({ message: "please login to access this resource" })
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "lead id not valid" })
-    let lead = await Lead.findById(id).populate('lead_owner').populate('organization').populate('activities').populate('status_changed_by').populate('updated_by')
+
+    let lead = await Lead.findById(id);
     if (!lead) {
         return res.status(404).json({ message: "lead not found" })
     }
-    return res.status(200).json(lead)
+    let new_remark = new Remark({
+        remark,
+        lead: lead,
+        created_at: new Date(Date.now()),
+        created_by: req.user,
+        updated_at: new Date(Date.now()),
+        updated_by: req.user
+    })
+    await new_remark.save()
+    let updatedRemarks = lead.remarks
+    updatedRemarks.push(new_remark)
+    lead.remarks = updatedRemarks
+    await lead.save()
+    return res.status(200).json({ message: "new remark added successfully" })
 })
-// get all leads  anyone can do in the organization
-export const GetLeads = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    let leads = await Lead.find({ organization: req.user?.organization }).populate('lead_owner').populate('organization').populate('activities').populate('status_changed_by').populate('updated_by')
-    if (!leads) {
-        return res.status(404).json({ message: "leads not found" })
-    }
-    return res.status(200).json(leads)
-})
-
-// filter leads anyone can do in the organization
-export const FilterLeads = catchAsyncError(async (req, res, next) => {
-    let filter = [];
-    if (req.query.city)
-        filter.push({ city: { $regex: req.query.city } });
-    if (req.query.state) filter.push({ state: { $regex: req.query.state } });
-    if (req.query.state) filter.push({ state: { $regex: req.query.state } });
-    if (req.query.country) filter.push({ country: { $regex: req.query.country } });
-    if (req.query.lead_owner) filter.push({ lead_owner: { $regex: req.query.lead_owner } });
-    if (req.query.organization) filter.push({ organization: { $regex: req.query.organization } });
-    if (req.query.lead_source) filter.push({ lead_source: { $regex: req.query.lead_source } });
-    if (req.query.open) filter.push({ open: { $regex: req.query.open } });
-    if (req.query.createdOn) filter.push({ createdOn: { $regex: req.query.createdOn } });
-    if (filter.length < 1)
-        return res.status(400).json({ message: "no filter provided" })
-
-    const leads = await Lead.find({
-        $and: filter,
-    }).sort({ createdAt: -1 });
-    if (leads.length > 0)
-        return res.status(200).json(leads);
-    else
-        return res.status(404).json({ message: "leads not found" })
-});
-
-// fuzzy search leads anyone can do in the organization
-export const FuzzySearchLeads = catchAsyncError(async (req, res, next) => {
-    const key = String(req.params.query);
-    const leads = await Lead.find({
-        $or: [
-            { name: { $regex: key } },
-            { email: { $regex: key } },
-            { mobile: { $regex: key } },
-            { city: { $regex: key } },
-            { state: { $regex: key } },
-            { description: { $regex: key } },
-            { lead_type: { $regex: key } },
-            { lead_owner: { $regex: key } },
-            { customer_name: { $regex: key } },
-            { address: { $regex: key } },
-            { country: { $regex: key } },
-            { alternate_mobile: { $regex: key } },
-            { alternate_email: { $regex: key } },
-            { customer_designination: { $regex: key } },
-            { lead_source: { $regex: key } },
-            { remarks: { $regex: key } },
-            { createdOn: { $regex: key } }
-        ],
-    }).sort({ createdAt: -1 });
-    if (leads.length > 0) res.status(200).json({ leads });
-    else return res.status(404).json({ message: "user not found" });
-});

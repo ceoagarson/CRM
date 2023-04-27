@@ -31,18 +31,18 @@ export default function DashboardLayout() {
           <Stack direction="column" gap={2} pl={1}>
             <StyledLink to={paths.dashboard}>
               <Stack direction="column"
-               alignItems="center"
-               gap={1}
-               sx={{
-                maxWidth:"70vw",
-                overflow:"hidden"
-               }}>
+                alignItems="center"
+                gap={1}
+                sx={{
+                  maxWidth: "70vw",
+                  overflow: "hidden"
+                }}>
                 <Typography
                   variant="h6"
                   component="h1"
                   letterSpacing={1}
                 >
-                  {user ? user.organization?.organization_name.toUpperCase() : "CRM"}
+                  {user ? user.organization.organization.toUpperCase() : "Company"}
                 </Typography>
               </Stack>
             </StyledLink>
@@ -64,13 +64,21 @@ export default function DashboardLayout() {
                   }}
                 >
 
-                  <StyledLink to={paths.users}>Users</StyledLink>
+
+                  {
+                    user.is_admin ? <StyledLink to={paths.users}>Users</StyledLink> : null}
+                  {
+                    user.is_admin ? <StyledLink to={paths.productions}>Productions</StyledLink> : null}
+                  {
+                    user.is_admin ? <StyledLink to={paths.reports}>Reports</StyledLink> : null}
+                  {
+                    user.is_admin ? <StyledLink to={paths.machines}>Machines</StyledLink> : null}
+                  {
+                    user.is_admin ? <StyledLink to={paths.categories}>Categories</StyledLink> : null}
+
                   <StyledLink to={paths.leads}>Leads</StyledLink>
-                  <StyledLink to={paths.accounts}>Accounts</StyledLink>
-                  <StyledLink to={paths.opportunities}>Opportunities</
-                  StyledLink>
-                  <StyledLink to={paths.activities}>Activities</StyledLink>
                 </Stack>
+
                 {/* stack2 right icons*/}
                 <Stack
                   direction="row"
@@ -108,7 +116,7 @@ export default function DashboardLayout() {
             }
           </Stack >
         </Stack>
-      </Box>
+      </Box >
       <Outlet />
       <DashboardMenu />
       <UserMenu />

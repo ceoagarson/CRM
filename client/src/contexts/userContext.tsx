@@ -1,7 +1,6 @@
 import React, { createContext, useReducer } from "react";
 import { IUser } from "../types/user.type";
 
-
 // initial state
 type UserState = IUser | undefined;
 const IntitialState: UserState = undefined;

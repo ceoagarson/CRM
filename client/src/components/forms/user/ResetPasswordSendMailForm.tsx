@@ -10,10 +10,13 @@ import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContex
 import { paths } from '../../../Routes';
 import { ResetPasswordSendMail } from '../../../services/UserServices';
 import { BackendError } from '../../../types';
+import { UserContext } from '../../../contexts/userContext';
 
 
 function ResetPasswordSendMailForm() {
   const goto = useNavigate()
+  const { user } = useContext(UserContext)
+
   const { mutate, isSuccess, isLoading, isError, error } = useMutation
     <AxiosResponse<string>,
       BackendError,
@@ -24,7 +27,7 @@ function ResetPasswordSendMailForm() {
   const { setChoice } = useContext(ChoiceContext)
   const formik = useFormik({
     initialValues: {
-      email: ''
+      email: user?.email || ""
     },
     validationSchema: Yup.object({
       email: Yup.string()

@@ -1,59 +1,48 @@
 import React, { useReducer } from "react"
 
 // choices
-type UserChoices = "signup"| "reset_password_mail" | null | "new_user" | "update_user" | "update_profile" | "view_profile" | "update_password" | "reset_password" | "verify_email" | "change_role" | "delete_user" |
-  "block_user" | "unblock_user" | "make_admin" | "revoke_permission" | "make_owner"
+type UserChoices = "signup"| "reset_password_mail" | null | "new_user" | "update_user" | "update_profile" | "view_profile" | "update_password" | "reset_password" | "verify_email" | "control_access" | "delete_user" |
+  "block_user" | "unblock_user" | "make_admin" | "remove_admin" 
 
-type ConversionChoices = "convert_resource" | "close"
+type LeadChoices = "create_lead" | "update_lead" | "update_remark" | "view_remarks" | null | "display_filter" |"delete_lead"
 
-type LeadChoices = "create_lead" | "update_lead" | "open_close_lead" | "close" | "view_lead"
+type ProductionChoices = "new_production_page" | null | "update_production_page" | "update_production" | "report_machine_wise" |"report_category_wise"
 
-type AccountChoices = "create_account" | "update_account" | "open_close_account" | "close" | "view_account"
-
-type OpportunityChoices = "create_opportunity" | "update_opportunity" | "open_close_opportunity" | "close" | "view_opportunity"
-
-type ActivityChoices = "create_activity" | "update_activity" | "open_close_activity" | "close" | "view_activity" | "delete_activity"
+type MachineChoices = "new_machine" | "update_machine" | null
+type CategoryChoices = "new_category" | "update_category" | null
 
 // initial state
-type ChoiceState = UserChoices | LeadChoices | AccountChoices | OpportunityChoices | ActivityChoices | ConversionChoices
+type ChoiceState = UserChoices | LeadChoices | ProductionChoices | MachineChoices | CategoryChoices
+
 const initialState: ChoiceState = null
 
-// actions
-export enum ConversionChoiceActions {
-  convert_resource = "convert_resource",
-  close = "close"
-}
 export enum LeadChoiceActions {
   create_lead = "create_lead",
   update_lead = "update_lead",
-  open_close_lead = "open_close_lead",
-  view_lead = "view_lead",
-  close = "close",
+  delete_lead = "delete_lead",
+  view_remarks = "view_remarks",
+  close ="close",
+  display_filter ="display_filter",
+  update_remark = "update_remark",
 }
-export enum AccountChoiceActions {
-  create_account = "create_account",
-  update_account = "update_account",
-  open_close_account = "open_close_account",
-  view_account = "view_account",
+export enum CategoryChoiceActions{
+  update_category = "update_category",
+  new_category = "new_category",
   close = "close"
 }
-export enum OpportunityChoiceActions {
-  create_opportunity = "create_opportunity",
-  update_opportunity = "update_opportunity",
-  open_close_opportunity = "open_close_opportunity",
-  close = "close",
-  view_opportunity = "view_opportunity"
+export enum MachineChoiceActions{
+  update_machine = "update_machine",
+  new_machine = "new_machine",
+  close="close"
 }
-export enum ActivityChoiceActions {
-  create_activity = "create_activity",
-  update_activity = "update_activity",
-  open_close_activity = "open_close_activity",
+export enum ProductionChoiceActions {
+  new_production_page="new_production_page",
   close = "close",
-  view_activity = "view_activity",
-  delete_activity = "delete_activity"
-
+  update_production ="update_production",
+  update_production_page ="update_production_page",
+  report_machine_wise ="report_machine_wise",
+  report_category_wise ="report_category_wise"
 }
-
 export enum UserChoiceActions {
   signup = "signup",
   reset_password_mail = "reset_password_mail",
@@ -68,13 +57,13 @@ export enum UserChoiceActions {
   block_user = "block_user",
   unblock_user = "unblock_user",
   make_admin = "make_admin",
-  revoke_permission = "revoke_permission",
-  make_owner = "make_owner",
-  delete_user = "delete_user"
+  remove_admin = "remove_admin",
+  delete_user = "delete_user",
+  control_access ="control_access"
 }
 
 type Action = {
-  type: UserChoiceActions | LeadChoiceActions | AccountChoiceActions | OpportunityChoiceActions | ActivityChoiceActions | ConversionChoiceActions
+  type: UserChoiceActions | LeadChoiceActions | ProductionChoiceActions | MachineChoiceActions | CategoryChoiceActions
 }
 
 // reducer
@@ -94,45 +83,39 @@ function reducer(state: ChoiceState, action: Action) {
     case UserChoiceActions.block_user: return type
     case UserChoiceActions.unblock_user: return type
     case UserChoiceActions.make_admin: return type
-    case UserChoiceActions.make_owner: return type
-    case UserChoiceActions.revoke_permission: return type
+    case UserChoiceActions.control_access: return type
+    case UserChoiceActions.remove_admin: return type
     case UserChoiceActions.delete_user: return type
     case UserChoiceActions.close: return null
 
-    // conversion dialog choices
-    case ConversionChoiceActions.convert_resource: return type
-    case ConversionChoiceActions.close: return null
-
     // lead dialog choices
-
-
     case LeadChoiceActions.create_lead: return type
     case LeadChoiceActions.update_lead: return type
-    case LeadChoiceActions.open_close_lead: return type
-    case LeadChoiceActions.view_lead: return type
+    case LeadChoiceActions.view_remarks: return type
+    case LeadChoiceActions.update_remark: return type
+    case LeadChoiceActions.display_filter: return type
+    case LeadChoiceActions.delete_lead: return type
     case LeadChoiceActions.close: return null
 
-    // account dialog choices
-    case AccountChoiceActions.create_account: return type
-    case AccountChoiceActions.update_account: return type
-    case AccountChoiceActions.open_close_account: return type
-    case AccountChoiceActions.view_account: return type
-    case AccountChoiceActions.close: return null
+    //production dialog choices
+    case ProductionChoiceActions.new_production_page: return type
+    case ProductionChoiceActions.update_production: return type
+    case ProductionChoiceActions.update_production_page: return type
+    case ProductionChoiceActions.report_category_wise: return type
+    case ProductionChoiceActions.report_machine_wise: return type
+    case ProductionChoiceActions.close: return null
 
-    // opportunity dialog choices
-    case OpportunityChoiceActions.create_opportunity: return type
-    case OpportunityChoiceActions.update_opportunity: return type
-    case OpportunityChoiceActions.open_close_opportunity: return type
-    case OpportunityChoiceActions.view_opportunity: return type
-    case OpportunityChoiceActions.close: return null
+    //machine dialog choices
+    case MachineChoiceActions.new_machine: return type
+    case MachineChoiceActions.update_machine: return type
+    case MachineChoiceActions.close: return null
+    
+    //category dialog choices
+    case CategoryChoiceActions.new_category: return type
+    case CategoryChoiceActions.update_category: return type
+    case CategoryChoiceActions.close: return null
 
-    // activity dialog choices
-    case ActivityChoiceActions.create_activity: return type
-    case ActivityChoiceActions.update_activity: return type
-    case ActivityChoiceActions.open_close_activity: return type
-    case ActivityChoiceActions.view_activity: return type
-    case ActivityChoiceActions.delete_activity: return type
-    case ActivityChoiceActions.close: return null
+
     default: return state
   }
 }
