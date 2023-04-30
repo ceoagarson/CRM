@@ -181,6 +181,8 @@ export const Login = catchAsyncError(async (req: Request, res: Response, next: N
     if (!isPasswordMatched)
         return res.status(403).json({ message: "Invalid username or password" })
     sendUserToken(res, user.getAccessToken())
+    user.last_login = new Date()
+    await user.save()
     res.status(200).json(user)
 })
 
@@ -283,9 +285,6 @@ export const Logout = catchAsyncError(async (req: Request, res: Response, next: 
     if (!req.cookies.accessToken)
         return res.status(200).json({ message: "already logged out" })
     await deleteToken(res, req.cookies.accessToken);
-    const user = await User.findByIdAndUpdate(req.user?._id, {
-        last_login: new Date()
-    })
     res.status(200).json({ message: "logged out" })
 })
 
