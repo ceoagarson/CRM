@@ -11,9 +11,7 @@ const OrganizationSchema = new mongoose.Schema<IOrganization, mongoose.Model<IOr
     },
     created_at: {
         type: Date,
-        default: new Date(new Date().toLocaleString('en-US', {
-            timeZone: 'Asia/Calcutta'
-        })),
+        default: new Date(),
         required: true,
 
     },
@@ -24,9 +22,7 @@ const OrganizationSchema = new mongoose.Schema<IOrganization, mongoose.Model<IOr
     },
     updated_at: {
         type: Date,
-        default: new Date(new Date().toLocaleString('en-US', {
-            timeZone: 'Asia/Calcutta'
-        })),
+        default: new Date(),
         required: true,
 
     },

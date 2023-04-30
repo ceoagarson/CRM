@@ -115,16 +115,12 @@ const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
     },
     created_at: {
         type: Date,
-        default: new Date(new Date().toLocaleString('en-US', {
-            timeZone: 'Asia/Calcutta'
-        })),
+        default:new Date(),
         required: true,
     },
     updated_at: {
         type: Date,
-        default: new Date(new Date().toLocaleString('en-US', {
-            timeZone: 'Asia/Calcutta'
-        })),
+        default:new Date(),
         required: true,
     }
 })

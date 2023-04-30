@@ -32,12 +32,13 @@ app.use(
     })
 );
 
-if (ENV === "development") {
+if (ENV === "devlopment") {
     app.use(cors({
         origin: ['http://localhost:3000'],
         credentials: true
     }))
 }
+
 
 connectDatabase();
 cloudinary.v2.config({
@@ -75,7 +76,7 @@ if (!PORT) {
     console.log("Server Port not specified in the environment")
     process.exit(1)
 }
+
 app.listen(PORT, () => {
     console.log(`⚡️[server]: Server is running at ${HOST}:${PORT}`);
 });
-// end-> server configurations

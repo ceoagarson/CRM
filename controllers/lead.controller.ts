@@ -44,24 +44,16 @@ export const CreateLead = catchAsyncError(async (req: Request, res: Response, ne
         lead_owners: new_lead_owners,
         created_by: user._id,
         updated_by: user._id,
-        created_at: new Date(new Date().toLocaleString('en-US', {
-            timeZone: 'Asia/Calcutta'
-        })),
-        updated_at: new Date(new Date().toLocaleString('en-US', {
-            timeZone: 'Asia/Calcutta'
-        })),
+        created_at: new Date(Date.now()),
+        updated_at: new Date(Date.now()),
     })
     if (remark) {
         let new_remark = new Remark({
             remark,
             lead: lead,
-            created_at: new Date(new Date().toLocaleString('en-US', {
-                timeZone: 'Asia/Calcutta'
-            })),
+            created_at: new Date(),
             created_by: req.user,
-            updated_at: new Date(new Date().toLocaleString('en-US', {
-                timeZone: 'Asia/Calcutta'
-            })),
+            updated_at: new Date(),
             updated_by: req.user
         })
         await new_remark.save()
@@ -173,9 +165,7 @@ export const UpdateLead = catchAsyncError(async (req: Request, res: Response, ne
     await Lead.findByIdAndUpdate(lead._id, {
         ...req.body,
         lead_owners: new_lead_owners,
-        updated_at: new Date(new Date().toLocaleString('en-US', {
-            timeZone: 'Asia/Calcutta'
-        })),
+        updated_at: new Date(Date.now()),
         updated_by: user._id
     })
     return res.status(200).json({ message: "lead updated" })
@@ -215,13 +205,9 @@ export const NewRemark = catchAsyncError(async (req: Request, res: Response, nex
     let new_remark = new Remark({
         remark,
         lead: lead,
-        created_at: new Date(new Date().toLocaleString('en-US', {
-            timeZone: 'Asia/Calcutta'
-        })),
+        created_at: new Date(Date.now()),
         created_by: req.user,
-        updated_at: new Date(new Date().toLocaleString('en-US', {
-            timeZone: 'Asia/Calcutta'
-        })),
+        updated_at: new Date(Date.now()),
         updated_by: req.user
     })
     await new_remark.save()

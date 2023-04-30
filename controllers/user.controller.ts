@@ -62,12 +62,8 @@ export const SignUp = catchAsyncError(
         })
         let new_organization = new Organization({
             organization,
-            created_at: new Date(new Date().toLocaleString('en-US', {
-                timeZone: 'Asia/Calcutta'
-            })),
-            updated_at: new Date(new Date().toLocaleString('en-US', {
-                timeZone: 'Asia/Calcutta'
-            })),
+            created_at:new Date(),
+            updated_at:new Date(),
         })
 
         let owner = new User({
@@ -185,9 +181,7 @@ export const Login = catchAsyncError(async (req: Request, res: Response, next: N
     if (!isPasswordMatched)
         return res.status(403).json({ message: "Invalid username or password" })
     sendUserToken(res, user.getAccessToken())
-    user.last_login = new Date(new Date().toLocaleString('en-US', {
-        timeZone: 'Asia/Calcutta'
-    }))
+    user.last_login = new Date()
     await user.save()
     res.status(200).json(user)
 })
@@ -274,9 +268,7 @@ export const UpdateUser = catchAsyncError(async (req: Request, res: Response, ne
         mobile,
         dp,
         updated_by: req.user?._id,
-        updated_at: new Date(new Date().toLocaleString('en-US', {
-            timeZone: 'Asia/Calcutta'
-        })),
+        updated_at: new Date(),
     }).then(() => res.status(200).json({ message: "user updated" }))
 })
 
