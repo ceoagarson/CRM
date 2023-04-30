@@ -375,6 +375,9 @@ export default function LeadsPage() {
   }, [filter, preFilteredData, DATA])
   return (
     <>
+      {
+        isLoading && <LinearProgress />
+      }
       {/*heading, search bar and table menu */}
       <Stack
         spacing={2}
@@ -431,9 +434,7 @@ export default function LeadsPage() {
           </>
           : null
       }
-      {
-        isLoading && <LinearProgress />
-      }
+      
     </>
   )
 }

@@ -43,8 +43,8 @@ export default function UsersPage() {
                             {/* edit icon */}
                             <Tooltip title="edit">
                                 <IconButton
-                                color="success"
-                                     size="medium"
+                                    color="success"
+                                    size="medium"
                                     onClick={() => {
                                         setChoice({ type: UserChoiceActions.update_user })
                                         setUser(props.row.original)
@@ -303,19 +303,19 @@ export default function UsersPage() {
     }, [isSuccess, users])
     return (
         <>
-            < UserTable data={MemoData} columns={MemoColumns} />
-
             {isError ?
                 <Alert color="error">{error?.response.data.message}</Alert>
                 : null
             }
 
-
             {
                 isLoading ?
-                    <LinearProgress color="success" />
+                    <LinearProgress sx={{width:'300px'}}color="success" />
                     : null
             }
+            < UserTable data={MemoData} columns={MemoColumns} />
+
+
             {
                 user ?
                     <>
