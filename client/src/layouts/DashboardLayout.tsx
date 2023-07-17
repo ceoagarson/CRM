@@ -21,7 +21,7 @@ export default function DashboardLayout() {
   const { user } = useContext(UserContext)
   return (
     <>
-      <Box sx={{ bgcolor: 'rgba(0,0,0,0.8)', width: '100%' }}>
+      <Box sx={{ bgcolor: 'rgba(0,0,255,0.6)', width: '100%' }}>
         {/* parent stack */}
         <Stack direction="row" sx={{
           justifyContent: "space-between", alignItems: "center"
