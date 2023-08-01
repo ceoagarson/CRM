@@ -4,7 +4,7 @@ import React, { useReducer } from "react"
 type UserChoices = "signup"| "reset_password_mail" | null | "new_user" | "update_user" | "update_profile" | "view_profile" | "update_password" | "reset_password" | "verify_email" | "control_access" | "delete_user" |
   "block_user" | "unblock_user" | "make_admin" | "remove_admin" 
 
-type LeadChoices = "create_lead" | "update_lead" | "update_remark" | "view_remarks" | null | "display_filter" |"delete_lead"
+type LeadChoices = "create_lead" | "update_lead" | "update_remark" | "view_remarks" | null | "display_filter" | "delete_lead" |"preserve_lead"
 
 type ProductionChoices = "new_production_page" | null | "update_production_page" | "update_production" | "report_machine_wise" |"report_category_wise"
 
@@ -22,6 +22,7 @@ export enum LeadChoiceActions {
   delete_lead = "delete_lead",
   view_remarks = "view_remarks",
   close ="close",
+  preserve_lead ="preserve_lead",
   display_filter ="display_filter",
   update_remark = "update_remark",
 }
@@ -95,6 +96,7 @@ function reducer(state: ChoiceState, action: Action) {
     case LeadChoiceActions.update_remark: return type
     case LeadChoiceActions.display_filter: return type
     case LeadChoiceActions.delete_lead: return type
+    case LeadChoiceActions.preserve_lead: return type
     case LeadChoiceActions.close: return null
 
     //production dialog choices

@@ -14,6 +14,9 @@ export const UpdateLead = async ({ id, body }: { id: string, body: TformData }) 
 export const DeleteLead = async ({ id }: { id: string }) => {
   return await apiClient.delete(`leads/${id}`)
 }
+export const PreserveLead = async ({ id }: { id: string }) => {
+  return await apiClient.patch(`leads/${id}`)
+}
 export const NewRemark = async ({ id, remark }: { id: string, remark: string }) => {
   return await apiClient.patch(`remarks/leads/${id}`, { remark: remark })
 }

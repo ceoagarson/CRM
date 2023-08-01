@@ -9,6 +9,10 @@ const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
         index: true,
         lowercase: true,
     },
+    preserved: {
+        type: Boolean,
+        default: false
+    },
     customer_name: {
         type: String,
         trim: true,
@@ -75,7 +79,7 @@ const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
         type: String,
         trim: true,
         lowercase: true,
-        default:"open"
+        default: "open"
     },
     alternate_mobile1: {
         type: String,
@@ -115,12 +119,12 @@ const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
     },
     created_at: {
         type: Date,
-        default:new Date(),
+        default: new Date(),
         required: true,
     },
     updated_at: {
         type: Date,
-        default:new Date(),
+        default: new Date(),
         required: true,
     }
 })

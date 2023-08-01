@@ -217,3 +217,23 @@ export const NewRemark = catchAsyncError(async (req: Request, res: Response, nex
     await lead.save()
     return res.status(200).json({ message: "new remark added successfully" })
 })
+
+//update lead preserve field
+export const PreserveLead = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    const user = await User.findById(req.user?._id)
+    if (!user)
+        return res.status(403).json({ message: "please login to access this resource" })
+    const id = req.params.id;
+    if (!isMongoId(id)) return res.status(403).json({ message: "lead id not valid" })
+
+    let lead = await Lead.findById(id);
+    if (!lead) {
+        return res.status(404).json({ message: "lead not found" })
+    }
+    await Lead.findByIdAndUpdate(lead._id,{
+        preserved :true,
+        updated_at: new Date(Date.now()),
+        updated_by: req.user
+    })
+    return res.status(200).json({ message: "lead preserved successfully" })
+})

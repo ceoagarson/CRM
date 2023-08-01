@@ -1,12 +1,17 @@
 import { Fade, IconButton, Menu, MenuItem, Snackbar } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
-import {Row } from 'react-table';
+import { Row } from 'react-table';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { ILead } from '../../types/lead.type';
 import { MenuActions, MenuContext } from '../../contexts/menuContext';
 import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext';
 import ExportToExcel from '../tables/utils/ExportToExcel';
 import NewLeadDialog from '../dialogs/leads/NewLeadDialog';
+import { useMutation } from 'react-query';
+import { AxiosResponse } from 'axios';
+import { BackendError } from '../../types';
+import { queryClient } from '../..';
+import { PreserveLead } from '../../services/LeadsServices';
 
 type Props = {
     selectedFlatRows: Row<ILead>[]
@@ -36,13 +41,33 @@ type SelectedData = {
     last_remark: string
 
 }
-function LeadTableMenu({selectedFlatRows }: Props) {
+function LeadTableMenu({ selectedFlatRows }: Props) {
     const { menu, setMenu } = useContext(MenuContext)
     const [selectedData, setSelectedData] = useState<SelectedData[]>([])
     const [sent, setSent] = useState(false)
     const { setChoice } = useContext(ChoiceContext)
+    const { mutate, isLoading, isSuccess } = useMutation
+        <AxiosResponse<any>, BackendError, { id: string }>
+        (PreserveLead,
+            {
+                onSuccess: () => {
+                    queryClient.invalidateQueries('leads')
+                }
+            }
+        )
 
-
+    function HandlePreserveLead() {
+        try {
+            if (selectedData.length === 0)
+                return alert("please select some rows")
+            selectedFlatRows.forEach((row) => {
+                mutate({ id: row.original._id })
+            })
+        }
+        catch (err) {
+            console.log(err)
+        }
+    }
     function handleExcel() {
         setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
         try {
@@ -52,6 +77,7 @@ function LeadTableMenu({selectedFlatRows }: Props) {
             setSent(true)
         }
         catch (err) {
+            console.log(err)
             setSent(false)
         }
 
@@ -63,8 +89,8 @@ function LeadTableMenu({selectedFlatRows }: Props) {
         selectedFlatRows.map((item) => {
             const lead = item.original
             let last_remark = ""
-            if(lead.remarks.length)
-                last_remark=lead.remarks[lead.remarks.length - 1].remark 
+            if (lead.remarks.length)
+                last_remark = lead.remarks[lead.remarks.length - 1].remark
             return data.push({
                 name: lead.name,
                 email: lead.email,
@@ -95,13 +121,28 @@ function LeadTableMenu({selectedFlatRows }: Props) {
 
     return (
         <>
-            {/* snak bar */}
+            <Snackbar
+                open={isLoading}
+                autoHideDuration={6000}
+                onClose={() => setSent(false)}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                message="Started the process..."
+            />
+            {/* export snak bar */}
             <Snackbar
                 open={sent}
                 autoHideDuration={6000}
                 onClose={() => setSent(false)}
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
                 message="File Exported Successfuly"
+            />
+            {/* preserved snak bar */}
+            <Snackbar
+                open={isSuccess}
+                autoHideDuration={6000}
+                onClose={() => setSent(false)}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                message="Selected Leads Preserved Successfuly"
             />
 
             <IconButton size="medium"
@@ -111,7 +152,7 @@ function LeadTableMenu({selectedFlatRows }: Props) {
             >
                 <MenuIcon />
             </IconButton>
-           
+
             <Menu
                 anchorEl={menu.anchorEl}
                 open={Boolean(menu.type === MenuActions.lead_table_menu)}
@@ -128,8 +169,10 @@ function LeadTableMenu({selectedFlatRows }: Props) {
                     setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
                 }}
                 >New Lead</MenuItem>
-                <MenuItem onClick={handleExcel}
+                <MenuItem disabled={isLoading} onClick={handleExcel}
                 >Export To Excel</MenuItem>
+                <MenuItem disabled={isLoading} onClick={HandlePreserveLead}
+                >Preserve Lead</MenuItem>
             </Menu>
             <NewLeadDialog />
         </>

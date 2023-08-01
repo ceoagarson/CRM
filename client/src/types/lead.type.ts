@@ -26,6 +26,7 @@ export type ILead = {
     remarks: IRemark[],
     work_description: string,
     turnover: string,
+    preserved:boolean,
     lead_type: "wholesale" | "retail" | "company" | "mixed"
     stage: "open" | "won" | "won dealer" | "lost" | "useless" | "potential"
     alternate_mobile1: string,

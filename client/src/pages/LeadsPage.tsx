@@ -1,4 +1,4 @@
-import { Comment, Delete, Edit, Search, Visibility } from "@mui/icons-material"
+import { Comment, Delete, Edit,  Search, Upload, Visibility } from "@mui/icons-material"
 import { IconButton, InputAdornment, LinearProgress, Stack, TextField, Tooltip, Typography } from "@mui/material"
 import { AxiosResponse } from "axios"
 import React, { useContext, useEffect, useState } from "react"
@@ -19,6 +19,7 @@ import { headColor } from "../utils/colors"
 import LeadTableMenu from "../components/menu/LeadTableMenu"
 import { UserContext } from "../contexts/userContext"
 import DeleteLeadDialog from "../components/dialogs/leads/DeleteLeadDialog"
+import PreserveLeadDialog from "../components/dialogs/leads/PreserveLeadDialog"
 
 export default function LeadsPage() {
   const { user: LoggedInUser } = useContext(UserContext)
@@ -45,16 +46,29 @@ export default function LeadsPage() {
             <Stack direction="row" spacing={1}>
               {
                 LoggedInUser?.is_admin ?
-                  <Tooltip title="delete">
-                    <IconButton color="error"
-                      onClick={() => {
-                        setChoice({ type: LeadChoiceActions.delete_lead })
-                        setLead(props.row.original)
-                      }}
-                    >
-                      <Delete />
-                    </IconButton>
-                  </Tooltip>
+                 <>
+                    <Tooltip title="delete">
+                      <IconButton color="error"
+                        onClick={() => {
+                          setChoice({ type: LeadChoiceActions.delete_lead })
+                          setLead(props.row.original)
+                        }}
+                      >
+                        <Delete />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Preserve">
+                      <IconButton color="warning"
+                        onClick={() => {
+                          setChoice({ type: LeadChoiceActions.preserve_lead })
+                          setLead(props.row.original)
+                        }}
+                      >
+                        <Upload />
+                      </IconButton>
+                    </Tooltip>
+
+                    </>
                   :
                   null
               }
@@ -348,6 +362,16 @@ export default function LeadsPage() {
             <Typography sx={{ textTransform: "capitalize" }} variant="body1">{props.row.original.updated_by.username}</Typography>
           )
         }
+      },
+      // preserved
+      {
+        Header: 'Remote Status',
+        accessor: 'preserved',
+        Cell: (props) => {
+          return (
+            <Typography sx={{ textTransform: "capitalize" }} variant="body1">{props.row.original.preserved ? "pushed to double tick" : "pending"}</Typography>
+          )
+        }
       }
     ]
     , [setChoice, LoggedInUser]
@@ -364,7 +388,7 @@ export default function LeadsPage() {
   //set filter
   useEffect(() => {
     if (filter) {
-      const searcher = new FuzzySearch(DATA, ["name", "customer_name", "customer_designation", "mobile", "email", "city", "state", "country", "address", "remarks", "work_description", "turnover", "lead_type", "stage", "alternate_mobile1", "alternate_mobile2", "alternate_email", "organization.organization_name", "lead_source", "created_at", "created_by.username", "updated_at", "updated_by.username"], {
+      const searcher = new FuzzySearch(DATA, ["name", "customer_name", "customer_designation", "mobile", "email", "city", "state", "country", "address", "remarks", "work_description", "turnover", "lead_type", "stage", "alternate_mobile1", "alternate_mobile2", "alternate_email", "organization.organization_name", "lead_source", "created_at", "created_by.username", "updated_at", "updated_by.username", "preserved"], {
         caseSensitive: false,
       });
       const result = searcher.search(filter);
@@ -429,12 +453,13 @@ export default function LeadsPage() {
           <>
             <UpdateLeadDialog lead={lead} />
             <DeleteLeadDialog lead={lead} />
+            <PreserveLeadDialog lead={lead} />
             <ViewLeadDialog lead={lead} />
             <NewRemarkDialog lead={lead} />
           </>
           : null
       }
-      
+
     </>
   )
 }

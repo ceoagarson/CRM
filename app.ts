@@ -32,7 +32,7 @@ app.use(
     })
 );
 
-if (ENV === "devlopment") {
+if (ENV === "development") {
     app.use(cors({
         origin: ['http://localhost:3000'],
         credentials: true

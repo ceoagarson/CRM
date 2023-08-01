@@ -14,7 +14,7 @@ const TableCheckBox: React.ForwardRefRenderFunction<HTMLInputElement, Props> = (
 
     return (
         <>
-            <input type="checkbox" ref={resolvedRef} {...rest} />
+            <input  type="checkbox" ref={resolvedRef} {...rest} />
         </>
     );
 };
