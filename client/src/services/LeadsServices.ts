@@ -17,6 +17,10 @@ export const DeleteLead = async ({ id }: { id: string }) => {
 export const PreserveLead = async ({ id }: { id: string }) => {
   return await apiClient.patch(`leads/${id}`)
 }
+export const PreserveLeadsInBulk = async (body:{ ids: string[] }) => {
+  return await apiClient.put(`/preserve/bulk`, body)
+}
+
 export const NewRemark = async ({ id, remark }: { id: string, remark: string }) => {
   return await apiClient.patch(`remarks/leads/${id}`, { remark: remark })
 }

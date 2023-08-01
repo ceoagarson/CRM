@@ -4,7 +4,7 @@ import { BlockUser,GetUsers, Login, Logout, MakeAdmin, NewUser, RemoveAdmin, Res
 import { isAdmin, isAuthenticatedUser, } from "../middlewares/auth.middleware";
 
 const router = express.Router()
-const upload = multer({ storage: multer.diskStorage({ destination: "/tmp/" }) })
+export const upload = multer({ storage: multer.diskStorage({ destination: "/tmp/" }) })
 
 router.post("/signup", upload.single("dp"), SignUp)
 router.route("/users")

@@ -64,7 +64,7 @@ function LoginForm() {
       setTimeout(() => {
         dispatch({ type: UserActions.login, payload: data.data })
         setChoice({ type: UserChoiceActions.close })
-        goto(paths.dashboard)
+        goto(paths.leads)
       }, 400)
     }
   }, [dispatch, goto, setChoice, isSuccess, data])

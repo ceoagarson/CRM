@@ -30,116 +30,7 @@ export default function UsersPage() {
     const MemoData = React.useMemo(() => DATA, [DATA])
     const MemoColumns: Column<IUser>[] = React.useMemo(
         () => [
-            // actions
-            {
-                Header: "Allowed Actions",
-                accessor: "actions",//already used so use it for display actions
-                disableSortBy: true,
-                Cell: (props) => {
-                    let CellUser = props.row.original
-                    return (
-                        <Stack direction="row">
-
-                            {/* edit icon */}
-                            <Tooltip title="edit">
-                                <IconButton
-                                    color="success"
-                                    size="medium"
-                                    onClick={() => {
-                                        setChoice({ type: UserChoiceActions.update_user })
-                                        setUser(props.row.original)
-                                    }}>
-                                    <Edit />
-                                </IconButton>
-                            </Tooltip>
-                            {
-                                props.row.original.is_admin ?
-                                    <>
-                                        {LoggedInUser?.created_by._id === props.row.original._id ?
-                                            null
-                                            :
-                                            < Tooltip title="Remove admin"><IconButton size="medium"
-                                                color="error"
-                                                onClick={() => {
-
-                                                    setChoice({ type: UserChoiceActions.remove_admin })
-                                                    setRowId(props.row.original._id)
-                                                }}>
-                                                <GroupRemove />
-                                            </IconButton>
-                                            </Tooltip>
-                                        }
-                                    </>
-                                    :
-                                    <Tooltip title="make admin"><IconButton size="medium"
-                                        onClick={() => {
-                                            setChoice({ type: UserChoiceActions.make_admin })
-                                            setRowId(props.row.original._id)
-                                        }}>
-                                        <GroupAdd />
-                                    </IconButton>
-                                    </Tooltip>
-                            }
-                            {
-
-                            }
-                            {
-                                CellUser?.is_active ?
-                                    <>
-                                        {LoggedInUser?.created_by._id === props.row.original._id ?
-                                            null
-                                            :
-                                            <Tooltip title="block"><IconButton
-                                                size="medium"
-                                                onClick={() => {
-                                                    setChoice({ type: UserChoiceActions.block_user })
-                                                    setRowId(props.row.original._id)
-                                                }}
-                                            >
-                                                <Block />
-                                            </IconButton>
-                                            </Tooltip>
-                                        }
-
-                                    </>
-                                    :
-                                    < Tooltip title="unblock">
-                                        <IconButton
-                                            color="warning"
-                                            size="medium"
-                                            onClick={() => {
-                                                setChoice({ type: UserChoiceActions.unblock_user })
-                                                setRowId(props.row.original._id)
-                                            }}>
-                                            <RemoveCircle />
-                                        </IconButton>
-                                    </Tooltip>
-                            }
-                            {
-                                LoggedInUser?.is_admin ?
-                                    <>
-                                        {LoggedInUser?.created_by._id === props.row.original._id ?
-                                            null
-                                            :
-                                            <Tooltip title="Change user Access Control">
-                                                <IconButton
-                                                    color="warning" size="medium"
-                                                    onClick={() => {
-                                                        setChoice({ type: UserChoiceActions.control_access })
-                                                        setUser(props.row.original)
-                                                    }}>
-                                                    <Key />
-                                                </IconButton>
-                                            </Tooltip>
-                                        }
-                                    </>
-                                    :
-                                    null
-                            }
-                        </Stack>
-                    )
-                }
-            },
+           
             // user name
             {
 
@@ -290,7 +181,117 @@ export default function UsersPage() {
                     )
                 }
 
-            }
+            },
+            // actions
+            {
+                Header: "Allowed Actions",
+                accessor: "actions",//already used so use it for display actions
+                disableSortBy: true,
+                Cell: (props) => {
+                    let CellUser = props.row.original
+                    return (
+                        <Stack direction="row">
+
+                            {/* edit icon */}
+                            <Tooltip title="edit">
+                                <IconButton
+                                    color="success"
+                                    size="medium"
+                                    onClick={() => {
+                                        setChoice({ type: UserChoiceActions.update_user })
+                                        setUser(props.row.original)
+                                    }}>
+                                    <Edit />
+                                </IconButton>
+                            </Tooltip>
+                            {
+                                props.row.original.is_admin ?
+                                    <>
+                                        {LoggedInUser?.created_by._id === props.row.original._id ?
+                                            null
+                                            :
+                                            < Tooltip title="Remove admin"><IconButton size="medium"
+                                                color="error"
+                                                onClick={() => {
+
+                                                    setChoice({ type: UserChoiceActions.remove_admin })
+                                                    setRowId(props.row.original._id)
+                                                }}>
+                                                <GroupRemove />
+                                            </IconButton>
+                                            </Tooltip>
+                                        }
+                                    </>
+                                    :
+                                    <Tooltip title="make admin"><IconButton size="medium"
+                                        onClick={() => {
+                                            setChoice({ type: UserChoiceActions.make_admin })
+                                            setRowId(props.row.original._id)
+                                        }}>
+                                        <GroupAdd />
+                                    </IconButton>
+                                    </Tooltip>
+                            }
+                            {
+
+                            }
+                            {
+                                CellUser?.is_active ?
+                                    <>
+                                        {LoggedInUser?.created_by._id === props.row.original._id ?
+                                            null
+                                            :
+                                            <Tooltip title="block"><IconButton
+                                                size="medium"
+                                                onClick={() => {
+                                                    setChoice({ type: UserChoiceActions.block_user })
+                                                    setRowId(props.row.original._id)
+                                                }}
+                                            >
+                                                <Block />
+                                            </IconButton>
+                                            </Tooltip>
+                                        }
+
+                                    </>
+                                    :
+                                    < Tooltip title="unblock">
+                                        <IconButton
+                                            color="warning"
+                                            size="medium"
+                                            onClick={() => {
+                                                setChoice({ type: UserChoiceActions.unblock_user })
+                                                setRowId(props.row.original._id)
+                                            }}>
+                                            <RemoveCircle />
+                                        </IconButton>
+                                    </Tooltip>
+                            }
+                            {
+                                LoggedInUser?.is_admin ?
+                                    <>
+                                        {LoggedInUser?.created_by._id === props.row.original._id ?
+                                            null
+                                            :
+                                            <Tooltip title="Change user Access Control">
+                                                <IconButton
+                                                    color="warning" size="medium"
+                                                    onClick={() => {
+                                                        setChoice({ type: UserChoiceActions.control_access })
+                                                        setUser(props.row.original)
+                                                    }}>
+                                                    <Key />
+                                                </IconButton>
+                                            </Tooltip>
+                                        }
+                                    </>
+                                    :
+                                    null
+                            }
+                        </Stack>
+                    )
+                }
+            },
 
 
         ]

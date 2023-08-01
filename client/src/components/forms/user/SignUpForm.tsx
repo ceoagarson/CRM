@@ -116,7 +116,7 @@ function OwnerSignUpForm() {
       setTimeout(() => {
         dispatch({ type: UserActions.login, payload: data.data })
         setChoice({ type: UserChoiceActions.close })
-        goto(paths.dashboard)
+        goto(paths.leads)
       }, 1000)
     }
   }, [isSuccess, dispatch, goto, data, setChoice])

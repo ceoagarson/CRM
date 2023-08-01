@@ -2,9 +2,10 @@ import { NextFunction, Request, Response } from "express"
 import isEmail from "validator/lib/isEmail"
 import isMongoId from "validator/lib/isMongoId"
 import { catchAsyncError } from "../middlewares/catchAsyncError.middleware.ts"
+import xlsx from "xlsx"
 import Lead from "../models/leads/lead.model.js"
 import { User } from "../models/users/user.model.js"
-import { TLeadBody } from "../types/leads/lead.type.js"
+import { ILead, TLeadBody } from "../types/leads/lead.type.js"
 import { Remark } from "../models/leads/remark.model.js"
 import { IUser } from "../types/users/user.type.js"
 
@@ -230,10 +231,43 @@ export const PreserveLead = catchAsyncError(async (req: Request, res: Response, 
     if (!lead) {
         return res.status(404).json({ message: "lead not found" })
     }
-    await Lead.findByIdAndUpdate(lead._id,{
-        preserved :true,
+    await Lead.findByIdAndUpdate(lead._id, {
+        preserved: true,
         updated_at: new Date(Date.now()),
         updated_by: req.user
     })
     return res.status(200).json({ message: "lead preserved successfully" })
+})
+
+export const PreserveLeadsInBulk = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    const { ids } = req.body as { ids: string[] }
+    ids.forEach(async(id)=>{
+        await Lead.findByIdAndUpdate(id, {
+            preserved: true,
+            updated_at: new Date(Date.now()),
+            updated_by: req.user
+        })
+    })
+    return res.status(200).json({ message: "lead preserved successfully" })
+})
+
+export const UploadLeadFromExcel = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    if (req.file) {
+        const allowedFiles = ["application/vnd.ms-excel", "text/csv"];
+        if (!allowedFiles.includes(req.file.mimetype))
+            return res.status(400).json({ message: `${req.file.originalname} is not valid, only excel and csv are allowed to upload` })
+        if (req.file.size > 10 * 1024 * 1024)
+            return res.status(400).json({ message: `${req.file.originalname} is too large limit is :10mb` })
+        const workbook = xlsx.readFile(req.file.path);
+        let workbook_sheet = workbook.SheetNames;
+        let workbook_response:ILead[] = xlsx.utils.sheet_to_json(
+            workbook.Sheets[workbook_sheet[0]]
+        );
+        return res.status(200).send({
+            data: workbook_response,
+        });
+    }
+    return res.status(404).send({
+        message: "please provide an Excel file",
+    });
 })

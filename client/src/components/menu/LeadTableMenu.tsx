@@ -11,7 +11,7 @@ import { useMutation } from 'react-query';
 import { AxiosResponse } from 'axios';
 import { BackendError } from '../../types';
 import { queryClient } from '../..';
-import { PreserveLead } from '../../services/LeadsServices';
+import {  PreserveLeadsInBulk } from '../../services/LeadsServices';
 
 type Props = {
     selectedFlatRows: Row<ILead>[]
@@ -47,8 +47,8 @@ function LeadTableMenu({ selectedFlatRows }: Props) {
     const [sent, setSent] = useState(false)
     const { setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess } = useMutation
-        <AxiosResponse<any>, BackendError, { id: string }>
-        (PreserveLead,
+        <AxiosResponse<{ ids: string[] }>, BackendError, { ids: string[] }>
+        (PreserveLeadsInBulk,
             {
                 onSuccess: () => {
                     queryClient.invalidateQueries('leads')
@@ -60,9 +60,11 @@ function LeadTableMenu({ selectedFlatRows }: Props) {
         try {
             if (selectedData.length === 0)
                 return alert("please select some rows")
+            let ids: string[] = []
             selectedFlatRows.forEach((row) => {
-                mutate({ id: row.original._id })
+                ids.push(row.original._id)
             })
+            mutate({ ids: ids })
         }
         catch (err) {
             console.log(err)
