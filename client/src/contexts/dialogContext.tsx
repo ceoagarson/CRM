@@ -1,18 +1,12 @@
 import React, { useReducer } from "react"
 
-// choices
 type UserChoices = "signup"| "reset_password_mail" | null | "new_user" | "update_user" | "update_profile" | "view_profile" | "update_password" | "reset_password" | "verify_email" | "control_access" | "delete_user" |
   "block_user" | "unblock_user" | "make_admin" | "remove_admin" 
 
 type LeadChoices = "create_lead" | "update_lead" | "update_remark" | "view_remarks" | null | "display_filter" | "delete_lead" |"preserve_lead"
 
-type ProductionChoices = "new_production_page" | null | "update_production_page" | "update_production" | "report_machine_wise" |"report_category_wise"
 
-type MachineChoices = "new_machine" | "update_machine" | null
-type CategoryChoices = "new_category" | "update_category" | null
-
-// initial state
-type ChoiceState = UserChoices | LeadChoices | ProductionChoices | MachineChoices | CategoryChoices
+type ChoiceState = UserChoices | LeadChoices 
 
 const initialState: ChoiceState = null
 
@@ -26,24 +20,7 @@ export enum LeadChoiceActions {
   display_filter ="display_filter",
   update_remark = "update_remark",
 }
-export enum CategoryChoiceActions{
-  update_category = "update_category",
-  new_category = "new_category",
-  close = "close"
-}
-export enum MachineChoiceActions{
-  update_machine = "update_machine",
-  new_machine = "new_machine",
-  close="close"
-}
-export enum ProductionChoiceActions {
-  new_production_page="new_production_page",
-  close = "close",
-  update_production ="update_production",
-  update_production_page ="update_production_page",
-  report_machine_wise ="report_machine_wise",
-  report_category_wise ="report_category_wise"
-}
+
 export enum UserChoiceActions {
   signup = "signup",
   reset_password_mail = "reset_password_mail",
@@ -64,7 +41,7 @@ export enum UserChoiceActions {
 }
 
 type Action = {
-  type: UserChoiceActions | LeadChoiceActions | ProductionChoiceActions | MachineChoiceActions | CategoryChoiceActions
+  type: UserChoiceActions | LeadChoiceActions
 }
 
 // reducer
@@ -98,25 +75,6 @@ function reducer(state: ChoiceState, action: Action) {
     case LeadChoiceActions.delete_lead: return type
     case LeadChoiceActions.preserve_lead: return type
     case LeadChoiceActions.close: return null
-
-    //production dialog choices
-    case ProductionChoiceActions.new_production_page: return type
-    case ProductionChoiceActions.update_production: return type
-    case ProductionChoiceActions.update_production_page: return type
-    case ProductionChoiceActions.report_category_wise: return type
-    case ProductionChoiceActions.report_machine_wise: return type
-    case ProductionChoiceActions.close: return null
-
-    //machine dialog choices
-    case MachineChoiceActions.new_machine: return type
-    case MachineChoiceActions.update_machine: return type
-    case MachineChoiceActions.close: return null
-    
-    //category dialog choices
-    case CategoryChoiceActions.new_category: return type
-    case CategoryChoiceActions.update_category: return type
-    case CategoryChoiceActions.close: return null
-
 
     default: return state
   }
