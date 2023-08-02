@@ -32,12 +32,6 @@ export type IUser = {
     resetPasswordExpire: Date | null,
     emailVerifyToken: string | null,
     emailVerifyExpire: Date | null,
+    actions?:any
 }
 
-export type IUserMethods = {
-    getAccessToken: () => string,
-    comparePassword: (password: string) => boolean,
-    getResetPasswordToken: () => string,
-    getEmailVerifyToken: () => string
-}
-export type TUserBody = Request['body'] & IUser;

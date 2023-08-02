@@ -77,11 +77,11 @@ function LeadControlAccessForm({user}:{user:IUser}) {
                                   <TableCell key={index} >
                                          <Stack direction="column">
                                           <Typography sx={{ fontWeight: 'bold' }}>{field.field.replace("_", " ").toLocaleUpperCase()}</Typography>
-                                          <FormControlLabel control={<Checkbox checked={Boolean(field.hidden)} />} onChange={(e) => {
+                                          <FormControlLabel control={<Checkbox checked={Boolean(field.hidden)} />} onChange={() => {
                                               handleHidden(field.field)
                                           }} label="Hidden" />
                                           <FormControlLabel control={<Checkbox checked={Boolean(field.readonly)} />}
-                                              onChange={(e) => {
+                                              onChange={() => {
                                                   handleReadOnly(field.field)
                                               }}
                                               label="Read Only"

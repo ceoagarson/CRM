@@ -2,10 +2,10 @@ import { Dialog, DialogContent, DialogTitle, Button, Typography, Stack, Circular
 import { AxiosResponse } from 'axios';
 import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
-import { queryClient } from '../../..';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { MakeAdmin } from '../../../services/UserServices';
 import { BackendError } from '../../../types';
+import { queryClient } from '../../../main';
 
 
 function MakeAdminDialog({ id }: { id: string }) {

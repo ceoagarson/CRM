@@ -26,7 +26,8 @@ export type ILead = {
     created_at: Date,
     created_by: IUser,
     updated_at: Date,
-    updated_by: IUser
+    updated_by: IUser,
+    actions?: any
+
 }
 
-export type TLeadBody = Request['body'] & ILead;

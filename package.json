@@ -3,5 +3,9 @@
   "private":true,
   "workspaces": [
     "client","server"
-  ]
+  ],
+  "scripts": {
+    "build":"cd server && npm install && cd ../client && npm install && npm run build && mv build ../server/dist ",
+    "start":"node server/dist/app.js"
+  }
 }

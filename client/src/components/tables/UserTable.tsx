@@ -6,8 +6,8 @@ import UserTableMenu from '../menu/UserTableMenu';
 import { Stack } from '@mui/system';
 import { color1, color2, headColor } from '../../utils/colors';
 import { ArrowDropDown, ArrowDropUp} from '@mui/icons-material';
-import { IUser } from '../../types/user.type';
 import GlobalFilter from './utils/GlobalFilter';
+import { IUser } from '../../types/users/user.type';
 
 
 interface Props {

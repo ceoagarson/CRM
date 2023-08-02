@@ -1,7 +1,7 @@
 import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, ListItem } from '@mui/material';
 import { Box } from '@mui/system'
 import { ColumnInstance } from 'react-table';
-import { IUser } from '../../../types/user.type';
+import { IUser } from '../../../types/users/user.type';
 
 type Props = {
     columns: ColumnInstance<IUser>[],

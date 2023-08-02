@@ -9,5 +9,8 @@ export default defineConfig({
       "/api/v1": 'http://localhost:5000'
     },
     port:3000
+  },
+  build:{
+    outDir:"build"
   }
 })

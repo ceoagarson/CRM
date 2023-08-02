@@ -98,7 +98,7 @@ function UserTableMenu({ columns, selectedFlatRows }: Props) {
             <Menu
                 anchorEl={menu.anchorEl}
                 open={Boolean(menu.type === MenuActions.user_table_menu)}
-                onClose={(e) => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
+                onClose={() => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
                 }
                 TransitionComponent={Fade}
                 MenuListProps={{

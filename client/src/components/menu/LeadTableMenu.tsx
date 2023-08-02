@@ -158,7 +158,7 @@ function LeadTableMenu({ selectedFlatRows }: Props) {
             <Menu
                 anchorEl={menu.anchorEl}
                 open={Boolean(menu.type === MenuActions.lead_table_menu)}
-                onClose={(e) => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
+                onClose={() => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
                 }
                 TransitionComponent={Fade}
                 MenuListProps={{

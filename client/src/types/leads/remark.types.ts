@@ -11,4 +11,3 @@ export type IRemark = {
     updated_by: IUser
 }
 
-export type TRemarkBody = Request['body'] & IRemark;

@@ -9,4 +9,3 @@ export type IOrganization = {
     updated_by: IUser
 }
 
-export type TOrganizationBody = Request['body'] & IOrganization;

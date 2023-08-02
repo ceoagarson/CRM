@@ -5,11 +5,11 @@ import TableCheckBox from './utils/TableCheckBox';
 import { ArrowDropDown, ArrowDropUp, } from '@mui/icons-material';
 import { Stack } from '@mui/system';
 import { color1, color2, headColor } from '../../utils/colors';
-import { ILead } from '../../types/lead.type';
 import React, { useContext, useEffect } from 'react';
 
 import { useLeadFields } from '../hooks/LeadFieldsHook';
 import { SelectionContext } from '../../contexts/selectionContext';
+import { ILead } from '../../types/leads/lead.type';
 
 
 interface Props {
