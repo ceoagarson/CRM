@@ -2,11 +2,11 @@ import { Dialog, DialogContent, DialogTitle, Button, DialogActions } from '@mui/
 import { useContext, useEffect, useState } from 'react';
 import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import NewLeadForm from '../../forms/lead/NewLeadForm';
-import { IUser } from '../../../types/user.type';
 import { GetUsers } from '../../../services/UserServices';
-import { BackendError } from '../../../types';
 import { AxiosResponse } from 'axios';
 import { useQuery } from 'react-query';
+import { IUser } from '../../../types/users/user.type';
+import { BackendError } from '../../../types';
 
 function NewLeadDialog() {
   const [users,setUsers]=useState<IUser[]>([])

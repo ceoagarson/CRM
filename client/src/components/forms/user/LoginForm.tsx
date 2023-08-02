@@ -11,8 +11,9 @@ import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContex
 import { UserActions, UserContext } from '../../../contexts/userContext';
 import { paths } from '../../../Routes';
 import { Login } from '../../../services/UserServices';
+import { IUser } from '../../../types/users/user.type';
 import { BackendError } from '../../../types';
-import { IUser } from '../../../types/user.type';
+
 
 function LoginForm() {
   const goto = useNavigate()

@@ -2,11 +2,11 @@ import { Dialog, DialogContent, DialogTitle, Button, Typography, Stack, Circular
 import { AxiosResponse } from 'axios';
 import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
-import { queryClient } from '../../..';
 import { LeadChoiceActions,  ChoiceContext } from '../../../contexts/dialogContext';
-import { BackendError } from '../../../types';
 import { DeleteLead } from '../../../services/LeadsServices';
-import { ILead } from '../../../types/lead.type';
+import { ILead } from '../../../types/leads/lead.type';
+import { BackendError } from '../../../types';
+import { queryClient } from '../../../main';
 
 
 function DeleteLeadDialog({ lead }: { lead: ILead }) {

@@ -1,5 +1,5 @@
 import React, { createContext, useReducer } from "react";
-import { IUser } from "../types/user.type";
+import { IUser } from "../types/users/user.type";
 
 // initial state
 type UserState = IUser | undefined;

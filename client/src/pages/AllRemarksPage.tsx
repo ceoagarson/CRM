@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import { ILead } from "../types/lead.type";
 import { Stack, Typography, Paper } from "@mui/material";
+import { ILead } from "../types/leads/lead.type";
 
 const MainContainer = styled.div`
 

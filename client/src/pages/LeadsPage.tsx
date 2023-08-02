@@ -9,8 +9,6 @@ import ViewLeadDialog from "../components/dialogs/leads/ViewRemarksDialog"
 import { LeadTable } from "../components/tables/LeadTable"
 import { ChoiceContext, LeadChoiceActions } from "../contexts/dialogContext"
 import { GetLeads } from "../services/LeadsServices"
-import { BackendError } from "../types"
-import { ILead } from "../types/lead.type"
 import NewRemarkDialog from "../components/dialogs/leads/NewRemarkDialog"
 import { SelectionContext } from "../contexts/selectionContext"
 import { FilterContext } from "../contexts/filterContext"
@@ -20,6 +18,8 @@ import LeadTableMenu from "../components/menu/LeadTableMenu"
 import { UserContext } from "../contexts/userContext"
 import DeleteLeadDialog from "../components/dialogs/leads/DeleteLeadDialog"
 import PreserveLeadDialog from "../components/dialogs/leads/PreserveLeadDialog"
+import { ILead } from "../types/leads/lead.type"
+import { BackendError } from "../types"
 
 export default function LeadsPage() {
   const { user: LoggedInUser } = useContext(UserContext)

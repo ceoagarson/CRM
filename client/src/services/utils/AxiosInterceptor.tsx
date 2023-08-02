@@ -1,8 +1,9 @@
 import axios from "axios";
+const VITE_SERVER_URL=import.meta.env.VITE_SERVER_URL
 
 let BaseURL = "/api/v1/"
-if (process.env.REACT_APP_SERVER_URL)
-  BaseURL = process.env.REACT_APP_SERVER_URL + BaseURL
+if (VITE_SERVER_URL)
+  BaseURL = VITE_SERVER_URL + BaseURL
 
 const apiClient = axios.create({
   baseURL: BaseURL,

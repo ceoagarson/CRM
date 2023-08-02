@@ -4,17 +4,17 @@ import { useFormik } from 'formik';
 import { useEffect, useContext } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
-import { queryClient } from '../../..';
 import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { UpdateLead } from '../../../services/LeadsServices';
-import { BackendError } from '../../../types';
-import { ILead } from '../../../types/lead.type';
 import { Countries } from '../../../utils/countries';
 import { Source } from '../../../utils/Source';
 import { States } from '../../../utils/states';
 import { Cities } from '../../../utils/cities';
 import { useLeadFields } from '../../hooks/LeadFieldsHook';
-import { IUser } from '../../../types/user.type';
+import { ILead } from '../../../types/leads/lead.type';
+import { IUser } from '../../../types/users/user.type';
+import { queryClient } from '../../../main';
+import { BackendError } from '../../../types';
 
 export type TformData = {
   name: string,

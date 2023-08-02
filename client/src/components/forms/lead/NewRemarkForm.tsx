@@ -4,11 +4,11 @@ import { useFormik } from 'formik';
 import { useEffect, useContext } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
-import { queryClient } from '../../..';
-import { BackendError } from '../../../types';
 import { NewRemark } from '../../../services/LeadsServices';
-import { ILead } from '../../../types/lead.type';
 import { ChoiceContext, LeadChoiceActions } from '../../../contexts/dialogContext';
+import { BackendError } from '../../../types';
+import { ILead } from '../../../types/leads/lead.type';
+import { queryClient } from '../../../main';
 
 
 function NewRemarkForm({ lead }: { lead: ILead }) {

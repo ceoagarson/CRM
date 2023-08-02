@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogTitle, DialogActions,  Button } from '@mui/material'
 import { useContext } from 'react'
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
-import { IUser } from '../../../types/user.type'
+import { IUser } from '../../../types/users/user.type'
 import UpdateUserForm from '../../forms/user/UpdateUserForm'
 
 function UpdateUserDialog({ user }: { user: IUser }) {
@@ -13,7 +13,7 @@ function UpdateUserDialog({ user }: { user: IUser }) {
             <DialogTitle textAlign="center">Update User Form</DialogTitle>
             <DialogContent>
                 {user ?
-                    < UpdateUserForm user={user} />
+                    <UpdateUserForm user={user} />
                     : null
                 }
             </DialogContent>

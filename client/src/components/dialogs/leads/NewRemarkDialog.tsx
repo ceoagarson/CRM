@@ -1,8 +1,8 @@
 import { Dialog, DialogContent,  DialogActions, Typography, CircularProgress } from '@mui/material'
 import { useContext } from 'react'
 import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
-import { ILead } from '../../../types/lead.type'
 import NewRemarkForm from '../../forms/lead/NewRemarkForm'
+import { ILead } from '../../../types/leads/lead.type'
 
 function NewRemarkDialog({ lead }: { lead: ILead }) {
     const { choice, setChoice } = useContext(ChoiceContext)

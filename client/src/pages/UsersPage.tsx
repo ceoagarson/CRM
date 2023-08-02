@@ -13,10 +13,10 @@ import UpdateUserDialog from '../components/dialogs/users/UpdateUserDialog'
 import { UserTable } from '../components/tables/UserTable'
 import { UserChoiceActions, ChoiceContext } from '../contexts/dialogContext'
 import { GetUsers } from '../services/UserServices'
-import { BackendError } from '../types'
-import { IUser } from '../types/user.type'
 import ManageAccessControlDialog from '../components/dialogs/users/ManageAccessControlDialog'
 import { UserContext } from '../contexts/userContext'
+import { BackendError } from '../types'
+import { IUser } from '../types/users/user.type'
 
 export default function UsersPage() {
     const { data: users, isSuccess, isLoading, isError, error } = useQuery<AxiosResponse<IUser[]>, BackendError>("users", GetUsers, {

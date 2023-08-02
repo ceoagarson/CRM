@@ -9,8 +9,8 @@ import * as Yup from 'yup';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { paths } from '../../../Routes';
 import { ResetPasswordSendMail } from '../../../services/UserServices';
-import { BackendError } from '../../../types';
 import { UserContext } from '../../../contexts/userContext';
+import { BackendError } from '../../../types';
 
 
 function ResetPasswordSendMailForm() {

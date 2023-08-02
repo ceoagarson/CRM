@@ -1,12 +1,12 @@
 import { Dialog, DialogContent, DialogTitle, DialogActions, Typography, CircularProgress } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
 import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
-import { ILead } from '../../../types/lead.type'
 import UpdateLeadForm from '../../forms/lead/UpdateLeadForm'
-import { IUser } from '../../../types/user.type'
 import { useQuery } from 'react-query'
 import { AxiosResponse } from 'axios'
 import { GetUsers } from '../../../services/UserServices'
+import { ILead } from '../../../types/leads/lead.type'
+import { IUser } from '../../../types/users/user.type'
 import { BackendError } from '../../../types'
 
 function UpdateLeadDialog({ lead }: { lead: ILead}) {

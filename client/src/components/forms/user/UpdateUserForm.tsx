@@ -4,11 +4,12 @@ import { useFormik } from 'formik';
 import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
-import { queryClient } from '../../..';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { UpdateUser } from '../../../services/UserServices';
+import { IUser } from '../../../types/users/user.type';
+import { queryClient } from '../../../main';
 import { BackendError, Target } from '../../../types';
-import { IUser } from '../../../types/user.type';
+
 
 type TformData = {
   username: string,

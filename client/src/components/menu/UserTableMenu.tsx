@@ -1,13 +1,13 @@
 import { Fade, IconButton, Menu, MenuItem, Snackbar } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
 import { ColumnInstance, Row } from 'react-table';
-import { IUser } from '../../types/user.type';
 import { MenuActions, MenuContext } from '../../contexts/menuContext';
 import { UserContext } from '../../contexts/userContext';
 import { ChoiceContext, UserChoiceActions } from '../../contexts/dialogContext';
 import ExportToExcel from '../tables/utils/ExportToExcel';
 import ToogleColumns from '../tables/utils/ToogleColumns';
 import { Menu as MenuIcon } from '@mui/icons-material';
+import { IUser } from '../../types/users/user.type';
 
 type Props = {
     columns: ColumnInstance<IUser>[],

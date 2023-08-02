@@ -2,16 +2,16 @@ import { Fade, IconButton, Menu, MenuItem, Snackbar } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
 import { Row } from 'react-table';
 import { Menu as MenuIcon } from '@mui/icons-material';
-import { ILead } from '../../types/lead.type';
 import { MenuActions, MenuContext } from '../../contexts/menuContext';
 import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext';
 import ExportToExcel from '../tables/utils/ExportToExcel';
 import NewLeadDialog from '../dialogs/leads/NewLeadDialog';
 import { useMutation } from 'react-query';
 import { AxiosResponse } from 'axios';
-import { BackendError } from '../../types';
-import { queryClient } from '../..';
 import {  PreserveLeadsInBulk } from '../../services/LeadsServices';
+import { ILead } from '../../types/leads/lead.type';
+import { BackendError } from '../../types';
+import { queryClient } from '../../main';
 
 type Props = {
     selectedFlatRows: Row<ILead>[]

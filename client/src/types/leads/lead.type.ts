@@ -1,16 +1,5 @@
-import { Types } from "mongoose";
-import { IUser } from "./user.type";
-
-export type IRemark = {
-    _id: Types.ObjectId,
-    remark: string,
-    lead: ILead,
-    created_at: Date,
-    created_by: IUser,
-    updated_at: Date,
-    updated_by: IUser
-}
-
+import { IUser } from "../users/user.type";
+import { IRemark } from "./remark.types";
 
 export type ILead = {
     _id: string,
@@ -37,8 +26,7 @@ export type ILead = {
     created_at: Date,
     created_by: IUser,
     updated_at: Date,
-    updated_by: IUser,
-    // actions
-    actions?: any
+    updated_by: IUser
 }
 
+export type TLeadBody = Request['body'] & ILead;

@@ -1,11 +1,9 @@
-export type Asset = {
-    public_id: string,
-    url: string,
-    size?: number,
-    format?: string,
-}
+import { Asset } from "./asset.type";
+import { IOrganization } from "./organization.types";
 
 export type LeadFieldType = "name" | "customer_name" | "customer_designation" | "mobile" |    "email" | "city" | "state" | "country" | "address" | "remarks" | "work_description" | "turnover" | "lead_type" | "stage" | "alternate_mobile1" | "alternate_mobile2" | "alternate_email" | "lead_owners" | "lead_source" | "created_at" | "created_by" | "updated_at" | "updated_by"
+
+export const all_fields: LeadFieldType[] = ["name", "customer_name", "customer_designation", "mobile", "email", "city", "state", "country", "address", "remarks", "work_description", "turnover", "lead_type", "stage", "alternate_mobile1", "alternate_mobile2", "alternate_email", "lead_owners", "lead_source", "created_at", "created_by", "updated_at", "updated_by"]
 
 export type LeadField={
     field: LeadFieldType,
@@ -13,25 +11,13 @@ export type LeadField={
     hidden: Boolean
 }
 
-export const all_fields: LeadFieldType[] = ["name", "customer_name", "customer_designation", "mobile", "email", "city", "state", "country", "address", "remarks", "work_description", "turnover", "lead_type", "stage", "alternate_mobile1", "alternate_mobile2", "alternate_email", "lead_owners", "lead_source", "created_at", "created_by", "updated_at", "updated_by"]
-
-export type IOrganization = {
-    _id: string,
-    organization: string,
-    created_at: Date,
-    created_by: IUser,
-    updated_at: Date,
-    updated_by: IUser
-}
-
-
 export type IUser = {
-    _id: string,
+    _id:string,
     username: string,
     password: string,
     email: string,
     mobile: string,
-    organization: IOrganization
+    organization: IOrganization,
     dp: Asset,
     is_admin:Boolean,
     lead_fields: LeadField[],
@@ -46,8 +32,6 @@ export type IUser = {
     resetPasswordExpire: Date | null,
     emailVerifyToken: string | null,
     emailVerifyExpire: Date | null,
-    // actions
-    actions?:any
 }
 
 export type IUserMethods = {
