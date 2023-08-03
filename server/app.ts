@@ -11,10 +11,15 @@ import UserRoutes from "./routes/user.routes"
 import LeadRoutes from "./routes/lead.routes"
 import path from 'path';
 import morgan from "morgan";
+import { Socket,Server } from "socket.io";
+import { createServer } from 'http';
 
 // app variables
 
 const app = express()
+export const server = createServer(app)
+
+let AppSocket: Socket;
 dotenv.config();
 const PORT = Number(process.env.PORT) || 5000
 const HOST = process.env.HOST || "http://localhost"
@@ -46,6 +51,35 @@ cloudinary.v2.config({
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_SECRET_KEY,
 });
+
+
+let io: Server | undefined = undefined
+io = new Server(server, {
+    cors: {
+        origin: origin
+    }
+});
+
+io.on("connection", (socket) => {
+    console.log("socket connected")
+    AppSocket = socket
+    socket.on('JoinRoom', async (id: string, path: string) => {
+        console.log("running in room", id, path)
+        const user = userJoin(id)
+        socket.join(user.id)
+        if (io)
+            createWhatsappClient(id, path, io)
+        socket.on("disconnect", (reason) => {
+            let user = getCurrentUser(id)
+            if (user)
+                userLeave(user.id)
+            console.log(`socket ${socket.id} disconnected due to ${reason}`);
+        });
+    })
+
+});
+
+
 app.use("/api/v1", UserRoutes)
 app.use("/api/v1", LeadRoutes)
 
