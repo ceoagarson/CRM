@@ -8,14 +8,13 @@ import cors from "cors";
 import { MulterError } from 'multer';
 import { connectDatabase } from './config/db';
 import UserRoutes from "./routes/user.routes"
-import LeadRoutes from "./routes/lead.routes"
 import path from 'path';
 import morgan from "morgan";
-import { Socket,Server } from "socket.io";
+import { Socket, Server } from "socket.io";
 import { createServer } from 'http';
+import { createWhatsappClient, getCurrentUser, userJoin, userLeave } from './utils/CreateWhatsappClient';
 
 // app variables
-
 const app = express()
 export const server = createServer(app)
 
@@ -37,6 +36,7 @@ app.use(
     })
 );
 
+let origin = undefined
 if (ENV === "development") {
     app.use(cors({
         origin: ['http://localhost:3000'],
@@ -81,7 +81,6 @@ io.on("connection", (socket) => {
 
 
 app.use("/api/v1", UserRoutes)
-app.use("/api/v1", LeadRoutes)
 
 if (ENV === "production") {
     app.use(express.static(path.join(__dirname, "build")))
