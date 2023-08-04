@@ -1,4 +1,3 @@
-// imports package and modules
 import express, { NextFunction, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
@@ -7,27 +6,26 @@ import helmet from "helmet";
 import cors from "cors";
 import { MulterError } from 'multer';
 import { connectDatabase } from './config/db';
-import UserRoutes from "./routes/user.routes"
+import UserRoutes, { upload } from "./routes/user.routes";
+import LeadRoutes from "./routes/lead.routes";
 import path from 'path';
 import morgan from "morgan";
-import { Socket, Server } from "socket.io";
-import { createServer } from 'http';
-import { createWhatsappClient, getCurrentUser, userJoin, userLeave } from './utils/CreateWhatsappClient';
 
-// app variables
 const app = express()
-export const server = createServer(app)
 
-let AppSocket: Socket;
+//env setup
 dotenv.config();
 const PORT = Number(process.env.PORT) || 5000
 const HOST = process.env.HOST || "http://localhost"
 const ENV = process.env.NODE_ENV || "development"
-// start -> app configuration
 
 app.use(express.json())
 app.use(cookieParser());
+
+//logger
 app.use(morgan('tiny'))
+
+//helmet config
 app.use(
     helmet.contentSecurityPolicy({
         directives: {
@@ -36,7 +34,7 @@ app.use(
     })
 );
 
-let origin = undefined
+//cors for devlopment
 if (ENV === "development") {
     app.use(cors({
         origin: ['http://localhost:3000'],
@@ -44,44 +42,21 @@ if (ENV === "development") {
     }))
 }
 
-
+//mongodb database
 connectDatabase();
+
+//cloudinary config
 cloudinary.v2.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_SECRET_KEY,
 });
 
-
-let io: Server | undefined = undefined
-io = new Server(server, {
-    cors: {
-        origin: origin
-    }
-});
-
-io.on("connection", (socket) => {
-    console.log("socket connected")
-    AppSocket = socket
-    socket.on('JoinRoom', async (id: string, path: string) => {
-        console.log("running in room", id, path)
-        const user = userJoin(id)
-        socket.join(user.id)
-        if (io)
-            createWhatsappClient(id, path, io)
-        socket.on("disconnect", (reason) => {
-            let user = getCurrentUser(id)
-            if (user)
-                userLeave(user.id)
-            console.log(`socket ${socket.id} disconnected due to ${reason}`);
-        });
-    })
-
-});
-
-
+//server routes
 app.use("/api/v1", UserRoutes)
+app.use("/api/v1", LeadRoutes)
 
+//react app handler
 if (ENV === "production") {
     app.use(express.static(path.join(__dirname, "build")))
     app.get('*', (req, res) => {
@@ -93,7 +68,7 @@ else {
         res.status(404).json({ message: "resource not found" })
     })
 }
-
+//error handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     console.log(err);
     if (err instanceof MulterError)
@@ -103,13 +78,11 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     })
 })
 
-// end -> app configuration
-// start-> server configurations
+//server setup
 if (!PORT) {
     console.log("Server Port not specified in the environment")
     process.exit(1)
 }
-
 app.listen(PORT, () => {
     console.log(`⚡️[server]: Server is running at ${HOST}:${PORT}`);
 });

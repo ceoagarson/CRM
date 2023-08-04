@@ -1,5 +1,5 @@
 import mongoose from "mongoose"
-import { IRemark } from "../../types/leads/remark.types"
+import { IRemark } from "../../types/crm/remark.types"
 
 const RemarkSchema = new mongoose.Schema<IRemark, mongoose.Model<IRemark, {}, {}>, {}>({
     remark: {

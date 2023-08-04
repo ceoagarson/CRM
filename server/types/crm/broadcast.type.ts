@@ -1,4 +1,4 @@
-import { IFrequency } from "../reminders/reminder.type"
+import { IFrequency } from "./reminder.type"
 import { Asset } from "../users/asset.type"
 import { IUser } from "../users/user.type"
 

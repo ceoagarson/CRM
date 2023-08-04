@@ -12,6 +12,12 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
     index: true,
     lowercase: true,
   },
+  password: {
+    type: String,
+    required: true,
+    trim: true,
+    select: false,
+  },
   email: {
     type: String,
     required: true,
@@ -19,22 +25,11 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
     trim: true,
     lowercase: true,
   },
-  password: {
-    type: String,
-    required: true,
-    trim: true,
-    select: false,
-  },
   mobile: {
-    type: String,
+    type: Number,
     trim: true,
     index: true,
     required: true,
-  },
-  organization: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Organization',
-    required: true
   },
   dp: {
     public_id: { type: String },
@@ -42,11 +37,39 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
     size: { type: String },
     format: { type: String },
   },
+  client_id: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  client_data_path: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  connected_number: {
+    type: Number,
+    trim: true,
+    index: true
+  },
+  is_whatsapp_active: {
+    type: Boolean,
+    default: false,
+    required: true,
+  },
+ 
   is_admin: {
     type: Boolean,
     default: false,
     required: true,
   },
+  lead_fields: [
+    {
+      field: { type: String },
+      readonly: { type: Boolean, default: true },
+      hidden: { type: Boolean, default: false }
+    }
+  ],
   email_verified: {
     type: Boolean,
     default: false,
@@ -55,8 +78,7 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
   is_active: {
     type: Boolean,
     default: true,
-    required: true,
-
+    required: true
   },
   last_login: {
     type: Date,
@@ -86,16 +108,10 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
     ref: 'User',
     required: true
   },
-  lead_fields:[
-   {
-      field :{type : String },
-      readonly:{ type: Boolean,default:true },
-      hidden:{type : Boolean,default:false }
-   }
-  ],
+
   resetPasswordToken: {
     type: String,
-    default:null
+    default: null
   },
   resetPasswordExpire: {
     type: Date,
@@ -103,7 +119,7 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
   },
   emailVerifyToken: {
     type: String,
-    default:null
+    default: null
   },
   emailVerifyExpire: {
     type: Date,

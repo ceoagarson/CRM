@@ -1,5 +1,5 @@
 import express from "express";
-import { CreateLead, DeleteLead, GetLeads, NewRemark, PreserveLead, PreserveLeadsInBulk, UpdateLead, UploadLeadFromExcel } from "../controllers/lead.controller";
+import { BulkLeadUpdateFromExcel, CreateLead, DeleteLead, GetLeads, NewRemark, UpdateLead } from "../controllers/lead.controller";
 import { isAdmin, isAuthenticatedUser } from "../middlewares/auth.middleware";
 import { upload } from "./user.routes";
 
@@ -7,14 +7,12 @@ const router = express.Router()
 
 router.route("/leads")
     .get(isAuthenticatedUser, GetLeads)
-    .post(isAuthenticatedUser, CreateLead)
+    .post(isAuthenticatedUser, upload.single('visiting_card'), CreateLead)
 router.route("/leads/:id")
-    .put(isAuthenticatedUser, UpdateLead)
-    .patch(isAuthenticatedUser, PreserveLead)
+    .put(isAuthenticatedUser, upload.single('visiting_card'), UpdateLead)
     .delete(isAuthenticatedUser, isAdmin, DeleteLead)
-router.route("/preserve/bulk").put(isAuthenticatedUser, PreserveLeadsInBulk)
+router.route("/update/leads/bulk").put(isAuthenticatedUser, BulkLeadUpdateFromExcel)
 router.route("/remarks/leads/:id").patch(isAuthenticatedUser, NewRemark)
-router.post("/upload/excel", upload.single("leads"), isAuthenticatedUser, UploadLeadFromExcel)
 
 
 export default router

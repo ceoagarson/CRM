@@ -1,17 +1,12 @@
 import mongoose from "mongoose";
-import { ILead } from "../../types/leads/lead.type";
+import { ILead } from "../../types/crm/lead.type";
 
 const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
     name: {
         type: String,
-        required: true,
         trim: true,
         index: true,
         lowercase: true,
-    },
-    preserved: {
-        type: Boolean,
-        default: false
     },
     customer_name: {
         type: String,
@@ -24,7 +19,7 @@ const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
         lowercase: true,
     },
     mobile: {
-        type: String,
+        type: Number,
         trim: true,
         index: true,
         required: true,
@@ -32,7 +27,6 @@ const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
     email: {
         type: String,
         trim: true,
-        required: true,
         index: true,
         lowercase: true
     },
@@ -53,22 +47,28 @@ const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
         trim: true,
         lowercase: true
     },
-    remarks: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Remark',
-            required: true
-        }
-    ],
     work_description: {
         type: String,
         trim: true,
         lowercase: true
     },
     turnover: {
-        type: String,
+        type: Number,
         trim: true,
         index: true,
+    },
+    alternate_mobile1: {
+        type: Number,
+        trim: true,
+    },
+    alternate_mobile2: {
+        type: Number,
+        trim: true,
+    },
+    alternate_email: {
+        type: String,
+        trim: true,
+        lowercase: true,
     },
     lead_type: {
         type: String,
@@ -81,20 +81,17 @@ const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
         lowercase: true,
         default: "open"
     },
-    alternate_mobile1: {
-        type: String,
-        trim: true,
-    },
-    alternate_mobile2: {
-        type: String,
-        trim: true,
-    },
-    alternate_email: {
+    lead_source: {
         type: String,
         trim: true,
         lowercase: true,
-    }
-    ,
+    },
+    remarks: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Remark'
+        }
+    ],
     lead_owners: [
         {
             type: mongoose.Schema.Types.ObjectId,
@@ -102,10 +99,19 @@ const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
             required: true
         }
     ],
-    lead_source: {
-        type: String,
-        trim: true,
-        lowercase: true,
+    visiting_card: {
+        public_id: { type: String },
+        url: { type: String },
+        size: { type: String },
+        format: { type: String },
+    },
+    is_customer: {
+        type: Boolean,
+        default: false,
+        required: true,
+    },
+    last_whatsapp_date: {
+        type: Date
     },
     updated_by: {
         type: mongoose.Schema.Types.ObjectId,
