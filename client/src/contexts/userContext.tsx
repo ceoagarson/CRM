@@ -28,19 +28,19 @@ function reducer(state: UserState, action: Action) {
 // usercontext
 type Context = {
   user: IUser | undefined;
-  dispatch: React.Dispatch<Action>;
+  setUser: React.Dispatch<Action>;
 };
 export const UserContext = createContext<Context>({
   user: undefined,
-  dispatch: () => null,
+  setUser: () => null,
 });
 
 
 // user provider
 export function UserProvider(props: { children: JSX.Element }) {
-  const [user, dispatch] = useReducer(reducer, IntitialState);
+  const [user, setUser] = useReducer(reducer, IntitialState);
   return (
-    <UserContext.Provider value={{ user, dispatch }}>
+    <UserContext.Provider value={{ user, setUser }}>
       {props.children}
     </UserContext.Provider>
   );

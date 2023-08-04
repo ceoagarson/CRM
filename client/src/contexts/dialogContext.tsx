@@ -1,7 +1,7 @@
 import React, { useReducer } from "react"
 
 type UserChoices = "signup"| "reset_password_mail" | null | "new_user" | "update_user" | "update_profile" | "view_profile" | "update_password" | "reset_password" | "verify_email" | "control_access" | "delete_user" |
-  "block_user" | "unblock_user" | "make_admin" | "remove_admin" 
+  "block_user" | "unblock_user" | "make_admin" | "remove_admin" |"refresh_whatsapp"
 
 type LeadChoices = "create_lead" | "update_lead" | "update_remark" | "view_remarks" | null | "display_filter" | "delete_lead" |"preserve_lead"
 
@@ -37,7 +37,8 @@ export enum UserChoiceActions {
   make_admin = "make_admin",
   remove_admin = "remove_admin",
   delete_user = "delete_user",
-  control_access ="control_access"
+  control_access ="control_access",
+  refresh_whatsapp ="refresh_whatsapp"
 }
 
 type Action = {
