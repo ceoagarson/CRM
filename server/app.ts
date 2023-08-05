@@ -10,7 +10,7 @@ import UserRoutes, { upload } from "./routes/user.routes";
 import LeadRoutes from "./routes/lead.routes";
 import path from 'path';
 import morgan from "morgan";
-
+import {parse} from "comment-json"
 const app = express()
 
 //env setup
@@ -19,7 +19,7 @@ const PORT = Number(process.env.PORT) || 5000
 const HOST = process.env.HOST || "http://localhost"
 const ENV = process.env.NODE_ENV || "development"
 
-app.use(express.json())
+app.use(express.json({ limit: '30mb' }))
 app.use(cookieParser());
 
 //logger
@@ -52,10 +52,19 @@ cloudinary.v2.config({
     api_secret: process.env.CLOUDINARY_SECRET_KEY,
 });
 
+
+
 //server routes
 app.use("/api/v1", UserRoutes)
 app.use("/api/v1", LeadRoutes)
 
+app.post("/api/v1/test", upload.single("visiting_card"), (req: Request, res: Response) => {
+    console.log(JSON.parse(req.body.body))
+    res.status(200).json({
+        file: req.file,
+        data: req.body,
+    })
+})
 //react app handler
 if (ENV === "production") {
     app.use(express.static(path.join(__dirname, "build")))

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <form>
+        <label for="name">Name</label>
+        <input name="name" value="nishu">
+        <br><br>
+        <label for="name">mobile</label>
+        <input type="number" value="886" name="mobile">
+        <br><br>
+        <label for="visiting_card">Upload Visiting Card</label>
+        <input type="file" name="visiting_card" id="visiting_card">
+        <br><br>
+        <button type="submit">submit</button>
+    </form>
+    <script>
+        let form = document.querySelector('form')
+        form.addEventListener('submit', (e) => {
+            e.preventDefault()
+            let formdata = new FormData(form)
+            let body = {
+                price: 20,
+                sales: "2 lakhs"
+            }
+            let jsonstring = JSON.stringify(body)
+            formdata.append("body", jsonstring)
+            for (item of formdata) {
+                console.log(item[0], item[1])
+            }
+            fetch('http://localhost:5000', {
+                headers: { 'Content-Type': 'application/multipart-formdata' },
+                method: 'post',
+                body: formdata
+            })
+                .then(response => response.json())
+                .then(json => console.log(json))
+        })
+    </script>
+</body>
+
+</html>

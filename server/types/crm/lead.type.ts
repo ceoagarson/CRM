@@ -1,10 +1,9 @@
-import { Types } from "mongoose";
 import { IUser } from "../users/user.type";
 import { IRemark } from "./remark.types";
 import { Asset } from "../users/asset.type";
 
 export type ILead = {
-    _id: Types.ObjectId,
+    _id: string,
     name: string,
     customer_name: string,
     customer_designation: string,
