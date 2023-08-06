@@ -1,5 +1,5 @@
-import { Comment,  Delete, Edit, Search, Visibility } from "@mui/icons-material"
-import { IconButton, InputAdornment, LinearProgress, Stack, TextField, Tooltip, Typography } from "@mui/material"
+import { Comment, Delete, Edit, Search, Visibility } from "@mui/icons-material"
+import {  IconButton, InputAdornment, LinearProgress,  Stack, TextField, Tooltip, Typography } from "@mui/material"
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import { AxiosResponse } from "axios"
 import React, { useContext, useEffect, useState } from "react"
@@ -21,10 +21,13 @@ import DeleteLeadDialog from "../components/dialogs/leads/DeleteLeadDialog"
 import { ILead } from "../types/leads/lead.type"
 import { BackendError } from "../types"
 import ConvertLeadToCustomerDialog from "../components/dialogs/leads/ConvertLeadToCustomerDialog"
+import { BasicPOPUP } from "../components/popup/BasicPOPUP";
+
 
 export default function LeadsPage() {
   const { user: LoggedInUser } = useContext(UserContext)
   const { selectedRows } = useContext(SelectionContext)
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const { filter, setFilter } = useContext(FilterContext)
   const [preFilteredData, setPreFilteredData] = useState<ILead[]>([])
   const { setChoice } = useContext(ChoiceContext)
@@ -37,7 +40,91 @@ export default function LeadsPage() {
   const MemoData = React.useMemo(() => DATA, [DATA])
   const MemoColumns: Column<ILead>[] = React.useMemo(
     () => [
+      // lead action button
+      {
+        Header: 'Actions',
+        accessor: 'action_popup',
+        Cell: (props) => {
+          return (
+            <BasicPOPUP
+              element={<Stack direction="row" spacing={1}>
+                {
+                  LoggedInUser?.is_admin ?
+                    <>
+                      <Tooltip title="delete">
+                        <IconButton color="error"
+                          onClick={() => {
+                            setAnchorEl(null)
+                            setChoice({ type: LeadChoiceActions.delete_lead })
+                            setLead(props.row.original)
 
+                          }}
+                        >
+                          <Delete />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Convert to Customer">
+                        <IconButton color="warning"
+                          onClick={() => {
+                            setAnchorEl(null)
+                            setChoice({ type: LeadChoiceActions.convert_customer })
+                            setLead(props.row.original)
+                          }}
+                        >
+                          <AddTaskIcon />
+                        </IconButton>
+                      </Tooltip>
+
+                    </>
+                    :
+                    null
+                }
+
+                <Tooltip title="edit">
+                  <IconButton color="secondary"
+                    onClick={() => {
+                      setAnchorEl(null)
+                      setChoice({ type: LeadChoiceActions.update_lead })
+                      setLead(props.row.original)
+
+
+                    }}
+                  >
+                    <Edit />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="view remarks">
+                  <IconButton color="primary"
+                    onClick={() => {
+                      setAnchorEl(null)
+                      setChoice({ type: LeadChoiceActions.view_remarks })
+                      setLead(props.row.original)
+
+
+                    }}
+                  >
+                    <Visibility />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Add Remark">
+                  <IconButton
+                    color="success"
+                    onClick={() => {
+                      setAnchorEl(null)
+                      setChoice({ type: LeadChoiceActions.update_remark })
+                      setLead(props.row.original)
+
+                    }}
+                  >
+                    <Comment />
+                  </IconButton>
+                </Tooltip>
+              </Stack>}
+              anchor={anchorEl}
+            />
+          )
+        }
+      },
       // lead name
       {
         Header: 'Lead Name',
@@ -399,6 +486,8 @@ export default function LeadsPage() {
     if (!filter)
       setDATA(preFilteredData)
   }, [filter, preFilteredData, DATA])
+
+  console.log(anchorEl)
   return (
     <>
       {

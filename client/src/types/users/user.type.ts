@@ -32,7 +32,8 @@ export type IUser = {
     lead_fields: LeadField[],
     email_verified: Boolean,
     is_active: Boolean,
-    actions?: any
+    actions?: any,
+    action_popup?:any
     //date properties
     last_login: Date,
     created_at: Date,

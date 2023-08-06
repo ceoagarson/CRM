@@ -36,5 +36,6 @@ export type ILead = {
     updated_at: Date,
     updated_by: IUser,
     actions?:any
+    action_popup?: any
 }
 
