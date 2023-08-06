@@ -289,8 +289,9 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
         let workbook_response: ILeadTemplate[] = xlsx.utils.sheet_to_json(
             workbook.Sheets[workbook_sheet[0]]
         );
-        let uniqueNumbers: number[] = []
+        
         workbook_response.forEach(async (lead) => {
+            let uniqueNumbers: number[] = []
             let validated = true
             let leadTypes = ["retail", "wholesale", "company", "wholesale&retail"]
             let stages = ["open", "closed", "useless", "potential"]
@@ -368,124 +369,122 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
 
             console.log(validated)
             if (validated) {
-                let mobile = lead.mobile
-                let alternate_mobile1 = lead.alternate_mobile1
-                let alternate_mobile2 = lead.alternate_mobile2
-                if (mobile) {
-                    let new_lead_owners: IUser[] = []
-                    if (lead.lead_owners) {
-                        let lead_owners = String((lead.lead_owners)).split(",")
-                        lead_owners.map(async (name) => {
-                            let owner = await User.findOne({ username: name })
-                            if (owner)
-                                new_lead_owners.push(owner)
+                let new_lead_owners: IUser[] = []
+                if (lead.lead_owners) {
+                    let lead_owners = String((lead.lead_owners)).split(",")
+                    lead_owners.map(async (name) => {
+                        let owner = await User.findOne({ username: name })
+                        if (owner)
+                            new_lead_owners.push(owner)
+                    })
+                }
+                else {
+                    if (req.user)
+                        new_lead_owners.push(req.user)
+                }
+
+                let created_by: IUser | undefined = undefined
+                let updated_by: IUser | undefined = undefined
+
+
+                if (lead.created_by) {
+                    let user = await User.findOne({ username: created_by })
+                    if (user)
+                        created_by = user
+                }
+                else if (req.user)
+                    created_by = req.user
+
+                if (lead.updated_by) {
+                    let user = await User.findOne({ username: updated_by })
+                    if (user)
+                        updated_by = user
+
+                }
+                else if (req.user)
+                    updated_by = req.user
+
+                if (lead._id && isMongoId(String(lead._id))) {
+                    let mobile = lead.mobile
+                    let alternate_mobile1 = lead.alternate_mobile1
+                    let alternate_mobile2 = lead.alternate_mobile2
+                    if (mobile) {
+                        if (!await Lead.findOne({ mobile: mobile }))
+                            if (!await Lead.findOne({ alternate_mobile1: mobile }))
+                                if (!await Lead.findOne({ alternate_mobile2: mobile }))
+                                    uniqueNumbers.push(mobile)
+                    }
+                    if (alternate_mobile1) {
+                        if (!await Lead.findOne({ mobile: alternate_mobile1 }))
+                            if (!await Lead.findOne({ alternate_mobile1: alternate_mobile1 }))
+                                if (!await Lead.findOne({ alternate_mobile2: alternate_mobile1 }))
+                                    uniqueNumbers.push(alternate_mobile1)
+                    }
+                    if (alternate_mobile2) {
+                        if (!await Lead.findOne({ mobile: alternate_mobile2 }))
+                            if (!await Lead.findOne({ alternate_mobile1: alternate_mobile2 }))
+                                if (!await Lead.findOne({ alternate_mobile2: alternate_mobile2 }))
+                                    uniqueNumbers.push(alternate_mobile2)
+                    }
+                    if (uniqueNumbers.length !== 0) {
+                        await Lead.findByIdAndUpdate(lead._id, {
+                            ...lead,
+                            mobile: uniqueNumbers[0] || lead.mobile,
+                            alternate_mobile1: uniqueNumbers[1] || lead.alternate_mobile1,
+                            alternate_mobile2: uniqueNumbers[2] || lead.alternate_mobile2,
+                            lead_owners: new_lead_owners,
+                            created_by: created_by,
+                            updated_by: updated_by
                         })
                     }
-                    else {
-                        if (req.user)
-                            new_lead_owners.push(req.user)
+                }
+                if (!lead._id || !isMongoId(lead._id)) {
+                    let mobile = lead.mobile
+                    let alternate_mobile1 = lead.alternate_mobile1
+                    let alternate_mobile2 = lead.alternate_mobile2
+                    if (mobile) {
+                        if (!await Lead.findOne({ mobile: mobile }))
+                            if (!await Lead.findOne({ alternate_mobile1: mobile }))
+                                if (!await Lead.findOne({ alternate_mobile2: mobile }))
+                                    uniqueNumbers.push(mobile)
                     }
-
-                    let created_by: IUser | undefined = undefined
-                    let updated_by: IUser | undefined = undefined
-
-
-                    if (lead.created_by) {
-                        let user = await User.findOne({ username: created_by })
-                        if (user)
-                            created_by = user
+                    if (alternate_mobile1) {
+                        if (!await Lead.findOne({ mobile: alternate_mobile1 }))
+                            if (!await Lead.findOne({ alternate_mobile1: alternate_mobile1 }))
+                                if (!await Lead.findOne({ alternate_mobile2: alternate_mobile1 }))
+                                    uniqueNumbers.push(alternate_mobile1)
                     }
-                    else if (req.user)
-                        created_by = req.user
-
-                    if (lead.updated_by) {
-                        let user = await User.findOne({ username: updated_by })
-                        if (user)
-                            updated_by = user
-
+                    if (alternate_mobile2) {
+                        if (!await Lead.findOne({ mobile: alternate_mobile2 }))
+                            if (!await Lead.findOne({ alternate_mobile1: alternate_mobile2 }))
+                                if (!await Lead.findOne({ alternate_mobile2: alternate_mobile2 }))
+                                    uniqueNumbers.push(alternate_mobile2)
                     }
-                    else if (req.user)
-                        updated_by = req.user
-
-                    if (lead._id) {
-                        if (isMongoId(String(lead._id))) {
-                            if (mobile) {
-                                if (!await Lead.findOne({ mobile: mobile }))
-                                    if (!await Lead.findOne({ alternate_mobile1: mobile }))
-                                        if (!await Lead.findOne({ alternate_mobile2: mobile }))
-                                            uniqueNumbers.push(mobile)
-                            }
-                            if (alternate_mobile1) {
-                                if (!await Lead.findOne({ mobile: alternate_mobile1 }))
-                                    if (!await Lead.findOne({ alternate_mobile1: alternate_mobile1 }))
-                                        if (!await Lead.findOne({ alternate_mobile2: alternate_mobile1 }))
-                                            uniqueNumbers.push(alternate_mobile1)
-                            }
-                            if (alternate_mobile2) {
-                                if (!await Lead.findOne({ mobile: alternate_mobile2 }))
-                                    if (!await Lead.findOne({ alternate_mobile1: alternate_mobile2 }))
-                                        if (!await Lead.findOne({ alternate_mobile2: alternate_mobile2 }))
-                                            uniqueNumbers.push(alternate_mobile2)
-                            }
-                            if (uniqueNumbers.length !== 0) {
-                                await Lead.findByIdAndUpdate(lead._id, {
-                                    ...lead,
-                                    mobile: uniqueNumbers[0] || null,
-                                    alternate_mobile1: uniqueNumbers[1] || null,
-                                    alternate_mobile2: uniqueNumbers[2] || null,
-                                    lead_owners: new_lead_owners,
-                                    created_by: created_by,
-                                    updated_by: updated_by
-                                })
-                            }
-                        }
-                    }
-                    else {
-                        if (mobile) {
-                            if (!await Lead.findOne({ mobile: mobile }))
-                                if (!await Lead.findOne({ alternate_mobile1: mobile }))
-                                    if (!await Lead.findOne({ alternate_mobile2: mobile }))
-                                        uniqueNumbers.push(mobile)
-                        }
-                        if (alternate_mobile1) {
-                            if (!await Lead.findOne({ mobile: alternate_mobile1 }))
-                                if (!await Lead.findOne({ alternate_mobile1: alternate_mobile1 }))
-                                    if (!await Lead.findOne({ alternate_mobile2: alternate_mobile1 }))
-                                        uniqueNumbers.push(alternate_mobile1)
-                        }
-                        if (alternate_mobile2) {
-                            if (!await Lead.findOne({ mobile: alternate_mobile2 }))
-                                if (!await Lead.findOne({ alternate_mobile1: alternate_mobile2 }))
-                                    if (!await Lead.findOne({ alternate_mobile2: alternate_mobile2 }))
-                                        uniqueNumbers.push(alternate_mobile2)
-                        }
-                        if (uniqueNumbers.length !== 0) {
-                            let newlead = new Lead({
-                                ...lead,
-                                _id: new Types.ObjectId(),
-                                mobile: uniqueNumbers[0] || null,
-                                alternate_mobile1: uniqueNumbers[1] || null,
-                                alternate_mobile2: uniqueNumbers[2] || null,
-                                lead_owners: new_lead_owners,
-                                created_by: created_by,
-                                updated_by: updated_by
+                    if (uniqueNumbers.length !== 0) {
+                        let newlead = new Lead({
+                            ...lead,
+                            _id: new Types.ObjectId(),
+                            mobile: uniqueNumbers[0] || null,
+                            alternate_mobile1: uniqueNumbers[1] || null,
+                            alternate_mobile2: uniqueNumbers[2] || null,
+                            lead_owners: new_lead_owners,
+                            created_by: created_by,
+                            updated_by: updated_by
+                        })
+                        if (lead.remarks) {
+                            let new_remark = new Remark({
+                                remark: lead.remarks,
+                                lead: newlead,
+                                created_at: new Date(),
+                                created_by: req.user,
+                                updated_at: new Date(),
+                                updated_by: req.user
                             })
-                            if (lead.remarks) {
-                                let new_remark = new Remark({
-                                    remark: lead.remarks,
-                                    lead: newlead,
-                                    created_at: new Date(),
-                                    created_by: req.user,
-                                    updated_at: new Date(),
-                                    updated_by: req.user
-                                })
-                                await new_remark.save()
-                                newlead.remarks = [new_remark]
-                                await newlead.save()
-                            }
-                            else
-                                await newlead.save()
+                            await new_remark.save()
+                            newlead.remarks = [new_remark]
+
                         }
+                        await newlead.save()
                     }
                 }
             }

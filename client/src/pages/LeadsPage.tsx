@@ -487,7 +487,6 @@ export default function LeadsPage() {
       setDATA(preFilteredData)
   }, [filter, preFilteredData, DATA])
 
-  console.log(anchorEl)
   return (
     <>
       {
