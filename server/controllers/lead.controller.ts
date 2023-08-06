@@ -498,3 +498,14 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
         message: "please provide an Excel file",
     });
 }
+
+export const ConvertCustomer = async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    if (!isMongoId(id)) return res.status(403).json({ message: "lead id not valid" })
+    let lead = await Lead.findById(id);
+    if (!lead) {
+        return res.status(404).json({ message: "lead not found" })
+    }
+    await Lead.findByIdAndUpdate(id, { is_customer: true })
+    return res.status(200).json({ message: "new customer created" })
+}

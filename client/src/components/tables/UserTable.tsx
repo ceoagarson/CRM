@@ -1,13 +1,13 @@
-import { Box, Table, TableBody, TableCell, TableHead, TableRow,  Typography } from '@mui/material'
+import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
 import { Column, useTable, useSortBy, usePagination, useGlobalFilter, useRowSelect } from 'react-table'
 import Pagination from './utils/Pagination';
 import TableCheckBox from './utils/TableCheckBox';
-import UserTableMenu from '../menu/UserTableMenu';
 import { Stack } from '@mui/system';
 import { color1, color2, headColor } from '../../utils/colors';
-import { ArrowDropDown, ArrowDropUp} from '@mui/icons-material';
-import GlobalFilter from './utils/GlobalFilter';
+import { ArrowDropDown, ArrowDropUp } from '@mui/icons-material';
 import { IUser } from '../../types/users/user.type';
+import { useContext, useEffect } from 'react';
+import { SelectionContext } from '../../contexts/selectionContext';
 
 
 interface Props {
@@ -15,8 +15,8 @@ interface Props {
     columns: Column<IUser>[]
 }
 
-export function UserTable({data,columns}:Props) {
-    
+export function UserTable({ data, columns }: Props) {
+    const { setSelectedRows } = useContext(SelectionContext)
     // table hook
     const {
         getTableProps,
@@ -32,10 +32,6 @@ export function UserTable({data,columns}:Props) {
         nextPage,
         previousPage,
         setPageSize,
-        setGlobalFilter,
-        preGlobalFilteredRows,
-        globalFilter,
-        allColumns,
         selectedFlatRows,
         state: { pageIndex, pageSize },
     } = useTable({
@@ -64,34 +60,11 @@ export function UserTable({data,columns}:Props) {
             ])
         }
     )
+    useEffect(() => {
+        setSelectedRows(selectedFlatRows)
+    }, [selectedFlatRows, setSelectedRows])
     return (
         <>
-            {/*heading, search bar and table menu */}
-            <Stack
-                spacing={2}
-                padding={1}
-                direction="row"
-                justifyContent="space-between"
-                width="100vw"
-            >
-                <Typography
-                    variant={'h6'}
-                    component={'h1'}
-                >
-                    USERS
-                </Typography>
-                <Stack
-                    direction="row"
-                >
-                    <GlobalFilter
-                        preGlobalFilteredRows={preGlobalFilteredRows} globalFilter={globalFilter} setGlobalFilter={setGlobalFilter}
-                    />
-                    <UserTableMenu
-                        columns={allColumns}
-                        selectedFlatRows={selectedFlatRows}
-                    />
-                </Stack>
-            </Stack>
             {/* table */}
             <Box
                 sx={{

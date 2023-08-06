@@ -1,5 +1,5 @@
-import { Block, Edit, GroupAdd, GroupRemove, Key, RemoveCircle } from '@mui/icons-material'
-import { Alert, Avatar, IconButton, LinearProgress, Tooltip, Typography } from '@mui/material'
+import { Block, Edit, GroupAdd, GroupRemove, Key, RemoveCircle, Search } from '@mui/icons-material'
+import { Alert, Avatar, IconButton, InputAdornment, LinearProgress, TextField, Tooltip, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
 import React, { useContext, useEffect, useState } from 'react'
@@ -17,20 +17,28 @@ import ManageAccessControlDialog from '../components/dialogs/users/ManageAccessC
 import { UserContext } from '../contexts/userContext'
 import { BackendError } from '../types'
 import { IUser } from '../types/users/user.type'
+import { SelectionContext } from '../contexts/selectionContext'
+import { FilterContext } from '../contexts/filterContext'
+import FuzzySearch from 'fuzzy-search'
+import { headColor } from '../utils/colors'
+import UserTableMenu from '../components/menu/UserTableMenu'
 
 export default function UsersPage() {
-    const { data: users, isSuccess, isLoading, isError, error } = useQuery<AxiosResponse<IUser[]>, BackendError>("users", GetUsers, {
+    const { data: users, isSuccess } = useQuery<AxiosResponse<IUser[]>, BackendError>("users", GetUsers, {
         refetchOnMount: true
     })
     const { user: LoggedInUser } = useContext(UserContext)
     const [rowid, setRowId] = useState<string | undefined>()
     const [user, setUser] = useState<IUser>()
     const { setChoice } = useContext(ChoiceContext)
+    const { selectedRows } = useContext(SelectionContext)
+    const { filter, setFilter } = useContext(FilterContext)
+    const [preFilteredData, setPreFilteredData] = useState<IUser[]>([])
     const [DATA, setDATA] = useState<IUser[]>([])
     const MemoData = React.useMemo(() => DATA, [DATA])
     const MemoColumns: Column<IUser>[] = React.useMemo(
         () => [
-           
+
             // user name
             {
 
@@ -72,7 +80,7 @@ export default function UsersPage() {
                                             }}>{props.row.original.username}</Typography>
                                             <Typography variant="caption" component="span" sx={{ fontWeight: '500' }}>
                                                 {CellUser.created_by._id === CellUser._id ?
-                                                    "owner+admin" : "admin"}
+                                                    "owner" : "admin"}
                                             </Typography>
                                         </>
                                         :
@@ -292,31 +300,78 @@ export default function UsersPage() {
                     )
                 }
             },
-
-
         ]
         , [setChoice, LoggedInUser]
     )
     // setup users
+    //setup leads
     useEffect(() => {
-        if (isSuccess)
+        if (isSuccess) {
             setDATA(users.data)
+            setPreFilteredData(users.data)
+        }
     }, [isSuccess, users])
+
+    //set filter
+    useEffect(() => {
+        if (filter) {
+            const searcher = new FuzzySearch(DATA, ["name", "customer_name", "customer_designation", "mobile", "email", "city", "state", "country", "address", "remarks", "work_description", "turnover", "lead_type", "stage", "alternate_mobile1", "alternate_mobile2", "alternate_email", "organization.organization_name", "lead_source", "created_at", "created_by.username", "updated_at", "updated_by.username", "preserved"], {
+                caseSensitive: false,
+            });
+            const result = searcher.search(filter);
+            setDATA(result)
+        }
+        if (!filter)
+            setDATA(preFilteredData)
+    }, [filter, preFilteredData, DATA])
     return (
         <>
-            {isError ?
-                <Alert color="error">{error?.response.data.message}</Alert>
-                : null
-            }
+            {/*heading, search bar and table menu */}
+            <Stack
+                spacing={2}
+                padding={1}
+                direction="row"
+                justifyContent="space-between"
+                width="100vw"
+            >
+                <Typography
+                    variant={'h6'}
+                    component={'h1'}
+                >
+                    Users
+                </Typography>
 
-            {
-                isLoading ?
-                    <LinearProgress sx={{width:'300px'}}color="success" />
-                    : null
-            }
-            < UserTable data={MemoData} columns={MemoColumns} />
+                <Stack
+                    direction="row"
+                >
+                    {/* search bar */}
+                    < Stack direction="row" spacing={2} sx={{ bgcolor: headColor }
+                    }>
+                        <TextField
+                            fullWidth
+                            size="small"
+                            onChange={(e) => setFilter(e.currentTarget.value)}
+                            autoFocus
+                            InputProps={{
+                                startAdornment: <InputAdornment position="start">
+                                    <Search />
+                                </InputAdornment>,
+                            }}
+                            placeholder={`${DATA.length} records...`}
+                            style={{
+                                fontSize: '1.1rem',
+                                border: '0',
+                            }}
+                        />
+                    </Stack >
+                    {/* menu  */}
+                    <UserTableMenu
+                        selectedFlatRows={selectedRows}
+                    />
+                </Stack>
+            </Stack>
 
-
+            <UserTable data={MemoData} columns={MemoColumns} />
             {
                 user ?
                     <>

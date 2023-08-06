@@ -24,7 +24,7 @@ function LoginForm() {
     >(Login)
 
   const { setChoice } = useContext(ChoiceContext)
-  const { dispatch } = useContext(UserContext)
+  const { setUser } = useContext(UserContext)
 
   const formik = useFormik({
     initialValues: {
@@ -63,12 +63,12 @@ function LoginForm() {
   useEffect(() => {
     if (isSuccess) {
       setTimeout(() => {
-        dispatch({ type: UserActions.login, payload: data.data })
+        setUser({ type: UserActions.login, payload: data.data })
         setChoice({ type: UserChoiceActions.close })
         goto(paths.leads)
       }, 400)
     }
-  }, [dispatch, goto, setChoice, isSuccess, data])
+  }, [setUser, goto, setChoice, isSuccess, data])
 
   return (
     <form onSubmit={formik.handleSubmit}>

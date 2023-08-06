@@ -3,10 +3,10 @@ import React, { Suspense, useContext } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import ResetPasswordDialog from './components/dialogs/users/ResetPasswordDialog'
 import { UserContext } from './contexts/userContext'
-import DashboardLayout from './layouts/DashboardLayout'
 import EmailVerifyPage from './pages/EmailVerifyPage'
 import LoginPage from './pages/LoginPage'
 import DashBoardPage from './pages/DashBoardPage'
+import NavBar from './components/navbar/NavBar'
 const LeadsPage = React.lazy(() => import('./pages/LeadsPage'))
 const UsersPage = React.lazy(() => import('./pages/UsersPage'))
 
@@ -30,7 +30,7 @@ function AppRoutes() {
         !user ?
           <Route path={paths.login} element={<LoginPage />} />
           :
-          < Route path={paths.dashboard} element={<DashboardLayout />
+          < Route path={paths.dashboard} element={<NavBar />
           }>
             <Route
               index element={

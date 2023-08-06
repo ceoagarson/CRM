@@ -6,12 +6,7 @@ import { MenuActions, MenuContext } from '../../contexts/menuContext';
 import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext';
 import ExportToExcel from '../tables/utils/ExportToExcel';
 import NewLeadDialog from '../dialogs/leads/NewLeadDialog';
-import { useMutation } from 'react-query';
-import { AxiosResponse } from 'axios';
-import {  PreserveLeadsInBulk } from '../../services/LeadsServices';
 import { ILead } from '../../types/leads/lead.type';
-import { BackendError } from '../../types';
-import { queryClient } from '../../main';
 
 type Props = {
     selectedFlatRows: Row<ILead>[]
@@ -20,7 +15,7 @@ type SelectedData = {
     name: string,
     email: string,
     work_description: string,
-    mobile: string,
+    mobile: number,
     city: string,
     state: string,
     stage: string,
@@ -28,15 +23,15 @@ type SelectedData = {
     lead_owner: string,
     customer_name: string,
     address: string,
-    alternate_mobile1: string,
-    alternate_mobile2: string,
+    alternate_mobile1: number,
+    alternate_mobile2: number,
     alternate_email: string,
     customer_designation: string,
     lead_source: string,
     updated_by: string,
     updated_at: string,
     created_at: string,
-    turnover: string,
+    turnover: number,
     lead_type: string,
     last_remark: string
 
@@ -46,30 +41,8 @@ function LeadTableMenu({ selectedFlatRows }: Props) {
     const [selectedData, setSelectedData] = useState<SelectedData[]>([])
     const [sent, setSent] = useState(false)
     const { setChoice } = useContext(ChoiceContext)
-    const { mutate, isLoading, isSuccess } = useMutation
-        <AxiosResponse<{ ids: string[] }>, BackendError, { ids: string[] }>
-        (PreserveLeadsInBulk,
-            {
-                onSuccess: () => {
-                    queryClient.invalidateQueries('leads')
-                }
-            }
-        )
+ 
 
-    function HandlePreserveLead() {
-        try {
-            if (selectedData.length === 0)
-                return alert("please select some rows")
-            let ids: string[] = []
-            selectedFlatRows.forEach((row) => {
-                ids.push(row.original._id)
-            })
-            mutate({ ids: ids })
-        }
-        catch (err) {
-            console.log(err)
-        }
-    }
     function handleExcel() {
         setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
         try {
@@ -123,13 +96,7 @@ function LeadTableMenu({ selectedFlatRows }: Props) {
 
     return (
         <>
-            <Snackbar
-                open={isLoading}
-                autoHideDuration={6000}
-                onClose={() => setSent(false)}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-                message="Started the process..."
-            />
+            
             {/* export snak bar */}
             <Snackbar
                 open={sent}
@@ -138,14 +105,7 @@ function LeadTableMenu({ selectedFlatRows }: Props) {
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
                 message="File Exported Successfuly"
             />
-            {/* preserved snak bar */}
-            <Snackbar
-                open={isSuccess}
-                autoHideDuration={6000}
-                onClose={() => setSent(false)}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-                message="Selected Leads Preserved Successfuly"
-            />
+            
 
             <IconButton size="medium"
                 onClick={(e) => setMenu({ type: MenuActions.lead_table_menu, payload: { type: MenuActions.lead_table_menu, anchorEl: e.currentTarget } })
@@ -171,10 +131,9 @@ function LeadTableMenu({ selectedFlatRows }: Props) {
                     setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
                 }}
                 >New Lead</MenuItem>
-                <MenuItem disabled={isLoading} onClick={handleExcel}
+                <MenuItem  onClick={handleExcel}
                 >Export To Excel</MenuItem>
-                <MenuItem disabled={isLoading} onClick={HandlePreserveLead}
-                >Preserve Lead</MenuItem>
+               
             </Menu>
             <NewLeadDialog />
         </>

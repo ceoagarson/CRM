@@ -1,5 +1,6 @@
-import { Comment, Delete, Edit,  Search, Upload, Visibility } from "@mui/icons-material"
+import { Comment,  Delete, Edit, Search, Visibility } from "@mui/icons-material"
 import { IconButton, InputAdornment, LinearProgress, Stack, TextField, Tooltip, Typography } from "@mui/material"
+import AddTaskIcon from '@mui/icons-material/AddTask';
 import { AxiosResponse } from "axios"
 import React, { useContext, useEffect, useState } from "react"
 import { useQuery } from "react-query"
@@ -17,9 +18,9 @@ import { headColor } from "../utils/colors"
 import LeadTableMenu from "../components/menu/LeadTableMenu"
 import { UserContext } from "../contexts/userContext"
 import DeleteLeadDialog from "../components/dialogs/leads/DeleteLeadDialog"
-import PreserveLeadDialog from "../components/dialogs/leads/PreserveLeadDialog"
 import { ILead } from "../types/leads/lead.type"
 import { BackendError } from "../types"
+import ConvertLeadToCustomerDialog from "../components/dialogs/leads/ConvertLeadToCustomerDialog"
 
 export default function LeadsPage() {
   const { user: LoggedInUser } = useContext(UserContext)
@@ -36,7 +37,7 @@ export default function LeadsPage() {
   const MemoData = React.useMemo(() => DATA, [DATA])
   const MemoColumns: Column<ILead>[] = React.useMemo(
     () => [
-     
+
       // lead name
       {
         Header: 'Lead Name',
@@ -292,13 +293,13 @@ export default function LeadsPage() {
           )
         }
       },
-      // preserved
+      // last_whatsapp_date
       {
-        Header: 'Remote Status',
-        accessor: 'preserved',
+        Header: 'Last Whatsapp',
+        accessor: 'last_whatsapp_date',
         Cell: (props) => {
           return (
-            <Typography sx={{ textTransform: "capitalize" }} variant="body1">{props.row.original.preserved ? "pushed to double tick" : "pending"}</Typography>
+            <Typography sx={{ textTransform: "capitalize" }} variant="body1">{new Date(props.row.original.last_whatsapp_date).toLocaleString()}</Typography>
           )
         }
       },
@@ -323,14 +324,14 @@ export default function LeadsPage() {
                         <Delete />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip title="Preserve">
+                    <Tooltip title="Convert to Customer">
                       <IconButton color="warning"
                         onClick={() => {
-                          setChoice({ type: LeadChoiceActions.preserve_lead })
+                          setChoice({ type: LeadChoiceActions.convert_customer })
                           setLead(props.row.original)
                         }}
                       >
-                        <Upload />
+                        <AddTaskIcon />
                       </IconButton>
                     </Tooltip>
 
@@ -440,7 +441,6 @@ export default function LeadsPage() {
                 border: '0',
               }}
             />
-
           </Stack >
           {/* menu  */}
           <LeadTableMenu
@@ -454,7 +454,7 @@ export default function LeadsPage() {
           <>
             <UpdateLeadDialog lead={lead} />
             <DeleteLeadDialog lead={lead} />
-            <PreserveLeadDialog lead={lead} />
+            <ConvertLeadToCustomerDialog lead={lead} />
             <ViewLeadDialog lead={lead} />
             <NewRemarkDialog lead={lead} />
           </>

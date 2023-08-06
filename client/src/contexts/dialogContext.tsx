@@ -3,7 +3,7 @@ import React, { useReducer } from "react"
 type UserChoices = "signup"| "reset_password_mail" | null | "new_user" | "update_user" | "update_profile" | "view_profile" | "update_password" | "reset_password" | "verify_email" | "control_access" | "delete_user" |
   "block_user" | "unblock_user" | "make_admin" | "remove_admin" |"refresh_whatsapp"
 
-type LeadChoices = "create_lead" | "update_lead" | "update_remark" | "view_remarks" | null | "display_filter" | "delete_lead" |"preserve_lead"
+type LeadChoices = "create_lead" | "update_lead" | "update_remark" | "view_remarks" | null | "display_filter" | "delete_lead" |"convert_customer"
 
 
 type ChoiceState = UserChoices | LeadChoices 
@@ -16,7 +16,7 @@ export enum LeadChoiceActions {
   delete_lead = "delete_lead",
   view_remarks = "view_remarks",
   close ="close",
-  preserve_lead ="preserve_lead",
+  convert_customer ="convert_customer",
   display_filter ="display_filter",
   update_remark = "update_remark",
 }
@@ -74,7 +74,7 @@ function reducer(state: ChoiceState, action: Action) {
     case LeadChoiceActions.update_remark: return type
     case LeadChoiceActions.display_filter: return type
     case LeadChoiceActions.delete_lead: return type
-    case LeadChoiceActions.preserve_lead: return type
+    case LeadChoiceActions.convert_customer: return type
     case LeadChoiceActions.close: return null
 
     default: return state

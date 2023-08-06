@@ -1,9 +1,9 @@
 import { Asset } from "./asset.type";
 
-export type LeadFieldType = "name" | "customer_name" | "customer_designation" | "mobile" | "email" | "city" | "state" | "country" | "address" | "work_description" | "turnover" | "alternate_mobile1" | "alternate_mobile2" | "alternate_email" | "lead_type" | "stage" | "lead_source" | "remarks" | "lead_owners" | "visiting_card" | "is_customer" | "last_whatsapp_date" | "created_at" | "created_by" | "updated_at" | "updated_by"
+export type LeadFieldType = "_id" | "name" | "customer_name" | "customer_designation" | "mobile" | "email" | "city" | "state" | "country" | "address" | "work_description" | "turnover" | "alternate_mobile1" | "alternate_mobile2" | "alternate_email" | "lead_type" | "stage" | "lead_source" | "remarks" | "lead_owners" | "visiting_card" | "is_customer" | "last_whatsapp_date" | "created_at" | "created_by" | "updated_at" | "updated_by"
 
 export const all_fields: LeadFieldType[] = [
-    "name", "customer_name", "customer_designation", "mobile", "email", "city", "state", "country", "address", "work_description", "turnover", "alternate_mobile1", "alternate_mobile2", "alternate_email", "lead_type", "stage", "lead_source", "remarks", "lead_owners", "visiting_card", "is_customer", "last_whatsapp_date", "created_at", "created_by", "updated_at", "updated_by"
+    "_id", "name", "customer_name", "customer_designation", "mobile", "email", "city", "state", "country", "address", "work_description", "turnover", "alternate_mobile1", "alternate_mobile2", "alternate_email", "lead_type", "stage", "lead_source", "remarks", "lead_owners", "visiting_card", "is_customer", "last_whatsapp_date", "created_at", "created_by", "updated_at", "updated_by"
 ]
 
 export type LeadField = {
@@ -32,7 +32,7 @@ export type IUser = {
     lead_fields: LeadField[],
     email_verified: Boolean,
     is_active: Boolean,
-
+    actions?: any
     //date properties
     last_login: Date,
     created_at: Date,
@@ -47,10 +47,4 @@ export type IUser = {
     emailVerifyExpire: Date | null,
 }
 
-export type IUserMethods = {
-    getAccessToken: () => string,
-    comparePassword: (password: string) => boolean,
-    getResetPasswordToken: () => string,
-    getEmailVerifyToken: () => string
-}
-export type TUserBody = Request['body'] & IUser;
+

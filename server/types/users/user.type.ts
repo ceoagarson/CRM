@@ -44,7 +44,7 @@ export type IUser = {
     resetPasswordToken: string | null,
     resetPasswordExpire: Date | null,
     emailVerifyToken: string | null,
-    emailVerifyExpire: Date | null,
+    emailVerifyExpire: Date | null
 }
 
 export type IUserMethods = {

@@ -24,7 +24,7 @@ type TFormData = {
 
 function OwnerSignUpForm() {
   const goto = useNavigate()
-  const { dispatch } = useContext(UserContext)
+  const { setUser } = useContext(UserContext)
   const { mutate, data, isLoading, isSuccess, isError, error } = useMutation
     <AxiosResponse<IUser>, BackendError, FormData>
     (Signup)
@@ -114,12 +114,12 @@ function OwnerSignUpForm() {
   useEffect(() => {
     if (isSuccess) {
       setTimeout(() => {
-        dispatch({ type: UserActions.login, payload: data.data })
+        setUser({ type: UserActions.login, payload: data.data })
         setChoice({ type: UserChoiceActions.close })
         goto(paths.leads)
       }, 1000)
     }
-  }, [isSuccess, dispatch, goto, data, setChoice])
+  }, [isSuccess, setUser, goto, data, setChoice])
 
   return (
     <form onSubmit={formik.handleSubmit}>

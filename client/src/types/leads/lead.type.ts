@@ -1,33 +1,40 @@
 import { IUser } from "../users/user.type";
 import { IRemark } from "./remark.types";
+import { Asset } from "../users/asset.type";
 
 export type ILead = {
     _id: string,
     name: string,
     customer_name: string,
     customer_designation: string,
-    mobile: string,
-    email: string
+    mobile: number,
+    email: string,
     city: string,
     state: string,
     country: string,
     address: string,
-    remarks: IRemark[],
     work_description: string,
-    turnover: string,
-    preserved:boolean,
-    lead_type: "wholesale" | "retail" | "company" | "mixed"
-    stage: "open" | "won" | "won dealer" | "lost" | "useless" | "potential"
-    alternate_mobile1: string,
-    alternate_mobile2: string,
+    turnover: number,
+    alternate_mobile1: number,
+    alternate_mobile2: number,
     alternate_email: string,
+
+    lead_type: "wholesale" | "retail" | "company" | "wholesale+retail"
+    stage: "open" | "closed" | "useless" | "potential"
+    lead_source: "internet" | "visit" | "whatsapp" | "cold calling" |
+    "cold email" | "others"
+
+    remarks: IRemark[],
     lead_owners: IUser[],
-    lead_source: string,
+
+    visiting_card: Asset,
+    is_customer: boolean,
+
+    last_whatsapp_date: Date,
     created_at: Date,
     created_by: IUser,
     updated_at: Date,
     updated_by: IUser,
-    actions?: any
-
+    actions?:any
 }
 

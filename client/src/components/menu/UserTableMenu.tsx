@@ -1,16 +1,14 @@
 import { Fade, IconButton, Menu, MenuItem, Snackbar } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
-import { ColumnInstance, Row } from 'react-table';
+import { Row } from 'react-table';
+import { Menu as MenuIcon } from '@mui/icons-material';
 import { MenuActions, MenuContext } from '../../contexts/menuContext';
-import { UserContext } from '../../contexts/userContext';
 import { ChoiceContext, UserChoiceActions } from '../../contexts/dialogContext';
 import ExportToExcel from '../tables/utils/ExportToExcel';
-import ToogleColumns from '../tables/utils/ToogleColumns';
-import { Menu as MenuIcon } from '@mui/icons-material';
+import NewUserDialog from '../dialogs/users/NewUserDialog';
 import { IUser } from '../../types/users/user.type';
 
 type Props = {
-    columns: ColumnInstance<IUser>[],
     selectedFlatRows: Row<IUser>[]
 }
 type SelectedData = {
@@ -20,19 +18,16 @@ type SelectedData = {
     email_verified?: Boolean,
     is_active?: Boolean,
     last_login?: string,
-    organization?: string,
     roles?: string,
     created_at?: string,
     createdBy?: string
 
 }
-function UserTableMenu({ columns, selectedFlatRows }: Props) {
+function UserTableMenu({ selectedFlatRows }: Props) {
     const { menu, setMenu } = useContext(MenuContext)
-    const {user}=useContext(UserContext)
-    const { setChoice }=useContext(ChoiceContext)
-    const [toogleCol, setToogleCol] = useState(false)
     const [selectedData, setSelectedData] = useState<SelectedData[]>([])
     const [sent, setSent] = useState(false)
+    const { setChoice } = useContext(ChoiceContext)
 
 
     function handleExcel() {
@@ -44,6 +39,7 @@ function UserTableMenu({ columns, selectedFlatRows }: Props) {
             setSent(true)
         }
         catch (err) {
+            console.log(err)
             setSent(false)
         }
 
@@ -67,8 +63,7 @@ function UserTableMenu({ columns, selectedFlatRows }: Props) {
                 email_verified: user.email_verified,
                 is_active: user.is_active,
                 last_login: lastlogin,
-                organization: user.organization?.organization,
-                roles: user?.is_admin?"admin":"user",
+                roles: user?.is_admin ? "admin" : "user",
                 created_at: created_at
             })
         })
@@ -77,7 +72,8 @@ function UserTableMenu({ columns, selectedFlatRows }: Props) {
 
     return (
         <>
-            {/* snak bar */}
+
+            {/* export snak bar */}
             <Snackbar
                 open={sent}
                 autoHideDuration={6000}
@@ -86,15 +82,15 @@ function UserTableMenu({ columns, selectedFlatRows }: Props) {
                 message="File Exported Successfuly"
             />
 
-            <IconButton size="medium" sx={{border:1,borderRadius:2,marginLeft:2}}
+
+            <IconButton size="medium"
                 onClick={(e) => setMenu({ type: MenuActions.user_table_menu, payload: { type: MenuActions.user_table_menu, anchorEl: e.currentTarget } })
                 }
+                sx={{ border: 1, borderRadius: 2, marginLeft: 2 }}
             >
                 <MenuIcon />
             </IconButton>
-            <ToogleColumns columns={columns} open={toogleCol} handleClose={() =>
-                setToogleCol(false)
-            } />
+
             <Menu
                 anchorEl={menu.anchorEl}
                 open={Boolean(menu.type === MenuActions.user_table_menu)}
@@ -105,27 +101,17 @@ function UserTableMenu({ columns, selectedFlatRows }: Props) {
                     'aria-labelledby': 'basic-button',
                 }}
                 sx={{ borderRadius: 2 }}
-
             >
-                {user?.is_admin ?
-                    <MenuItem onClick={() => {
-                        setChoice({ type: UserChoiceActions.new_user })
-                        setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
-
-                    }
-                    }>New User</MenuItem>
-                    :
-                    null
-                }
                 <MenuItem onClick={() => {
-                    setToogleCol(true)
+                    setChoice({ type: UserChoiceActions.new_user })
                     setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
                 }}
-                >Show and hide columns</MenuItem>
+                >New User</MenuItem>
                 <MenuItem onClick={handleExcel}
                 >Export To Excel</MenuItem>
-            </Menu>
 
+            </Menu>
+            <NewUserDialog />
         </>
     )
 }
