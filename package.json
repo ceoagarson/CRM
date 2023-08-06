@@ -1,11 +1,12 @@
 {
   "name": "crm",
-  "private":true,
+  "private": true,
   "workspaces": [
-    "client","server"
+    "client",
+    "server"
   ],
   "scripts": {
-    "build":"cd server && tsc && npm install && cd ../client && npm install && npm run build && mv build ../server/dist/build ",
-    "start":"node server/dist/app.js"
+    "build": "cd server && tsc && npm install && cd ../client && npm install && npm run build && mv build ../server/dist/build ",
+    "start": "node server/dist/app.js"
   }
 }

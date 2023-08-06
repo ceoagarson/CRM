@@ -19,18 +19,18 @@ export type ILead = {
     alternate_mobile2: number,
     alternate_email: string,
 
-    lead_type: "wholesale" | "retail" | "company" | "mixed"
-    stage: "open" | "won" | "won dealer" | "lost" | "useless" | "potential"
-    lead_source: "internet" | "visiting" | "whatsapp" | "facebook" | "indiamart" | "justdial" | "calling" |
-    "email" | "others",
+    lead_type: "wholesale" | "retail" | "company" | "wholesale+retail"
+    stage: "open" | "closed" | "useless" | "potential"
+    lead_source: "internet" | "visit" | "whatsapp" | "cold calling" |
+    "cold email" | "others"
 
     remarks: IRemark[],
     lead_owners: IUser[],
 
     visiting_card: Asset,
     is_customer: boolean,
-    
-    last_whatsapp_date:Date,
+
+    last_whatsapp_date: Date,
     created_at: Date,
     created_by: IUser,
     updated_at: Date,

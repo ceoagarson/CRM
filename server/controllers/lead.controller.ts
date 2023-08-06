@@ -7,10 +7,8 @@ import { TLeadBody } from "../types/crm/lead.type.js"
 import { Remark } from "../models/leads/remark.model.js"
 import { IUser } from "../types/users/user.type.js"
 import { uploadFileToCloudinary } from "../utils/uploadFile.util.js"
-import { destroyFile } from "../utils/destroyFile.util.js"
 import { ILeadTemplate } from "../types/crm/lead.template.types.js"
 import { isvalidDate } from "../utils/isValidDate.js"
-import { IRemark } from "../types/crm/remark.types.js"
 import { Types } from "mongoose"
 
 
@@ -294,69 +292,78 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
         let uniqueNumbers: number[] = []
         workbook_response.forEach(async (lead) => {
             let validated = true
-            //validate lead
-            if (typeof (lead.mobile) !== "number")
+            let leadTypes = ["retail", "wholesale", "company", "wholesale&retail"]
+            let stages = ["open", "closed", "useless", "potential"]
+            let sources = ["internet", "visit", "whatsapp", "cold calling",
+                "cold email", "others"]
+            if (lead.lead_type && !leadTypes.includes(lead.lead_type))
                 validated = false
-            if (typeof (lead.turnover) !== "number")
+            if (lead.stage && !stages.includes(lead.stage))
                 validated = false
-            if (typeof (lead.alternate_mobile1) !== "number")
+            if (lead.lead_source && !sources.includes(lead.lead_source))
                 validated = false
-            if (typeof (lead.alternate_mobile2) !== "number")
+            if (lead.mobile && typeof (lead.mobile) !== "number")
                 validated = false
-            if (typeof (lead.name) !== "string")
+            if (lead.turnover && typeof (lead.turnover) !== "number")
                 validated = false
-
-            if (typeof (lead.customer_name) !== "string")
+            if (lead.alternate_mobile1 && typeof (lead.alternate_mobile1) !== "number")
                 validated = false
-            if (typeof (lead.customer_designation) !== "string")
+            if (lead.alternate_mobile2 && typeof (lead.alternate_mobile2) !== "number")
                 validated = false
-            if (typeof (lead.email) !== "string")
-                validated = false
-
-            if (typeof (lead.state) !== "string")
-                validated = false
-            if (typeof (lead.country) !== "string")
-                validated = false
-            if (typeof (lead.address) !== "string")
-                validated = false
-            if (typeof (lead.alternate_email) !== "string")
+            if (lead.name && typeof (lead.name) !== "string")
                 validated = false
 
-            if (typeof (lead.work_description) !== "string")
+            if (lead.customer_name && typeof (lead.customer_name) !== "string")
                 validated = false
-            if (typeof (lead.stage) !== "string")
+            if (lead.customer_designation && typeof (lead.customer_designation) !== "string")
                 validated = false
-            if (typeof (lead.lead_type) !== "string")
-                validated = false
-            if (typeof (lead.lead_source) !== "string")
+            if (lead.email && typeof (lead.email) !== "string")
                 validated = false
 
-            if (typeof (lead.remarks) !== "string")
+            if (lead.state && typeof (lead.state) !== "string")
                 validated = false
-            if (typeof (lead.visiting_card) !== "string")
+            if (lead.country && typeof (lead.country) !== "string")
                 validated = false
-            if (typeof (lead.is_customer) !== "boolean")
+            if (lead.address && typeof (lead.address) !== "string")
                 validated = false
-
-            if (typeof (lead.lead_owners) !== "string")
-                validated = false
-            if (typeof (lead.created_by) !== "string")
-                validated = false
-            if (typeof (lead.updated_by) !== "string")
+            if (lead.alternate_email && typeof (lead.alternate_email) !== "string")
                 validated = false
 
-            if (!isvalidDate(new Date(lead.last_whatsapp_date)))
+            if (lead.work_description && typeof (lead.work_description) !== "string")
+                validated = false
+            if (lead.stage && typeof (lead.stage) !== "string")
+                validated = false
+            if (lead.lead_type && typeof (lead.lead_type) !== "string")
+                validated = false
+            if (lead.lead_source && typeof (lead.lead_source) !== "string")
                 validated = false
 
-            if (!isvalidDate(new Date(lead.created_at)))
+            if (lead.remarks && typeof (lead.remarks) !== "string")
                 validated = false
-            if (!isvalidDate(new Date(lead.updated_at)))
+            if (lead.visiting_card && typeof (lead.visiting_card) !== "string")
                 validated = false
-            if (String(lead.mobile).length !== 10)
+            if (lead.is_customer && typeof (lead.is_customer) !== "boolean")
                 validated = false
-            if (String(lead.alternate_mobile1).length !== 10)
+
+            if (lead.lead_owners && typeof (lead.lead_owners) !== "string")
                 validated = false
-            if (String(lead.alternate_mobile2).length !== 10)
+            if (lead.created_by && typeof (lead.created_by) !== "string")
+                validated = false
+            if (lead.updated_by && typeof (lead.updated_by) !== "string")
+                validated = false
+
+            if (lead.last_whatsapp_date && !isvalidDate(new Date(lead.last_whatsapp_date)))
+                validated = false
+
+            if (lead.created_at && !isvalidDate(new Date(lead.created_at)))
+                validated = false
+            if (lead.updated_at && !isvalidDate(new Date(lead.updated_at)))
+                validated = false
+            if (lead.mobile && String(lead.mobile).length !== 10)
+                validated = false
+            if (lead.alternate_mobile1 && String(lead.alternate_mobile1).length !== 10)
+                validated = false
+            if (lead.alternate_mobile2 && String(lead.alternate_mobile2).length !== 10)
                 validated = false
 
             console.log(validated)
@@ -364,42 +371,42 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
                 let mobile = lead.mobile
                 let alternate_mobile1 = lead.alternate_mobile1
                 let alternate_mobile2 = lead.alternate_mobile2
-                if (mobile && lead.lead_owners) {
-                    let lead_owners = String((lead.lead_owners)).split(",")
-                    console.log(lead_owners)
+                if (mobile) {
                     let new_lead_owners: IUser[] = []
+                    if (lead.lead_owners) {
+                        let lead_owners = String((lead.lead_owners)).split(",")
+                        lead_owners.map(async (name) => {
+                            let owner = await User.findOne({ username: name })
+                            if (owner)
+                                new_lead_owners.push(owner)
+                        })
+                    }
+                    else {
+                        if (req.user)
+                            new_lead_owners.push(req.user)
+                    }
+
                     let created_by: IUser | undefined = undefined
                     let updated_by: IUser | undefined = undefined
-                    lead_owners.map(async (name) => {
-                        let owner = await User.findOne({ username: name })
-                        if (owner)
-                            new_lead_owners.push(owner)
-                        else {
-                            if (req.user)
-                                new_lead_owners.push(req.user)
-                        }
-                    })
+
 
                     if (lead.created_by) {
                         let user = await User.findOne({ username: created_by })
                         if (user)
                             created_by = user
-                        else {
-                            if (req.user)
-                                created_by = req.user
-                        }
-
                     }
+                    else if (req.user)
+                        created_by = req.user
+
                     if (lead.updated_by) {
                         let user = await User.findOne({ username: updated_by })
                         if (user)
                             updated_by = user
-                        else {
-                            if (req.user)
-                                updated_by = req.user
-                        }
+
                     }
-                    console.log(validated)
+                    else if (req.user)
+                        updated_by = req.user
+
                     if (lead._id) {
                         if (isMongoId(String(lead._id))) {
                             if (mobile) {

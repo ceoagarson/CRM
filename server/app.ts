@@ -10,7 +10,6 @@ import UserRoutes, { upload } from "./routes/user.routes";
 import LeadRoutes from "./routes/lead.routes";
 import path from 'path';
 import morgan from "morgan";
-import {parse} from "comment-json"
 const app = express()
 
 //env setup
