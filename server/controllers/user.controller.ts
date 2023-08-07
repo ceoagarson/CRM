@@ -6,12 +6,15 @@ import { User } from '../models/users/user.model';
 import { Asset } from '../types/users/asset.type';
 import isMongoId from "validator/lib/isMongoId";
 import { destroyFile } from "../utils/destroyFile.util";
-import { LeadField,TUserBody, all_fields } from '../types/users/user.type';
+import { LeadField, TUserBody, all_fields } from '../types/users/user.type';
 import { sendEmail } from '../utils/sendEmail.util';
 
 
 // Create Owner account
 export const SignUp = async (req: Request, res: Response, next: NextFunction) => {
+    let users = await User.find()
+    if (users.length > 0)
+        return res.status(400).json({ message: "not allowed here" })
     let { username, email, password, mobile } = req.body as TUserBody
     // validations
     if (!username || !email || !password || !mobile)
@@ -45,7 +48,6 @@ export const SignUp = async (req: Request, res: Response, next: NextFunction) =>
             return res.status(500).json({ message: "file uploading error" })
         }
     }
-
     let LeadFields: LeadField[] = []
     all_fields.map((field) => {
         LeadFields.push({
@@ -114,7 +116,7 @@ export const NewUser = async (req: Request, res: Response, next: NextFunction) =
     all_fields.map((field) => {
         LeadFields.push({
             field: field,
-            readonly: false,
+            readonly: true,
             hidden: false
         })
     })
@@ -124,16 +126,16 @@ export const NewUser = async (req: Request, res: Response, next: NextFunction) =
         email,
         mobile,
         lead_fields: LeadFields,
-        is_admin: true,
+        is_admin: false,
         dp,
         client_id: username.replace(" ", "") + `${Number(new Date())}`,
         client_data_path: username.replace(" ", "") + `${Number(new Date())}`
 
     })
-
-    user.created_by = user
-    user.updated_by = user
-    sendUserToken(res, user.getAccessToken())
+    if (req.user) {
+        user.created_by = req.user
+        user.updated_by = req.user
+    }
     await user.save()
     user = await User.findById(user._id).populate("created_by").populate("updated_by") || user
     res.status(201).json(user)

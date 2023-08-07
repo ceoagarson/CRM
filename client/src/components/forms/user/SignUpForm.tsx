@@ -38,11 +38,6 @@ function OwnerSignUpForm() {
       dp: ""
     },
     validationSchema: Yup.object({
-      organization: Yup
-        .string()
-        .required('Required field')
-        .min(4, 'Must be 4 characters or more')
-        .max(30, 'Must be 30 characters or less'),
       mobile: Yup
         .string()
         .min(10, 'Must be 10 digits')
