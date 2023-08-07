@@ -68,6 +68,7 @@ export default function NavBar() {
                                     {
                                         user.is_admin ? <StyledLink to={paths.users}>Users</StyledLink> : null}
                                     <StyledLink to={paths.leads}>Leads</StyledLink>
+                                    <StyledLink to={paths.customers}>Customers</StyledLink>
                                 </Stack>
 
                                 {/* stack2 right icons*/}

@@ -15,18 +15,18 @@ import { Logout } from '../../services/UserServices';
 
 function UserMenu() {
     const { menu, setMenu } = useContext(MenuContext)
-    const { user, dispatch } = useContext(UserContext)
+    const { user, setUser } = useContext(UserContext)
     const { setChoice } = useContext(ChoiceContext)
     const { mutate, isSuccess } = useMutation(Logout)
     const goto = useNavigate()
     useEffect(() => {
         if (isSuccess) {
-            dispatch({ type: UserActions.logout })
+            setUser({ type: UserActions.logout })
             setChoice({ type: UserChoiceActions.close })
             setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
             goto(paths.login)
         }
-    }, [dispatch, goto, setChoice, setMenu, isSuccess])
+    }, [setUser, goto, setChoice, setMenu, isSuccess])
     return (
         <>
             {/* new user dialog */}

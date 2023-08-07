@@ -7,6 +7,7 @@ import EmailVerifyPage from './pages/EmailVerifyPage'
 import LoginPage from './pages/LoginPage'
 import DashBoardPage from './pages/DashBoardPage'
 import NavBar from './components/navbar/NavBar'
+import CustomersPage from './pages/CustomersPage'
 const LeadsPage = React.lazy(() => import('./pages/LeadsPage'))
 const UsersPage = React.lazy(() => import('./pages/UsersPage'))
 
@@ -14,6 +15,7 @@ export enum paths {
   login = "/",
   dashboard = "/",
   leads = "leads",
+  customers = "customers",
   machines = "machines",
   categories = "categories",
   reports = "reports",
@@ -49,6 +51,12 @@ function AppRoutes() {
             <Route
               path={paths.leads} element={
                 <Suspense fallback={<LinearProgress />}><LeadsPage /></Suspense>
+
+              }
+            />
+            <Route
+              path={paths.customers} element={
+                <Suspense fallback={<LinearProgress />}><CustomersPage /></Suspense>
 
               }
             />

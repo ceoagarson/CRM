@@ -1,4 +1,4 @@
-import { Alert, Button, CircularProgress, Stack, TextField } from '@mui/material';
+import { Alert, Button, Checkbox, CircularProgress, FormControlLabel, FormGroup, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useEffect, useContext } from 'react';
@@ -10,7 +10,7 @@ import { Countries } from '../../../utils/countries';
 import { Source } from '../../../utils/Source';
 import { States } from '../../../utils/states';
 import { Cities } from '../../../utils/cities';
-import { BackendError } from '../../../types';
+import { BackendError, Target } from '../../../types';
 import { ILead } from '../../../types/leads/lead.type';
 import { queryClient } from '../../../main';
 import { IUser } from '../../../types/users/user.type';
@@ -35,11 +35,13 @@ export type TformData = {
   alternate_email: string,
   lead_owners: string[],
   lead_source: string,
+  is_customer: boolean,
+  visiting_card: string | Blob | File
 }
 
 function NewLeadForm({ users }: { users: IUser[] }) {
   const { mutate, isLoading, isSuccess, isError, error } = useMutation
-    <AxiosResponse<ILead>, BackendError, TformData>
+    <AxiosResponse<ILead>, BackendError, FormData>
     (NewLead, {
       onSuccess: () => queryClient.invalidateQueries('leads')
     })
@@ -64,57 +66,79 @@ function NewLeadForm({ users }: { users: IUser[] }) {
       alternate_mobile2: "",
       alternate_email: "",
       lead_source: "internet",
-      lead_owners: [""]
+      lead_owners: [""],
+      is_customer: false,
+      visiting_card: ""
     },
     validationSchema: Yup.object({
       name: Yup.string()
-        .required('Required field')
         .min(4, 'Must be 4 characters or more')
         .max(30, 'Must be 30 characters or less'),
       lead_owners: Yup.array()
-        .required('Required field'),
+        .required('field'),
       email: Yup.string()
-        .email('provide a valid email id')
-        .required('Required field'),
+        .email('provide a valid email id'),
       alternate_email: Yup.string()
         .email('provide a valid email id'),
       customer_name: Yup.string()
         .min(4, 'Must be 4 characters or more')
         .max(30, 'Must be 30 characters or less'),
       customer_designation: Yup.string(),
-      city: Yup.string().required("required field")
+      city: Yup.string()
         .min(3, 'Must be 3 characters or more')
         .max(30, 'Must be 30 characters or less'),
-      state: Yup.string().required("required field")
+      state: Yup.string()
         .min(3, 'Must be 3 characters or more')
         .max(30, 'Must be 30 characters or less'),
-      lead_type: Yup.string().required("required field"),
+      lead_type: Yup.string(),
       turnover: Yup.string(),
-      stage: Yup.string().required("required field"),
-      lead_source: Yup.string().required("required field"),
-      country: Yup.string().required("required field"),
-      work_description: Yup.string().required("required field")
+      stage: Yup.string(),
+      lead_source: Yup.string(),
+      country: Yup.string(),
+      work_description: Yup.string()
         .min(20, 'Must be 20 characters or more')
         .max(1000, 'Must be 1000 characters or less'),
-      address: Yup.string().required("required field")
+      address: Yup.string()
         .min(10, 'Must be 10 characters or more')
         .max(300, 'Must be 300 characters or less'),
       remark: Yup.string()
         .min(10, 'Must be 10 characters or more')
         .max(500, 'Must be 500 characters or less'),
-      mobile: Yup.string()
+      mobile: Yup.string().required("required mobile number")
         .min(10, 'Must be 10 digits')
-        .max(10, 'Must be 10 digits')
-        .required('Required field'),
+        .max(10, 'Must be 10 digits'),
       alternate_mobile1: Yup.string()
         .min(10, 'Must be 10 digits')
         .max(10, 'Must be 10 digits'),
       alternate_mobile2: Yup.string()
         .min(10, 'Must be 10 digits')
-        .max(10, 'Must be 10 digits')
+        .max(10, 'Must be 10 digits'),
+      is_customer: Yup.boolean(),
+      visiting_card: Yup.mixed<File>()
+        .test("size", "size is allowed only less than 10mb",
+          file => {
+            if (file)
+              if (!file.size) //file not provided
+                return true
+              else
+                return Boolean(file.size <= 10 * 1024 * 1024)
+            return true
+          }
+        )
+        .test("type", " allowed only .jpg, .jpeg, .png, .gif .pdf",
+          file => {
+            const Allowed = ["image/png", "image/jpg", "image/jpeg", "image/png", "image/gif", "application/pdf"]
+            if (file)
+              if (!file.size) //file not provided
+                return true
+              else
+                return Boolean(Allowed.includes(file.type))
+            return true
+          }
+        )
     }),
     onSubmit: (values: TformData) => {
-      let leadData: TformData = {
+      let leadData = {
         customer_name: values.customer_name,
         customer_designation: values.customer_designation,
         mobile: values.mobile,
@@ -133,9 +157,14 @@ function NewLeadForm({ users }: { users: IUser[] }) {
         alternate_email: values.alternate_email,
         lead_source: values.lead_source,
         name: values.name,
-        lead_owners: values.lead_owners
+        lead_owners: values.lead_owners,
+        is_customer: values.is_customer
       }
-      mutate(leadData)
+      let formdata = new FormData()
+      formdata.append("body", JSON.stringify(leadData))
+      if (values.visiting_card)
+        formdata.append("visiting_card", values.visiting_card)
+      mutate(formdata)
     }
   });
   useEffect(() => {
@@ -145,6 +174,7 @@ function NewLeadForm({ users }: { users: IUser[] }) {
       }, 1000)
     }
   }, [isSuccess, setChoice])
+  
   return (
     <form onSubmit={formik.handleSubmit}>
       <Stack
@@ -158,7 +188,7 @@ function NewLeadForm({ users }: { users: IUser[] }) {
           variant='standard'
           fullWidth
 
-          required
+
           error={
             formik.touched.name && formik.errors.name ? true : false
           }
@@ -214,7 +244,7 @@ function NewLeadForm({ users }: { users: IUser[] }) {
         < TextField
           variant='standard'
           type="number"
-          required
+
           error={
             formik.touched.mobile && formik.errors.mobile ? true : false
           }
@@ -232,7 +262,7 @@ function NewLeadForm({ users }: { users: IUser[] }) {
 
         < TextField
           variant='standard'
-          required
+
           fullWidth
           error={
             formik.touched.email && formik.errors.email ? true : false
@@ -330,7 +360,7 @@ function NewLeadForm({ users }: { users: IUser[] }) {
             native: true
           }}
           focused
-          required
+
           error={
             formik.touched.city && formik.errors.city ? true : false
           }
@@ -365,7 +395,7 @@ function NewLeadForm({ users }: { users: IUser[] }) {
             native: true
           }}
           focused
-          required
+
           error={
             formik.touched.state && formik.errors.state ? true : false
           }
@@ -400,7 +430,7 @@ function NewLeadForm({ users }: { users: IUser[] }) {
             native: true
           }}
           focused
-          required
+
           error={
             formik.touched.stage && formik.errors.stage ? true : false
           }
@@ -448,7 +478,7 @@ function NewLeadForm({ users }: { users: IUser[] }) {
             native: true
           }}
           focused
-          required
+
           error={
             formik.touched.lead_type && formik.errors.lead_type ? true : false
           }
@@ -491,7 +521,7 @@ function NewLeadForm({ users }: { users: IUser[] }) {
             native: true
           }}
           focused
-          required
+
           error={
             formik.touched.lead_source && formik.errors.lead_source ? true : false
           }
@@ -528,7 +558,7 @@ function NewLeadForm({ users }: { users: IUser[] }) {
             native: true
           }}
           focused
-          required
+
           error={
             formik.touched.country && formik.errors.country ? true : false
           }
@@ -557,7 +587,7 @@ function NewLeadForm({ users }: { users: IUser[] }) {
           variant='standard'
           multiline
           minRows={2}
-          required
+
           error={
             formik.touched.address && formik.errors.address ? true : false
           }
@@ -580,7 +610,7 @@ function NewLeadForm({ users }: { users: IUser[] }) {
           minRows={2}
 
 
-          required
+
           error={
             formik.touched.work_description && formik.errors.work_description ? true : false
           }
@@ -606,13 +636,14 @@ function NewLeadForm({ users }: { users: IUser[] }) {
             multiple: true
           }}
           focused
-          required
+
           error={
             formik.touched.lead_owners && formik.errors.lead_owners ? true : false
           }
           id="lead_owners"
           label="Lead Owners"
           fullWidth
+          required
           helperText={
             formik.touched.lead_owners && formik.errors.lead_owners ? formik.errors.lead_owners : ""
           }
@@ -633,8 +664,6 @@ function NewLeadForm({ users }: { users: IUser[] }) {
         < TextField
           variant='standard'
           multiline
-
-
           minRows={2}
           error={
             formik.touched.remark && formik.errors.remark ? true : false
@@ -648,6 +677,39 @@ function NewLeadForm({ users }: { users: IUser[] }) {
           {...formik.getFieldProps('remark')}
         />
 
+        <FormGroup>
+          <FormControlLabel control={<Checkbox defaultChecked={Boolean(formik.values.is_customer)}
+            {...formik.getFieldProps('is_customer')}
+          />} label="Is A Customer" />
+          <p>
+            {formik.touched.is_customer && formik.errors.is_customer ? formik.errors.is_customer : ""}
+          </p>
+        </FormGroup>
+
+        <TextField
+          fullWidth
+          error={
+            formik.touched.visiting_card && formik.errors.visiting_card ? true : false
+          }
+          helperText={
+            formik.touched.visiting_card && formik.errors.visiting_card ? (formik.errors.visiting_card) : ""
+          }
+          label="Visting Card"
+          focused
+          variant='standard'
+          type="file"
+          name="visiting_card"
+          onBlur={formik.handleBlur}
+          onChange={(e) => {
+            e.preventDefault()
+            const target: Target = e.currentTarget
+            let files = target.files
+            if (files) {
+              let file = files[0]
+              formik.setFieldValue("visiting_card", file)
+            }
+          }}
+        />
 
       </Stack>
       {

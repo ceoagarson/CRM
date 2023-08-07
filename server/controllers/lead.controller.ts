@@ -55,7 +55,7 @@ export const CreateLead = async (req: Request, res: Response, next: NextFunction
     }
 
     visiting_card = {
-        public_id: "",
+        public_id:"",
         url: "",
         size: 0,
         format: ""
@@ -104,7 +104,7 @@ export const CreateLead = async (req: Request, res: Response, next: NextFunction
 
 // get all leads  anyone can do in the organization
 export const GetLeads = async (req: Request, res: Response, next: NextFunction) => {
-    let leads = await Lead.find().populate('lead_owners').populate('updated_by').populate('created_by').populate({
+    let leads = await Lead.find({is_customer:false}).populate('lead_owners').populate('updated_by').populate('created_by').populate({
         path: 'remarks',
         populate: [
             {
@@ -131,7 +131,63 @@ export const GetLeads = async (req: Request, res: Response, next: NextFunction) 
     })
     return res.status(200).json(leads)
 }
-
+export const GetCustomers = async (req: Request, res: Response, next: NextFunction) => {
+    let leads = await Lead.find({ is_customer: true }).populate('lead_owners').populate('updated_by').populate('created_by').populate({
+        path: 'remarks',
+        populate: [
+            {
+                path: 'created_by',
+                model: 'User'
+            },
+            {
+                path: 'updated_by',
+                model: 'User'
+            }
+        ]
+    })
+    if (!leads) {
+        return res.status(404).json({ message: "leads not found" })
+    }
+    if (req.user?.is_admin)
+        return res.status(200).json(leads)
+    leads = leads.filter((lead) => {
+        let owners = lead.lead_owners.filter((owner) => {
+            return owner.username === req.user?.username
+        })
+        if (owners.length > 0)
+            return lead
+    })
+    return res.status(200).json(leads)
+}
+let template = [
+    "_id",
+    "name",
+    "customer_name",
+    "customer_designation",
+    "mobile",
+    "email",
+    "city",
+    "state",
+    "country",
+    "address",
+    "work_description",
+    "turnover",
+    "alternate_mobile1",
+    "alternate_mobile2",
+    "alternate_email",
+    "lead_type",
+    "stage",
+    "lead_source",
+    "remarks",
+    "lead_owners",
+    "visiting_card",
+    "is_customer",
+    "last_whatsapp_date",
+    "created_at",
+    "created_by",
+    "updated_at",
+    "updated_by"
+]
 // update lead only admin can do
 export const UpdateLead = async (req: Request, res: Response, next: NextFunction) => {
     const { mobile, remark, lead_owners, alternate_mobile1, alternate_mobile2 } = req.body as TLeadBody & { remark: string, lead_owners: string[] }
@@ -150,6 +206,7 @@ export const UpdateLead = async (req: Request, res: Response, next: NextFunction
         return res.status(400).json({ message: "provide primary mobile number" });
 
     let uniqueNumbers: number[] = []
+
     if (mobile) {
         if (!await Lead.findOne({ mobile: mobile }))
             if (!await Lead.findOne({ alternate_mobile1: mobile }))
@@ -289,27 +346,31 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
         let workbook_response: ILeadTemplate[] = xlsx.utils.sheet_to_json(
             workbook.Sheets[workbook_sheet[0]]
         );
-        
+
         workbook_response.forEach(async (lead) => {
             let uniqueNumbers: number[] = []
+            let mobile = Number(lead.mobile)
+            let alternate_mobile1 = Number(lead.alternate_mobile1)
+            let alternate_mobile2 = Number(lead.alternate_mobile2)
             let validated = true
             let leadTypes = ["retail", "wholesale", "company", "wholesale&retail"]
             let stages = ["open", "closed", "useless", "potential"]
             let sources = ["internet", "visit", "whatsapp", "cold calling",
                 "cold email", "others"]
+
             if (lead.lead_type && !leadTypes.includes(lead.lead_type))
                 validated = false
             if (lead.stage && !stages.includes(lead.stage))
                 validated = false
             if (lead.lead_source && !sources.includes(lead.lead_source))
                 validated = false
-            if (lead.mobile && typeof (lead.mobile) !== "number")
+            if (mobile && typeof (mobile) !== "number")
                 validated = false
             if (lead.turnover && typeof (lead.turnover) !== "number")
                 validated = false
-            if (lead.alternate_mobile1 && typeof (lead.alternate_mobile1) !== "number")
+            if (alternate_mobile1 && typeof (alternate_mobile1) !== "number")
                 validated = false
-            if (lead.alternate_mobile2 && typeof (lead.alternate_mobile2) !== "number")
+            if (alternate_mobile2 && typeof (alternate_mobile2) !== "number")
                 validated = false
             if (lead.name && typeof (lead.name) !== "string")
                 validated = false
@@ -360,13 +421,12 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
                 validated = false
             if (lead.updated_at && !isvalidDate(new Date(lead.updated_at)))
                 validated = false
-            if (lead.mobile && String(lead.mobile).length !== 10)
+            if (mobile && String(mobile).length !== 10)
                 validated = false
-            if (lead.alternate_mobile1 && String(lead.alternate_mobile1).length !== 10)
+            if (alternate_mobile1 && String(alternate_mobile1).length !== 10)
                 validated = false
-            if (lead.alternate_mobile2 && String(lead.alternate_mobile2).length !== 10)
+            if (alternate_mobile2 && String(alternate_mobile2).length !== 10)
                 validated = false
-
             console.log(validated)
             if (validated) {
                 let new_lead_owners: IUser[] = []
@@ -399,15 +459,12 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
                     let user = await User.findOne({ username: updated_by })
                     if (user)
                         updated_by = user
-
                 }
                 else if (req.user)
                     updated_by = req.user
 
                 if (lead._id && isMongoId(String(lead._id))) {
-                    let mobile = lead.mobile
-                    let alternate_mobile1 = lead.alternate_mobile1
-                    let alternate_mobile2 = lead.alternate_mobile2
+
                     if (mobile) {
                         if (!await Lead.findOne({ mobile: mobile }))
                             if (!await Lead.findOne({ alternate_mobile1: mobile }))
@@ -429,19 +486,18 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
                     if (uniqueNumbers.length !== 0) {
                         await Lead.findByIdAndUpdate(lead._id, {
                             ...lead,
-                            mobile: uniqueNumbers[0] || lead.mobile,
-                            alternate_mobile1: uniqueNumbers[1] || lead.alternate_mobile1,
-                            alternate_mobile2: uniqueNumbers[2] || lead.alternate_mobile2,
+                            mobile: uniqueNumbers[0] || mobile,
+                            alternate_mobile1: uniqueNumbers[1] || alternate_mobile1,
+                            alternate_mobile2: uniqueNumbers[2] || alternate_mobile2,
                             lead_owners: new_lead_owners,
                             created_by: created_by,
                             updated_by: updated_by
                         })
                     }
                 }
-                if (!lead._id || !isMongoId(lead._id)) {
-                    let mobile = lead.mobile
-                    let alternate_mobile1 = lead.alternate_mobile1
-                    let alternate_mobile2 = lead.alternate_mobile2
+
+                if (!lead._id || !isMongoId(String(lead._id))) {
+
                     if (mobile) {
                         if (!await Lead.findOne({ mobile: mobile }))
                             if (!await Lead.findOne({ alternate_mobile1: mobile }))
@@ -460,6 +516,7 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
                                 if (!await Lead.findOne({ alternate_mobile2: alternate_mobile2 }))
                                     uniqueNumbers.push(alternate_mobile2)
                     }
+                    console.log(uniqueNumbers)
                     if (uniqueNumbers.length !== 0) {
                         let newlead = new Lead({
                             ...lead,

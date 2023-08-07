@@ -41,13 +41,11 @@ function LeadTableMenu({ selectedFlatRows }: Props) {
     const [selectedData, setSelectedData] = useState<SelectedData[]>([])
     const [sent, setSent] = useState(false)
     const { setChoice } = useContext(ChoiceContext)
- 
+
 
     function handleExcel() {
         setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
         try {
-            if (selectedData.length === 0)
-                return alert("please select some rows")
             ExportToExcel(selectedData, "leads_data")
             setSent(true)
         }
@@ -96,7 +94,7 @@ function LeadTableMenu({ selectedFlatRows }: Props) {
 
     return (
         <>
-            
+
             {/* export snak bar */}
             <Snackbar
                 open={sent}
@@ -105,7 +103,7 @@ function LeadTableMenu({ selectedFlatRows }: Props) {
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
                 message="File Exported Successfuly"
             />
-            
+
 
             <IconButton size="medium"
                 onClick={(e) => setMenu({ type: MenuActions.lead_table_menu, payload: { type: MenuActions.lead_table_menu, anchorEl: e.currentTarget } })
@@ -131,9 +129,9 @@ function LeadTableMenu({ selectedFlatRows }: Props) {
                     setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
                 }}
                 >New Lead</MenuItem>
-                <MenuItem  onClick={handleExcel}
+                <MenuItem onClick={handleExcel}
                 >Export To Excel</MenuItem>
-               
+
             </Menu>
             <NewLeadDialog />
         </>

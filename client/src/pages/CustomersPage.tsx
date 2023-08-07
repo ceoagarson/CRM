@@ -1,6 +1,5 @@
-import { Comment, Delete, Edit, Search, Visibility } from "@mui/icons-material"
-import { IconButton, InputAdornment, LinearProgress, Stack, TextField, Tooltip, Typography } from "@mui/material"
-import AddTaskIcon from '@mui/icons-material/AddTask';
+import { Comment, Edit, Search, Visibility } from "@mui/icons-material"
+import {  IconButton, InputAdornment, LinearProgress, Stack,  TextField, Tooltip, Typography } from "@mui/material"
 import { AxiosResponse } from "axios"
 import React, { useContext, useEffect, useState } from "react"
 import { useQuery } from "react-query"
@@ -9,7 +8,7 @@ import UpdateLeadDialog from "../components/dialogs/leads/UpdateLeadDialog"
 import ViewLeadDialog from "../components/dialogs/leads/ViewRemarksDialog"
 import { LeadTable } from "../components/tables/LeadTable"
 import { ChoiceContext, LeadChoiceActions } from "../contexts/dialogContext"
-import { GetLeads } from "../services/LeadsServices"
+import { GetCustomers } from "../services/LeadsServices"
 import NewRemarkDialog from "../components/dialogs/leads/NewRemarkDialog"
 import { SelectionContext } from "../contexts/selectionContext"
 import { FilterContext } from "../contexts/filterContext"
@@ -17,15 +16,13 @@ import FuzzySearch from "fuzzy-search"
 import { headColor } from "../utils/colors"
 import LeadTableMenu from "../components/menu/LeadTableMenu"
 import { UserContext } from "../contexts/userContext"
-import DeleteLeadDialog from "../components/dialogs/leads/DeleteLeadDialog"
 import { ILead } from "../types/leads/lead.type"
 import { BackendError } from "../types"
-import ConvertLeadToCustomerDialog from "../components/dialogs/leads/ConvertLeadToCustomerDialog"
 import { BasicPOPUP } from "../components/popup/BasicPOPUP";
 import UploadLeadsExcelButton from "../components/buttons/UploadLeadsExcelButton";
 
 
-export default function LeadsPage() {
+export default function CustomersPage() {
   const { user: LoggedInUser } = useContext(UserContext)
   const { selectedRows } = useContext(SelectionContext)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -35,7 +32,7 @@ export default function LeadsPage() {
   const [DATA, setDATA] = useState<ILead[]>([])
   const [lead, setLead] = useState<ILead>()
   const { data: leads, isSuccess, isLoading } = useQuery
-    <AxiosResponse<ILead[]>, BackendError>("leads", GetLeads, {
+    <AxiosResponse<ILead[]>, BackendError>("customers", GetCustomers, {
       refetchOnMount: true
     })
   const MemoData = React.useMemo(() => DATA, [DATA])
@@ -49,38 +46,6 @@ export default function LeadsPage() {
           return (
             <BasicPOPUP
               element={<Stack direction="row" spacing={1}>
-                {
-                  LoggedInUser?.is_admin ?
-                    <>
-                      <Tooltip title="delete">
-                        <IconButton color="error"
-                          onClick={() => {
-                            setAnchorEl(null)
-                            setChoice({ type: LeadChoiceActions.delete_lead })
-                            setLead(props.row.original)
-
-                          }}
-                        >
-                          <Delete />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Convert to Customer">
-                        <IconButton color="warning"
-                          onClick={() => {
-                            setAnchorEl(null)
-                            setChoice({ type: LeadChoiceActions.convert_customer })
-                            setLead(props.row.original)
-                          }}
-                        >
-                          <AddTaskIcon />
-                        </IconButton>
-                      </Tooltip>
-
-                    </>
-                    :
-                    null
-                }
-
                 <Tooltip title="edit">
                   <IconButton color="secondary"
                     onClick={() => {
@@ -409,35 +374,6 @@ export default function LeadsPage() {
         Cell: (props) => {
           return (
             <Stack direction="row" spacing={1}>
-              {
-                LoggedInUser?.is_admin ?
-                  <>
-                    <Tooltip title="delete">
-                      <IconButton color="error"
-                        onClick={() => {
-                          setChoice({ type: LeadChoiceActions.delete_lead })
-                          setLead(props.row.original)
-                        }}
-                      >
-                        <Delete />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Convert to Customer">
-                      <IconButton color="warning"
-                        onClick={() => {
-                          setChoice({ type: LeadChoiceActions.convert_customer })
-                          setLead(props.row.original)
-                        }}
-                      >
-                        <AddTaskIcon />
-                      </IconButton>
-                    </Tooltip>
-
-                  </>
-                  :
-                  null
-              }
-
               <Tooltip title="edit">
                 <IconButton color="secondary"
                   onClick={() => {
@@ -485,7 +421,7 @@ export default function LeadsPage() {
     }
   }, [isSuccess, leads])
 
-
+  
 
   //set filter
   useEffect(() => {
@@ -517,7 +453,7 @@ export default function LeadsPage() {
           variant={'h6'}
           component={'h1'}
         >
-          Leads
+          Customers
         </Typography>
         <Stack
           direction="row"
@@ -554,8 +490,6 @@ export default function LeadsPage() {
         lead ?
           <>
             <UpdateLeadDialog lead={lead} />
-            <DeleteLeadDialog lead={lead} />
-            <ConvertLeadToCustomerDialog lead={lead} />
             <ViewLeadDialog lead={lead} />
             <NewRemarkDialog lead={lead} />
           </>

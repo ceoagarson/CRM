@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import styled from "styled-components"
 import { Stack, Typography, Paper } from "@mui/material";
 import { ILead } from "../types/leads/lead.type";
 

@@ -14,7 +14,6 @@ import { BackendError, Target } from '../../../types';
 import { IUser } from '../../../types/users/user.type';
 
 type TFormData = {
-  organization: string
   username: string,
   email: string
   password: string
@@ -32,7 +31,6 @@ function OwnerSignUpForm() {
 
   const formik = useFormik<TFormData>({
     initialValues: {
-      organization: "",
       username: "",
       email: "",
       password: "",
@@ -90,7 +88,6 @@ function OwnerSignUpForm() {
     }),
     onSubmit: (values: TFormData) => {
       let formdata = new FormData()
-      formdata.append("organization", values.organization)
       formdata.append("username", values.username)
       formdata.append("mobile", values.mobile)
       formdata.append("email", values.email)
@@ -128,23 +125,7 @@ function OwnerSignUpForm() {
         direction="column"
         gap={2}
       >
-        <TextField
-          variant='standard'
-
-          autoFocus
-          fullWidth
-          required
-          error={
-            formik.touched.organization && formik.errors.organization ? true : false
-          }
-          id="organization"
-          label="Organization Name"
-          helperText={
-            formik.touched.organization && formik.errors.organization ? formik.errors.organization : ""
-          }
-          {...formik.getFieldProps('organization')}
-        />
-        
+       
 
         <TextField
           variant='standard'
