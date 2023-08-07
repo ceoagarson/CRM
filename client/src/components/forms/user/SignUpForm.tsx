@@ -113,7 +113,7 @@ function OwnerSignUpForm() {
       setTimeout(() => {
         setUser({ type: UserActions.login, payload: data.data })
         setChoice({ type: UserChoiceActions.close })
-        goto(paths.leads)
+        goto(paths.dashboard)
       }, 1000)
     }
   }, [isSuccess, setUser, goto, data, setChoice])

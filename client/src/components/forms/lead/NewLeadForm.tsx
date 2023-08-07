@@ -14,6 +14,8 @@ import { BackendError, Target } from '../../../types';
 import { ILead } from '../../../types/leads/lead.type';
 import { queryClient } from '../../../main';
 import { IUser } from '../../../types/users/user.type';
+import { LeadTypes } from '../../../utils/leadtype';
+import { Stages } from '../../../utils/stages';
 
 export type TformData = {
   name: string,
@@ -43,7 +45,10 @@ function NewLeadForm({ users }: { users: IUser[] }) {
   const { mutate, isLoading, isSuccess, isError, error } = useMutation
     <AxiosResponse<ILead>, BackendError, FormData>
     (NewLead, {
-      onSuccess: () => queryClient.invalidateQueries('leads')
+      onSuccess: () => {
+        queryClient.invalidateQueries('leads')
+        queryClient.invalidateQueries('customers')
+      }
     })
   const { setChoice } = useContext(ChoiceContext)
   const formik = useFormik<TformData>({
@@ -174,7 +179,7 @@ function NewLeadForm({ users }: { users: IUser[] }) {
       }, 1000)
     }
   }, [isSuccess, setChoice])
-  
+
   return (
     <form onSubmit={formik.handleSubmit}>
       <Stack
@@ -445,24 +450,15 @@ function NewLeadForm({ users }: { users: IUser[] }) {
           <option value="">
 
           </option>
-          <option value="open">
-            open
-          </option>
-          <option value="won">
-            won
-          </option>
-          <option value="won dealer">
-            won dealer
-          </option>
-          <option value="lost">
-            lost
-          </option>
-          <option value="useless">
-            useless
-          </option>
-          <option value="potential">
-            potential
-          </option>
+          {
+
+            Stages.map(stage => {
+              return (
+                <option key={stage} value={stage}>
+                  {stage}
+                </option>)
+            })
+          }
         </TextField>
 
         {/* lead type */}
@@ -494,18 +490,16 @@ function NewLeadForm({ users }: { users: IUser[] }) {
           <option value="">
 
           </option>
-          <option value="wholesale">
-            wholesale
-          </option>
-          <option value="retail">
-            retail
-          </option>
-          <option value="company">
-            company
-          </option>
-          <option value="mixed">
-            Wholesale + Retail
-          </option>
+          {
+            LeadTypes.map((item) => {
+              return (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              )
+            })
+          }
+
         </TextField>
 
 

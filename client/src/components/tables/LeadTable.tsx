@@ -1,5 +1,5 @@
 import { Box, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material'
-import { Column, useTable,  useSortBy, usePagination,  useRowSelect } from 'react-table'
+import { Column, useTable, useSortBy, usePagination, useRowSelect } from 'react-table'
 import Pagination from './utils/Pagination';
 import TableCheckBox from './utils/TableCheckBox';
 import { ArrowDropDown, ArrowDropUp, } from '@mui/icons-material';
@@ -20,7 +20,7 @@ interface Props {
 
 export function LeadTable({ data, columns }: Props) {
     const { setSelectedRows } = useContext(SelectionContext)
-    const { hiddenFields} = useLeadFields()
+    const { hiddenFields } = useLeadFields()
     const {
         getTableProps,
         getTableBodyProps,
@@ -76,7 +76,7 @@ export function LeadTable({ data, columns }: Props) {
     }, [selectedFlatRows, setSelectedRows])
     return (
         <>
-           
+
             {/* table */}
             <Box
                 sx={{
@@ -124,7 +124,7 @@ export function LeadTable({ data, columns }: Props) {
                                 <TableRow sx={{
                                     '&:nth-of-type(odd)': { bgcolor: color1 },
                                     '&:nth-of-type(even)': { bgcolor: color2 },
-                                    '&:hover': { bgcolor: 'rgba(0,0,0,0.1)', cursor: 'pointer' }
+                                    '&:hover': { bgcolor: 'rgba(0,0,0,0.1)', cursor: 'pointer' },
                                 }}
 
                                     {...row.getRowProps()}>

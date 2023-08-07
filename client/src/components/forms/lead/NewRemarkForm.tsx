@@ -15,7 +15,10 @@ function NewRemarkForm({ lead }: { lead: ILead }) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, { id: string, remark: string }>
         (NewRemark, {
-            onMutate: () => queryClient.invalidateQueries('leads')
+            onMutate: () => {
+                queryClient.invalidateQueries('leads')
+                queryClient.invalidateQueries('customers')
+            }
         })
 
     const { setChoice } = useContext(ChoiceContext)

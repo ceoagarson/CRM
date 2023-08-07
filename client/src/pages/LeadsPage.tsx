@@ -397,7 +397,7 @@ export default function LeadsPage() {
         accessor: 'visiting_card',
         Cell: (props) => {
           return (
-            <img height="30" src={props.row.original.visiting_card && props.row.original.visiting_card.url} alt="visiting card" />
+            <img height="50" src={props.row.original.visiting_card && props.row.original.visiting_card.url} alt="visiting card" />
           )
         }
       },

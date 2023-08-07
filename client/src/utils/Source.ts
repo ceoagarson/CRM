@@ -1,11 +1,4 @@
 export const Source = [
-    "internet",
-    "visiting",
-    "whatsapp",
-    "facebook",
-    "indiamart",
-    "justdial",
-    "calling",
-    "email",
-    "others"
+    "internet" , "visit" , "whatsapp" , "cold calling" ,
+    "cold email" , "others"
 ]

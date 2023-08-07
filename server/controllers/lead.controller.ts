@@ -55,7 +55,7 @@ export const CreateLead = async (req: Request, res: Response, next: NextFunction
     }
 
     visiting_card = {
-        public_id:"",
+        public_id: "",
         url: "",
         size: 0,
         format: ""
@@ -104,7 +104,7 @@ export const CreateLead = async (req: Request, res: Response, next: NextFunction
 
 // get all leads  anyone can do in the organization
 export const GetLeads = async (req: Request, res: Response, next: NextFunction) => {
-    let leads = await Lead.find({is_customer:false}).populate('lead_owners').populate('updated_by').populate('created_by').populate({
+    let leads = await Lead.find({ is_customer: false }).populate('lead_owners').populate('updated_by').populate('created_by').populate({
         path: 'remarks',
         populate: [
             {
@@ -190,7 +190,8 @@ let template = [
 ]
 // update lead only admin can do
 export const UpdateLead = async (req: Request, res: Response, next: NextFunction) => {
-    const { mobile, remark, lead_owners, alternate_mobile1, alternate_mobile2 } = req.body as TLeadBody & { remark: string, lead_owners: string[] }
+    let body = JSON.parse(req.body.body)
+    const { mobile, remark, lead_owners, alternate_mobile1, alternate_mobile2 } = body as TLeadBody & { remark: string, lead_owners: string[] }
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: "lead id not valid" })
     let lead = await Lead.findById(id);
@@ -208,27 +209,33 @@ export const UpdateLead = async (req: Request, res: Response, next: NextFunction
     let uniqueNumbers: number[] = []
 
     if (mobile) {
-        if (!await Lead.findOne({ mobile: mobile }))
-            if (!await Lead.findOne({ alternate_mobile1: mobile }))
-                if (!await Lead.findOne({ alternate_mobile2: mobile }))
-                    uniqueNumbers.push(mobile)
-    }
-    if (alternate_mobile1) {
-        if (!await Lead.findOne({ mobile: alternate_mobile1 }))
-            if (!await Lead.findOne({ alternate_mobile1: alternate_mobile1 }))
-                if (!await Lead.findOne({ alternate_mobile2: alternate_mobile1 }))
-                    uniqueNumbers.push(alternate_mobile1)
-    }
-    if (alternate_mobile2) {
-        if (!await Lead.findOne({ mobile: alternate_mobile2 }))
-            if (!await Lead.findOne({ alternate_mobile1: alternate_mobile2 }))
-                if (!await Lead.findOne({ alternate_mobile2: alternate_mobile2 }))
-                    uniqueNumbers.push(alternate_mobile2)
+        if (mobile !== lead.mobile)
+            if (!await Lead.findOne({ mobile: mobile }))
+                if (!await Lead.findOne({ alternate_mobile1: mobile }))
+                    if (!await Lead.findOne({ alternate_mobile2: mobile }))
+                        uniqueNumbers.push(mobile)
     }
 
-    if (uniqueNumbers.length == 0) {
-        return res.status(400).json({ message: "one of the mobile numbers already exists" });
+    if (alternate_mobile1) {
+        if (alternate_mobile1 !== lead.alternate_mobile1)
+            if (!await Lead.findOne({ mobile: alternate_mobile1 }))
+                if (!await Lead.findOne({ alternate_mobile1: alternate_mobile1 }))
+                    if (!await Lead.findOne({ alternate_mobile2: alternate_mobile1 }))
+                        uniqueNumbers.push(alternate_mobile1)
     }
+    if (alternate_mobile2) {
+        if (alternate_mobile2 !== lead.alternate_mobile2)
+            if (!await Lead.findOne({ mobile: alternate_mobile2 }))
+                if (!await Lead.findOne({ alternate_mobile1: alternate_mobile2 }))
+                    if (!await Lead.findOne({ alternate_mobile2: alternate_mobile2 }))
+                        uniqueNumbers.push(alternate_mobile2)
+    }
+    if (mobile !== lead.mobile)
+        if (alternate_mobile1 !== lead.alternate_mobile1)
+            if (alternate_mobile2 !== lead.alternate_mobile2)
+                if (uniqueNumbers.length === 0) {
+                    return res.status(400).json({ message: "one of the mobile numbers already exists" });
+                }
     let new_lead_owners: IUser[] = []
     for (let i = 0; i < lead_owners.length; i++) {
         let owner = await User.findById(lead_owners[i])
@@ -251,18 +258,6 @@ export const UpdateLead = async (req: Request, res: Response, next: NextFunction
             return res.status(500).json({ message: "file uploading error" })
         }
     }
-    lead = new Lead({
-        ...req.body,
-        mobile: uniqueNumbers[0] || null,
-        alternate_mobile1: uniqueNumbers[1] || null,
-        alternate_mobile2: uniqueNumbers[2] || null,
-        lead_owners: new_lead_owners,
-        visiting_card: visiting_card,
-        created_by: req.user?._id,
-        updated_by: req.user?._id,
-        created_at: new Date(Date.now()),
-        updated_at: new Date(Date.now()),
-    })
     if (remark) {
         if (!lead.remarks.length) {
             let new_remark = new Remark({
@@ -276,16 +271,32 @@ export const UpdateLead = async (req: Request, res: Response, next: NextFunction
             await new_remark.save()
             lead.remarks = [new_remark]
         }
-        let last_remark = lead.remarks[lead.remarks.length - 1]
-        await Remark.findByIdAndUpdate(last_remark._id, {
-            remark: remark,
-            lead: lead,
-            updated_at: new Date(),
-            updated_by: req.user
-        })
+        else{
+            let last_remark = lead.remarks[lead.remarks.length - 1]
+            await Remark.findByIdAndUpdate(last_remark._id, {
+                remark: remark,
+                lead: lead,
+                updated_at: new Date(),
+                updated_by: req.user
+            })
+        }
+       
     }
-    await lead.save()
-    return res.status(200).json(lead)
+    await Lead.findByIdAndUpdate(lead._id, {
+        ...req.body,
+        mobile: uniqueNumbers[0] || mobile,
+        alternate_mobile1: uniqueNumbers[1] || alternate_mobile1,
+        alternate_mobile2: uniqueNumbers[2] || alternate_mobile2,
+        lead_owners: new_lead_owners,
+        visiting_card: visiting_card,
+        created_by: req.user?._id,
+        updated_by: req.user?._id,
+        created_at: new Date(Date.now()),
+        updated_at: new Date(Date.now()),
+        remarks:lead.remarks
+    })
+    
+    return res.status(200).json({message:"lead updated"})
 }
 
 //delete lead
@@ -352,6 +363,9 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
             let mobile = Number(lead.mobile)
             let alternate_mobile1 = Number(lead.alternate_mobile1)
             let alternate_mobile2 = Number(lead.alternate_mobile2)
+            let created_by: IUser | undefined = undefined
+            let updated_by: IUser | undefined = undefined
+            let new_lead_owners: IUser[] = []
             let validated = true
             let leadTypes = ["retail", "wholesale", "company", "wholesale&retail"]
             let stages = ["open", "closed", "useless", "potential"]
@@ -429,7 +443,6 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
                 validated = false
             console.log(validated)
             if (validated) {
-                let new_lead_owners: IUser[] = []
                 if (lead.lead_owners) {
                     let lead_owners = String((lead.lead_owners)).split(",")
                     lead_owners.map(async (name) => {
@@ -443,12 +456,8 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
                         new_lead_owners.push(req.user)
                 }
 
-                let created_by: IUser | undefined = undefined
-                let updated_by: IUser | undefined = undefined
-
-
                 if (lead.created_by) {
-                    let user = await User.findOne({ username: created_by })
+                    let user = await User.findOne({ username: lead.created_by })
                     if (user)
                         created_by = user
                 }
@@ -456,7 +465,7 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
                     created_by = req.user
 
                 if (lead.updated_by) {
-                    let user = await User.findOne({ username: updated_by })
+                    let user = await User.findOne({ username: lead.updated_by })
                     if (user)
                         updated_by = user
                 }
@@ -466,34 +475,40 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
                 if (lead._id && isMongoId(String(lead._id))) {
 
                     if (mobile) {
-                        if (!await Lead.findOne({ mobile: mobile }))
-                            if (!await Lead.findOne({ alternate_mobile1: mobile }))
-                                if (!await Lead.findOne({ alternate_mobile2: mobile }))
-                                    uniqueNumbers.push(mobile)
+                        if (mobile !== lead.mobile)
+                            if (!await Lead.findOne({ mobile: mobile }))
+                                if (!await Lead.findOne({ alternate_mobile1: mobile }))
+                                    if (!await Lead.findOne({ alternate_mobile2: mobile }))
+                                        uniqueNumbers.push(mobile)
                     }
                     if (alternate_mobile1) {
-                        if (!await Lead.findOne({ mobile: alternate_mobile1 }))
-                            if (!await Lead.findOne({ alternate_mobile1: alternate_mobile1 }))
-                                if (!await Lead.findOne({ alternate_mobile2: alternate_mobile1 }))
-                                    uniqueNumbers.push(alternate_mobile1)
+                        if (alternate_mobile1 !== lead.alternate_mobile1)
+                            if (!await Lead.findOne({ mobile: alternate_mobile1 }))
+                                if (!await Lead.findOne({ alternate_mobile1: alternate_mobile1 }))
+                                    if (!await Lead.findOne({ alternate_mobile2: alternate_mobile1 }))
+                                        uniqueNumbers.push(alternate_mobile1)
                     }
                     if (alternate_mobile2) {
-                        if (!await Lead.findOne({ mobile: alternate_mobile2 }))
-                            if (!await Lead.findOne({ alternate_mobile1: alternate_mobile2 }))
-                                if (!await Lead.findOne({ alternate_mobile2: alternate_mobile2 }))
-                                    uniqueNumbers.push(alternate_mobile2)
+                        if (alternate_mobile2 !== lead.alternate_mobile2)
+                            if (!await Lead.findOne({ mobile: alternate_mobile2 }))
+                                if (!await Lead.findOne({ alternate_mobile1: alternate_mobile2 }))
+                                    if (!await Lead.findOne({ alternate_mobile2: alternate_mobile2 }))
+                                        uniqueNumbers.push(alternate_mobile2)
                     }
-                    if (uniqueNumbers.length !== 0) {
-                        await Lead.findByIdAndUpdate(lead._id, {
-                            ...lead,
-                            mobile: uniqueNumbers[0] || mobile,
-                            alternate_mobile1: uniqueNumbers[1] || alternate_mobile1,
-                            alternate_mobile2: uniqueNumbers[2] || alternate_mobile2,
-                            lead_owners: new_lead_owners,
-                            created_by: created_by,
-                            updated_by: updated_by
-                        })
-                    }
+                    if (mobile !== lead.mobile)
+                        if (alternate_mobile1 !== lead.alternate_mobile1)
+                            if (alternate_mobile2 !== lead.alternate_mobile2)
+                                if (uniqueNumbers.length !== 0) {
+                                    await Lead.findByIdAndUpdate(lead._id, {
+                                        ...lead,
+                                        mobile: uniqueNumbers[0] || mobile,
+                                        alternate_mobile1: uniqueNumbers[1] || alternate_mobile1,
+                                        alternate_mobile2: uniqueNumbers[2] || alternate_mobile2,
+                                        lead_owners: new_lead_owners,
+                                        created_by: created_by,
+                                        updated_by: updated_by
+                                    })
+                                }
                 }
 
                 if (!lead._id || !isMongoId(String(lead._id))) {

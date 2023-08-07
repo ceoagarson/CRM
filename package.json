@@ -6,7 +6,7 @@
     "server"
   ],
   "scripts": {
-    "build": "cd server && tsc && npm install && cd ../client && npm install && npm run build && mv build ../server/dist/build ",
+    "build": "npm install && cd server && tsc && cd ../client && npm run build && mv build ../server/dist/build ",
     "start": "node server/dist/app.js"
   }
 }

@@ -65,7 +65,7 @@ function LoginForm() {
       setTimeout(() => {
         setUser({ type: UserActions.login, payload: data.data })
         setChoice({ type: UserChoiceActions.close })
-        goto(paths.leads)
+        goto(paths.dashboard)
       }, 400)
     }
   }, [setUser, goto, setChoice, isSuccess, data])
@@ -132,11 +132,11 @@ function LoginForm() {
         {
           isSuccess ? (
             <Alert color="success">
-              logged in 
+              logged in
             </Alert>
           ) : null
         }
-        <Button variant="contained" 
+        <Button variant="contained"
           disabled={Boolean(isLoading)}
           type="submit" fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Login"}
         </Button>
