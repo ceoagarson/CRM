@@ -75,22 +75,24 @@ function UploadLeadsExcelButton() {
         isLoading ?
           <CircularProgress />
           :
-          <Button
-            variant="outlined"
-            component="label"
-            color="primary"
-          >
-            <Upload sx={{ mr: 2 }} />
-            <FileInput width="20" className="" type="file" required name="file" onChange={
-              (e: any) => {
-                if (e.currentTarget.files) {
-                  setFile(e.currentTarget.files[0])
-                }
-              }}>
-            </FileInput >
-          </Button>
-
-
+          <>
+            <Button
+              variant="outlined"
+              component="label"
+            >
+              <Upload />
+              <FileInput
+                id="upload_input"
+                hidden
+                type="file" required name="file" onChange={
+                  (e: any) => {
+                    if (e.currentTarget.files) {
+                      setFile(e.currentTarget.files[0])
+                    }
+                  }}>
+              </FileInput >
+            </Button>
+          </>
       }
     </>
   )

@@ -519,14 +519,13 @@ export default function LeadsPage() {
         >
           Leads
         </Typography>
-        <UploadLeadsExcelButton />
+
         <Stack
           direction="row"
         >
           {/* search bar */}
-          < Stack direction="row" spacing={2} sx={{ bgcolor: headColor }
-          }>
-
+          < Stack direction="row" spacing={2} >
+            <UploadLeadsExcelButton />
             <TextField
               fullWidth
               size="small"
