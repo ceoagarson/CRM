@@ -8,9 +8,7 @@ export const GetCustomers = async () => {
   return await apiClient.get(`customers`)
 }
 
-export const GetLeadTemplate = async () => {
-  return apiClient.get("template/leads")
-}
+
 export const NewLead = async (body: FormData) => {
   return await apiClient.post("leads", body)
 }

@@ -1,4 +1,4 @@
-import { IUser } from "../users/user.type"
+import { IUser } from "./users/user.type"
 
 export type FlowNode = {
     id: string,

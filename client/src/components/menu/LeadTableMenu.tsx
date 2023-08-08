@@ -8,49 +8,228 @@ import ExportToExcel from '../tables/utils/ExportToExcel';
 import NewLeadDialog from '../dialogs/leads/NewLeadDialog';
 import { ILead } from '../../types/leads/lead.type';
 import { ILeadTemplate } from '../../types/leads/lead.template.types';
-import { useQuery } from 'react-query';
-import { AxiosResponse } from 'axios';
-import { BackendError } from '../../types';
-import { GetLeadTemplate } from '../../services/LeadsServices';
+
+let template: ILeadTemplate[] = [
+    {
+        _id: "",
+        name: "",
+        customer_name: "",
+        customer_designation: "",
+        mobile: 6787876765,
+        email: "",
+        city: "",
+        state: "",
+        country: "",
+        address: "",
+        work_description: "",
+        turnover: 5000000,
+        alternate_mobile1: 6787876766,
+        alternate_mobile2: 6787876767,
+        alternate_email:'',
+        lead_type: "wholesale",
+        stage: "open",
+        lead_source: "others",
+        remarks: "remarks",
+        lead_owners: "nishu,sandeep",
+        visiting_card: "",
+        is_customer: false,
+        last_whatsapp_date: new Date(),
+        created_at: new Date(),
+        created_by: "nishu",
+        updated_at: new Date(),
+        updated_by: "nishu",
+
+    },
+    {
+        _id: "",
+        name: "",
+        customer_name: "",
+        customer_designation: "",
+        mobile: 6787876765,
+        email: "",
+        city: "",
+        state: "",
+        country: "",
+        address: "",
+        work_description: "",
+        turnover: 5000000,
+        alternate_mobile1: 6787876766,
+        alternate_mobile2: 6787876767,
+        alternate_email:'',
+        lead_type: "retail",
+        stage: "potential",
+        lead_source: "visit",
+        remarks: "remarks",
+        lead_owners: "nishu,sandeep",
+        visiting_card: "visiting_card",
+        is_customer: false,
+        last_whatsapp_date: new Date(),
+        created_at: new Date(),
+        created_by: "nishu",
+        updated_at: new Date(),
+        updated_by: "nishu",
+
+    },
+    {
+        _id: "",
+        name: "",
+        customer_name: "",
+        customer_designation: "",
+        mobile: 6787876765,
+        email: "",
+        city: "",
+        state: "",
+        country: "",
+        address: "",
+        work_description: "",
+        turnover: 5000000,
+        alternate_mobile1: 6787876766,
+        alternate_mobile2: 6787876767,
+        alternate_email:'',
+        lead_type: "company",
+        stage: "potential",
+        lead_source: "whatsapp",
+        remarks: "remarks",
+        lead_owners: "nishu,sandeep",
+        visiting_card: "visiting_card",
+        is_customer: false,
+        last_whatsapp_date: new Date(),
+        created_at: new Date(),
+        created_by: "nishu",
+        updated_at: new Date(),
+        updated_by: "nishu",
+
+    },
+    {
+        _id: "",
+        name: "",
+        customer_name: "",
+        customer_designation: "",
+        mobile: 6787876765,
+        email: "",
+        city: "",
+        state: "",
+        country: "",
+        address: "",
+        work_description: "",
+        turnover: 5000000,
+        alternate_mobile1: 6787876766,
+        alternate_mobile2: 6787876767,
+        alternate_email:'',
+        lead_type: "wholesale+retail",
+        stage: "closed",
+        lead_source: "cold calling",
+        remarks: "remarks",
+        lead_owners: "nishu,sandeep",
+        visiting_card: "visiting_card",
+        is_customer: false,
+        last_whatsapp_date: new Date(),
+        created_at: new Date(),
+        created_by: "nishu",
+        updated_at: new Date(),
+        updated_by: "nishu",
+
+    },
+    {
+        _id: "",
+        name: "",
+        customer_name: "",
+        customer_designation: "",
+        mobile: 6787876765,
+        email: "",
+        city: "",
+        state: "",
+        country: "",
+        address: "",
+        work_description: "",
+        turnover: 5000000,
+        alternate_mobile1: 6787876766,
+        alternate_mobile2: 6787876767,
+        alternate_email:'',
+        lead_type: "wholesale+retail",
+        stage: "potential",
+        lead_source: "cold calling",
+        remarks: "remarks",
+        lead_owners: "nishu,sandeep",
+        visiting_card: "visiting_card",
+        is_customer: false,
+        last_whatsapp_date: new Date(),
+        created_at: new Date(),
+        created_by: "nishu",
+        updated_at: new Date(),
+        updated_by: "nishu",
+
+    },
+    {
+        _id: "",
+        name: "",
+        customer_name: "",
+        customer_designation: "",
+        mobile: 6787876765,
+        email: "",
+        city: "",
+        state: "",
+        country: "",
+        address: "",
+        work_description: "",
+        turnover: 5000000,
+        alternate_mobile1: 6787876766,
+        alternate_mobile2: 6787876767,
+        alternate_email:'',
+        lead_type: "wholesale+retail",
+        stage: "potential",
+        lead_source: "cold calling",
+        remarks: "remarks",
+        lead_owners: "nishu,sandeep",
+        visiting_card: "visiting_card",
+        is_customer: false,
+        last_whatsapp_date: new Date(),
+        created_at: new Date(),
+        created_by: "nishu",
+        updated_at: new Date(),
+        updated_by: "nishu",
+
+    },
+    {
+        _id: "",
+        name: "",
+        customer_name: "",
+        customer_designation: "",
+        mobile: 6787876765,
+        email: "",
+        city: "",
+        state: "",
+        country: "",
+        address: "",
+        work_description: "",
+        turnover: 5000000,
+        alternate_mobile1: 6787876766,
+        alternate_mobile2: 6787876767,
+        alternate_email:'',
+        lead_type: "wholesale+retail",
+        stage: "useless",
+        lead_source: "cold calling",
+        remarks: "remarks",
+        lead_owners: "nishu,sandeep",
+        visiting_card: "visiting_card",
+        is_customer: false,
+        last_whatsapp_date: new Date(),
+        created_at: new Date(),
+        created_by: "nishu",
+        updated_at: new Date(),
+        updated_by: "nishu",
+    }
+]
 
 type Props = {
     selectedFlatRows: Row<ILead>[]
 }
-type SelectedData = {
-    name: string,
-    email: string,
-    work_description: string,
-    mobile: number,
-    city: string,
-    state: string,
-    stage: string,
-    country: string,
-    lead_owner: string,
-    customer_name: string,
-    address: string,
-    alternate_mobile1: number,
-    alternate_mobile2: number,
-    alternate_email: string,
-    customer_designation: string,
-    lead_source: string,
-    updated_by: string,
-    updated_at: string,
-    created_at: string,
-    turnover: number,
-    lead_type: string,
-    last_remark: string
 
-}
 function LeadTableMenu({ selectedFlatRows }: Props) {
     const { menu, setMenu } = useContext(MenuContext)
-    const [selectedData, setSelectedData] = useState<SelectedData[]>([])
+    const [selectedData, setSelectedData] = useState<ILeadTemplate[]>(template)
     const [sent, setSent] = useState(false)
     const { setChoice } = useContext(ChoiceContext)
-    const [template, setTemplate] = useState<ILeadTemplate[]>()
-    const { data, isLoading } = useQuery
-        <AxiosResponse<ILeadTemplate[]>, BackendError>("leads_template", GetLeadTemplate, {
-            refetchOnMount: true
-        })
 
     function handleExcel() {
         setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
@@ -66,45 +245,50 @@ function LeadTableMenu({ selectedFlatRows }: Props) {
 
     // refine data
     useEffect(() => {
-        let data: SelectedData[] = []
+        let data: ILeadTemplate[] = []
         selectedFlatRows.map((item) => {
             const lead = item.original
-            let last_remark = ""
-            if (lead.remarks.length)
-                last_remark = lead.remarks[lead.remarks.length - 1].remark
-            return data.push({
-                name: lead.name,
-                email: lead.email,
-                mobile: lead.mobile,
-                work_description: lead.work_description,
-                city: lead.city,
-                state: lead.state,
-                stage: lead.stage,
-                country: lead.country,
-                turnover: lead.turnover,
-                lead_type: lead.lead_type,
-                lead_owner: lead.lead_owners.toString(),
-                customer_name: lead.customer_name,
-                last_remark: last_remark,
-                address: lead.address,
-                alternate_mobile1: lead.alternate_mobile1,
-                alternate_mobile2: lead.alternate_mobile2,
-                alternate_email: lead.alternate_email,
-                customer_designation: lead.customer_designation,
-                lead_source: lead.lead_source,
-                updated_by: lead.updated_by.username,
-                updated_at: new Date(lead.updated_at).toLocaleDateString(),
-                created_at: new Date(lead.created_at).toLocaleDateString(),
-            })
+           
+            return data.push(
+
+                {
+                    _id: lead._id,
+                    name: lead.name,
+                    customer_name: lead.customer_name,
+                    customer_designation: lead.customer_designation,
+                    mobile: lead.mobile,
+                    email: lead.email,
+                    city: lead.city,
+                    state: lead.state,
+                    country: lead.country,
+                    address: lead.address,
+                    work_description: lead.work_description,
+                    turnover: lead.turnover,
+                    alternate_mobile1: lead.alternate_mobile1,
+                    alternate_mobile2: lead.alternate_mobile2,
+                    alternate_email: lead.alternate_email,
+                    lead_type: lead.lead_type,
+                    stage: lead.stage,
+                    lead_source: lead.lead_source,
+                    remarks: lead.remarks.length ? lead.remarks[lead.remarks.length - 1].remark : "",
+                    is_customer: lead.is_customer,
+                    last_whatsapp_date: lead.last_whatsapp_date,
+                    created_at: lead.created_at,
+                    created_by: lead.created_by.username,
+                    updated_at: lead.updated_at,
+                    updated_by: lead.updated_by.username,
+                    lead_owners: lead.lead_owners.map((owner) => {
+                        return owner.username + ","
+                    }).toString(),
+                    visiting_card: lead.visiting_card && lead.visiting_card.url
+                }
+            )
         })
-        setSelectedData(data)
+        if (data.length > 0)
+            setSelectedData(data)
     }, [selectedFlatRows])
 
-    useEffect(() => {
-        if (data)
-            setTemplate(data.data)
-    }, [data])
-    console.log(template)
+
     return (
         <>
 
@@ -142,7 +326,7 @@ function LeadTableMenu({ selectedFlatRows }: Props) {
                     setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
                 }}
                 >New Lead</MenuItem>
-                <MenuItem onClick={handleExcel} disabled={isLoading}
+                <MenuItem onClick={handleExcel}
                 >Export To Excel</MenuItem>
 
             </Menu>

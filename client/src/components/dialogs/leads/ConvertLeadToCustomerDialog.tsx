@@ -62,7 +62,7 @@ function ConvertLeadToCustomerDialog({ lead }: { lead: ILead }) {
             >
                 <Button fullWidth variant="outlined" color="error"
                     onClick={() => {
-                        setChoice({ type: LeadChoiceActions.preserve_lead })
+                        setChoice({ type: LeadChoiceActions.convert_customer })
                         mutate({ id: lead._id })
                     }}
                     disabled={isLoading}

@@ -1,4 +1,4 @@
-import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
+import { Box, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material'
 import { Column, useTable, useSortBy, usePagination, useGlobalFilter, useRowSelect } from 'react-table'
 import Pagination from './utils/Pagination';
 import TableCheckBox from './utils/TableCheckBox';

@@ -55,7 +55,7 @@ function UploadLeadsExcelButton() {
             autoHideDuration={6000}
             onClose={() => setFile(null)}
             anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-            message="Uploaded Successfuly"
+            message="Uploaded Successfuly wait for some minutes"
           /> : null
       }
       {
