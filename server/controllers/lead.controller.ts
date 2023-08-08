@@ -78,8 +78,8 @@ export const CreateLead = async (req: Request, res: Response, next: NextFunction
         ...req.body,
         visiting_card: visiting_card,
         mobile: uniqueNumbers[0] || null,
-        alternate_mobile1: uniqueNumbers[1] || null,
-        alternate_mobile2: uniqueNumbers[2] || null,
+        alternate_mobile1: uniqueNumbers[1] || alternate_mobile1 || null,
+        alternate_mobile2: uniqueNumbers[2] || alternate_mobile2 || null,
         lead_owners: new_lead_owners,
         created_by: req.user?._id,
         updated_by: req.user?._id,
@@ -161,220 +161,7 @@ export const GetCustomers = async (req: Request, res: Response, next: NextFuncti
     return res.status(200).json(leads)
 }
 
-export const SendTemplateLeads = async (req: Request, res: Response, next: NextFunction) => {
-    let template: ILeadTemplate[] = [
-        {
-            _id: "_id",
-            name: "name",
-            customer_name: "customer_name",
-            customer_designation: "customer_designation",
-            mobile: 6787876765,
-            email: "email",
-            city: "city",
-            state: "state",
-            country: "country",
-            address: "address",
-            work_description: "work_description",
-            turnover: 5000000,
-            alternate_mobile1: 6787876766,
-            alternate_mobile2: 6787876767,
-            alternate_email: "alternate_email",
-            lead_type: "lead_type",
-            stage: "stage",
-            lead_source: "lead_source",
-            remarks: "remarks",
-            lead_owners: "lead_owners",
-            visiting_card: "visiting_card",
-            is_customer: false,
-            last_whatsapp_date: new Date(),
-            created_at: new Date(),
-            created_by: "nishu",
-            updated_at: new Date(),
-            updated_by: "nishu",
 
-        },
-        {
-            _id: "_id",
-            name: "name",
-            customer_name: "customer_name",
-            customer_designation: "customer_designation",
-            mobile: 6787876765,
-            email: "email",
-            city: "city",
-            state: "state",
-            country: "country",
-            address: "address",
-            work_description: "work_description",
-            turnover: 5000000,
-            alternate_mobile1: 6787876766,
-            alternate_mobile2: 6787876767,
-            alternate_email: "alternate_email",
-            lead_type: "lead_type",
-            stage: "stage",
-            lead_source: "lead_source",
-            remarks: "remarks",
-            lead_owners: "lead_owners",
-            visiting_card: "visiting_card",
-            is_customer: false,
-            last_whatsapp_date: new Date(),
-            created_at: new Date(),
-            created_by: "nishu",
-            updated_at: new Date(),
-            updated_by: "nishu",
-
-        },
-        {
-            _id: "_id",
-            name: "name",
-            customer_name: "customer_name",
-            customer_designation: "customer_designation",
-            mobile: 6787876765,
-            email: "email",
-            city: "city",
-            state: "state",
-            country: "country",
-            address: "address",
-            work_description: "work_description",
-            turnover: 5000000,
-            alternate_mobile1: 6787876766,
-            alternate_mobile2: 6787876767,
-            alternate_email: "alternate_email",
-            lead_type: "lead_type",
-            stage: "stage",
-            lead_source: "lead_source",
-            remarks: "remarks",
-            lead_owners: "lead_owners",
-            visiting_card: "visiting_card",
-            is_customer: false,
-            last_whatsapp_date: new Date(),
-            created_at: new Date(),
-            created_by: "nishu",
-            updated_at: new Date(),
-            updated_by: "nishu",
-
-        },
-        {
-            _id: "_id",
-            name: "name",
-            customer_name: "customer_name",
-            customer_designation: "customer_designation",
-            mobile: 6787876765,
-            email: "email",
-            city: "city",
-            state: "state",
-            country: "country",
-            address: "address",
-            work_description: "work_description",
-            turnover: 5000000,
-            alternate_mobile1: 6787876766,
-            alternate_mobile2: 6787876767,
-            alternate_email: "alternate_email",
-            lead_type: "lead_type",
-            stage: "stage",
-            lead_source: "lead_source",
-            remarks: "remarks",
-            lead_owners: "lead_owners",
-            visiting_card: "visiting_card",
-            is_customer: false,
-            last_whatsapp_date: new Date(),
-            created_at: new Date(),
-            created_by: "nishu",
-            updated_at: new Date(),
-            updated_by: "nishu",
-
-        },
-        {
-            _id: "_id",
-            name: "name",
-            customer_name: "customer_name",
-            customer_designation: "customer_designation",
-            mobile: 6787876765,
-            email: "email",
-            city: "city",
-            state: "state",
-            country: "country",
-            address: "address",
-            work_description: "work_description",
-            turnover: 5000000,
-            alternate_mobile1: 6787876766,
-            alternate_mobile2: 6787876767,
-            alternate_email: "alternate_email",
-            lead_type: "lead_type",
-            stage: "stage",
-            lead_source: "lead_source",
-            remarks: "remarks",
-            lead_owners: "lead_owners",
-            visiting_card: "visiting_card",
-            is_customer: false,
-            last_whatsapp_date: new Date(),
-            created_at: new Date(),
-            created_by: "nishu",
-            updated_at: new Date(),
-            updated_by: "nishu",
-
-        },
-        {
-            _id: "_id",
-            name: "name",
-            customer_name: "customer_name",
-            customer_designation: "customer_designation",
-            mobile: 6787876765,
-            email: "email",
-            city: "city",
-            state: "state",
-            country: "country",
-            address: "address",
-            work_description: "work_description",
-            turnover: 5000000,
-            alternate_mobile1: 6787876766,
-            alternate_mobile2: 6787876767,
-            alternate_email: "alternate_email",
-            lead_type: "lead_type",
-            stage: "stage",
-            lead_source: "lead_source",
-            remarks: "remarks",
-            lead_owners: "lead_owners",
-            visiting_card: "visiting_card",
-            is_customer: false,
-            last_whatsapp_date: new Date(),
-            created_at: new Date(),
-            created_by: "nishu",
-            updated_at: new Date(),
-            updated_by: "nishu",
-
-        },
-        {
-            _id: "_id",
-            name: "name",
-            customer_name: "customer_name",
-            customer_designation: "customer_designation",
-            mobile: 6787876765,
-            email: "email",
-            city: "city",
-            state: "state",
-            country: "country",
-            address: "address",
-            work_description: "work_description",
-            turnover: 5000000,
-            alternate_mobile1: 6787876766,
-            alternate_mobile2: 6787876767,
-            alternate_email: "alternate_email",
-            lead_type: "lead_type",
-            stage: "stage",
-            lead_source: "lead_source",
-            remarks: "remarks",
-            lead_owners: "lead_owners",
-            visiting_card: "visiting_card",
-            is_customer: false,
-            last_whatsapp_date: new Date(),
-            created_at: new Date(),
-            created_by: "nishu",
-            updated_at: new Date(),
-            updated_by: "nishu",
-        }
-    ]
-    return res.status(200).json(template)
-}
 
 // update lead only admin can do
 export const UpdateLead = async (req: Request, res: Response, next: NextFunction) => {
@@ -473,8 +260,8 @@ export const UpdateLead = async (req: Request, res: Response, next: NextFunction
     await Lead.findByIdAndUpdate(lead._id, {
         ...req.body,
         mobile: uniqueNumbers[0] || mobile,
-        alternate_mobile1: uniqueNumbers[1] || alternate_mobile1,
-        alternate_mobile2: uniqueNumbers[2] || alternate_mobile2,
+        alternate_mobile1: uniqueNumbers[1] || alternate_mobile1 || null,
+        alternate_mobile2: uniqueNumbers[2] || alternate_mobile2 || null,
         lead_owners: new_lead_owners,
         visiting_card: visiting_card,
         created_by: req.user?._id,
@@ -661,7 +448,7 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
                     updated_by = req.user
 
                 if (lead._id && isMongoId(String(lead._id))) {
-
+                    console.log("updating..")
                     if (mobile) {
                         if (mobile !== lead.mobile)
                             if (!await Lead.findOne({ mobile: mobile }))
@@ -683,20 +470,45 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
                                     if (!await Lead.findOne({ alternate_mobile2: alternate_mobile2 }))
                                         uniqueNumbers.push(alternate_mobile2)
                     }
-                    if (mobile !== lead.mobile)
-                        if (alternate_mobile1 !== lead.alternate_mobile1)
-                            if (alternate_mobile2 !== lead.alternate_mobile2)
-                                if (uniqueNumbers.length !== 0) {
-                                    await Lead.findByIdAndUpdate(lead._id, {
-                                        ...lead,
-                                        mobile: uniqueNumbers[0] || mobile,
-                                        alternate_mobile1: uniqueNumbers[1] || alternate_mobile1,
-                                        alternate_mobile2: uniqueNumbers[2] || alternate_mobile2,
-                                        lead_owners: new_lead_owners,
-                                        created_by: created_by,
-                                        updated_by: updated_by
-                                    })
-                                }
+                    let targetLead = await Lead.findById(lead._id)
+                    if (targetLead) {
+                        if (lead.remarks) {
+                            if (!lead.remarks.length) {
+                                let new_remark = new Remark({
+                                    remark: lead.remarks,
+                                    lead: lead,
+                                    created_at: new Date(),
+                                    created_by: req.user,
+                                    updated_at: new Date(),
+                                    updated_by: req.user
+                                })
+                                await new_remark.save()
+                                targetLead.remarks = [new_remark]
+                            }
+                            else {
+                                let last_remark = targetLead.remarks[targetLead.remarks.length - 1]
+                                await Remark.findByIdAndUpdate(last_remark._id, {
+                                    remark: lead.remarks,
+                                    lead: lead,
+                                    updated_at: new Date(),
+                                    updated_by: req.user
+                                })
+                            }
+
+                        }
+
+                        await Lead.findByIdAndUpdate(lead._id, {
+                            ...lead,
+                            remarks: targetLead.remarks,
+                            mobile: uniqueNumbers[0] || mobile,
+                            alternate_mobile1: uniqueNumbers[1] || alternate_mobile1 || null,
+                            alternate_mobile2: uniqueNumbers[2] || alternate_mobile2 || null,
+                            lead_owners: new_lead_owners,
+                            created_by: created_by,
+                            updated_by: updated_by
+                        })
+                    }
+
                 }
 
                 if (!lead._id || !isMongoId(String(lead._id))) {
@@ -719,14 +531,13 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
                                 if (!await Lead.findOne({ alternate_mobile2: alternate_mobile2 }))
                                     uniqueNumbers.push(alternate_mobile2)
                     }
-                    console.log(uniqueNumbers)
                     if (uniqueNumbers.length !== 0) {
                         let newlead = new Lead({
                             ...lead,
                             _id: new Types.ObjectId(),
                             mobile: uniqueNumbers[0] || null,
-                            alternate_mobile1: uniqueNumbers[1] || null,
-                            alternate_mobile2: uniqueNumbers[2] || null,
+                            alternate_mobile1: uniqueNumbers[1] || alternate_mobile1 || null,
+                            alternate_mobile2: uniqueNumbers[2] || alternate_mobile2 || null,
                             lead_owners: new_lead_owners,
                             created_by: created_by,
                             updated_by: updated_by

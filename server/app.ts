@@ -57,13 +57,7 @@ cloudinary.v2.config({
 app.use("/api/v1", UserRoutes)
 app.use("/api/v1", LeadRoutes)
 
-app.post("/api/v1/test", upload.single("visiting_card"), (req: Request, res: Response) => {
-    console.log(JSON.parse(req.body.body))
-    res.status(200).json({
-        file: req.file,
-        data: req.body,
-    })
-})
+
 //react app handler
 if (ENV === "production") {
     app.use(express.static(path.join(__dirname, "build")))
