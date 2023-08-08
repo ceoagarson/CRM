@@ -1,5 +1,5 @@
 import { Comment, Edit, Search, Visibility } from "@mui/icons-material"
-import {  IconButton, InputAdornment, LinearProgress, Stack,  TextField, Tooltip, Typography } from "@mui/material"
+import { IconButton, InputAdornment, LinearProgress, Stack, TextField, Tooltip, Typography } from "@mui/material"
 import { AxiosResponse } from "axios"
 import React, { useContext, useEffect, useState } from "react"
 import { useQuery } from "react-query"
@@ -421,7 +421,7 @@ export default function CustomersPage() {
     }
   }, [isSuccess, leads])
 
-  
+
 
   //set filter
   useEffect(() => {
@@ -455,13 +455,15 @@ export default function CustomersPage() {
         >
           Customers
         </Typography>
+        <UploadLeadsExcelButton />
+
         <Stack
           direction="row"
         >
           {/* search bar */}
           < Stack direction="row" spacing={2} sx={{ bgcolor: headColor }
           }>
-            <UploadLeadsExcelButton />
+
             <TextField
               fullWidth
               size="small"

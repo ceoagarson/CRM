@@ -21,7 +21,7 @@ export default function NavBar() {
     const { user } = useContext(UserContext)
     return (
         <>
-            <Box sx={{ bgcolor: 'rgba(0,0,255,0.6)', width: '100%' }}>
+            <Box sx={{ bgcolor: '#318CE7', width: '100%' }}>
                 {/* parent stack */}
                 <Stack direction="row" sx={{
                     justifyContent: "space-between", alignItems: "center"

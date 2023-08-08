@@ -81,8 +81,7 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
     },
     validationSchema: Yup.object({
       name: Yup.string()
-        .min(4, 'Must be 4 characters or more')
-        .max(30, 'Must be 30 characters or less'),
+       ,
       lead_owners: Yup.array()
         .required('Required field'),
       email: Yup.string()
@@ -769,7 +768,7 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
         ) : null
       }
       <Button variant="contained" color="primary" type="submit"
-
+        disabled={isLoading}
         fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Update Lead"}
       </Button>
     </form>

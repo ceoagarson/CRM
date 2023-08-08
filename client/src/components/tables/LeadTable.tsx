@@ -76,7 +76,6 @@ export function LeadTable({ data, columns }: Props) {
     }, [selectedFlatRows, setSelectedRows])
     return (
         <>
-
             {/* table */}
             <Box
                 sx={{
@@ -84,8 +83,8 @@ export function LeadTable({ data, columns }: Props) {
                     height: '73.5vh'
                 }}>
                 <Table
-                    sx={{ minWidth: "5000px" }}
                     size="small"
+                    sx={{ minWidth: "5000px" }}
                     {...getTableProps()}>
                     <TableHead
                     >
