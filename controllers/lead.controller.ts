@@ -332,6 +332,7 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
         let workbook_response: ILeadTemplate[] = xlsx.utils.sheet_to_json(
             workbook.Sheets[workbook_sheet[0]]
         );
+        let result: ILeadTemplate[] = []
 
         workbook_response.forEach(async (lead) => {
             let uniqueNumbers: number[] = []
@@ -417,6 +418,9 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
             if (alternate_mobile2 && String(alternate_mobile2).length !== 10)
                 validated = false
             console.log(validated)
+            if (!validated) {
+                result.push(lead)
+            }
             if (validated) {
                 if (lead.lead_owners) {
                     let lead_owners = String((lead.lead_owners)).split(",")
@@ -560,9 +564,7 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
                 }
             }
         })
-        return res.status(200).send({
-            message: workbook_response,
-        });
+        return res.status(200).send(result);
     }
     return res.status(404).send({
         message: "please provide an Excel file",

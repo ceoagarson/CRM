@@ -7,6 +7,7 @@ import { BulkLeadUpdateFromExcel } from "../../services/LeadsServices"
 import { queryClient } from "../../main"
 import { ILeadTemplate } from "../../types/leads/lead.template.types"
 import { Snackbar } from "@mui/material"
+import ExportToExcel from "../tables/utils/ExportToExcel"
 
 const FileInput = styled.input`
 background-color:blue;
@@ -43,9 +44,13 @@ function UploadLeadsExcelButton() {
     if (data) {
       setLeads(data.data)
     }
-  }, [data])
+  }, [data, leads])
 
-  console.log(leads)
+  React.useEffect(() => {
+    if (isSuccess) {
+      ExportToExcel(data.data, "errors_leads_data")
+    }
+  }, [isSuccess])
   return (
     <>
       {
