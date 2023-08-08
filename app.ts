@@ -2,11 +2,10 @@ import express, { NextFunction, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import cloudinary from "cloudinary";
-import helmet from "helmet";
 import cors from "cors";
 import { MulterError } from 'multer';
 import { connectDatabase } from './config/db';
-import UserRoutes, { upload } from "./routes/user.routes";
+import UserRoutes from "./routes/user.routes";
 import LeadRoutes from "./routes/lead.routes";
 import path from 'path';
 import morgan from "morgan";
@@ -24,14 +23,6 @@ app.use(cookieParser());
 //logger
 app.use(morgan('tiny'))
 
-//helmet config
-app.use(
-    helmet.contentSecurityPolicy({
-        directives: {
-            "img-src": ["'self'", "https://res.cloudinary.com/"],
-        },
-    })
-);
 
 //cors for devlopment
 if (ENV === "development") {
