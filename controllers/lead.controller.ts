@@ -343,7 +343,7 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
             let updated_by: IUser | undefined = undefined
             let new_lead_owners: IUser[] = []
             let validated = true
-            let leadTypes = ["retail", "wholesale", "company", "wholesale&retail"]
+            let leadTypes = ["retail", "wholesale", "company", "wholesale+retail"]
             let stages = ["open", "closed", "useless", "potential"]
             let sources = ["internet", "visit", "whatsapp", "cold calling",
                 "cold email", "others"]
