@@ -7,6 +7,11 @@ import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext';
 import ExportToExcel from '../tables/utils/ExportToExcel';
 import NewLeadDialog from '../dialogs/leads/NewLeadDialog';
 import { ILead } from '../../types/leads/lead.type';
+import { ILeadTemplate } from '../../types/leads/lead.template.types';
+import { useQuery } from 'react-query';
+import { AxiosResponse } from 'axios';
+import { BackendError } from '../../types';
+import { GetLeadTemplate } from '../../services/LeadsServices';
 
 type Props = {
     selectedFlatRows: Row<ILead>[]
@@ -41,7 +46,11 @@ function LeadTableMenu({ selectedFlatRows }: Props) {
     const [selectedData, setSelectedData] = useState<SelectedData[]>([])
     const [sent, setSent] = useState(false)
     const { setChoice } = useContext(ChoiceContext)
-
+    const [template, setTemplate] = useState<ILeadTemplate[]>()
+    const { data, isLoading } = useQuery
+        <AxiosResponse<ILeadTemplate[]>, BackendError>("leads_template", GetLeadTemplate, {
+            refetchOnMount: true
+        })
 
     function handleExcel() {
         setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
@@ -53,7 +62,6 @@ function LeadTableMenu({ selectedFlatRows }: Props) {
             console.log(err)
             setSent(false)
         }
-
     }
 
     // refine data
@@ -92,6 +100,11 @@ function LeadTableMenu({ selectedFlatRows }: Props) {
         setSelectedData(data)
     }, [selectedFlatRows])
 
+    useEffect(() => {
+        if (data)
+            setTemplate(data.data)
+    }, [data])
+    console.log(template)
     return (
         <>
 
@@ -129,7 +142,7 @@ function LeadTableMenu({ selectedFlatRows }: Props) {
                     setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
                 }}
                 >New Lead</MenuItem>
-                <MenuItem onClick={handleExcel}
+                <MenuItem onClick={handleExcel} disabled={isLoading}
                 >Export To Excel</MenuItem>
 
             </Menu>

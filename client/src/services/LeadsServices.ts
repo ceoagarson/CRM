@@ -1,4 +1,3 @@
-import { TformData } from "../components/forms/lead/UpdateLeadForm"
 import { apiClient } from "./utils/AxiosInterceptor"
 
 
@@ -7,6 +6,10 @@ export const GetLeads = async () => {
 }
 export const GetCustomers = async () => {
   return await apiClient.get(`customers`)
+}
+
+export const GetLeadTemplate = async () => {
+  return apiClient.get("template/leads")
 }
 export const NewLead = async (body: FormData) => {
   return await apiClient.post("leads", body)
@@ -20,7 +23,7 @@ export const DeleteLead = async ({ id }: { id: string }) => {
 export const ConvertCustomer = async ({ id }: { id: string }) => {
   return await apiClient.patch(`leads/${id}`)
 }
-export const BulkLeadUpdateFromExcel = async (body:FormData) => {
+export const BulkLeadUpdateFromExcel = async (body: FormData) => {
   return await apiClient.put(`/update/leads/bulk`, body)
 }
 

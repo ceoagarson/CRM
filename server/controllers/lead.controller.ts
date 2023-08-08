@@ -131,6 +131,7 @@ export const GetLeads = async (req: Request, res: Response, next: NextFunction) 
     })
     return res.status(200).json(leads)
 }
+
 export const GetCustomers = async (req: Request, res: Response, next: NextFunction) => {
     let leads = await Lead.find({ is_customer: true }).populate('lead_owners').populate('updated_by').populate('created_by').populate({
         path: 'remarks',
@@ -159,35 +160,222 @@ export const GetCustomers = async (req: Request, res: Response, next: NextFuncti
     })
     return res.status(200).json(leads)
 }
-let template = [
-    "_id",
-    "name",
-    "customer_name",
-    "customer_designation",
-    "mobile",
-    "email",
-    "city",
-    "state",
-    "country",
-    "address",
-    "work_description",
-    "turnover",
-    "alternate_mobile1",
-    "alternate_mobile2",
-    "alternate_email",
-    "lead_type",
-    "stage",
-    "lead_source",
-    "remarks",
-    "lead_owners",
-    "visiting_card",
-    "is_customer",
-    "last_whatsapp_date",
-    "created_at",
-    "created_by",
-    "updated_at",
-    "updated_by"
-]
+
+export const SendTemplateLeads = async (req: Request, res: Response, next: NextFunction) => {
+    let template: ILeadTemplate[] = [
+        {
+            _id: "_id",
+            name: "name",
+            customer_name: "customer_name",
+            customer_designation: "customer_designation",
+            mobile: 6787876765,
+            email: "email",
+            city: "city",
+            state: "state",
+            country: "country",
+            address: "address",
+            work_description: "work_description",
+            turnover: 5000000,
+            alternate_mobile1: 6787876766,
+            alternate_mobile2: 6787876767,
+            alternate_email: "alternate_email",
+            lead_type: "lead_type",
+            stage: "stage",
+            lead_source: "lead_source",
+            remarks: "remarks",
+            lead_owners: "lead_owners",
+            visiting_card: "visiting_card",
+            is_customer: false,
+            last_whatsapp_date: new Date(),
+            created_at: new Date(),
+            created_by: "nishu",
+            updated_at: new Date(),
+            updated_by: "nishu",
+
+        },
+        {
+            _id: "_id",
+            name: "name",
+            customer_name: "customer_name",
+            customer_designation: "customer_designation",
+            mobile: 6787876765,
+            email: "email",
+            city: "city",
+            state: "state",
+            country: "country",
+            address: "address",
+            work_description: "work_description",
+            turnover: 5000000,
+            alternate_mobile1: 6787876766,
+            alternate_mobile2: 6787876767,
+            alternate_email: "alternate_email",
+            lead_type: "lead_type",
+            stage: "stage",
+            lead_source: "lead_source",
+            remarks: "remarks",
+            lead_owners: "lead_owners",
+            visiting_card: "visiting_card",
+            is_customer: false,
+            last_whatsapp_date: new Date(),
+            created_at: new Date(),
+            created_by: "nishu",
+            updated_at: new Date(),
+            updated_by: "nishu",
+
+        },
+        {
+            _id: "_id",
+            name: "name",
+            customer_name: "customer_name",
+            customer_designation: "customer_designation",
+            mobile: 6787876765,
+            email: "email",
+            city: "city",
+            state: "state",
+            country: "country",
+            address: "address",
+            work_description: "work_description",
+            turnover: 5000000,
+            alternate_mobile1: 6787876766,
+            alternate_mobile2: 6787876767,
+            alternate_email: "alternate_email",
+            lead_type: "lead_type",
+            stage: "stage",
+            lead_source: "lead_source",
+            remarks: "remarks",
+            lead_owners: "lead_owners",
+            visiting_card: "visiting_card",
+            is_customer: false,
+            last_whatsapp_date: new Date(),
+            created_at: new Date(),
+            created_by: "nishu",
+            updated_at: new Date(),
+            updated_by: "nishu",
+
+        },
+        {
+            _id: "_id",
+            name: "name",
+            customer_name: "customer_name",
+            customer_designation: "customer_designation",
+            mobile: 6787876765,
+            email: "email",
+            city: "city",
+            state: "state",
+            country: "country",
+            address: "address",
+            work_description: "work_description",
+            turnover: 5000000,
+            alternate_mobile1: 6787876766,
+            alternate_mobile2: 6787876767,
+            alternate_email: "alternate_email",
+            lead_type: "lead_type",
+            stage: "stage",
+            lead_source: "lead_source",
+            remarks: "remarks",
+            lead_owners: "lead_owners",
+            visiting_card: "visiting_card",
+            is_customer: false,
+            last_whatsapp_date: new Date(),
+            created_at: new Date(),
+            created_by: "nishu",
+            updated_at: new Date(),
+            updated_by: "nishu",
+
+        },
+        {
+            _id: "_id",
+            name: "name",
+            customer_name: "customer_name",
+            customer_designation: "customer_designation",
+            mobile: 6787876765,
+            email: "email",
+            city: "city",
+            state: "state",
+            country: "country",
+            address: "address",
+            work_description: "work_description",
+            turnover: 5000000,
+            alternate_mobile1: 6787876766,
+            alternate_mobile2: 6787876767,
+            alternate_email: "alternate_email",
+            lead_type: "lead_type",
+            stage: "stage",
+            lead_source: "lead_source",
+            remarks: "remarks",
+            lead_owners: "lead_owners",
+            visiting_card: "visiting_card",
+            is_customer: false,
+            last_whatsapp_date: new Date(),
+            created_at: new Date(),
+            created_by: "nishu",
+            updated_at: new Date(),
+            updated_by: "nishu",
+
+        },
+        {
+            _id: "_id",
+            name: "name",
+            customer_name: "customer_name",
+            customer_designation: "customer_designation",
+            mobile: 6787876765,
+            email: "email",
+            city: "city",
+            state: "state",
+            country: "country",
+            address: "address",
+            work_description: "work_description",
+            turnover: 5000000,
+            alternate_mobile1: 6787876766,
+            alternate_mobile2: 6787876767,
+            alternate_email: "alternate_email",
+            lead_type: "lead_type",
+            stage: "stage",
+            lead_source: "lead_source",
+            remarks: "remarks",
+            lead_owners: "lead_owners",
+            visiting_card: "visiting_card",
+            is_customer: false,
+            last_whatsapp_date: new Date(),
+            created_at: new Date(),
+            created_by: "nishu",
+            updated_at: new Date(),
+            updated_by: "nishu",
+
+        },
+        {
+            _id: "_id",
+            name: "name",
+            customer_name: "customer_name",
+            customer_designation: "customer_designation",
+            mobile: 6787876765,
+            email: "email",
+            city: "city",
+            state: "state",
+            country: "country",
+            address: "address",
+            work_description: "work_description",
+            turnover: 5000000,
+            alternate_mobile1: 6787876766,
+            alternate_mobile2: 6787876767,
+            alternate_email: "alternate_email",
+            lead_type: "lead_type",
+            stage: "stage",
+            lead_source: "lead_source",
+            remarks: "remarks",
+            lead_owners: "lead_owners",
+            visiting_card: "visiting_card",
+            is_customer: false,
+            last_whatsapp_date: new Date(),
+            created_at: new Date(),
+            created_by: "nishu",
+            updated_at: new Date(),
+            updated_by: "nishu",
+        }
+    ]
+    return res.status(200).json(template)
+}
+
 // update lead only admin can do
 export const UpdateLead = async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body)
@@ -271,7 +459,7 @@ export const UpdateLead = async (req: Request, res: Response, next: NextFunction
             await new_remark.save()
             lead.remarks = [new_remark]
         }
-        else{
+        else {
             let last_remark = lead.remarks[lead.remarks.length - 1]
             await Remark.findByIdAndUpdate(last_remark._id, {
                 remark: remark,
@@ -280,7 +468,7 @@ export const UpdateLead = async (req: Request, res: Response, next: NextFunction
                 updated_by: req.user
             })
         }
-       
+
     }
     await Lead.findByIdAndUpdate(lead._id, {
         ...req.body,
@@ -293,10 +481,10 @@ export const UpdateLead = async (req: Request, res: Response, next: NextFunction
         updated_by: req.user?._id,
         created_at: new Date(Date.now()),
         updated_at: new Date(Date.now()),
-        remarks:lead.remarks
+        remarks: lead.remarks
     })
-    
-    return res.status(200).json({message:"lead updated"})
+
+    return res.status(200).json({ message: "lead updated" })
 }
 
 //delete lead
