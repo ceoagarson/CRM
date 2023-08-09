@@ -1,15 +1,14 @@
 import { Fade, IconButton, Menu, MenuItem, Snackbar } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
-import { Row } from 'react-table';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { MenuActions, MenuContext } from '../../contexts/menuContext';
 import { ChoiceContext, UserChoiceActions } from '../../contexts/dialogContext';
-import ExportToExcel from '../tables/utils/ExportToExcel';
+import ExportToExcel from '../../utils/ExportToExcel';
 import NewUserDialog from '../dialogs/users/NewUserDialog';
 import { IUser } from '../../types/users/user.type';
 
 type Props = {
-    selectedFlatRows: Row<IUser>[]
+    selectedFlatRows: IUser[]
 }
 type SelectedData = {
     username?: string,
@@ -48,8 +47,7 @@ function UserTableMenu({ selectedFlatRows }: Props) {
     // refine data
     useEffect(() => {
         let data: SelectedData[] = []
-        selectedFlatRows.map((item) => {
-            const user = item.original
+        selectedFlatRows.map((user) => {
             let lastlogin = undefined
             let created_at = undefined
             if (user.last_login && user.created_at) {

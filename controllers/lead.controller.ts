@@ -120,7 +120,10 @@ export const GetLeads = async (req: Request, res: Response, next: NextFunction) 
                 model: 'User'
             }
         ]
-    })
+    }).limit(10 * 1)
+        .skip((1 - 1) * 10)
+        .sort('-updated_at')
+        .sort('-updated_at')
     if (!leads) {
         return res.status(404).json({ message: "leads not found" })
     }
@@ -149,7 +152,7 @@ export const GetCustomers = async (req: Request, res: Response, next: NextFuncti
                 model: 'User'
             }
         ]
-    })
+    }).sort('-updated_at')
     if (!leads) {
         return res.status(404).json({ message: "leads not found" })
     }
@@ -538,6 +541,7 @@ export const GetmyLeads = async (req: Request, res: Response, next: NextFunction
         const leads = await Lead.find()
             .limit(limit * 1)
             .skip((page - 1) * limit)
+            .sort('-updated_at')
 
         const count = await Lead.countDocuments();
         return res.json({

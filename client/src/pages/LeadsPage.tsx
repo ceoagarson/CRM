@@ -1,503 +1,64 @@
-import { Comment, Delete, Edit, Search, Visibility } from "@mui/icons-material"
-import { IconButton, InputAdornment, LinearProgress, Stack, TextField, Tooltip, Typography } from "@mui/material"
+import { Comment, Delete, Edit, Search, Visibility } from '@mui/icons-material'
+import { Box, Checkbox, FormControlLabel, IconButton, InputAdornment, LinearProgress, Table, TableBody, TableCell, TableHead, TableRow, TextField, Tooltip, Typography } from '@mui/material'
 import AddTaskIcon from '@mui/icons-material/AddTask';
-import { AxiosResponse } from "axios"
-import React, { useContext, useEffect, useState } from "react"
-import { useQuery } from "react-query"
-import { Column } from "react-table"
-import UpdateLeadDialog from "../components/dialogs/leads/UpdateLeadDialog"
-import ViewLeadDialog from "../components/dialogs/leads/ViewRemarksDialog"
-import { LeadTable } from "../components/tables/LeadTable"
-import { ChoiceContext, LeadChoiceActions } from "../contexts/dialogContext"
-import { GetLeads } from "../services/LeadsServices"
-import NewRemarkDialog from "../components/dialogs/leads/NewRemarkDialog"
-import { SelectionContext } from "../contexts/selectionContext"
-import FuzzySearch from "fuzzy-search"
-import LeadTableMenu from "../components/menu/LeadTableMenu"
-import { UserContext } from "../contexts/userContext"
-import DeleteLeadDialog from "../components/dialogs/leads/DeleteLeadDialog"
-import { ILead } from "../types/leads/lead.type"
-import { BackendError } from "../types"
-import ConvertLeadToCustomerDialog from "../components/dialogs/leads/ConvertLeadToCustomerDialog"
-import { BasicPOPUP } from "../components/popup/BasicPOPUP";
-import UploadLeadsExcelButton from "../components/buttons/UploadLeadsExcelButton";
-
+import { Stack } from '@mui/system'
+import { AxiosResponse } from 'axios'
+import React, { useContext, useEffect, useState } from 'react'
+import { useQuery } from 'react-query'
+import { LeadChoiceActions, ChoiceContext } from '../contexts/dialogContext'
+import { BackendError } from '../types'
+import { color1, color2, headColor } from '../utils/colors'
+import LeadTableMenu from '../components/menu/LeadTableMenu'
+import FuzzySearch from 'fuzzy-search'
+import { GetLeads } from '../services/LeadsServices'
+import { ILead } from '../types/leads/lead.type'
+import { UserContext } from '../contexts/userContext'
+import UpdateLeadDialog from '../components/dialogs/leads/UpdateLeadDialog'
+import DeleteLeadDialog from '../components/dialogs/leads/DeleteLeadDialog'
+import ConvertLeadToCustomerDialog from '../components/dialogs/leads/ConvertLeadToCustomerDialog'
+import NewRemarkDialog from '../components/dialogs/leads/NewRemarkDialog'
+import ViewRemarksDialog from '../components/dialogs/leads/ViewRemarksDialog'
+import { BasicPOPUP } from '../components/popup/BasicPOPUP'
 
 export default function LeadsPage() {
+  const { data, isSuccess, isLoading } = useQuery<AxiosResponse<ILead[]>, BackendError>("leads", GetLeads, {
+    refetchOnMount: true
+  })
   const { user: LoggedInUser } = useContext(UserContext)
-  const { selectedRows } = useContext(SelectionContext)
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const [filter, setFilter ] = useState<string>()
-  const [preFilteredData, setPreFilteredData] = useState<ILead[]>([])
-  const { setChoice } = useContext(ChoiceContext)
-  const [DATA, setDATA] = useState<ILead[]>([])
   const [lead, setLead] = useState<ILead>()
-  const { data: leads, isSuccess, isLoading } = useQuery
-    <AxiosResponse<ILead[]>, BackendError>("leads", GetLeads, {
-      refetchOnMount: true
-    })
-  const MemoData = React.useMemo(() => DATA, [DATA])
-  const MemoColumns: Column<ILead>[] = React.useMemo(
-    () => [
-      // lead action button
-      {
-        Header: 'Actions',
-        accessor: 'action_popup',
-        Cell: (props) => {
-          return (
-            <BasicPOPUP
-              element={<Stack direction="row" spacing={1}>
-                {
-                  LoggedInUser?.is_admin ?
-                    <>
-                      <Tooltip title="delete">
-                        <IconButton color="error"
-                          onClick={() => {
-                            setAnchorEl(null)
-                            setChoice({ type: LeadChoiceActions.delete_lead })
-                            setLead(props.row.original)
-
-                          }}
-                        >
-                          <Delete />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Convert to Customer">
-                        <IconButton color="warning"
-                          onClick={() => {
-                            setAnchorEl(null)
-                            setChoice({ type: LeadChoiceActions.convert_customer })
-                            setLead(props.row.original)
-                          }}
-                        >
-                          <AddTaskIcon />
-                        </IconButton>
-                      </Tooltip>
-
-                    </>
-                    :
-                    null
-                }
-
-                <Tooltip title="edit">
-                  <IconButton color="secondary"
-                    onClick={() => {
-                      setAnchorEl(null)
-                      setChoice({ type: LeadChoiceActions.update_lead })
-                      setLead(props.row.original)
+  const [leads, setLeads] = useState<ILead[]>([])
+  const [selectAll, setSelectAll] = useState(false)
+  const MemoData = React.useMemo(() => leads, [leads])
+  const [preFilteredData, setPreFilteredData] = useState<ILead[]>([])
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
 
-                    }}
-                  >
-                    <Edit />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="view remarks">
-                  <IconButton color="primary"
-                    onClick={() => {
-                      setAnchorEl(null)
-                      setChoice({ type: LeadChoiceActions.view_remarks })
-                      setLead(props.row.original)
+  const [selectedLeads, setSelectedLeads] = useState<ILead[]>([])
+  const [filter, setFilter] = useState<string | undefined>()
+  const { setChoice } = useContext(ChoiceContext)
 
 
-                    }}
-                  >
-                    <Visibility />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Add Remark">
-                  <IconButton
-                    color="success"
-                    onClick={() => {
-                      setAnchorEl(null)
-                      setChoice({ type: LeadChoiceActions.update_remark })
-                      setLead(props.row.original)
-
-                    }}
-                  >
-                    <Comment />
-                  </IconButton>
-                </Tooltip>
-              </Stack>}
-              anchor={anchorEl}
-            />
-          )
-        }
-      },
-      // lead name
-      {
-        Header: 'Lead Name',
-        accessor: 'name',
-        Cell: (props) => {
-          return (
-            <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.name}</Typography>
-          )
-        }
-      },
-      // stage
-      {
-        Header: 'Stage',
-        accessor: 'stage',
-        Cell: (props) => {
-          return (
-            <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.stage}</Typography>
-          )
-        }
-      },
-      // city
-      {
-        Header: 'City',
-        accessor: 'city',
-        Cell: (props) => {
-          return (
-            <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.city}</Typography>
-          )
-        }
-      },
-      // state name
-      {
-        Header: 'State',
-        accessor: 'state',
-        Cell: (props) => {
-          return (
-            <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.state}</Typography>
-          )
-        }
-      },
-      //lead_type
-      {
-        Header: 'Lead Type',
-        accessor: 'lead_type',
-        disableSortBy: true,
-        Cell: (props) => {
-          return (
-            <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.lead_type}</Typography>
-          )
-        }
-      }
-      ,
-      //lead_Owners
-      {
-        Header: 'Lead Owners',
-        accessor: 'lead_owners',
-        disableSortBy: true,
-        Cell: (props) => {
-          return (
-            <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.lead_owners ? props.row.original.lead_owners.map((owner) => { return owner.username + ", " }) : [""]}</Typography>
-          )
-        }
-      },
-      //country
-
-      //Turn over
-      {
-        Header: 'Turn Over',
-        accessor: 'turnover',
-        Cell: (props) => {
-          return (
-            <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.turnover}</Typography>
-          )
-        }
-      },
-      //Work description
-      {
-        Header: 'Work Description',
-        accessor: 'work_description',
-        Cell: (props) => {
-          return (
-            <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.work_description ? props.row.original.work_description.slice(0, 50) : ""}</Typography>
-          )
-        }
-      },
-
-      //customer name
-      {
-        Header: 'Customer Name',
-        accessor: 'customer_name',
-        Cell: (props) => {
-          return (
-            <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.customer_name}</Typography>
-          )
-        }
-      },
-      //customer_designation
-      {
-        Header: 'Customer Designation',
-        accessor: 'customer_designation',
-        Cell: (props) => {
-          return (
-            <Typography sx={{ textTransform: "capitalize" }}>{props.row.original.customer_designation}</Typography>
-          )
-        }
-      },
-
-      //remark
-      {
-        Header: 'Last Remark',
-        accessor: 'remarks',
-        disableSortBy: true,
-        Cell: (props) => {
-          return (
-            <>
-              {props.row.original.remarks && props.row.original.remarks.length ?
-                <Typography sx={{ textTransform: "capitalize" }}> {props.row.original.remarks[props.row.original.remarks.length - 1].remark.slice(0, 50)}
-                </Typography> : null
-              }
-            </>
-          )
-        }
-      },
-      //mobile
-      {
-        Header: 'Mobile',
-        accessor: 'mobile',
-        Cell: (props) => {
-          return (
-            <Stack>
-              <Typography variant="body1"  >{props.row.original.mobile}</Typography>
-            </Stack>
-          )
-        }
-      }
-      ,
-      //mobile
-      {
-        Header: 'Mobile',
-        accessor: 'alternate_mobile1',
-        Cell: (props) => {
-          return (
-            <Stack>
-              <Typography variant="body1"  >{props.row.original.alternate_mobile1}</Typography>
-            </Stack>
-          )
-        }
-      }
-      ,
-      //mobile
-      {
-        Header: 'Mobile',
-        accessor: 'alternate_mobile2',
-        Cell: (props) => {
-          return (
-            <Stack>
-              <Typography variant="body1"  >{props.row.original.alternate_mobile2}</Typography>
-            </Stack>
-          )
-        }
-      }
-      ,
-      //Email 
-      {
-        Header: 'Email',
-        accessor: 'email',
-        Cell: (props) => {
-          return (
-            <Typography sx={{ textTransform: "capitalize" }} variant="body1">{props.row.original.email}</Typography>
-          )
-        }
-      },
-      //Email 
-      {
-        Header: 'Alternate Email',
-        accessor: 'alternate_email',
-        Cell: (props) => {
-          return (
-            <Typography sx={{ textTransform: "capitalize" }} variant="body1">{props.row.original.alternate_email}</Typography>
-          )
-        }
-      },
-
-      //Address
-      {
-        Header: 'Address',
-        accessor: 'address',
-        Cell: (props) => {
-          return (
-            <Stack>
-              <Typography sx={{ textTransform: "capitalize" }} variant="body1">{props.row.original.address ? props.row.original.address.slice(0, 50) : "..."}</Typography>
-            </Stack>
-          )
-        }
-      },
-      // lead_source
-      {
-        Header: 'Lead Source',
-        accessor: 'lead_source',
-        Cell: (props) => {
-          return (
-            <Typography sx={{ textTransform: "capitalize" }} variant="body1">{props.row.original.lead_source}</Typography>
-          )
-        }
-      },
-      // country
-      {
-        Header: 'Country',
-        accessor: 'country',
-        Cell: (props) => {
-          return (
-            <Typography sx={{ textTransform: "capitalize" }} variant="body1">{props.row.original.country}</Typography>
-          )
-        }
-      },
-      // created_at
-      {
-        Header: 'Created At',
-        accessor: 'created_at',
-        Cell: (props) => {
-          return (
-            <Typography sx={{ textTransform: "capitalize" }} variant="body1">{new Date(props.row.original.created_at).toLocaleString()}</Typography>
-          )
-        }
-      },
-      // updated_at
-      {
-        Header: 'Updated At',
-        accessor: 'updated_at',
-        Cell: (props) => {
-          return (
-            <Typography sx={{ textTransform: "capitalize" }} variant="body1">{new Date(props.row.original.updated_at).toLocaleString()}</Typography>
-          )
-        }
-      },
-      // created_by
-      {
-        Header: 'Created By',
-        accessor: 'created_by',
-        Cell: (props) => {
-          return (
-            <Typography sx={{ textTransform: "capitalize" }} variant="body1">{props.row.original.created_by.username}</Typography>
-          )
-        }
-      },
-      // updated_by
-      {
-        Header: 'Last Updated By',
-        accessor: 'updated_by',
-        Cell: (props) => {
-          return (
-            <Typography sx={{ textTransform: "capitalize" }} variant="body1">{props.row.original.updated_by.username}</Typography>
-          )
-        }
-      },
-      // last_whatsapp_date
-      {
-        Header: 'Last Whatsapp',
-        accessor: 'last_whatsapp_date',
-        Cell: (props) => {
-          return (
-            <Typography sx={{ textTransform: "capitalize" }} variant="body1">{new Date(props.row.original.last_whatsapp_date).toLocaleString()}</Typography>
-          )
-        }
-      },
-      // visiting card
-      {
-        Header: 'visiting card',
-        accessor: 'visiting_card',
-        Cell: (props) => {
-          return (
-            <img height="50" src={props.row.original.visiting_card && props.row.original.visiting_card.url} alt="visiting card" />
-          )
-        }
-      },
-      //actions
-      {
-        Header: 'Actions',
-        accessor: 'actions',
-        disableSortBy: true,
-        Cell: (props) => {
-          return (
-            <Stack direction="row" spacing={1}>
-              {
-                LoggedInUser?.is_admin ?
-                  <>
-                    <Tooltip title="delete">
-                      <IconButton color="error"
-                        onClick={() => {
-                          setChoice({ type: LeadChoiceActions.delete_lead })
-                          setLead(props.row.original)
-                        }}
-                      >
-                        <Delete />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Convert to Customer">
-                      <IconButton color="warning"
-                        onClick={() => {
-                          setChoice({ type: LeadChoiceActions.convert_customer })
-                          setLead(props.row.original)
-                        }}
-                      >
-                        <AddTaskIcon />
-                      </IconButton>
-                    </Tooltip>
-
-                  </>
-                  :
-                  null
-              }
-
-              <Tooltip title="edit">
-                <IconButton color="secondary"
-                  onClick={() => {
-                    setChoice({ type: LeadChoiceActions.update_lead })
-                    setLead(props.row.original)
-                  }}
-                >
-                  <Edit />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="view remarks">
-                <IconButton color="primary"
-                  onClick={() => {
-                    setChoice({ type: LeadChoiceActions.view_remarks })
-                    setLead(props.row.original)
-                  }}
-                >
-                  <Visibility />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Add Remark">
-                <IconButton
-                  color="success"
-                  onClick={() => {
-                    setChoice({ type: LeadChoiceActions.update_remark })
-                    setLead(props.row.original)
-                  }}
-                >
-                  <Comment />
-                </IconButton>
-              </Tooltip>
-            </Stack>
-          )
-        }
-      }
-    ]
-    , [setChoice, LoggedInUser]
-  )
-
-  //setup leads
   useEffect(() => {
     if (isSuccess) {
-      setDATA(leads.data)
-      setPreFilteredData(leads.data)
+      setLeads(data.data)
+      setPreFilteredData(data.data)
     }
   }, [isSuccess, leads])
 
-
-
-  //set filter
   useEffect(() => {
     if (filter) {
-      const searcher = new FuzzySearch(DATA, ["name", "customer_name", "customer_designation", "mobile", "email", "city", "state", "country", "address", "remarks", "work_description", "turnover", "lead_type", "stage", "alternate_mobile1", "alternate_mobile2", "alternate_email", "organization.organization_name", "lead_source", "created_at", "created_by.username", "updated_at", "updated_by.username", "preserved"], {
-        caseSensitive: false,
-      });
-      const result = searcher.search(filter);
-      setDATA(result)
+      if (leads) {
+        const searcher = new FuzzySearch(leads, ["name", "customer_name", "customer_designation", "mobile", "email", "city", "state", "country", "address", "remarks", "work_description", "turnover", "lead_type", "stage", "alternate_mobile1", "alternate_mobile2", "alternate_email", "organization.organization_name", "lead_source", "created_at", "created_by.username", "updated_at", "updated_by.username", "preserved"], {
+          caseSensitive: false,
+        });
+        const result = searcher.search(filter);
+        setLeads(result)
+      }
     }
     if (!filter)
-      setDATA(preFilteredData)
-  }, [filter, preFilteredData, DATA])
+      setLeads(preFilteredData)
 
+  }, [filter, leads])
   return (
     <>
       {
@@ -522,8 +83,8 @@ export default function LeadsPage() {
           direction="row"
         >
           {/* search bar */}
-          < Stack direction="row" spacing={2} >
-            <UploadLeadsExcelButton />
+          < Stack direction="row" spacing={2} sx={{ bgcolor: headColor }
+          }>
             <TextField
               fullWidth
               size="small"
@@ -534,32 +95,724 @@ export default function LeadsPage() {
                   <Search />
                 </InputAdornment>,
               }}
-              placeholder={`${DATA.length} records...`}
+              placeholder={`${MemoData?.length} records...`}
               style={{
                 fontSize: '1.1rem',
                 border: '0',
               }}
             />
           </Stack >
-          {/* menu  */}
           <LeadTableMenu
-            selectedFlatRows={selectedRows}
+            selectedFlatRows={selectedLeads}
           />
         </Stack>
       </Stack>
-      <LeadTable data={MemoData} columns={MemoColumns} />
+      {/* table */}
+      <Box sx={{
+        overflow: "scroll",
+        height: '73.5vh'
+      }}>
+        <Table
+          sx={{ minWidth: "5000px" }}
+          size="small">
+          <TableHead
+          >
+            <TableRow>
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  <FormControlLabel sx={{ fontSize: 12 }} control={
+                    <Checkbox
+
+                      size="small" onChange={(e) => {
+                        if (e.currentTarget.checked) {
+                          setSelectedLeads(leads)
+                          setSelectAll(true)
+                        }
+                        if (!e.currentTarget.checked) {
+                          setSelectedLeads([])
+                          setSelectAll(false)
+                        }
+                      }} />}
+                    label="Select"
+                  />
+                </Stack>
+              </TableCell>
+              {/* actions popup */}
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Actions
+                </Stack>
+              </TableCell>
+
+              {/* lead name */}
+
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Lead Name
+                </Stack>
+              </TableCell>
+
+
+              {/* stage */}
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Stage
+                </Stack>
+              </TableCell>
+
+              {/* city */}
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  City
+                </Stack>
+              </TableCell>
+              {/* state */}
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  State
+                </Stack>
+              </TableCell>
+              {/* lead type */}
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Lead Type
+                </Stack>
+              </TableCell>
+              {/* lead owners */}
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Lead Owners
+                </Stack>
+              </TableCell>
+              {/* turn over */}
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  TurnOver
+                </Stack>
+              </TableCell>
+              {/* work description */}
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Work Description
+                </Stack>
+              </TableCell>
+              {/* customer name */}
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Customer Name
+                </Stack>
+              </TableCell>
+              {/* designiaton */}
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Customer Desigination
+                </Stack>
+              </TableCell>
+              {/* last remark */}
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Last Remark
+                </Stack>
+              </TableCell>
+              {/* mobile */}
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Mobile
+                </Stack>
+              </TableCell>
+              {/* alternate mobile 1 */}
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Mobile2
+                </Stack>
+              </TableCell>
+              {/* alternate mobile 2 */}
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Mobile3
+                </Stack>
+              </TableCell>
+
+              {/* email */}
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Email
+                </Stack>
+              </TableCell>
+              {/* alternate email */}
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Email2
+                </Stack>
+              </TableCell>
+              {/* address */}
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Address
+                </Stack>
+              </TableCell>
+
+
+              {/* source */}
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Lead Source
+                </Stack>
+              </TableCell>
+              {/* country */}
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Country
+                </Stack>
+              </TableCell>
+              {/* created at */}
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Created At
+                </Stack>
+              </TableCell>
+              {/* updated at */}
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Updated At
+                </Stack>
+              </TableCell>
+              {/* created by */}
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Created By
+                </Stack>
+              </TableCell>
+              {/* updated by */}
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Updated By
+                </Stack>
+              </TableCell>
+
+              {/* last whatsapp */}
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Last Whatsapp
+                </Stack>
+              </TableCell>
+              {/* visitin card */}
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Visiting Card
+                </Stack>
+              </TableCell>
+              {/* actions */}
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Actions
+                </Stack>
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody >
+            {
+              MemoData && MemoData.map((lead, index) => {
+                return (
+                  <TableRow
+                    key={index}
+                    sx={{
+                      '&:nth-of-type(odd)': { bgcolor: color1 },
+                      '&:nth-of-type(even)': { bgcolor: color2 },
+                      '&:hover': { bgcolor: 'rgba(0,0,0,0.1)', cursor: 'pointer' }
+                    }}>
+                    {selectAll ?
+                      <TableCell>
+                        <Stack direction="row"
+                          spacing={2}
+                          justifyContent="left"
+                          alignItems="center"
+                        >
+
+                          <Checkbox size="small"
+                            checked={Boolean(selectAll)}
+                          />
+
+                        </Stack>
+                      </TableCell>
+                      :
+                      null
+                    }
+                    {!selectAll ?
+                      <TableCell>
+                        <Stack direction="row"
+                          spacing={2}
+                          justifyContent="left"
+                          alignItems="center"
+                        >
+                          <Checkbox size="small"
+                            onChange={(e) => {
+                              setLead(lead)
+                              if (e.target.checked) {
+                                setSelectedLeads([...selectedLeads, lead])
+                              }
+                              if (!e.target.checked) {
+                                setSelectedLeads((leads) => leads.filter((item) => {
+                                  return item._id !== lead._id
+                                }))
+                              }
+                            }}
+                          />
+                        </Stack>
+                      </TableCell>
+                      :
+                      null
+                    }
+                    {/* actions popup */}
+                    <TableCell>
+                      <BasicPOPUP
+                        element={<Stack direction="row" spacing={1}>
+                          {
+                            LoggedInUser?.is_admin ?
+                              <>
+                                <Tooltip title="delete">
+                                  <IconButton color="error"
+                                    onClick={() => {
+                                      setAnchorEl(null)
+                                      setChoice({ type: LeadChoiceActions.delete_lead })
+                                      setLead(lead)
+
+                                    }}
+                                  >
+                                    <Delete />
+                                  </IconButton>
+                                </Tooltip>
+                                <Tooltip title="Convert to Customer">
+                                  <IconButton color="warning"
+                                    onClick={() => {
+                                      setAnchorEl(null)
+                                      setChoice({ type: LeadChoiceActions.convert_customer })
+                                      setLead(lead)
+                                    }}
+                                  >
+                                    <AddTaskIcon />
+                                  </IconButton>
+                                </Tooltip>
+
+                              </>
+                              :
+                              null
+                          }
+
+                          <Tooltip title="edit">
+                            <IconButton color="secondary"
+                              onClick={() => {
+                                setAnchorEl(null)
+                                setChoice({ type: LeadChoiceActions.update_lead })
+                                setLead(lead)
+
+
+                              }}
+                            >
+                              <Edit />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="view remarks">
+                            <IconButton color="primary"
+                              onClick={() => {
+                                setAnchorEl(null)
+                                setChoice({ type: LeadChoiceActions.view_remarks })
+                                setLead(lead)
+
+
+                              }}
+                            >
+                              <Visibility />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Add Remark">
+                            <IconButton
+                              color="success"
+                              onClick={() => {
+                                setAnchorEl(null)
+                                setChoice({ type: LeadChoiceActions.update_remark })
+                                setLead(lead)
+
+                              }}
+                            >
+                              <Comment />
+                            </IconButton>
+                          </Tooltip>
+                        </Stack>}
+                        anchor={anchorEl}
+                      />
+                    </TableCell>
+                    {/* lead name */}
+                    <TableCell>
+                      <Typography sx={{ textTransform: "capitalize" }}>{lead.name}</Typography>
+                    </TableCell>
+                    {/* stage */}
+                    <TableCell>
+                      <Typography sx={{ textTransform: "capitalize" }}>{lead.stage}</Typography>
+                    </TableCell>
+                    {/* city */}
+                    <TableCell>
+                      <Typography sx={{ textTransform: "capitalize" }}>{lead.city}</Typography>
+                    </TableCell>
+                    {/* state */}
+                    <TableCell>
+                      <Typography sx={{ textTransform: "capitalize" }}>{lead.state}</Typography>
+                    </TableCell>
+                    {/* lead type */}
+                    <TableCell>
+                      <Typography sx={{ textTransform: "capitalize" }}>{lead.lead_type}</Typography>
+                    </TableCell>
+                    {/* lead owners */}
+                    <TableCell>
+                      <Typography sx={{ textTransform: "capitalize" }}>{lead.lead_owners ? lead.lead_owners.map((owner) => { return owner.username + ", " }) : [""]}</Typography>
+                    </TableCell>
+                    {/* turn over */}
+                    <TableCell>
+                      <Typography sx={{ textTransform: "capitalize" }}>{`${lead.turnover} Rupees`}</Typography>
+                    </TableCell>
+                    {/* work description */}
+                    <TableCell>
+                      <Typography sx={{ textTransform: "capitalize" }}>{lead.work_description ? lead.work_description.slice(0, 50) : ""}</Typography>
+                    </TableCell>
+                    {/* customer name */}
+                    <TableCell>
+                      <Typography sx={{ textTransform: "capitalize" }}>{lead.customer_name}</Typography>
+                    </TableCell>
+                    {/* designiaton */}
+                    <TableCell>
+                      <Typography sx={{ textTransform: "capitalize" }}>{lead.customer_designation}</Typography>
+                    </TableCell>
+                    {/* last remark */}
+                    <TableCell>
+                      {lead.remarks && lead.remarks.length ?
+                        <Typography sx={{ textTransform: "capitalize" }}> {lead.remarks[lead.remarks.length - 1].remark.slice(0, 50)}
+                        </Typography> : null
+                      }
+                    </TableCell>
+                    {/* mobile */}
+                    <TableCell>
+                      <Stack>
+                        <Typography variant="body1"  >{lead.mobile}</Typography>
+                      </Stack>
+                    </TableCell>
+                    {/* alternate mobile 1 */}
+                    <TableCell>
+                      <Typography sx={{ textTransform: "capitalize" }}>{lead.alternate_mobile1}</Typography>
+                    </TableCell>
+                    {/* alternate mobile 2 */}
+                    <TableCell>
+                      <Typography sx={{ textTransform: "capitalize" }}>{lead.alternate_mobile2}</Typography>
+                    </TableCell>
+
+                    {/* email */}
+                    <TableCell>
+                      <Typography sx={{ textTransform: "capitalize" }} variant="body1">{lead.email}</Typography>
+                    </TableCell>
+                    {/* alternate email */}
+                    <TableCell>
+                      <Typography sx={{ textTransform: "capitalize" }} variant="body1">{lead.alternate_email}</Typography>
+                    </TableCell>
+                    {/* address */}
+                    <TableCell>
+                      <Stack>
+                        <Typography sx={{ textTransform: "capitalize" }} variant="body1">{lead.address ? lead.address.slice(0, 50) : "..."}</Typography>
+                      </Stack>
+                    </TableCell>
+
+
+                    {/* source */}
+                    <TableCell>
+                      <Typography sx={{ textTransform: "capitalize" }} variant="body1">{lead.lead_source}</Typography>
+
+                    </TableCell>
+                    {/* country */}
+                    <TableCell>
+                      <Typography sx={{ textTransform: "capitalize" }} variant="body1">{lead.country}</Typography>
+
+                    </TableCell>
+                    {/* created at */}
+                    <TableCell>
+                      <Typography sx={{ textTransform: "capitalize" }} variant="body1">{new Date(lead.created_at).toLocaleString()}</Typography>
+
+                    </TableCell>
+                    {/* updated at */}
+                    <TableCell>
+                      <Typography sx={{ textTransform: "capitalize" }} variant="body1">{new Date(lead.updated_at).toLocaleString()}</Typography>
+
+                    </TableCell>
+                    {/* created by */}
+                    <TableCell>
+                      <Typography sx={{ textTransform: "capitalize" }} variant="body1">{lead.created_by.username}</Typography>
+
+                    </TableCell>
+                    {/* updated by */}
+                    <TableCell>
+                      <Typography sx={{ textTransform: "capitalize" }} variant="body1">{lead.updated_by.username}</Typography>
+
+                    </TableCell>
+
+                    {/* last whatsapp */}
+                    <TableCell>
+                      <Typography sx={{ textTransform: "capitalize" }} variant="body1">{new Date(lead.last_whatsapp_date).toLocaleString()}</Typography>
+                    </TableCell>
+                    {/* visitin card */}
+                    <TableCell>
+                      <img height="50" src={lead.visiting_card && lead.visiting_card.url} alt="visiting card" />
+                    </TableCell>
+                    {/* actions */}
+                    <TableCell>
+                      <Stack direction="row" spacing={1}>
+                        {
+                          LoggedInUser?.is_admin ?
+                            <>
+                              <Tooltip title="delete">
+                                <IconButton color="error"
+                                  onClick={() => {
+                                    setChoice({ type: LeadChoiceActions.delete_lead })
+                                    setLead(lead)
+                                  }}
+                                >
+                                  <Delete />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip title="Convert to Customer">
+                                <IconButton color="warning"
+                                  onClick={() => {
+                                    setChoice({ type: LeadChoiceActions.convert_customer })
+                                    setLead(lead)
+                                  }}
+                                >
+                                  <AddTaskIcon />
+                                </IconButton>
+                              </Tooltip>
+
+                            </>
+                            :
+                            null
+                        }
+
+                        <Tooltip title="edit">
+                          <IconButton color="secondary"
+                            onClick={() => {
+                              setChoice({ type: LeadChoiceActions.update_lead })
+                              setLead(lead)
+                            }}
+                          >
+                            <Edit />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="view remarks">
+                          <IconButton color="primary"
+                            onClick={() => {
+                              setChoice({ type: LeadChoiceActions.view_remarks })
+                              setLead(lead)
+                            }}
+                          >
+                            <Visibility />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Add Remark">
+                          <IconButton
+                            color="success"
+                            onClick={() => {
+                              setChoice({ type: LeadChoiceActions.update_remark })
+                              setLead(lead)
+                            }}
+                          >
+                            <Comment />
+                          </IconButton>
+                        </Tooltip>
+                      </Stack>
+
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+          </TableBody>
+        </Table>
+      </Box>
       {
         lead ?
           <>
             <UpdateLeadDialog lead={lead} />
             <DeleteLeadDialog lead={lead} />
             <ConvertLeadToCustomerDialog lead={lead} />
-            <ViewLeadDialog lead={lead} />
+            <ViewRemarksDialog lead={lead} />
             <NewRemarkDialog lead={lead} />
           </>
           : null
       }
-
     </>
+
   )
+
 }
+

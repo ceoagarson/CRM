@@ -1,10 +1,9 @@
 import { Fade, IconButton, Menu, MenuItem, Snackbar } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
-import { Row } from 'react-table';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { MenuActions, MenuContext } from '../../contexts/menuContext';
 import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext';
-import ExportToExcel from '../tables/utils/ExportToExcel';
+import ExportToExcel from '../../utils/ExportToExcel';
 import NewLeadDialog from '../dialogs/leads/NewLeadDialog';
 import { ILead } from '../../types/leads/lead.type';
 import { ILeadTemplate } from '../../types/leads/lead.template.types';
@@ -25,7 +24,7 @@ let template: ILeadTemplate[] = [
         turnover: 5000000,
         alternate_mobile1: 6787876766,
         alternate_mobile2: 6787876767,
-        alternate_email:'',
+        alternate_email: '',
         lead_type: "wholesale",
         stage: "open",
         lead_source: "others",
@@ -54,7 +53,7 @@ let template: ILeadTemplate[] = [
         turnover: 5000000,
         alternate_mobile1: 6787876766,
         alternate_mobile2: 6787876767,
-        alternate_email:'',
+        alternate_email: '',
         lead_type: "retail",
         stage: "potential",
         lead_source: "visit",
@@ -83,7 +82,7 @@ let template: ILeadTemplate[] = [
         turnover: 5000000,
         alternate_mobile1: 6787876766,
         alternate_mobile2: 6787876767,
-        alternate_email:'',
+        alternate_email: '',
         lead_type: "company",
         stage: "potential",
         lead_source: "whatsapp",
@@ -112,7 +111,7 @@ let template: ILeadTemplate[] = [
         turnover: 5000000,
         alternate_mobile1: 6787876766,
         alternate_mobile2: 6787876767,
-        alternate_email:'',
+        alternate_email: '',
         lead_type: "wholesale+retail",
         stage: "closed",
         lead_source: "cold calling",
@@ -141,7 +140,7 @@ let template: ILeadTemplate[] = [
         turnover: 5000000,
         alternate_mobile1: 6787876766,
         alternate_mobile2: 6787876767,
-        alternate_email:'',
+        alternate_email: '',
         lead_type: "wholesale+retail",
         stage: "potential",
         lead_source: "cold calling",
@@ -170,7 +169,7 @@ let template: ILeadTemplate[] = [
         turnover: 5000000,
         alternate_mobile1: 6787876766,
         alternate_mobile2: 6787876767,
-        alternate_email:'',
+        alternate_email: '',
         lead_type: "wholesale+retail",
         stage: "potential",
         lead_source: "cold calling",
@@ -199,7 +198,7 @@ let template: ILeadTemplate[] = [
         turnover: 5000000,
         alternate_mobile1: 6787876766,
         alternate_mobile2: 6787876767,
-        alternate_email:'',
+        alternate_email: '',
         lead_type: "wholesale+retail",
         stage: "useless",
         lead_source: "cold calling",
@@ -215,7 +214,7 @@ let template: ILeadTemplate[] = [
 ]
 
 type Props = {
-    selectedFlatRows: Row<ILead>[]
+    selectedFlatRows: ILead[]
 }
 
 function LeadTableMenu({ selectedFlatRows }: Props) {
@@ -239,9 +238,7 @@ function LeadTableMenu({ selectedFlatRows }: Props) {
     // refine data
     useEffect(() => {
         let data: ILeadTemplate[] = []
-        selectedFlatRows.map((item) => {
-            const lead = item.original
-           
+        selectedFlatRows.map((lead) => {
             return data.push(
 
                 {

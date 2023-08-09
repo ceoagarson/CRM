@@ -7,7 +7,7 @@ import { BulkLeadUpdateFromExcel } from "../../services/LeadsServices"
 import { queryClient } from "../../main"
 import { ILeadTemplate } from "../../types/leads/lead.template.types"
 import { Button, CircularProgress, Snackbar } from "@mui/material"
-import ExportToExcel from "../tables/utils/ExportToExcel"
+import ExportToExcel from "../../utils/ExportToExcel"
 import { Upload } from "@mui/icons-material"
 
 const FileInput = styled.input`
