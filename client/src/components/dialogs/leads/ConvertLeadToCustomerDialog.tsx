@@ -33,7 +33,7 @@ function ConvertLeadToCustomerDialog({ lead }: { lead: ILead }) {
             onClose={() => setChoice({ type: LeadChoiceActions.close })}
         >
             <DialogTitle textAlign="center">
-                Convert To Customer
+                Convert  To Customer
             </DialogTitle>
             {
                 isError ? (
@@ -51,7 +51,7 @@ function ConvertLeadToCustomerDialog({ lead }: { lead: ILead }) {
             }
             <DialogContent>
                 <Typography variant="body1" color="error">
-                    This will make a new customer
+                    {`This will make a new customer with ${lead.mobile}`}
                 </Typography>
             </DialogContent>
             <Stack

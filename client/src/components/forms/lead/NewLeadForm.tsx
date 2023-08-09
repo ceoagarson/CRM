@@ -721,7 +721,7 @@ function NewLeadForm({ users }: { users: IUser[] }) {
         ) : null
       }
       <Button variant="contained" color="primary" type="submit"
-
+        disabled={isLoading}
         fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Create Lead"}
       </Button>
     </form>

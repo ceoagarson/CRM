@@ -81,7 +81,7 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
     },
     validationSchema: Yup.object({
       name: Yup.string()
-       ,
+      ,
       lead_owners: Yup.array()
         .required('Required field'),
       email: Yup.string()
@@ -718,40 +718,49 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
             />
             : null
         }
-        <FormGroup>
-          <FormControlLabel control={<Checkbox defaultChecked={Boolean(formik.values.is_customer)}
-            {...formik.getFieldProps('is_customer')}
-          />} label="Is A Customer" />
-          <p>
-            {formik.touched.is_customer && formik.errors.is_customer ? formik.errors.is_customer : ""}
-          </p>
-        </FormGroup>
-
-        <TextField
-          fullWidth
-          error={
-            formik.touched.visiting_card && formik.errors.visiting_card ? true : false
-          }
-          helperText={
-            formik.touched.visiting_card && formik.errors.visiting_card ? (formik.errors.visiting_card) : ""
-          }
-          label="Visting Card"
-          focused
-          variant='standard'
-          type="file"
-          name="visiting_card"
-          onBlur={formik.handleBlur}
-          onChange={(e) => {
-            e.preventDefault()
-            const target: Target = e.currentTarget
-            let files = target.files
-            if (files) {
-              let file = files[0]
-              formik.setFieldValue("visiting_card", file)
-            }
-          }}
-        />
-
+        {
+          !hiddenFields?.includes('is_customer') ?
+            <FormGroup>
+              <FormControlLabel control={<Checkbox
+                disabled={Boolean(readonlyFields?.includes('is_customer'))}
+                defaultChecked={Boolean(formik.values.is_customer)}
+                {...formik.getFieldProps('is_customer')}
+              />} label="Is A Customer" />
+              <p>
+                {formik.touched.is_customer && formik.errors.is_customer ? formik.errors.is_customer : ""}
+              </p>
+            </FormGroup>
+            : null
+        }
+        {
+          !hiddenFields?.includes('visiting_card') ?
+            <TextField
+              fullWidth
+              error={
+                formik.touched.visiting_card && formik.errors.visiting_card ? true : false
+              }
+              helperText={
+                formik.touched.visiting_card && formik.errors.visiting_card ? (formik.errors.visiting_card) : ""
+              }
+              disabled={Boolean(readonlyFields?.includes('visiting_card'))}
+              label="Visting Card"
+              focused
+              variant='standard'
+              type="file"
+              name="visiting_card"
+              onBlur={formik.handleBlur}
+              onChange={(e) => {
+                e.preventDefault()
+                const target: Target = e.currentTarget
+                let files = target.files
+                if (files) {
+                  let file = files[0]
+                  formik.setFieldValue("visiting_card", file)
+                }
+              }}
+            />
+            : null
+        }
       </Stack>
       {
         isError ? (

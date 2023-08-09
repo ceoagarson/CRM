@@ -51,7 +51,8 @@ function DeleteLeadDialog({ lead }: { lead: ILead }) {
             }
             <DialogContent>
                 <Typography variant="body1" color="error">
-                    Warning ! This will delete selected lead permanently and associated remarks to it.
+                    {`Warning ! This will delete selected lead permanently and associated remarks to it. ${lead.mobile}`}
+                    
                 </Typography>
             </DialogContent>
             <Stack
