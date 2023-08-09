@@ -332,13 +332,23 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
         let workbook_response: ILeadTemplate[] = xlsx.utils.sheet_to_json(
             workbook.Sheets[workbook_sheet[0]]
         );
-        let result: ILeadTemplate[] = []
+        let errors: ILeadTemplate[] = []
+        let olsLeads = await Lead.find()
+        let OldNumbers: number[] = []
+        olsLeads.forEach((lead) => {
+            if (lead.mobile)
+                OldNumbers.push(lead.mobile)
+            if (lead.alternate_mobile1)
+                OldNumbers.push(lead.alternate_mobile1)
+            if (lead.alternate_mobile2)
+                OldNumbers.push(lead.alternate_mobile2)
+        })
 
+        console.log(workbook_response)
         workbook_response.forEach(async (lead) => {
-            let uniqueNumbers: number[] = []
-            let mobile = Number(lead.mobile)
-            let alternate_mobile1 = Number(lead.alternate_mobile1)
-            let alternate_mobile2 = Number(lead.alternate_mobile2)
+            let mobile: number | null = Number(lead.mobile)
+            let alternate_mobile1: number | null = Number(lead.alternate_mobile1)
+            let alternate_mobile2: number | null = Number(lead.alternate_mobile2)
             let created_by: IUser | undefined = undefined
             let updated_by: IUser | undefined = undefined
             let new_lead_owners: IUser[] = []
@@ -348,223 +358,180 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
             let sources = ["internet", "visit", "whatsapp", "cold calling",
                 "cold email", "others"]
 
-            if (lead.lead_type && !leadTypes.includes(lead.lead_type))
-                validated = false
-            if (lead.stage && !stages.includes(lead.stage))
-                validated = false
-            if (lead.lead_source && !sources.includes(lead.lead_source))
-                validated = false
-            if (mobile && typeof (mobile) !== "number")
+            //important
+            if (mobile && Number.isNaN(mobile))
                 validated = false
             if (lead.turnover && typeof (lead.turnover) !== "number")
+                lead.turnover = 500000
+            if (alternate_mobile1 && Number.isNaN(alternate_mobile1))
                 validated = false
-            if (alternate_mobile1 && typeof (alternate_mobile1) !== "number")
-                validated = false
-            if (alternate_mobile2 && typeof (alternate_mobile2) !== "number")
-                validated = false
-            if (lead.name && typeof (lead.name) !== "string")
+            if (alternate_mobile2 && Number.isNaN(alternate_mobile2))
                 validated = false
 
-            if (lead.customer_name && typeof (lead.customer_name) !== "string")
-                validated = false
-            if (lead.customer_designation && typeof (lead.customer_designation) !== "string")
-                validated = false
-            if (lead.email && typeof (lead.email) !== "string")
-                validated = false
+            if (alternate_mobile1 && String(alternate_mobile1).length !== 10)
+                alternate_mobile1 = null
+            if (alternate_mobile2 && String(alternate_mobile2).length !== 10)
+                alternate_mobile2 = null
 
-            if (lead.state && typeof (lead.state) !== "string")
-                validated = false
-            if (lead.country && typeof (lead.country) !== "string")
-                validated = false
-            if (lead.address && typeof (lead.address) !== "string")
-                validated = false
-            if (lead.alternate_email && typeof (lead.alternate_email) !== "string")
-                validated = false
-
-            if (lead.work_description && typeof (lead.work_description) !== "string")
-                validated = false
-            if (lead.stage && typeof (lead.stage) !== "string")
-                validated = false
-            if (lead.lead_type && typeof (lead.lead_type) !== "string")
-                validated = false
-            if (lead.lead_source && typeof (lead.lead_source) !== "string")
-                validated = false
-
-            if (lead.remarks && typeof (lead.remarks) !== "string")
-                validated = false
-            if (lead.visiting_card && typeof (lead.visiting_card) !== "string")
-                validated = false
             if (lead.is_customer && typeof (lead.is_customer) !== "boolean")
                 validated = false
-
-            if (lead.lead_owners && typeof (lead.lead_owners) !== "string")
+            if (mobile && String(mobile).length !== 10)
                 validated = false
-            if (lead.created_by && typeof (lead.created_by) !== "string")
-                validated = false
-            if (lead.updated_by && typeof (lead.updated_by) !== "string")
-                validated = false
-
             if (lead.last_whatsapp_date && !isvalidDate(new Date(lead.last_whatsapp_date)))
                 validated = false
-
             if (lead.created_at && !isvalidDate(new Date(lead.created_at)))
                 validated = false
             if (lead.updated_at && !isvalidDate(new Date(lead.updated_at)))
                 validated = false
-            if (mobile && String(mobile).length !== 10)
-                validated = false
-            if (alternate_mobile1 && String(alternate_mobile1).length !== 10)
-                validated = false
-            if (alternate_mobile2 && String(alternate_mobile2).length !== 10)
-                validated = false
-            console.log(validated)
-            if (!validated) {
-                result.push(lead)
+
+            // duplicate number checker
+            let uniqueNumbers: number[] = []
+            if (mobile && !OldNumbers.includes(mobile)) {
+                uniqueNumbers.push(mobile)
+                OldNumbers.push(mobile)
             }
-            if (validated) {
-                if (lead.lead_owners) {
-                    let lead_owners = String((lead.lead_owners)).split(",")
-                    lead_owners.map(async (name) => {
-                        let owner = await User.findOne({ username: name })
-                        if (owner)
-                            new_lead_owners.push(owner)
-                    })
-                }
-                else {
-                    if (req.user)
-                        new_lead_owners.push(req.user)
-                }
+            if (alternate_mobile1 && !OldNumbers.includes(alternate_mobile1)) {
+                uniqueNumbers.push(alternate_mobile1)
+                OldNumbers.push(alternate_mobile1)
+            }
+            if (alternate_mobile2 && !OldNumbers.includes(alternate_mobile2)) {
+                uniqueNumbers.push(alternate_mobile2)
+                OldNumbers.push(alternate_mobile2)
+            }
+            if (uniqueNumbers.length === 0)
+                validated = false
 
-                if (lead.created_by) {
-                    let user = await User.findOne({ username: lead.created_by })
-                    if (user)
-                        created_by = user
-                }
-                else if (req.user)
-                    created_by = req.user
 
-                if (lead.updated_by) {
-                    let user = await User.findOne({ username: lead.updated_by })
-                    if (user)
-                        updated_by = user
-                }
-                else if (req.user)
-                    updated_by = req.user
+            if (lead.lead_type && !leadTypes.includes(lead.lead_type))
+                lead.lead_type = "wholesale"
+            if (lead.stage && !stages.includes(lead.stage))
+                lead.stage = "open"
+            if (lead.lead_source && !sources.includes(lead.lead_source))
+                lead.lead_source = "internet"
 
-                if (lead._id && isMongoId(String(lead._id))) {
-                    console.log("updating..")
-                    if (mobile) {
-                        if (mobile !== lead.mobile)
-                            if (!await Lead.findOne({ mobile: mobile }))
-                                if (!await Lead.findOne({ alternate_mobile1: mobile }))
-                                    if (!await Lead.findOne({ alternate_mobile2: mobile }))
-                                        uniqueNumbers.push(mobile)
-                    }
-                    if (alternate_mobile1) {
-                        if (alternate_mobile1 !== lead.alternate_mobile1)
-                            if (!await Lead.findOne({ mobile: alternate_mobile1 }))
-                                if (!await Lead.findOne({ alternate_mobile1: alternate_mobile1 }))
-                                    if (!await Lead.findOne({ alternate_mobile2: alternate_mobile1 }))
-                                        uniqueNumbers.push(alternate_mobile1)
-                    }
-                    if (alternate_mobile2) {
-                        if (alternate_mobile2 !== lead.alternate_mobile2)
-                            if (!await Lead.findOne({ mobile: alternate_mobile2 }))
-                                if (!await Lead.findOne({ alternate_mobile1: alternate_mobile2 }))
-                                    if (!await Lead.findOne({ alternate_mobile2: alternate_mobile2 }))
-                                        uniqueNumbers.push(alternate_mobile2)
-                    }
-                    let targetLead = await Lead.findById(lead._id)
-                    if (targetLead) {
-                        if (lead.remarks) {
-                            if (!lead.remarks.length) {
-                                let new_remark = new Remark({
-                                    remark: lead.remarks,
-                                    lead: lead,
-                                    created_at: new Date(),
-                                    created_by: req.user,
-                                    updated_at: new Date(),
-                                    updated_by: req.user
-                                })
-                                await new_remark.save()
-                                targetLead.remarks = [new_remark]
-                            }
-                            else {
-                                let last_remark = targetLead.remarks[targetLead.remarks.length - 1]
-                                await Remark.findByIdAndUpdate(last_remark._id, {
-                                    remark: lead.remarks,
-                                    lead: lead,
-                                    updated_at: new Date(),
-                                    updated_by: req.user
-                                })
-                            }
 
-                        }
+            //optional
 
-                        await Lead.findByIdAndUpdate(lead._id, {
-                            ...lead,
-                            remarks: targetLead.remarks,
-                            mobile: uniqueNumbers[0] || mobile,
-                            alternate_mobile1: uniqueNumbers[1] || alternate_mobile1 || null,
-                            alternate_mobile2: uniqueNumbers[2] || alternate_mobile2 || null,
-                            lead_owners: new_lead_owners,
-                            created_by: created_by,
-                            updated_by: updated_by
-                        })
-                    }
 
-                }
 
-                if (!lead._id || !isMongoId(String(lead._id))) {
 
-                    if (mobile) {
-                        if (!await Lead.findOne({ mobile: mobile }))
-                            if (!await Lead.findOne({ alternate_mobile1: mobile }))
-                                if (!await Lead.findOne({ alternate_mobile2: mobile }))
-                                    uniqueNumbers.push(mobile)
-                    }
-                    if (alternate_mobile1) {
-                        if (!await Lead.findOne({ mobile: alternate_mobile1 }))
-                            if (!await Lead.findOne({ alternate_mobile1: alternate_mobile1 }))
-                                if (!await Lead.findOne({ alternate_mobile2: alternate_mobile1 }))
-                                    uniqueNumbers.push(alternate_mobile1)
-                    }
-                    if (alternate_mobile2) {
-                        if (!await Lead.findOne({ mobile: alternate_mobile2 }))
-                            if (!await Lead.findOne({ alternate_mobile1: alternate_mobile2 }))
-                                if (!await Lead.findOne({ alternate_mobile2: alternate_mobile2 }))
-                                    uniqueNumbers.push(alternate_mobile2)
-                    }
-                    if (uniqueNumbers.length !== 0) {
-                        let newlead = new Lead({
-                            ...lead,
-                            _id: new Types.ObjectId(),
-                            mobile: uniqueNumbers[0] || null,
-                            alternate_mobile1: uniqueNumbers[1] || alternate_mobile1 || null,
-                            alternate_mobile2: uniqueNumbers[2] || alternate_mobile2 || null,
-                            lead_owners: new_lead_owners,
-                            created_by: created_by,
-                            updated_by: updated_by
-                        })
-                        if (lead.remarks) {
+            lead.name = String(lead.name)
+            lead.customer_name = String(lead.customer_name)
+            lead.customer_designation = String(lead.customer_designation)
+            lead.email = String(lead.email)
+            lead.state = String(lead.state)
+            lead.country = String(lead.country)
+            lead.address = String(lead.address)
+            lead.work_description = String(lead.work_description)
+            lead.remarks = String(lead.remarks)
+            lead.lead_owners = String(lead.lead_owners)
+            if (lead.lead_owners) {
+                let lead_owners = String((lead.lead_owners)).split(",")
+                lead_owners.map(async (name) => {
+                    let owner = await User.findOne({ username: name })
+                    if (owner)
+                        new_lead_owners.push(owner)
+                })
+            }
+            else if (req.user)
+                new_lead_owners.push(req.user)
+
+
+            if (lead.created_by) {
+                let user = await User.findOne({ username: lead.created_by })
+                if (user)
+                    created_by = user
+            }
+            else if (req.user)
+                created_by = req.user
+
+            if (lead.updated_by) {
+                let user = await User.findOne({ username: lead.updated_by })
+                if (user)
+                    updated_by = user
+            }
+            else if (req.user)
+                updated_by = req.user
+
+            if (!isMongoId(String(lead._id)) && !validated) {
+                errors.push(lead)
+            }
+            console.log(validated)
+
+            //update and create new nead
+            if (lead._id && isMongoId(String(lead._id))) {
+                console.log("updating..")
+
+                let targetLead = await Lead.findById(lead._id)
+                if (targetLead) {
+                    if (lead.remarks) {
+                        if (!lead.remarks.length) {
                             let new_remark = new Remark({
                                 remark: lead.remarks,
-                                lead: newlead,
+                                lead: lead,
                                 created_at: new Date(),
                                 created_by: req.user,
                                 updated_at: new Date(),
                                 updated_by: req.user
                             })
                             await new_remark.save()
-                            newlead.remarks = [new_remark]
-
+                            targetLead.remarks = [new_remark]
                         }
-                        await newlead.save()
+                        else {
+                            let last_remark = targetLead.remarks[targetLead.remarks.length - 1]
+                            await Remark.findByIdAndUpdate(last_remark._id, {
+                                remark: lead.remarks,
+                                lead: lead,
+                                updated_at: new Date(),
+                                updated_by: req.user
+                            })
+                        }
+
                     }
+
+                    await Lead.findByIdAndUpdate(lead._id, {
+                        ...lead,
+                        remarks: targetLead.remarks,
+                        mobile: uniqueNumbers[0] || mobile,
+                        alternate_mobile1: uniqueNumbers[1] || alternate_mobile1 || null,
+                        alternate_mobile2: uniqueNumbers[2] || alternate_mobile2 || null,
+                        lead_owners: new_lead_owners,
+                        created_by: created_by,
+                        updated_by: updated_by
+                    })
+                }
+
+            }
+            if (validated) {
+                if (!lead._id || !isMongoId(String(lead._id))) {
+                    let newlead = new Lead({
+                        ...lead,
+                        _id: new Types.ObjectId(),
+                        mobile: uniqueNumbers[0] || null,
+                        alternate_mobile1: uniqueNumbers[1] || null,
+                        alternate_mobile2: uniqueNumbers[2] || null,
+                        lead_owners: new_lead_owners,
+                        created_by: created_by,
+                        updated_by: updated_by
+                    })
+                    if (lead.remarks) {
+                        let new_remark = new Remark({
+                            remark: lead.remarks,
+                            lead: newlead,
+                            created_at: new Date(),
+                            created_by: req.user,
+                            updated_at: new Date(),
+                            updated_by: req.user
+                        })
+                        await new_remark.save()
+                        newlead.remarks = [new_remark]
+
+                    }
+                    await newlead.save()
                 }
             }
         })
-        return res.status(200).send(result);
+        return res.status(200).send(errors);
     }
     return res.status(404).send({
         message: "please provide an Excel file",

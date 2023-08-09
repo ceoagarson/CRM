@@ -21,8 +21,6 @@ export type ILeadTemplate = {
 
     remarks: string,
     lead_owners: string,
-
-    visiting_card: string,
     is_customer: boolean,
 
     last_whatsapp_date: Date,

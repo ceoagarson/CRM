@@ -31,7 +31,6 @@ let template: ILeadTemplate[] = [
         lead_source: "others",
         remarks: "remarks",
         lead_owners: "nishu,sandeep",
-        visiting_card: "",
         is_customer: false,
         last_whatsapp_date: new Date(),
         created_at: new Date(),
@@ -61,7 +60,6 @@ let template: ILeadTemplate[] = [
         lead_source: "visit",
         remarks: "remarks",
         lead_owners: "nishu,sandeep",
-        visiting_card: "visiting_card",
         is_customer: false,
         last_whatsapp_date: new Date(),
         created_at: new Date(),
@@ -91,7 +89,6 @@ let template: ILeadTemplate[] = [
         lead_source: "whatsapp",
         remarks: "remarks",
         lead_owners: "nishu,sandeep",
-        visiting_card: "visiting_card",
         is_customer: false,
         last_whatsapp_date: new Date(),
         created_at: new Date(),
@@ -121,7 +118,6 @@ let template: ILeadTemplate[] = [
         lead_source: "cold calling",
         remarks: "remarks",
         lead_owners: "nishu,sandeep",
-        visiting_card: "visiting_card",
         is_customer: false,
         last_whatsapp_date: new Date(),
         created_at: new Date(),
@@ -151,7 +147,6 @@ let template: ILeadTemplate[] = [
         lead_source: "cold calling",
         remarks: "remarks",
         lead_owners: "nishu,sandeep",
-        visiting_card: "visiting_card",
         is_customer: false,
         last_whatsapp_date: new Date(),
         created_at: new Date(),
@@ -181,7 +176,6 @@ let template: ILeadTemplate[] = [
         lead_source: "cold calling",
         remarks: "remarks",
         lead_owners: "nishu,sandeep",
-        visiting_card: "visiting_card",
         is_customer: false,
         last_whatsapp_date: new Date(),
         created_at: new Date(),
@@ -211,7 +205,6 @@ let template: ILeadTemplate[] = [
         lead_source: "cold calling",
         remarks: "remarks",
         lead_owners: "nishu,sandeep",
-        visiting_card: "visiting_card",
         is_customer: false,
         last_whatsapp_date: new Date(),
         created_at: new Date(),
@@ -279,8 +272,7 @@ function LeadTableMenu({ selectedFlatRows }: Props) {
                     updated_by: lead.updated_by.username,
                     lead_owners: lead.lead_owners.map((owner) => {
                         return owner.username + ","
-                    }).toString(),
-                    visiting_card: lead.visiting_card && lead.visiting_card.url
+                    }).toString()
                 }
             )
         })
@@ -325,7 +317,7 @@ function LeadTableMenu({ selectedFlatRows }: Props) {
                     setChoice({ type: LeadChoiceActions.create_lead })
                     setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
                 }}
-                >New Lead</MenuItem>
+                >Add New</MenuItem>
                 <MenuItem onClick={handleExcel}
                 >Export To Excel</MenuItem>
 
