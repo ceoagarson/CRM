@@ -20,7 +20,7 @@ export type IUser = {
     email: string,
     mobile: number,
     dp: Asset,
-
+    select:any
     //bot properties
     client_id: string,
     client_data_path: string,

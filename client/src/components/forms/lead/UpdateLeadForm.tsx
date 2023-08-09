@@ -402,7 +402,7 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
               </option>
               {
                 Cities.map((city, index: number) => {
-                  return (<option key={index} value={city}>
+                  return (<option key={index} value={String(city).toLocaleUpperCase()}>
                     {city}
                   </option>)
                 })

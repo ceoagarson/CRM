@@ -1,5 +1,5 @@
-import { Block, Edit, GroupAdd, GroupRemove, Key, RemoveCircle, Search } from '@mui/icons-material'
-import {  Avatar, IconButton, InputAdornment,  TextField, Tooltip, Typography } from '@mui/material'
+import { Block, Edit, GroupAdd, GroupRemove,  Key, RemoveCircle, Search } from '@mui/icons-material'
+import { Avatar, IconButton, InputAdornment, TextField, Tooltip, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
 import React, { useContext, useEffect, useState } from 'react'
@@ -18,7 +18,6 @@ import { UserContext } from '../contexts/userContext'
 import { BackendError } from '../types'
 import { IUser } from '../types/users/user.type'
 import { SelectionContext } from '../contexts/selectionContext'
-import { FilterContext } from '../contexts/filterContext'
 import FuzzySearch from 'fuzzy-search'
 import { headColor } from '../utils/colors'
 import UserTableMenu from '../components/menu/UserTableMenu'
@@ -32,13 +31,12 @@ export default function UsersPage() {
     const [user, setUser] = useState<IUser>()
     const { setChoice } = useContext(ChoiceContext)
     const { selectedRows } = useContext(SelectionContext)
-    const { filter, setFilter } = useContext(FilterContext)
+    const [filter, setFilter] = useState<string | undefined>()
     const [preFilteredData, setPreFilteredData] = useState<IUser[]>([])
     const [DATA, setDATA] = useState<IUser[]>([])
     const MemoData = React.useMemo(() => DATA, [DATA])
     const MemoColumns: Column<IUser>[] = React.useMemo(
         () => [
-
             // user name
             {
 

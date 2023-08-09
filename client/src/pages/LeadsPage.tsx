@@ -12,7 +12,6 @@ import { ChoiceContext, LeadChoiceActions } from "../contexts/dialogContext"
 import { GetLeads } from "../services/LeadsServices"
 import NewRemarkDialog from "../components/dialogs/leads/NewRemarkDialog"
 import { SelectionContext } from "../contexts/selectionContext"
-import { FilterContext } from "../contexts/filterContext"
 import FuzzySearch from "fuzzy-search"
 import LeadTableMenu from "../components/menu/LeadTableMenu"
 import { UserContext } from "../contexts/userContext"
@@ -28,7 +27,7 @@ export default function LeadsPage() {
   const { user: LoggedInUser } = useContext(UserContext)
   const { selectedRows } = useContext(SelectionContext)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const { filter, setFilter } = useContext(FilterContext)
+  const [filter, setFilter ] = useState<string>()
   const [preFilteredData, setPreFilteredData] = useState<ILead[]>([])
   const { setChoice } = useContext(ChoiceContext)
   const [DATA, setDATA] = useState<ILead[]>([])

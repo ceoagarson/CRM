@@ -62,7 +62,7 @@ export function UserTable({ data, columns }: Props) {
     )
     useEffect(() => {
         setSelectedRows(selectedFlatRows)
-    }, [selectedFlatRows, setSelectedRows])
+    }, [selectedFlatRows])
     return (
         <>
             {/* table */}

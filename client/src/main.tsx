@@ -7,7 +7,6 @@ import { UserProvider } from "./contexts/userContext";
 import { BrowserRouter } from "react-router-dom";
 import { ChoiceProvider } from "./contexts/dialogContext";
 import { MenuProvider } from "./contexts/menuContext";
-import { FilterProvider } from "./contexts/filterContext";
 import { SelectionProvider } from "./contexts/selectionContext";
 
 
@@ -23,7 +22,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <UserProvider>
-        <FilterProvider>
           <ChoiceProvider>
             <MenuProvider>
               <SelectionProvider>
@@ -31,7 +29,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
               </SelectionProvider>
             </MenuProvider>
           </ChoiceProvider>
-        </FilterProvider>
       </UserProvider>
     </BrowserRouter>
   </QueryClientProvider>

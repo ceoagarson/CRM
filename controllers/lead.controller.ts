@@ -529,3 +529,44 @@ export const ConvertCustomer = async (req: Request, res: Response, next: NextFun
     await Lead.findByIdAndUpdate(id, { is_customer: true })
     return res.status(200).json({ message: "new customer created" })
 }
+
+export const GetmyLeads = async (req: Request, res: Response, next: NextFunction) => {
+
+    let limit = Number(req.query.limit)
+    let page = Number(req.query.page)
+    if (!Number.isNaN(limit) && !Number.isNaN(page)) {
+        const leads = await Lead.find()
+            .limit(limit * 1)
+            .skip((page - 1) * limit)
+
+        const count = await Lead.countDocuments();
+        return res.json({
+            leads,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page
+        });
+    }
+    else
+        return res.status(500).json({ message: "bad request" })
+
+}
+
+export const Search = async (req: Request, res: Response, next: NextFunction) => {
+    let limit = Number(req.query.limit)
+    let page = Number(req.query.page)
+    if (!Number.isNaN(limit) && !Number.isNaN(page)) {
+        const leads = await Lead.find()
+            .limit(limit * 1)
+            .skip((page - 1) * limit)
+
+        const count = await Lead.countDocuments();
+        return res.json({
+            leads,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page
+        });
+    }
+    else
+        return res.status(500).json({ message: "bad request" })
+
+}
