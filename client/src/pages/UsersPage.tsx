@@ -75,6 +75,7 @@ export default function UsersPage() {
                 <Typography
                     variant={'h6'}
                     component={'h1'}
+                    sx={{ pl: 1 }}
                 >
                     Users
                 </Typography>

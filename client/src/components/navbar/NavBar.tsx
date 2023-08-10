@@ -1,7 +1,7 @@
 import { Link, Outlet } from 'react-router-dom';
 import { Stack } from '@mui/system';
 import styled from '@emotion/styled';
-import { Avatar, Box, IconButton, Tooltip, Typography } from '@mui/material';
+import { Avatar, Box, IconButton, Tooltip } from '@mui/material';
 import { useContext } from 'react';
 import { MenuActions, MenuContext } from '../../contexts/menuContext';
 import { UserContext } from '../../contexts/userContext';
@@ -11,7 +11,6 @@ import UserMenu from '../menu/UserMenu';
 import ResetPasswordSendMailDialog from '../dialogs/users/ResetPasswordSendMailDialog';
 import SignUpDialog from '../dialogs/users/SignUpDialog';
 import { Menu } from '@mui/icons-material';
-import Agarson from '../logo/Agarson';
 import AgarsonLogo from '../logo/Agarson';
 
 export const StyledLink = styled(Link)`

@@ -72,6 +72,7 @@ export default function CustomersPage() {
         <Typography
           variant={'h6'}
           component={'h1'}
+          sx={{ pl: 1 }}
         >
           Leads
         </Typography>

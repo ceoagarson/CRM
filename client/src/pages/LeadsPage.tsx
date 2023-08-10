@@ -19,6 +19,7 @@ import ConvertLeadToCustomerDialog from '../components/dialogs/leads/ConvertLead
 import NewRemarkDialog from '../components/dialogs/leads/NewRemarkDialog'
 import ViewRemarksDialog from '../components/dialogs/leads/ViewRemarksDialog'
 import { BasicPOPUP } from '../components/popup/BasicPOPUP'
+import LeadsPagination from '../components/pagination/LeadsPagination';
 
 export default function LeadsPage() {
   const { data, isSuccess, isLoading } = useQuery<AxiosResponse<ILead[]>, BackendError>("leads", GetLeads, {
@@ -75,6 +76,7 @@ export default function LeadsPage() {
         <Typography
           variant={'h6'}
           component={'h1'}
+          sx={{ pl: 1 }}
         >
           Leads
         </Typography>
@@ -800,6 +802,7 @@ export default function LeadsPage() {
           </TableBody>
         </Table>
       </Box>
+      <LeadsPagination />
       {
         lead ?
           <>
