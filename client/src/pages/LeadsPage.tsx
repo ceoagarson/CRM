@@ -20,6 +20,10 @@ import NewRemarkDialog from '../components/dialogs/leads/NewRemarkDialog'
 import ViewRemarksDialog from '../components/dialogs/leads/ViewRemarksDialog'
 import { BasicPOPUP } from '../components/popup/BasicPOPUP'
 import LeadsPagination from '../components/pagination/LeadsPagination';
+import LeadsFilter from '../components/filter/LeadsFilter';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import LeadsFilterDialog from '../components/dialogs/filter/LeadsFilterDialog';
+
 
 export default function LeadsPage() {
   const { data, isSuccess, isLoading } = useQuery<AxiosResponse<ILead[]>, BackendError>("leads", GetLeads, {
@@ -32,12 +36,16 @@ export default function LeadsPage() {
   const MemoData = React.useMemo(() => leads, [leads])
   const [preFilteredData, setPreFilteredData] = useState<ILead[]>([])
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-
-
   const [selectedLeads, setSelectedLeads] = useState<ILead[]>([])
   const [filter, setFilter] = useState<string | undefined>()
-  const { setChoice } = useContext(ChoiceContext)
+  const [query, setQuery] = useState<{
+    city: boolean | undefined,
+    owner: boolean | undefined,
+    searchString: string | undefined,
+    isOr: boolean | undefined
+  }>()
 
+  const { setChoice } = useContext(ChoiceContext)
 
   useEffect(() => {
     if (isSuccess) {
@@ -60,6 +68,7 @@ export default function LeadsPage() {
       setLeads(preFilteredData)
 
   }, [filter, leads])
+  console.log(query)
   return (
     <>
       {
@@ -85,25 +94,39 @@ export default function LeadsPage() {
           direction="row"
         >
           {/* search bar */}
-          < Stack direction="row" spacing={2} sx={{ bgcolor: headColor }
-          }>
-            <TextField
-              fullWidth
-              size="small"
-              onChange={(e) => setFilter(e.currentTarget.value)}
-              autoFocus
-              InputProps={{
-                startAdornment: <InputAdornment position="start">
-                  <Search />
-                </InputAdornment>,
-              }}
-              placeholder={`${MemoData?.length} records...`}
-              style={{
-                fontSize: '1.1rem',
-                border: '0',
-              }}
-            />
+          < Stack direction="row" spacing={2}>
+            {
+              query ?
+                <>
+                  <LeadsFilter query={query} setQuery={setQuery} />
+                </> :
+                <>
+                  <IconButton
+                    onClick={() => setChoice({ type: LeadChoiceActions.open_filter })}
+                  >
+                    <FilterAltIcon />
+                  </IconButton>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    onChange={(e) => setFilter(e.currentTarget.value)}
+                    autoFocus
+                    InputProps={{
+                      startAdornment: <InputAdornment position="start">
+                        <Search />
+                      </InputAdornment>,
+                    }}
+                    placeholder={`${MemoData?.length} records...`}
+                    style={{
+                      fontSize: '1.1rem',
+                      border: '0',
+                    }}
+                  />
+                </>
+            }
+
           </Stack >
+
           <LeadTableMenu
             selectedFlatRows={selectedLeads}
           />
@@ -814,6 +837,7 @@ export default function LeadsPage() {
           </>
           : null
       }
+      <LeadsFilterDialog query={query} setQuery={setQuery} />
     </>
 
   )
