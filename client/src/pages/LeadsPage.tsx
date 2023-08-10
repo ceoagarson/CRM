@@ -113,6 +113,7 @@ export default function LeadsPage() {
         height: '73.5vh'
       }}>
         <Table
+          stickyHeader
           sx={{ minWidth: "5000px" }}
           size="small">
           <TableHead

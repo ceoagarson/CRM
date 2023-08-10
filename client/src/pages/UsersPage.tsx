@@ -18,6 +18,7 @@ import { IUser } from '../types/users/user.type'
 import { color1, color2, headColor } from '../utils/colors'
 import UserTableMenu from '../components/menu/UserTableMenu'
 import FuzzySearch from 'fuzzy-search'
+import UsersPagination from '../components/pagination/UsersPagination'
 
 export default function UsersPage() {
     const { data, isSuccess, isLoading } = useQuery<AxiosResponse<IUser[]>, BackendError>("users", GetUsers, {
@@ -112,6 +113,7 @@ export default function UsersPage() {
                 height: '73.5vh'
             }}>
                 <Table
+                    stickyHeader
                     sx={{ minWidth: "1800px" }}
                     size="small">
                     <TableHead
@@ -310,7 +312,7 @@ export default function UsersPage() {
                                                                     textTransform: "capitalize", fontWeight: '600'
                                                                 }}>{user.username}</Typography>
                                                                 <Typography variant="caption" component="span" sx={{ fontWeight: '500' }}>
-                                                                    {user.created_by._id === LoggedInUser?._id ?
+                                                                    {user.created_by._id === user?._id ?
                                                                         "owner" : "admin"}
                                                                 </Typography>
                                                             </>
@@ -485,6 +487,8 @@ export default function UsersPage() {
                     </TableBody>
                 </Table>
             </Box>
+            {/* pagination */}
+            <UsersPagination />
             {
                 user ?
                     <>

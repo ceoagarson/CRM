@@ -110,6 +110,7 @@ export default function CustomersPage() {
         height: '73.5vh'
       }}>
         <Table
+          stickyHeader
           sx={{ minWidth: "5000px" }}
           size="small">
           <TableHead
