@@ -19,15 +19,14 @@ import ConvertLeadToCustomerDialog from '../components/dialogs/leads/ConvertLead
 import NewRemarkDialog from '../components/dialogs/leads/NewRemarkDialog'
 import ViewRemarksDialog from '../components/dialogs/leads/ViewRemarksDialog'
 import { BasicPOPUP } from '../components/popup/BasicPOPUP'
-import LeadsPagination from '../components/pagination/LeadsPagination';
-import LeadsFilter from '../components/filter/LeadsFilter';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import LeadsFilterDialog from '../components/dialogs/filter/LeadsFilterDialog';
-
+import UploadLeadsExcelButton from '../components/buttons/UploadLeadsExcelButton';
+import DBPagination from '../components/pagination/DBpagination';
+import { PaginationContext } from '../contexts/paginationContext';
 
 export default function LeadsPage() {
-  const { data, isSuccess, isLoading } = useQuery<AxiosResponse<ILead[]>, BackendError>("leads", GetLeads, {
-    refetchOnMount: true
+  const { paginationData, setPaginationData } = useContext(PaginationContext)
+  const { data, isSuccess, isLoading } = useQuery<AxiosResponse<{ leads: ILead[], page: number, total: number, limit: number }>, BackendError>(["leads", paginationData], async () => GetLeads({ limit: paginationData?.limit, page: paginationData?.page }), {
+    cacheTime: 200
   })
   const { user: LoggedInUser } = useContext(UserContext)
   const [lead, setLead] = useState<ILead>()
@@ -38,6 +37,7 @@ export default function LeadsPage() {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [selectedLeads, setSelectedLeads] = useState<ILead[]>([])
   const [filter, setFilter] = useState<string | undefined>()
+  const [dbfilter, setDBFilter] = useState<string | undefined>()
   const [query, setQuery] = useState<{
     city: boolean | undefined,
     owner: boolean | undefined,
@@ -49,10 +49,17 @@ export default function LeadsPage() {
 
   useEffect(() => {
     if (isSuccess) {
-      setLeads(data.data)
-      setPreFilteredData(data.data)
+      setLeads(data.data.leads)
+      setPreFilteredData(data.data.leads)
+      setPaginationData({
+        ...paginationData,
+        page: data.data.page,
+        limit: data.data.limit,
+        total: data.data.total
+      })
     }
   }, [isSuccess, leads])
+
 
   useEffect(() => {
     if (filter) {
@@ -68,7 +75,7 @@ export default function LeadsPage() {
       setLeads(preFilteredData)
 
   }, [filter, leads])
-  console.log(query)
+
   return (
     <>
       {
@@ -95,38 +102,28 @@ export default function LeadsPage() {
         >
           {/* search bar */}
           < Stack direction="row" spacing={2}>
-            {
-              query ?
-                <>
-                  <LeadsFilter query={query} setQuery={setQuery} />
-                </> :
-                <>
-                  <IconButton
-                    onClick={() => setChoice({ type: LeadChoiceActions.open_filter })}
-                  >
-                    <FilterAltIcon />
-                  </IconButton>
-                  <TextField
-                    fullWidth
-                    size="small"
-                    onChange={(e) => setFilter(e.currentTarget.value)}
-                    autoFocus
-                    InputProps={{
-                      startAdornment: <InputAdornment position="start">
-                        <Search />
-                      </InputAdornment>,
-                    }}
-                    placeholder={`${MemoData?.length} records...`}
-                    style={{
-                      fontSize: '1.1rem',
-                      border: '0',
-                    }}
-                  />
-                </>
-            }
-
+            <UploadLeadsExcelButton />
+            <TextField
+              fullWidth
+              size="small"
+              onChange={(e) => setFilter(e.currentTarget.value)}
+              autoFocus
+              placeholder={`${MemoData?.length} records...`}
+              style={{
+                fontSize: '1.1rem',
+                border: '0',
+              }}
+            />
+            <IconButton
+              sx={{ bgcolor: 'whitesmoke' }}
+              onClick={() => {
+                setDBFilter(filter)
+                setFilter(undefined)
+              }}
+            >
+              <Search />
+            </IconButton>
           </Stack >
-
           <LeadTableMenu
             selectedFlatRows={selectedLeads}
           />
@@ -138,7 +135,6 @@ export default function LeadsPage() {
         height: '73.5vh'
       }}>
         <Table
-          stickyHeader
           sx={{ minWidth: "5000px" }}
           size="small">
           <TableHead
@@ -825,7 +821,6 @@ export default function LeadsPage() {
           </TableBody>
         </Table>
       </Box>
-      <LeadsPagination />
       {
         lead ?
           <>
@@ -837,7 +832,13 @@ export default function LeadsPage() {
           </>
           : null
       }
-      <LeadsFilterDialog query={query} setQuery={setQuery} />
+      {
+        dbfilter ?
+          <h1>React pagination</h1>
+          :
+          <DBPagination />
+      }
+
     </>
 
   )

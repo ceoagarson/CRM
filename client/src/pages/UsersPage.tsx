@@ -18,7 +18,6 @@ import { IUser } from '../types/users/user.type'
 import { color1, color2, headColor } from '../utils/colors'
 import UserTableMenu from '../components/menu/UserTableMenu'
 import FuzzySearch from 'fuzzy-search'
-import UsersPagination from '../components/pagination/UsersPagination'
 
 export default function UsersPage() {
     const { data, isSuccess, isLoading } = useQuery<AxiosResponse<IUser[]>, BackendError>("users", GetUsers, {
@@ -488,8 +487,6 @@ export default function UsersPage() {
                     </TableBody>
                 </Table>
             </Box>
-            {/* pagination */}
-            <UsersPagination />
             {
                 user ?
                     <>

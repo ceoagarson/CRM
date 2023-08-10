@@ -3,7 +3,7 @@ import isMongoId from "validator/lib/isMongoId"
 import xlsx from "xlsx"
 import Lead from "../models/leads/lead.model.js"
 import { User } from "../models/users/user.model.js"
-import { TLeadBody } from "../types/crm/lead.type.js"
+import { ILead, TLeadBody } from "../types/crm/lead.type.js"
 import { Remark } from "../models/leads/remark.model.js"
 import { IUser } from "../types/users/user.type.js"
 import { uploadFileToCloudinary } from "../utils/uploadFile.util.js"
@@ -108,35 +108,51 @@ export const CreateLead = async (req: Request, res: Response, next: NextFunction
 
 // get all leads  anyone can do in the organization
 export const GetLeads = async (req: Request, res: Response, next: NextFunction) => {
-    let leads = await Lead.find({ is_customer: false }).populate('lead_owners').populate('updated_by').populate('created_by').populate({
-        path: 'remarks',
-        populate: [
-            {
-                path: 'created_by',
-                model: 'User'
-            },
-            {
-                path: 'updated_by',
-                model: 'User'
-            }
-        ]
-    }).limit(10 * 1)
-        .skip((1 - 1) * 10)
-        .sort('-updated_at')
-        .sort('-updated_at')
-    if (!leads) {
-        return res.status(404).json({ message: "leads not found" })
-    }
-    if (req.user?.is_admin)
-        return res.status(200).json(leads)
-    leads = leads.filter((lead) => {
-        let owners = lead.lead_owners.filter((owner) => {
-            return owner.username === req.user?.username
+    let limit = Number(req.query.limit)
+    let page = Number(req.query.page)
+    if (!Number.isNaN(limit) && !Number.isNaN(page)) {
+        let leads = await Lead.find({ is_customer: false }).populate('lead_owners').populate('updated_by').populate('created_by').populate({
+            path: 'remarks',
+            populate: [
+                {
+                    path: 'created_by',
+                    model: 'User'
+                },
+                {
+                    path: 'updated_by',
+                    model: 'User'
+                }
+            ]
+        }).sort('-updated_at')
+            .limit(limit * 1)
+            .skip((page - 1) * limit)
+
+        let count = await Lead.countDocuments()
+        if (req.user?.is_admin)
+            return res.status(200).json({
+                leads,
+                total: Math.ceil(count / limit),
+                page: page,
+                limit: limit
+            })
+
+        leads = leads.filter((lead) => {
+            let owners = lead.lead_owners.filter((owner) => {
+                return owner.username === req.user?.username
+            })
+            if (owners.length > 0)
+                return lead
         })
-        if (owners.length > 0)
-            return lead
-    })
-    return res.status(200).json(leads)
+        return res.status(200).json({
+            leads,
+            total: Math.ceil(count / limit),
+            page: page,
+            limit: limit
+        })
+    }
+    else
+        return res.status(500).json({ message: "bad request" })
+
 }
 
 export const GetCustomers = async (req: Request, res: Response, next: NextFunction) => {
@@ -533,44 +549,28 @@ export const ConvertCustomer = async (req: Request, res: Response, next: NextFun
     return res.status(200).json({ message: "new customer created" })
 }
 
-export const GetmyLeads = async (req: Request, res: Response, next: NextFunction) => {
 
-    let limit = Number(req.query.limit)
-    let page = Number(req.query.page)
-    if (!Number.isNaN(limit) && !Number.isNaN(page)) {
-        const leads = await Lead.find()
-            .limit(limit * 1)
-            .skip((page - 1) * limit)
-            .sort('-updated_at')
-
-        const count = await Lead.countDocuments();
-        return res.json({
-            leads,
-            totalPages: Math.ceil(count / limit),
-            currentPage: page
-        });
+export const AdvancedQuery = async (req: Request, res: Response, next: NextFunction) => {
+    const { city, owner, searchString, isOr } = req.body
+    const keys = String(searchString).split(",")
+    let user = await User.findOne({ username: owner })
+    let leads: ILead[] = []
+    if (isOr) {
+        leads = await Lead.find({
+            $or: [
+                { city: { $regex: keys[0] } },
+                { owner: { $regex: user } }
+            ]
+        })
     }
-    else
-        return res.status(500).json({ message: "bad request" })
-
+    else {
+        leads = await Lead.find({
+            $and: [
+                { city: { $regex: keys[0] } },
+                { owner: { $regex: user } }
+            ]
+        })
+    }
+    return res.status(200).json(leads)
 }
 
-export const Search = async (req: Request, res: Response, next: NextFunction) => {
-    let limit = Number(req.query.limit)
-    let page = Number(req.query.page)
-    if (!Number.isNaN(limit) && !Number.isNaN(page)) {
-        const leads = await Lead.find()
-            .limit(limit * 1)
-            .skip((page - 1) * limit)
-
-        const count = await Lead.countDocuments();
-        return res.json({
-            leads,
-            totalPages: Math.ceil(count / limit),
-            currentPage: page
-        });
-    }
-    else
-        return res.status(500).json({ message: "bad request" })
-
-}

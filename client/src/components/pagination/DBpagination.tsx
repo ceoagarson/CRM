@@ -1,13 +1,12 @@
 import { Grid, IconButton, Stack } from "@mui/material"
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { useMemo, useState } from "react";
+import { useContext } from "react";
+import { PaginationContext } from "../../contexts/paginationContext";
 
-function LeadsPagination() {
-    const [pages, setPages] = useState<number>(1)
-    const [page, setPage] = useState<number>(1)
-    const [limit, setLimit] = useState<number>(10)
-    const total = useMemo(() => 200, [200])
+function DBPagination() {
+    const { paginationData, setPaginationData } = useContext(PaginationContext)
+    console.log(paginationData)
     return (
         <Grid sx={{ bgcolor: "whitesmoke" }} container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
             <Grid item xs={12} md={6} >
@@ -15,36 +14,26 @@ function LeadsPagination() {
                     spacing={2} direction={"row"}
                     justifyContent="center" p={2} alignItems={"center"}
                 >
-                    {/* limit */}
-                    <label htmlFor="records">Records</label>
-                    <input
-                        id="records"
-                        type="number"
-                        value={limit}
-                        style={{ width: '50px' }}
-                        onChange={
-                            (e) => setLimit(Number(e.target.value))
-                        }
-                    />
-                    {/* pages */}
-                    <label htmlFor="pages">PAGES</label>
-
-                    <select id="pages"
+                    <label htmlFor="records">Show Records</label>
+                    <select id="records"
                         style={{ width: '55px' }}
-                        value={pages}
+                        value={paginationData.limit}
                         onChange={(e) => {
-                            setPages(Number(e.target.value))
-                        }}>
+                            setPaginationData({
+                                ...paginationData,
+                                limit: Number(e.target.value)
+                            })
+                        }}
+                    >
                         {
-                            [1, 5, 10, 50, 100, 500, 1000].map(item => {
+                            [5, 10, 20, 50,100].map(item => {
                                 return (<option key={item} value={item}>
                                     {item}
                                 </option>)
                             })
                         }
                     </select>
-                    {/* total */}
-                    <label> {`Of  ${total}`}</label>
+                    <label> {`${paginationData.page}  Of  ${paginationData.total}`}</label>
                 </Stack>
             </Grid>
             <Grid item xs={12} md={6}>
@@ -53,26 +42,35 @@ function LeadsPagination() {
                     justifyContent="center" p={2} alignItems={"center"}>
                     {/* movement */}
                     <IconButton size="small" sx={{ p: 0, m: 0 }}
-                        disabled={page == 0}
+                        disabled={paginationData.page == 0}
                         onClick={() => {
-                            setPage(page - 1)
+                            setPaginationData({
+                                ...paginationData,
+                                page: paginationData.page - 1
+                            })
                         }}
                     >
                         <ArrowBackIcon />
                     </IconButton>
                     <label htmlFor="page">Goto Page</label>
-                    <input type="text" id="page" value={page} onChange={(e) => {
-                        if (Number(e.target.value) >= 0)
-                            setPage(Number(e.target.value))
+                    <input type="text" id="page" value={paginationData.page} onChange={(e) => {
+                        if (Number(e.target.value) >0)
+                            setPaginationData({
+                                ...paginationData,
+                                page: Number(e.target.value)
+                            })
                     }
                     }
                         style={{ width: '40px' }}
                     />
                     <IconButton
-                        disabled={page == total}
+                        disabled={paginationData.page == paginationData.total}
                         size="small" sx={{ p: 0, m: 0 }}
                         onClick={() => {
-                            setPage(page + 1)
+                            setPaginationData({
+                                ...paginationData,
+                                page: paginationData.page + 1
+                            })
                         }}
                     >
                         <ArrowForwardIcon />
@@ -83,4 +81,4 @@ function LeadsPagination() {
     )
 }
 
-export default LeadsPagination
+export default DBPagination

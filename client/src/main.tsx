@@ -8,13 +8,14 @@ import { BrowserRouter } from "react-router-dom";
 import { ChoiceProvider } from "./contexts/dialogContext";
 import { MenuProvider } from "./contexts/menuContext";
 import { SelectionProvider } from "./contexts/selectionContext";
+import { PaginationProvider } from './contexts/paginationContext.tsx';
 
 
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnReconnect: true,
-      retryDelay: 5000
+      retry:false
     }
   }
 });
@@ -22,6 +23,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <UserProvider>
+        <PaginationProvider>
           <ChoiceProvider>
             <MenuProvider>
               <SelectionProvider>
@@ -29,6 +31,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
               </SelectionProvider>
             </MenuProvider>
           </ChoiceProvider>
+        </PaginationProvider>
       </UserProvider>
     </BrowserRouter>
   </QueryClientProvider>

@@ -1,9 +1,10 @@
 import { apiClient } from "./utils/AxiosInterceptor"
 
 
-export const GetLeads = async () => {
-  return await apiClient.get(`leads`)
+export const GetLeads = async ({ limit, page }: { limit: number | undefined, page: number | undefined }) => {
+  return await apiClient.get(`leads?limit=${limit}&page=${page}`)
 }
+
 export const GetCustomers = async () => {
   return await apiClient.get(`customers`)
 }

@@ -20,8 +20,8 @@ function UploadLeadsExcelButton() {
     <AxiosResponse<ILeadTemplate[]>, BackendError, FormData>
     (BulkLeadUpdateFromExcel, {
       onSuccess: () => {
-        queryClient.fetchQuery('leads')
-        queryClient.fetchQuery('customers')
+        queryClient.invalidateQueries('leads')
+        queryClient.invalidateQueries('customers')
       }
     })
   const [file, setFile] = React.useState<File | null>(null)
