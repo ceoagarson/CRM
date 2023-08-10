@@ -156,33 +156,53 @@ export const GetLeads = async (req: Request, res: Response, next: NextFunction) 
 }
 
 export const GetCustomers = async (req: Request, res: Response, next: NextFunction) => {
-    let leads = await Lead.find({ is_customer: true }).populate('lead_owners').populate('updated_by').populate('created_by').populate({
-        path: 'remarks',
-        populate: [
-            {
-                path: 'created_by',
-                model: 'User'
-            },
-            {
-                path: 'updated_by',
-                model: 'User'
-            }
-        ]
-    }).sort('-updated_at')
-    if (!leads) {
-        return res.status(404).json({ message: "leads not found" })
-    }
-    if (req.user?.is_admin)
-        return res.status(200).json(leads)
-    leads = leads.filter((lead) => {
-        let owners = lead.lead_owners.filter((owner) => {
-            return owner.username === req.user?.username
+    let limit = Number(req.query.limit)
+    let page = Number(req.query.page)
+    if (!Number.isNaN(limit) && !Number.isNaN(page)) {
+        let leads = await Lead.find({ is_customer: true }).populate('lead_owners').populate('updated_by').populate('created_by').populate({
+            path: 'remarks',
+            populate: [
+                {
+                    path: 'created_by',
+                    model: 'User'
+                },
+                {
+                    path: 'updated_by',
+                    model: 'User'
+                }
+            ]
+        }).sort('-updated_at')
+            .limit(limit * 1)
+            .skip((page - 1) * limit)
+
+        let count = await Lead.countDocuments()
+        if (req.user?.is_admin)
+            return res.status(200).json({
+                leads,
+                total: Math.ceil(count / limit),
+                page: page,
+                limit: limit
+            })
+
+        leads = leads.filter((lead) => {
+            let owners = lead.lead_owners.filter((owner) => {
+                return owner.username === req.user?.username
+            })
+            if (owners.length > 0)
+                return lead
         })
-        if (owners.length > 0)
-            return lead
-    })
-    return res.status(200).json(leads)
+        return res.status(200).json({
+            leads,
+            total: Math.ceil(count / limit),
+            page: page,
+            limit: limit
+        })
+    }
+    else
+        return res.status(500).json({ message: "bad request" })
+
 }
+
 
 // update lead only admin can do
 export const UpdateLead = async (req: Request, res: Response, next: NextFunction) => {
@@ -433,7 +453,7 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
                         new_lead_owners.push(owner)
                 })
             }
-            else if (req.user)
+            if (new_lead_owners.length === 0 && req.user)
                 new_lead_owners.push(req.user)
 
 
@@ -441,17 +461,19 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
                 let user = await User.findOne({ username: lead.created_by })
                 if (user)
                     created_by = user
+                if (!user && req.user)
+                    created_by = req.user
             }
-            else if (req.user)
-                created_by = req.user
+
 
             if (lead.updated_by) {
                 let user = await User.findOne({ username: lead.updated_by })
                 if (user)
                     updated_by = user
+                if (!user && req.user)
+                    updated_by = req.user
             }
-            else if (req.user)
-                updated_by = req.user
+
 
             if (!isMongoId(String(lead._id)) && !validated) {
                 errors.push(lead)
@@ -511,8 +533,8 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
                         alternate_mobile1: uniqueNumbers[1] || null,
                         alternate_mobile2: uniqueNumbers[2] || null,
                         lead_owners: new_lead_owners,
-                        created_by: created_by,
-                        updated_by: updated_by
+                        created_by: created_by || req.user,
+                        updated_by: updated_by || req.user
                     })
                     if (lead.remarks) {
                         let new_remark = new Remark({
@@ -574,39 +596,53 @@ export const AdvancedQuery = async (req: Request, res: Response, next: NextFunct
     return res.status(200).json(leads)
 }
 
-export const FuzzySearch = async (req: Request, res: Response, next: NextFunction) => {
-    let key = req.query.search
+export const FuzzySearchLeads = async (req: Request, res: Response, next: NextFunction) => {
+    let key = String(req.query.key)
+    if (!key)
+        return res.status(500).json({ message: "bad request" })
     let leads: ILead[] = []
     leads = await Lead.find({
-        $or: [
-            { city: { $regex: key } },
-            { last_whatsapp_date: { $regex: key } },
-            { created_by: { $regex: key } },
-            { updated_by: { $regex: key } },
-            { is_customer: { $regex: key } },
-            { created_at: { $regex: key } },
-            { updated_at: { $regex: key } },
-            { lead_source: { $regex: key } },
-            { remarks: { $regex: key } },
-            { lead_owners: { $regex: key } },
-            { stage: { $regex: key } },
-            { lead_type: { $regex: key } },
-            { alternate_email: { $regex: key } },
-            { alternate_mobile2: { $regex: key } },
-            { alternate_mobile1: { $regex: key } },
-            { turnover: { $regex: key } },
-            { work_description: { $regex: key } },
-            { address: { $regex: key } },
-            { state: { $regex: key } },
-            { city: { $regex: key } },
-            { email: { $regex: key } },
-            { customer_designation: { $regex: key } },
-            { customer_name: { $regex: key } },
-            { mobile: { $regex: key } },
-            { name: { $regex: key } },
-            { owner: { $regex: key } },
-            { _id: { $regex: key } },
+        is_customer: false,
+        $text: { $search: key, $caseSensitive: false }
+    }
+    ).populate('lead_owners').populate('updated_by').populate('created_by').populate({
+        path: 'remarks',
+        populate: [
+            {
+                path: 'created_by',
+                model: 'User'
+            },
+            {
+                path: 'updated_by',
+                model: 'User'
+            }
         ]
-    })
+    }).sort('-updated_at')
+
+    return res.status(200).json(leads)
+}
+export const FuzzySearchCustomers = async (req: Request, res: Response, next: NextFunction) => {
+    let key = String(req.query.key)
+    if (!key)
+        return res.status(500).json({ message: "bad request" })
+    let leads: ILead[] = []
+    leads = await Lead.find({
+        is_customer: true,
+        $text: { $search: key, $caseSensitive: false }
+    }
+    ).populate('lead_owners').populate('updated_by').populate('created_by').populate({
+        path: 'remarks',
+        populate: [
+            {
+                path: 'created_by',
+                model: 'User'
+            },
+            {
+                path: 'updated_by',
+                model: 'User'
+            }
+        ]
+    }).sort('-updated_at')
+
     return res.status(200).json(leads)
 }

@@ -9,8 +9,7 @@ import { LeadChoiceActions, ChoiceContext } from '../contexts/dialogContext'
 import { BackendError } from '../types'
 import { color1, color2, headColor } from '../utils/colors'
 import LeadTableMenu from '../components/menu/LeadTableMenu'
-import FuzzySearch from 'fuzzy-search'
-import { GetLeads } from '../services/LeadsServices'
+import { FuzzySearchLeads, GetLeads } from '../services/LeadsServices'
 import { ILead } from '../types/leads/lead.type'
 import { UserContext } from '../contexts/userContext'
 import UpdateLeadDialog from '../components/dialogs/leads/UpdateLeadDialog'
@@ -25,9 +24,18 @@ import { PaginationContext } from '../contexts/paginationContext';
 
 export default function LeadsPage() {
   const { paginationData, setPaginationData } = useContext(PaginationContext)
+  const [filter, setFilter] = useState<string | undefined>()
+
+
   const { data, isSuccess, isLoading } = useQuery<AxiosResponse<{ leads: ILead[], page: number, total: number, limit: number }>, BackendError>(["leads", paginationData], async () => GetLeads({ limit: paginationData?.limit, page: paginationData?.page }), {
     cacheTime: 200
   })
+
+  const { data: fuzzyLeads, isSuccess: isFuzzySuccess, isLoading: isFuzzyLoading, refetch: refetchFuzzy } = useQuery<AxiosResponse<ILead[]>, BackendError>(["fuzzyleads", filter], async () => FuzzySearchLeads(filter), {
+    cacheTime: 200,
+    enabled: false
+  })
+
   const { user: LoggedInUser } = useContext(UserContext)
   const [lead, setLead] = useState<ILead>()
   const [leads, setLeads] = useState<ILead[]>([])
@@ -36,15 +44,6 @@ export default function LeadsPage() {
   const [preFilteredData, setPreFilteredData] = useState<ILead[]>([])
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [selectedLeads, setSelectedLeads] = useState<ILead[]>([])
-  const [filter, setFilter] = useState<string | undefined>()
-  const [dbfilter, setDBFilter] = useState<string | undefined>()
-  const [query, setQuery] = useState<{
-    city: boolean | undefined,
-    owner: boolean | undefined,
-    searchString: string | undefined,
-    isOr: boolean | undefined
-  }>()
-
   const { setChoice } = useContext(ChoiceContext)
 
   useEffect(() => {
@@ -58,28 +57,27 @@ export default function LeadsPage() {
         total: data.data.total
       })
     }
-  }, [isSuccess, leads])
+  }, [isSuccess])
 
 
   useEffect(() => {
-    if (filter) {
-      if (leads) {
-        const searcher = new FuzzySearch(leads, ["name", "customer_name", "customer_designation", "mobile", "email", "city", "state", "country", "address", "remarks", "work_description", "turnover", "lead_type", "stage", "alternate_mobile1", "alternate_mobile2", "alternate_email", "organization.organization_name", "lead_source", "created_at", "created_by.username", "updated_at", "updated_by.username", "preserved"], {
-          caseSensitive: false,
-        });
-        const result = searcher.search(filter);
-        setLeads(result)
-      }
-    }
     if (!filter)
       setLeads(preFilteredData)
+  }, [filter])
 
-  }, [filter, leads])
-
+  useEffect(() => {
+    if (isFuzzySuccess) {
+      setLeads(fuzzyLeads.data)
+    }
+  }, [isFuzzySuccess])
   return (
     <>
+
       {
         isLoading && <LinearProgress />
+      }
+      {
+        isFuzzyLoading && <LinearProgress />
       }
       {/*heading, search bar and table menu */}
       <Stack
@@ -117,8 +115,7 @@ export default function LeadsPage() {
             <IconButton
               sx={{ bgcolor: 'whitesmoke' }}
               onClick={() => {
-                setDBFilter(filter)
-                setFilter(undefined)
+                refetchFuzzy()
               }}
             >
               <Search />
@@ -833,7 +830,7 @@ export default function LeadsPage() {
           : null
       }
       {
-        dbfilter ?
+        filter ?
           <h1>React pagination</h1>
           :
           <DBPagination />

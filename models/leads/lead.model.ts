@@ -137,5 +137,6 @@ const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
         required: true,
     }
 })
+leadSchema.index({ '$**': 'text' })
 const Lead = mongoose.model<ILead, mongoose.Model<ILead>>("Lead", leadSchema);
 export default Lead;

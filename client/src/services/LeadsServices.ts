@@ -4,11 +4,16 @@ import { apiClient } from "./utils/AxiosInterceptor"
 export const GetLeads = async ({ limit, page }: { limit: number | undefined, page: number | undefined }) => {
   return await apiClient.get(`leads?limit=${limit}&page=${page}`)
 }
-
-export const GetCustomers = async () => {
-  return await apiClient.get(`customers`)
+export const FuzzySearchLeads = async (searchString?: string) => {
+  return await apiClient.get(`search/leads?key=${searchString}`)
+}
+export const FuzzySearchCustomers = async (searchString?: string) => {
+  return await apiClient.get(`search/customers?key=${searchString}`)
 }
 
+export const GetCustomers = async ({ limit, page }: { limit: number | undefined, page: number | undefined }) => {
+  return await apiClient.get(`customers?limit=${limit}&page=${page}`)
+}
 
 export const NewLead = async (body: FormData) => {
   return await apiClient.post("leads", body)
@@ -29,3 +34,4 @@ export const BulkLeadUpdateFromExcel = async (body: FormData) => {
 export const NewRemark = async ({ id, remark }: { id: string, remark: string }) => {
   return await apiClient.patch(`remarks/leads/${id}`, { remark: remark })
 }
+

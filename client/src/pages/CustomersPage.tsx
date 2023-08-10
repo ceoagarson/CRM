@@ -1,5 +1,6 @@
-import { Comment, Edit, Search, Visibility } from '@mui/icons-material'
-import { Box, Checkbox, FormControlLabel, IconButton, InputAdornment, LinearProgress, Table, TableBody, TableCell, TableHead, TableRow, TextField, Tooltip, Typography } from '@mui/material'
+import { Comment, Delete, Edit, Search, Visibility } from '@mui/icons-material'
+import { Box, Checkbox, FormControlLabel, IconButton, LinearProgress, Table, TableBody, TableCell, TableHead, TableRow, TextField, Tooltip, Typography } from '@mui/material'
+import AddTaskIcon from '@mui/icons-material/AddTask';
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
 import React, { useContext, useEffect, useState } from 'react'
@@ -8,58 +9,75 @@ import { LeadChoiceActions, ChoiceContext } from '../contexts/dialogContext'
 import { BackendError } from '../types'
 import { color1, color2, headColor } from '../utils/colors'
 import LeadTableMenu from '../components/menu/LeadTableMenu'
-import FuzzySearch from 'fuzzy-search'
-import { GetCustomers } from '../services/LeadsServices'
+import { FuzzySearchCustomers, GetCustomers } from '../services/LeadsServices'
 import { ILead } from '../types/leads/lead.type'
+import { UserContext } from '../contexts/userContext'
 import UpdateLeadDialog from '../components/dialogs/leads/UpdateLeadDialog'
 import DeleteLeadDialog from '../components/dialogs/leads/DeleteLeadDialog'
 import ConvertLeadToCustomerDialog from '../components/dialogs/leads/ConvertLeadToCustomerDialog'
 import NewRemarkDialog from '../components/dialogs/leads/NewRemarkDialog'
 import ViewRemarksDialog from '../components/dialogs/leads/ViewRemarksDialog'
 import { BasicPOPUP } from '../components/popup/BasicPOPUP'
+import UploadLeadsExcelButton from '../components/buttons/UploadLeadsExcelButton';
+import DBPagination from '../components/pagination/DBpagination';
+import { PaginationContext } from '../contexts/paginationContext';
 
 export default function CustomersPage() {
-  const { data, isSuccess, isLoading } = useQuery<AxiosResponse<ILead[]>, BackendError>("customers", GetCustomers, {
-    refetchOnMount: true
+  const { paginationData, setPaginationData } = useContext(PaginationContext)
+  const [filter, setFilter] = useState<string | undefined>()
+
+
+  const { data, isSuccess, isLoading } = useQuery<AxiosResponse<{ leads: ILead[], page: number, total: number, limit: number }>, BackendError>(["customers", paginationData], async () => GetCustomers({ limit: paginationData?.limit, page: paginationData?.page }), {
+    cacheTime: 200
   })
+
+  const { data: fuzzyCustomers, isSuccess: isFuzzySuccess, isLoading: isFuzzyLoading, refetch: refetchFuzzy } = useQuery<AxiosResponse<ILead[]>, BackendError>(["fuzzycustomers", filter], async () => FuzzySearchCustomers(filter), {
+    cacheTime: 200,
+    enabled: false
+  })
+
+  const { user: LoggedInUser } = useContext(UserContext)
   const [lead, setLead] = useState<ILead>()
   const [leads, setLeads] = useState<ILead[]>([])
   const [selectAll, setSelectAll] = useState(false)
   const MemoData = React.useMemo(() => leads, [leads])
   const [preFilteredData, setPreFilteredData] = useState<ILead[]>([])
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-
-
   const [selectedLeads, setSelectedLeads] = useState<ILead[]>([])
-  const [filter, setFilter] = useState<string | undefined>()
   const { setChoice } = useContext(ChoiceContext)
-
 
   useEffect(() => {
     if (isSuccess) {
-      setLeads(data.data)
-      setPreFilteredData(data.data)
+      setLeads(data.data.leads)
+      setPreFilteredData(data.data.leads)
+      setPaginationData({
+        ...paginationData,
+        page: data.data.page,
+        limit: data.data.limit,
+        total: data.data.total
+      })
     }
-  }, [isSuccess, leads])
+  }, [isSuccess])
+
 
   useEffect(() => {
-    if (filter) {
-      if (leads) {
-        const searcher = new FuzzySearch(leads, ["name", "customer_name", "customer_designation", "mobile", "email", "city", "state", "country", "address", "remarks", "work_description", "turnover", "lead_type", "stage", "alternate_mobile1", "alternate_mobile2", "alternate_email", "organization.organization_name", "lead_source", "created_at", "created_by.username", "updated_at", "updated_by.username", "preserved"], {
-          caseSensitive: false,
-        });
-        const result = searcher.search(filter);
-        setLeads(result)
-      }
-    }
     if (!filter)
       setLeads(preFilteredData)
+  }, [filter])
 
-  }, [filter, leads])
+  useEffect(() => {
+    if (isFuzzySuccess) {
+      setLeads(fuzzyCustomers.data)
+    }
+  }, [isFuzzySuccess])
   return (
     <>
+
       {
         isLoading && <LinearProgress />
+      }
+      {
+        isFuzzyLoading && <LinearProgress />
       }
       {/*heading, search bar and table menu */}
       <Stack
@@ -74,31 +92,34 @@ export default function CustomersPage() {
           component={'h1'}
           sx={{ pl: 1 }}
         >
-          Leads
+          Customers
         </Typography>
 
         <Stack
           direction="row"
         >
           {/* search bar */}
-          < Stack direction="row" spacing={2} sx={{ bgcolor: headColor }
-          }>
+          < Stack direction="row" spacing={2}>
+            <UploadLeadsExcelButton />
             <TextField
               fullWidth
               size="small"
               onChange={(e) => setFilter(e.currentTarget.value)}
               autoFocus
-              InputProps={{
-                startAdornment: <InputAdornment position="start">
-                  <Search />
-                </InputAdornment>,
-              }}
               placeholder={`${MemoData?.length} records...`}
               style={{
                 fontSize: '1.1rem',
                 border: '0',
               }}
             />
+            <IconButton
+              sx={{ bgcolor: 'whitesmoke' }}
+              onClick={() => {
+                refetchFuzzy()
+              }}
+            >
+              <Search />
+            </IconButton>
           </Stack >
           <LeadTableMenu
             selectedFlatRows={selectedLeads}
@@ -111,7 +132,6 @@ export default function CustomersPage() {
         height: '73.5vh'
       }}>
         <Table
-          stickyHeader
           sx={{ minWidth: "5000px" }}
           size="small">
           <TableHead
@@ -534,6 +554,38 @@ export default function CustomersPage() {
                     <TableCell>
                       <BasicPOPUP
                         element={<Stack direction="row" spacing={1}>
+                          {
+                            LoggedInUser?.is_admin ?
+                              <>
+                                <Tooltip title="delete">
+                                  <IconButton color="error"
+                                    onClick={() => {
+                                      setAnchorEl(null)
+                                      setChoice({ type: LeadChoiceActions.delete_lead })
+                                      setLead(lead)
+
+                                    }}
+                                  >
+                                    <Delete />
+                                  </IconButton>
+                                </Tooltip>
+                                <Tooltip title="Convert to Customer">
+                                  <IconButton color="warning"
+                                    onClick={() => {
+                                      setAnchorEl(null)
+                                      setChoice({ type: LeadChoiceActions.convert_customer })
+                                      setLead(lead)
+                                    }}
+                                  >
+                                    <AddTaskIcon />
+                                  </IconButton>
+                                </Tooltip>
+
+                              </>
+                              :
+                              null
+                          }
+
                           <Tooltip title="edit">
                             <IconButton color="secondary"
                               onClick={() => {
@@ -553,6 +605,7 @@ export default function CustomersPage() {
                                 setAnchorEl(null)
                                 setChoice({ type: LeadChoiceActions.view_remarks })
                                 setLead(lead)
+
 
                               }}
                             >
@@ -696,6 +749,35 @@ export default function CustomersPage() {
                     {/* actions */}
                     <TableCell>
                       <Stack direction="row" spacing={1}>
+                        {
+                          LoggedInUser?.is_admin ?
+                            <>
+                              <Tooltip title="delete">
+                                <IconButton color="error"
+                                  onClick={() => {
+                                    setChoice({ type: LeadChoiceActions.delete_lead })
+                                    setLead(lead)
+                                  }}
+                                >
+                                  <Delete />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip title="Convert to Customer">
+                                <IconButton color="warning"
+                                  onClick={() => {
+                                    setChoice({ type: LeadChoiceActions.convert_customer })
+                                    setLead(lead)
+                                  }}
+                                >
+                                  <AddTaskIcon />
+                                </IconButton>
+                              </Tooltip>
+
+                            </>
+                            :
+                            null
+                        }
+
                         <Tooltip title="edit">
                           <IconButton color="secondary"
                             onClick={() => {
@@ -747,6 +829,13 @@ export default function CustomersPage() {
           </>
           : null
       }
+      {
+        filter ?
+          <h1>React pagination</h1>
+          :
+          <DBPagination />
+      }
+
     </>
 
   )
