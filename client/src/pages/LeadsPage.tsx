@@ -161,7 +161,7 @@ export default function LeadsPage() {
                           setSelectAll(false)
                         }
                       }} />}
-                    label="Select"
+                    label=""
                   />
                 </Stack>
               </TableCell>

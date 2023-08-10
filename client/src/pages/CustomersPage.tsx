@@ -138,7 +138,7 @@ export default function CustomersPage() {
                           setSelectAll(false)
                         }
                       }} />}
-                    label="Select"
+                    label=""
                   />
                 </Stack>
               </TableCell>

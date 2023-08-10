@@ -140,7 +140,7 @@ export default function UsersPage() {
                                                     setSelectAll(false)
                                                 }
                                             }} />}
-                                        label="Select"
+                                        label=""
                                     />
                                 </Stack>
                             </TableCell>

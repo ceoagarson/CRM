@@ -1,5 +1,5 @@
 import express from "express";
-import { BulkLeadUpdateFromExcel, ConvertCustomer, CreateLead, DeleteLead, GetCustomers, GetLeads,  NewRemark, UpdateLead } from "../controllers/lead.controller";
+import { BulkLeadUpdateFromExcel, ConvertCustomer, CreateLead, DeleteLead, FuzzySearch, GetCustomers, GetLeads,  NewRemark, UpdateLead } from "../controllers/lead.controller";
 import { isAdmin, isAuthenticatedUser } from "../middlewares/auth.middleware";
 import { upload } from "./user.routes";
 
@@ -16,6 +16,6 @@ router.route("/leads/:id")
     .delete(isAuthenticatedUser, isAdmin, DeleteLead)
 router.route("/update/leads/bulk").put(isAuthenticatedUser, upload.single('file'), BulkLeadUpdateFromExcel)
 router.route("/remarks/leads/:id").patch(isAuthenticatedUser, NewRemark)
-
+router.route("/search").get(isAuthenticatedUser, FuzzySearch)
 
 export default router

@@ -574,3 +574,39 @@ export const AdvancedQuery = async (req: Request, res: Response, next: NextFunct
     return res.status(200).json(leads)
 }
 
+export const FuzzySearch = async (req: Request, res: Response, next: NextFunction) => {
+    let key = req.query.search
+    let leads: ILead[] = []
+    leads = await Lead.find({
+        $or: [
+            { city: { $regex: key } },
+            { last_whatsapp_date: { $regex: key } },
+            { created_by: { $regex: key } },
+            { updated_by: { $regex: key } },
+            { is_customer: { $regex: key } },
+            { created_at: { $regex: key } },
+            { updated_at: { $regex: key } },
+            { lead_source: { $regex: key } },
+            { remarks: { $regex: key } },
+            { lead_owners: { $regex: key } },
+            { stage: { $regex: key } },
+            { lead_type: { $regex: key } },
+            { alternate_email: { $regex: key } },
+            { alternate_mobile2: { $regex: key } },
+            { alternate_mobile1: { $regex: key } },
+            { turnover: { $regex: key } },
+            { work_description: { $regex: key } },
+            { address: { $regex: key } },
+            { state: { $regex: key } },
+            { city: { $regex: key } },
+            { email: { $regex: key } },
+            { customer_designation: { $regex: key } },
+            { customer_name: { $regex: key } },
+            { mobile: { $regex: key } },
+            { name: { $regex: key } },
+            { owner: { $regex: key } },
+            { _id: { $regex: key } },
+        ]
+    })
+    return res.status(200).json(leads)
+}
