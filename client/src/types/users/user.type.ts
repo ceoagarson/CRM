@@ -18,13 +18,13 @@ export type IUser = {
     username: string,
     password: string,
     email: string,
-    mobile: number,
+    mobile: string,
     dp: Asset,
-    select:any
+
     //bot properties
     client_id: string,
     client_data_path: string,
-    connected_number: number,
+    connected_number: string,
     is_whatsapp_active: Boolean,
 
     //auth properties
@@ -32,20 +32,25 @@ export type IUser = {
     lead_fields: LeadField[],
     email_verified: Boolean,
     is_active: Boolean,
-    actions?: any,
-    action_popup?:any
+
     //date properties
     last_login: Date,
     created_at: Date,
-    created_by: IUser,
+    created_by: {
+        username: string,
+        user: IUser
+    },
     updated_at: Date,
-    updated_by: IUser
+    updated_by: {
+        username: string,
+        user: IUser
+    }
 
     //tokens
     resetPasswordToken: string | null,
     resetPasswordExpire: Date | null,
     emailVerifyToken: string | null,
-    emailVerifyExpire: Date | null,
+    emailVerifyExpire: Date | null
 }
 
 

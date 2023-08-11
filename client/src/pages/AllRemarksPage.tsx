@@ -15,9 +15,9 @@ function AllRemarksPage({ lead }: { lead: ILead }) {
             <Stack direction={"column"}>
                 <RemarksContainer>
                     <Typography component="h1" variant="h6" sx={{ fontWeight: 'bold', textAlign: "center" }}>
-                        {lead.remarks.length ? "Remarks" : "no remarks yet"}
+                        {lead.remarks.remarks.length ? "Remarks" : "no remarks yet"}
                     </Typography>
-                    {lead.remarks.slice(0).reverse().map((remark, index) => {
+                    {lead.remarks.remarks.slice(0).reverse().map((remark, index) => {
                         return (
                             <Stack key={index}
                                 direction="column"

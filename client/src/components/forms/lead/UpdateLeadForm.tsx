@@ -22,7 +22,7 @@ export type TformData = {
   name: string,
   customer_name: string,
   customer_designation: string,
-  mobile: number,
+  mobile: string,
   email: string
   city: string,
   state: string,
@@ -30,11 +30,11 @@ export type TformData = {
   address: string,
   remark: string,
   work_description: string,
-  turnover: number,
+  turnover: string,
   lead_type: string,
   stage: string,
-  alternate_mobile1: number,
-  alternate_mobile2: number,
+  alternate_mobile1: string,
+  alternate_mobile2: string,
   alternate_email: string,
   lead_owners?: string[],
   lead_source: string,
@@ -64,7 +64,7 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
       state: lead.state,
       country: lead.country,
       address: lead.address,
-      remark: lead.remarks.length ? lead.remarks[lead.remarks.length - 1].remark : "",
+      remark: lead.remarks.last_remark || "",
       work_description: lead.work_description,
       turnover: lead.turnover,
       lead_type: lead.lead_type,
@@ -74,7 +74,7 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
       alternate_email: lead.alternate_email,
       lead_source: lead.lead_source,
       lead_owners: lead.lead_owners.map((owner) => {
-        return owner._id
+        return owner.user._id
       }),
       is_customer: lead.is_customer,
       visiting_card: lead.visiting_card && lead.visiting_card.url
@@ -253,7 +253,7 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
             < TextField
               variant='standard'
               disabled={Boolean(readonlyFields?.includes('mobile'))}
-              type="number"
+              type="string"
               error={
                 formik.touched.mobile && formik.errors.mobile ? true : false
               }
@@ -297,7 +297,7 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
               variant='standard'
               fullWidth
               disabled={Boolean(readonlyFields?.includes('alternate_mobile1'))}
-              type="number"
+              type="string"
               error={
                 formik.touched.alternate_mobile1 && formik.errors.alternate_mobile1 ? true : false
               }
@@ -319,7 +319,7 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
               variant='standard'
               fullWidth
               disabled={Boolean(readonlyFields?.includes('alternate_mobile2'))}
-              type="number"
+              type="string"
               error={
                 formik.touched.alternate_mobile2 && formik.errors.alternate_mobile2 ? true : false
               }
@@ -401,7 +401,7 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
               <option value="">
               </option>
               {
-                Cities.map((city, index: number) => {
+                Cities.map((city, index) => {
                   return (<option key={index} value={String(city).toLocaleUpperCase()}>
                     {city}
                   </option>)
@@ -675,7 +675,7 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
             >
               {
                 lead.lead_owners.map(owner => {
-                  return (<option key={owner._id} value={owner._id}>
+                  return (<option key={owner.user._id} value={owner.user._id}>
                     {owner.username}
                   </option>)
                 })

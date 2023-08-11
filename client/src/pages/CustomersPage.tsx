@@ -671,8 +671,8 @@ export default function CustomersPage() {
                     </TableCell>
                     {/* last remark */}
                     <TableCell>
-                      {lead.remarks && lead.remarks.length ?
-                        <Typography sx={{ textTransform: "capitalize" }}> {lead.remarks[lead.remarks.length - 1].remark.slice(0, 50)}
+                      {lead.remarks ?
+                        <Typography sx={{ textTransform: "capitalize" }}> {lead.remarks.last_remark.slice(0, 50)}
                         </Typography> : null
                       }
                     </TableCell>

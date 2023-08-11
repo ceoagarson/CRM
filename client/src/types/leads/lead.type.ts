@@ -7,35 +7,45 @@ export type ILead = {
     name: string,
     customer_name: string,
     customer_designation: string,
-    mobile: number,
+    mobile: string,
     email: string,
     city: string,
     state: string,
     country: string,
     address: string,
     work_description: string,
-    turnover: number,
-    alternate_mobile1: number,
-    alternate_mobile2: number,
+    turnover: string,
+    alternate_mobile1: string,
+    alternate_mobile2: string,
     alternate_email: string,
 
-    lead_type: "wholesale" | "retail" | "company" | "wholesale+retail"
-    stage: "open" | "closed" | "useless" | "potential"
-    lead_source: "internet" | "visit" | "whatsapp" | "cold calling" |
-    "cold email" | "others"
+    lead_type: string
+    stage: string
+    lead_source: string
 
-    remarks: IRemark[],
-    lead_owners: IUser[],
+    remarks: {
+        last_remark: string,
+        remarks: IRemark[]
+    },
+    lead_owners: {
+        username: string,
+        user: IUser
+    }[],
 
     visiting_card: Asset,
     is_customer: boolean,
 
     last_whatsapp_date: Date,
     created_at: Date,
-    created_by: IUser,
+    created_by: {
+        username: string,
+        user: IUser
+    },
     updated_at: Date,
-    updated_by: IUser,
-    actions?:any
-    action_popup?: any
+    updated_by: {
+        username: string,
+        user: IUser
+    }
 }
+
 

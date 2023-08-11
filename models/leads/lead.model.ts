@@ -19,7 +19,7 @@ const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
         lowercase: true,
     },
     mobile: {
-        type: Number,
+        type: String,
         trim: true,
         index: true,
         required: true,
@@ -56,16 +56,16 @@ const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
         lowercase: true
     },
     turnover: {
-        type: Number,
+        type: String,
         trim: true,
         index: true,
     },
     alternate_mobile1: {
-        type: Number,
+        type: String,
         trim: true,
     },
     alternate_mobile2: {
-        type: Number,
+        type: String,
         trim: true,
     },
     alternate_email: {
@@ -89,19 +89,21 @@ const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
         trim: true,
         lowercase: true,
     },
-    remarks: [
-        {
+    remarks: {
+        last_remark: String,
+        remarks: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Remark'
-        }
-    ],
-    lead_owners: [
-        {
+        }]
+    },
+    lead_owners: [{
+        username: String,
+        user: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
             required: true
         }
-    ],
+    }],
     visiting_card: {
         public_id: { type: String },
         url: { type: String },
@@ -117,14 +119,20 @@ const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
         type: Date
     },
     updated_by: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+        username: String,
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
+        }
     },
     created_by: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+        username: String,
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
+        }
     },
     created_at: {
         type: Date,

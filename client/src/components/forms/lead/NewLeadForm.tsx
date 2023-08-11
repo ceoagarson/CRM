@@ -29,7 +29,7 @@ export type TformData = {
   address: string,
   remark: string,
   work_description: string,
-  turnover: number,
+  turnover: string,
   lead_type: string,
   stage: string,
   alternate_mobile1: string,
@@ -64,7 +64,7 @@ function NewLeadForm({ users }: { users: IUser[] }) {
       address: "",
       remark: "",
       work_description: "delaer of safety items",
-      turnover: 500000,
+      turnover: "5 lakhs",
       lead_type: "wholesale",
       stage: "open",
       alternate_mobile1: "",
@@ -109,7 +109,7 @@ function NewLeadForm({ users }: { users: IUser[] }) {
       remark: Yup.string()
         .min(10, 'Must be 10 characters or more')
         .max(500, 'Must be 500 characters or less'),
-      mobile: Yup.string().required("required mobile number")
+      mobile: Yup.string().required("required mobile string")
         .min(10, 'Must be 10 digits')
         .max(10, 'Must be 10 digits'),
       alternate_mobile1: Yup.string()
@@ -248,7 +248,7 @@ function NewLeadForm({ users }: { users: IUser[] }) {
 
         < TextField
           variant='standard'
-          type="number"
+          type="string"
 
           error={
             formik.touched.mobile && formik.errors.mobile ? true : false
@@ -288,7 +288,7 @@ function NewLeadForm({ users }: { users: IUser[] }) {
           variant='standard'
           fullWidth
 
-          type="number"
+          type="string"
           error={
             formik.touched.alternate_mobile1 && formik.errors.alternate_mobile1 ? true : false
           }
@@ -307,7 +307,7 @@ function NewLeadForm({ users }: { users: IUser[] }) {
         < TextField
           variant='standard'
           fullWidth
-          type="number"
+          type="string"
           error={
             formik.touched.alternate_mobile2 && formik.errors.alternate_mobile2 ? true : false
           }
@@ -380,7 +380,7 @@ function NewLeadForm({ users }: { users: IUser[] }) {
           <option value="">
           </option>
           {
-            Cities.map((city, index: number) => {
+            Cities.map((city, index) => {
               return (<option key={index} value={city}>
                 {city}
               </option>)

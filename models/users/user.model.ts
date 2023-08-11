@@ -26,7 +26,7 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
     lowercase: true,
   },
   mobile: {
-    type: Number,
+    type: String,
     trim: true,
     index: true,
     required: true,
@@ -48,7 +48,7 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
     trim: true,
   },
   connected_number: {
-    type: Number,
+    type: String,
     trim: true,
     index: true
   },
@@ -57,7 +57,7 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
     default: false,
     required: true,
   },
- 
+
   is_admin: {
     type: Boolean,
     default: false,
@@ -93,9 +93,12 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
 
   },
   created_by: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+    username: String,
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    }
   },
   updated_at: {
     type: Date,
@@ -104,9 +107,12 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
 
   },
   updated_by: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+    username: String,
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    }
   },
 
   resetPasswordToken: {
@@ -159,5 +165,5 @@ UserSchema.method("getEmailVerifyToken", function () {
   this.emailVerifyExpire = new Date(Date.now() + 15 * 60 * 1000);
   return emailToken;
 })
-
+UserSchema.index({ '$**': 'text' })
 export const User = mongoose.model<IUser, mongoose.Model<IUser, {}, IUserMethods>>("User", UserSchema)

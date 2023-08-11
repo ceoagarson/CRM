@@ -1,5 +1,5 @@
 import { Comment, Delete, Edit, Search, Visibility } from '@mui/icons-material'
-import { Box, Checkbox, FormControlLabel, IconButton, InputAdornment, LinearProgress, Table, TableBody, TableCell, TableHead, TableRow, TextField, Tooltip, Typography } from '@mui/material'
+import { Box, Checkbox, FormControlLabel, IconButton, LinearProgress, Table, TableBody, TableCell, TableHead, TableRow, TextField, Tooltip, Typography } from '@mui/material'
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
@@ -671,8 +671,8 @@ export default function LeadsPage() {
                     </TableCell>
                     {/* last remark */}
                     <TableCell>
-                      {lead.remarks && lead.remarks.length ?
-                        <Typography sx={{ textTransform: "capitalize" }}> {lead.remarks[lead.remarks.length - 1].remark.slice(0, 50)}
+                      {lead.remarks ?
+                        <Typography sx={{ textTransform: "capitalize" }}> {lead.remarks.last_remark.slice(0, 50)}
                         </Typography> : null
                       }
                     </TableCell>

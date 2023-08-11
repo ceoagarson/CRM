@@ -24,9 +24,9 @@ export const CreateLead = async (req: Request, res: Response, next: NextFunction
     if (!mobile)
         return res.status(400).json({ message: "provide primary mobile number" });
 
-    let uniqueNumbers: number[] = []
+    let uniqueNumbers: string[] = []
     let oldLeads = await Lead.find()
-    let OldNumbers: number[] = []
+    let OldNumbers: string[] = []
     oldLeads.forEach((lead) => {
         if (lead.mobile)
             OldNumbers.push(lead.mobile)
@@ -51,11 +51,17 @@ export const CreateLead = async (req: Request, res: Response, next: NextFunction
     if (uniqueNumbers.length == 0) {
         return res.status(400).json({ message: "one of the mobile numbers already exists" });
     }
-    let new_lead_owners: IUser[] = []
+    let new_lead_owners: {
+        username: string,
+        user: IUser
+    }[] = []
     for (let i = 0; i < lead_owners.length; i++) {
-        let owner = await User.findById(lead_owners[i])
+        let owner = await User.findById(lead_owners[i].user._id)
         if (owner)
-            new_lead_owners.push(owner)
+            new_lead_owners.push({
+                username: owner.username,
+                user: owner
+            })
     }
 
     visiting_card = {
@@ -85,8 +91,14 @@ export const CreateLead = async (req: Request, res: Response, next: NextFunction
         alternate_mobile1: uniqueNumbers[1] || null,
         alternate_mobile2: uniqueNumbers[2] || null,
         lead_owners: new_lead_owners,
-        created_by: req.user?._id,
-        updated_by: req.user?._id,
+        created_by: {
+            username: req.user?.username,
+            user: req.user
+        },
+        updated_by: {
+            username: req.user?.username,
+            user: req.user
+        },
         created_at: new Date(Date.now()),
         updated_at: new Date(Date.now()),
     })
@@ -95,12 +107,21 @@ export const CreateLead = async (req: Request, res: Response, next: NextFunction
             remark,
             lead: lead,
             created_at: new Date(),
-            created_by: req.user,
+            created_by: {
+                username: req.user?.username,
+                user: req.user
+            },
             updated_at: new Date(),
-            updated_by: req.user
+            updated_by: {
+                username: req.user?.username,
+                user: req.user
+            }
         })
         await new_remark.save()
-        lead.remarks = [new_remark]
+        lead.remarks = {
+            last_remark: remark,
+            remarks: [new_remark]
+        }
     }
     await lead.save()
     return res.status(200).json("lead created")
@@ -222,9 +243,9 @@ export const UpdateLead = async (req: Request, res: Response, next: NextFunction
     if (!mobile)
         return res.status(400).json({ message: "provide primary mobile number" });
 
-    let uniqueNumbers: number[] = []
+    let uniqueNumbers: string[] = []
     let oldLeads = await Lead.find()
-    let OldNumbers: number[] = []
+    let OldNumbers: string[] = []
     oldLeads.forEach((lead) => {
         if (lead.mobile)
             OldNumbers.push(lead.mobile)
@@ -248,11 +269,18 @@ export const UpdateLead = async (req: Request, res: Response, next: NextFunction
             uniqueNumbers[2] = (alternate_mobile2)
             OldNumbers.push(alternate_mobile2)
         }
-    let new_lead_owners: IUser[] = []
+    let new_lead_owners: {
+        username: string,
+        user: IUser
+    }[] = []
     for (let i = 0; i < lead_owners.length; i++) {
-        let owner = await User.findById(lead_owners[i])
+        let owner = await User.findById(lead_owners[i].user._id)
         if (owner)
-            new_lead_owners.push(owner)
+            new_lead_owners.push(
+                {
+                    username: owner.username,
+                    user: owner
+                })
     }
 
     let visiting_card = lead?.visiting_card;
@@ -271,26 +299,37 @@ export const UpdateLead = async (req: Request, res: Response, next: NextFunction
         }
     }
     if (remark) {
-        if (!lead.remarks.length) {
+        if (!lead.remarks.remarks.length) {
             let new_remark = new Remark({
                 remark,
                 lead: lead,
                 created_at: new Date(),
-                created_by: req.user,
+                created_by: {
+                    username: req.user?.username,
+                    user: req.user
+                },
                 updated_at: new Date(),
-                updated_by: req.user
+                updated_by: {
+                    username: req.user?.username,
+                    user: req.user
+                }
             })
             await new_remark.save()
-            lead.remarks = [new_remark]
+            lead.remarks.last_remark = remark
+            lead.remarks.remarks = [new_remark]
         }
         else {
-            let last_remark = lead.remarks[lead.remarks.length - 1]
+            let last_remark = lead.remarks.remarks[lead.remarks.remarks.length - 1]
             await Remark.findByIdAndUpdate(last_remark._id, {
                 remark: remark,
                 lead: lead,
                 updated_at: new Date(),
-                updated_by: req.user
+                updated_by: {
+                    username: req.user?.username,
+                    user: req.user
+                }
             })
+            lead.remarks.last_remark = last_remark.remark
         }
     }
     await Lead.findByIdAndUpdate(lead._id, {
@@ -300,8 +339,14 @@ export const UpdateLead = async (req: Request, res: Response, next: NextFunction
         alternate_mobile2: uniqueNumbers[2] || lead.alternate_mobile2 || null,
         lead_owners: new_lead_owners,
         visiting_card: visiting_card,
-        created_by: req.user?._id,
-        updated_by: req.user?._id,
+        created_by: {
+            username: req.user?.username,
+            user: req.user
+        },
+        updated_by: {
+            username: req.user?.username,
+            user: req.user
+        },
         created_at: new Date(Date.now()),
         updated_at: new Date(Date.now()),
         remarks: lead.remarks
@@ -344,13 +389,20 @@ export const NewRemark = async (req: Request, res: Response, next: NextFunction)
         remark,
         lead: lead,
         created_at: new Date(Date.now()),
-        created_by: req.user,
+        created_by: {
+            username: req.user?.username,
+            user: req.user
+        },
         updated_at: new Date(Date.now()),
-        updated_by: req.user
+        updated_by: {
+            username: req.user?.username,
+            user: req.user
+        }
     })
     await new_remark.save()
     let updatedRemarks = lead.remarks
-    updatedRemarks.push(new_remark)
+    updatedRemarks.remarks.push(new_remark)
+    updatedRemarks.last_remark = remark
     lead.remarks = updatedRemarks
     await lead.save()
     return res.status(200).json({ message: "new remark added successfully" })
@@ -373,11 +425,11 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
         let OldNumbers: number[] = []
         oldLeads.forEach((lead) => {
             if (lead.mobile)
-                OldNumbers.push(lead.mobile)
+                OldNumbers.push(Number(lead.mobile))
             if (lead.alternate_mobile1)
-                OldNumbers.push(lead.alternate_mobile1)
+                OldNumbers.push(Number(lead.alternate_mobile1))
             if (lead.alternate_mobile2)
-                OldNumbers.push(lead.alternate_mobile2)
+                OldNumbers.push(Number(lead.alternate_mobile2))
         })
 
         console.log(workbook_response)
@@ -385,20 +437,23 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
             let mobile: number | null = Number(lead.mobile)
             let alternate_mobile1: number | null = Number(lead.alternate_mobile1)
             let alternate_mobile2: number | null = Number(lead.alternate_mobile2)
-            let created_by: IUser | undefined = undefined
-            let updated_by: IUser | undefined = undefined
-            let new_lead_owners: IUser[] = []
+            let created_by: {
+                username: string,
+                user: IUser
+            } | undefined = undefined
+            let updated_by: {
+                username: string,
+                user: IUser
+            } | undefined = undefined
+            let new_lead_owners: {
+                username: string,
+                user: IUser
+            }[] = []
             let validated = true
-            let leadTypes = ["retail", "wholesale", "company", "wholesale+retail"]
-            let stages = ["open", "closed", "useless", "potential"]
-            let sources = ["internet", "visit", "whatsapp", "cold calling",
-                "cold email", "others"]
 
             //important
             if (mobile && Number.isNaN(mobile))
                 validated = false
-            if (lead.turnover && typeof (lead.turnover) !== "number")
-                lead.turnover = 500000
             if (alternate_mobile1 && Number.isNaN(alternate_mobile1))
                 validated = false
             if (alternate_mobile2 && Number.isNaN(alternate_mobile2))
@@ -437,41 +492,45 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
             if (uniqueNumbers.length === 0)
                 validated = false
 
-
-            if (lead.lead_type && !leadTypes.includes(lead.lead_type))
-                lead.lead_type = "wholesale"
-            if (lead.stage && !stages.includes(lead.stage))
-                lead.stage = "open"
-            if (lead.lead_source && !sources.includes(lead.lead_source))
-                lead.lead_source = "internet"
-
             if (lead.lead_owners) {
                 let lead_owners = String((lead.lead_owners)).split(",")
                 lead_owners.map(async (name) => {
                     let owner = await User.findOne({ username: name })
                     if (owner)
-                        new_lead_owners.push(owner)
+                        new_lead_owners.push({ username: owner.username, user: owner })
                 })
             }
             if (new_lead_owners.length === 0 && req.user)
-                new_lead_owners.push(req.user)
+                new_lead_owners.push({ username: req.user.username, user: req.user })
 
 
             if (lead.created_by) {
                 let user = await User.findOne({ username: lead.created_by })
                 if (user)
-                    created_by = user
+                    created_by = {
+                        username: user.username,
+                        user: user
+                    }
                 if (!user && req.user)
-                    created_by = req.user
+                    created_by = {
+                        username: req.user.username,
+                        user: req.user
+                    }
             }
 
 
             if (lead.updated_by) {
                 let user = await User.findOne({ username: lead.updated_by })
                 if (user)
-                    updated_by = user
+                    updated_by = {
+                        username: user.username,
+                        user: user
+                    }
                 if (!user && req.user)
-                    updated_by = req.user
+                    updated_by = {
+                        username: req.user.username,
+                        user: req.user
+                    }
             }
 
 
@@ -492,21 +551,32 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
                                 remark: lead.remarks,
                                 lead: lead,
                                 created_at: new Date(),
-                                created_by: req.user,
+                                created_by: {
+                                    username: req.user?.username,
+                                    user: req.user
+                                },
                                 updated_at: new Date(),
-                                updated_by: req.user
+                                updated_by: {
+                                    username: req.user?.username,
+                                    user: req.user
+                                }
                             })
                             await new_remark.save()
-                            targetLead.remarks = [new_remark]
+                            targetLead.remarks.last_remark=lead.remarks
+                            targetLead.remarks.remarks = [new_remark]
                         }
                         else {
-                            let last_remark = targetLead.remarks[targetLead.remarks.length - 1]
+                            let last_remark = targetLead.remarks.remarks[targetLead.remarks.remarks.length - 1]
                             await Remark.findByIdAndUpdate(last_remark._id, {
                                 remark: lead.remarks,
                                 lead: lead,
                                 updated_at: new Date(),
-                                updated_by: req.user
+                                updated_by: {
+                                    username: req.user?.username,
+                                    user: req.user
+                                }
                             })
+                            targetLead.remarks.last_remark=last_remark.remark
                         }
 
                     }
@@ -546,7 +616,8 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
                             updated_by: req.user
                         })
                         await new_remark.save()
-                        newlead.remarks = [new_remark]
+                        newlead.remarks.last_remark=lead.remarks
+                        newlead.remarks.remarks = [new_remark]
 
                     }
                     await newlead.save()

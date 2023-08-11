@@ -7,7 +7,6 @@ import { UserProvider } from "./contexts/userContext";
 import { BrowserRouter } from "react-router-dom";
 import { ChoiceProvider } from "./contexts/dialogContext";
 import { MenuProvider } from "./contexts/menuContext";
-import { SelectionProvider } from "./contexts/selectionContext";
 import { PaginationProvider } from './contexts/paginationContext.tsx';
 
 
@@ -26,9 +25,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <PaginationProvider>
           <ChoiceProvider>
             <MenuProvider>
-              <SelectionProvider>
                 <App />
-              </SelectionProvider>
             </MenuProvider>
           </ChoiceProvider>
         </PaginationProvider>

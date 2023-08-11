@@ -3,16 +3,16 @@ export type ILeadTemplate = {
     name: string,
     customer_name: string,
     customer_designation: string,
-    mobile: number,
+    mobile: string,
     email: string,
     city: string,
     state: string,
     country: string,
     address: string,
     work_description: string,
-    turnover: number,
-    alternate_mobile1: number,
-    alternate_mobile2: number,
+    turnover: string,
+    alternate_mobile1: string,
+    alternate_mobile2: string,
     alternate_email: string,
 
     lead_type: string
@@ -21,7 +21,6 @@ export type ILeadTemplate = {
 
     remarks: string,
     lead_owners: string,
-
     is_customer: boolean,
 
     last_whatsapp_date: Date,
