@@ -4,9 +4,8 @@ import { useMutation } from 'react-query';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { UpdateUserLeadAccess } from '../../../services/UserServices';
 import { Button, Checkbox, FormControlLabel, Typography, Table, TableBody, TableRow, TableCell, CircularProgress, Stack, Alert } from '@mui/material'
-import { IUser, LeadField, LeadFieldType } from '../../../types/users/user.type';
+import { IUser, LeadField, LeadFieldType } from '../../../types/models/user.type';
 import { BackendError } from '../../../types';
-import { queryClient } from '../../../main';
 
 
 
@@ -15,14 +14,7 @@ function LeadControlAccessForm({ user }: { user: IUser }) {
     const [LeadFields, setLeadFields] = useState(user.lead_fields)
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<any>, BackendError, { id: string, leadFields: { lead_fields: LeadField[] } }>
-        (UpdateUserLeadAccess,
-            {
-                onSuccess: () => {
-                    queryClient.invalidateQueries('users')
-
-                }
-            }
-        )
+        (UpdateUserLeadAccess)
     function handleHidden(key: LeadFieldType) {
         let newFields = LeadFields
         newFields = LeadFields.map((item) => {
@@ -57,7 +49,7 @@ function LeadControlAccessForm({ user }: { user: IUser }) {
     useEffect(() => {
         if (isSuccess)
             setTimeout(() => {
-                setChoice({ type: UserChoiceActions.close })
+                setChoice({ type: UserChoiceActions.close_user })
             }, 1000)
     }, [setChoice, isSuccess])
 
@@ -123,7 +115,7 @@ function LeadControlAccessForm({ user }: { user: IUser }) {
                 </Button>
                 <Button size={"small"} variant="outlined" color="primary"
                     onClick={() => {
-                        setChoice({ type: UserChoiceActions.close })
+                        setChoice({ type: UserChoiceActions.close_user })
                     }}
                     disabled={isLoading}
                 >

@@ -11,13 +11,13 @@ function ResetPasswordDialog() {
         <>
             <Dialog
                 open={choice === UserChoiceActions.reset_password || token ? true : false}
-                onClose={() => setChoice({ type: UserChoiceActions.close })}
+                onClose={() => setChoice({ type: UserChoiceActions.close_user })}
             >
                 <DialogTitle textAlign="center">Reset Password</DialogTitle>
                 <DialogContent>
                     <ResetPasswordForm token={token || ""} />
                 </DialogContent>
-                <Button onClick={() => setChoice({ type: UserChoiceActions.close })}>Cancel</Button>
+                <Button onClick={() => setChoice({ type: UserChoiceActions.close_user })}>Cancel</Button>
             </Dialog >
         </>
     )

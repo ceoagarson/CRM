@@ -6,8 +6,7 @@ import { useMutation } from 'react-query';
 import * as Yup from "yup"
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { UpdateUser } from '../../../services/UserServices';
-import { IUser } from '../../../types/users/user.type';
-import { queryClient } from '../../../main';
+import { IUser } from '../../../types/models/user.type';
 import { BackendError, Target } from '../../../types';
 
 
@@ -23,9 +22,7 @@ type Props = {
 function UpdateUserForm({ user }: Props) {
   const { mutate, isLoading, isSuccess, isError, error } = useMutation
     <AxiosResponse<IUser>, BackendError, { id: string, body: FormData }>
-    (UpdateUser, {
-      onSuccess: () => queryClient.invalidateQueries('users')
-    })
+    (UpdateUser)
   const { setChoice } = useContext(ChoiceContext)
   const formik = useFormik<TformData>({
     initialValues: {
@@ -84,7 +81,7 @@ function UpdateUserForm({ user }: Props) {
   useEffect(() => {
     if (isSuccess) {
       setTimeout(() => {
-        setChoice({ type: UserChoiceActions.close })
+        setChoice({ type: UserChoiceActions.close_user })
       }, 1000)
     }
   }, [isSuccess, setChoice])

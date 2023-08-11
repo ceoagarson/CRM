@@ -2,7 +2,7 @@ import { useContext } from "react"
 import { ChoiceContext, UserChoiceActions } from "../../../contexts/dialogContext"
 import { Avatar, Button, Dialog, DialogContent, DialogTitle, Stack, Typography } from "@mui/material"
 import LeadControlAccessForm from "../../forms/user/LeadControlAccessForm"
-import { IUser } from "../../../types/users/user.type"
+import { IUser } from "../../../types/models/user.type"
 
 function ManageAccessControlDialog({ user}: { user:IUser }) {
   const { choice, setChoice } = useContext(ChoiceContext)
@@ -10,7 +10,7 @@ function ManageAccessControlDialog({ user}: { user:IUser }) {
   return (
     <>
       <Dialog fullScreen open={choice === UserChoiceActions.control_access ? true : false}
-        onClose={() => setChoice({ type: UserChoiceActions.close })}
+        onClose={() => setChoice({ type: UserChoiceActions.close_user })}
       >
         <DialogTitle textAlign="center">
           <Stack direction="row"
@@ -62,7 +62,7 @@ function ManageAccessControlDialog({ user}: { user:IUser }) {
         }
         </DialogContent>
           <Button fullWidth variant="contained"
-            onClick={() => setChoice({ type: UserChoiceActions.close })}>Close</Button>
+            onClick={() => setChoice({ type: UserChoiceActions.close_user })}>Close</Button>
       </Dialog >
     </>
   )

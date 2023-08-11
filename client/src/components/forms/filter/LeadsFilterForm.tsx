@@ -38,7 +38,7 @@ function LeadsFilterForm({ query, setQuery }: Props) {
             else
                 setQuery(undefined)
 
-            setChoice({ type: LeadChoiceActions.close })
+            setChoice({ type: LeadChoiceActions.close_lead })
         }
     });
     return (

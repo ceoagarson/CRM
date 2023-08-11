@@ -6,8 +6,7 @@ import { UpdateProfile } from '../../../services/UserServices';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { useContext, useEffect } from 'react';
 import { AxiosResponse } from 'axios';
-import { IUser } from '../../../types/users/user.type';
-import { queryClient } from '../../../main';
+import { IUser } from '../../../types/models/user.type';
 import { BackendError, Target } from '../../../types';
 
 
@@ -20,9 +19,7 @@ type TformData = {
 function UpdateProfileForm({ user }: { user: IUser }) {
   const { mutate, isLoading, isSuccess, isError, error } = useMutation
     <AxiosResponse<IUser>, BackendError, FormData>
-    (UpdateProfile, {
-      onSuccess: () => queryClient.invalidateQueries('profile')
-    })
+    (UpdateProfile)
   const { setChoice } = useContext(ChoiceContext)
 
   const formik = useFormik<TformData>({
@@ -74,7 +71,7 @@ function UpdateProfileForm({ user }: { user: IUser }) {
   useEffect(() => {
     if (isSuccess) {
       setTimeout(() => {
-        setChoice({ type: UserChoiceActions.close })
+        setChoice({ type: UserChoiceActions.close_user })
       }, 1000)
     }
   }, [isSuccess, setChoice])

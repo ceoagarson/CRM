@@ -1,6 +1,6 @@
 import { IFrequency } from "./reminder.type"
-import { Asset } from "../users/asset.type"
-import { IUser } from "../users/user.type"
+import { Asset } from "../types/asset.type"
+import { IUser } from "./user.type"
 
 export type IBroadcastTrigger = {
     _id: string,

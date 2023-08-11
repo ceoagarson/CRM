@@ -24,9 +24,7 @@ type Props = {
 function LeadsFilter({ query, setQuery }: Props) {
     const [filter, setFilter] = useState<string>()
     const {  setChoice } = useContext(ChoiceContext)
-
     console.log(filter)
-
     return (
         <>
             {

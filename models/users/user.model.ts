@@ -2,7 +2,7 @@ import mongoose from "mongoose"
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import { IUser, IUserMethods } from "../../types/users/user.type";
+import { IUser, IUserMethods } from "../../types/models/user.type";
 
 const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMethods>, IUserMethods>({
   username: {

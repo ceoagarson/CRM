@@ -11,9 +11,8 @@ import { Source } from '../../../utils/Source';
 import { States } from '../../../utils/states';
 import { Cities } from '../../../utils/cities';
 import { BackendError, Target } from '../../../types';
-import { ILead } from '../../../types/leads/lead.type';
-import { queryClient } from '../../../main';
-import { IUser } from '../../../types/users/user.type';
+import { ILead } from '../../../types/models/lead.type';
+import { IUser } from '../../../types/models/user.type';
 import { useLeadFields } from '../../hooks/LeadFieldsHook';
 import { LeadTypes } from '../../../utils/leadtype';
 import { Stages } from '../../../utils/stages';
@@ -45,12 +44,7 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
   const { hiddenFields, readonlyFields } = useLeadFields()
   const { mutate, isLoading, isSuccess, isError, error } = useMutation
     <AxiosResponse<ILead>, BackendError, { id: string, body: FormData }>
-    (UpdateLead, {
-      onSuccess: () => {
-        queryClient.invalidateQueries('leads')
-        queryClient.invalidateQueries('customers')
-      }
-    })
+    (UpdateLead)
 
   const { setChoice } = useContext(ChoiceContext)
   const formik = useFormik<TformData>({
@@ -173,7 +167,7 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
   useEffect(() => {
     if (isSuccess) {
       setTimeout(() => {
-        setChoice({ type: LeadChoiceActions.close })
+        setChoice({ type: LeadChoiceActions.close_lead })
       }, 1000)
     }
   }, [isSuccess, setChoice])

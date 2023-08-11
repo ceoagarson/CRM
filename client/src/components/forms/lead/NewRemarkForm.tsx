@@ -7,19 +7,13 @@ import * as Yup from "yup"
 import { NewRemark } from '../../../services/LeadsServices';
 import { ChoiceContext, LeadChoiceActions } from '../../../contexts/dialogContext';
 import { BackendError } from '../../../types';
-import { ILead } from '../../../types/leads/lead.type';
-import { queryClient } from '../../../main';
+import { ILead } from '../../../types/models/lead.type';
 
 
 function NewRemarkForm({ lead }: { lead: ILead }) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, { id: string, remark: string }>
-        (NewRemark, {
-            onMutate: () => {
-                queryClient.invalidateQueries('leads')
-                queryClient.invalidateQueries('customers')
-            }
-        })
+        (NewRemark)
 
     const { setChoice } = useContext(ChoiceContext)
 
@@ -48,7 +42,7 @@ function NewRemarkForm({ lead }: { lead: ILead }) {
     useEffect(() => {
         if (isSuccess) {
             setTimeout(() => {
-                setChoice({ type: LeadChoiceActions.close })
+                setChoice({ type: LeadChoiceActions.close_lead })
             }, 1000)
         }
     }, [isSuccess, setChoice])

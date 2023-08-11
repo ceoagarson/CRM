@@ -22,7 +22,7 @@ function LeadsFilterDialog({ query, setQuery }: Props) {
     const { choice, setChoice } = useContext(ChoiceContext)
     return (
         <Dialog open={choice === LeadChoiceActions.open_filter ? true : false}
-            onClose={() => setChoice({ type: LeadChoiceActions.close })}
+            onClose={() => setChoice({ type: LeadChoiceActions.close_lead })}
         >
             <DialogTitle sx={{p:1}} textAlign="center">
                 Advanced Leads Filter
@@ -35,7 +35,7 @@ function LeadsFilterDialog({ query, setQuery }: Props) {
             >
                 <LeadsFilterForm query={query} setQuery={setQuery} />
                 <Button fullWidth variant="outlined"
-                    onClick={() => setChoice({ type: LeadChoiceActions.close })}>Close</Button>
+                    onClick={() => setChoice({ type: LeadChoiceActions.close_lead })}>Close</Button>
             </Stack >
         </Dialog >
     )

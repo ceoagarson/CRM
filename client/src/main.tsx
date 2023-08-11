@@ -9,11 +9,13 @@ import { ChoiceProvider } from "./contexts/dialogContext";
 import { MenuProvider } from "./contexts/menuContext";
 
 
-export const queryClient = new QueryClient({
+const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnReconnect: true,
-      retry: false
+      retry: false,
+      refetchOnMount: true,
+      cacheTime: 200
     }
   }
 });

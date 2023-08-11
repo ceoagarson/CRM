@@ -5,15 +5,13 @@ import UpdateLeadForm from '../../forms/lead/UpdateLeadForm'
 import { useQuery } from 'react-query'
 import { AxiosResponse } from 'axios'
 import { GetUsers } from '../../../services/UserServices'
-import { ILead } from '../../../types/leads/lead.type'
-import { IUser } from '../../../types/users/user.type'
+import { ILead } from '../../../types/models/lead.type'
+import { IUser } from '../../../types/models/user.type'
 import { BackendError } from '../../../types'
 
 function UpdateLeadDialog({ lead }: { lead: ILead}) {
     const [users, setUsers] = useState<IUser[]>([])
-    const { data, isSuccess } = useQuery<AxiosResponse<IUser[]>, BackendError>("users", GetUsers, {
-        refetchOnMount: true,
-    })
+    const { data, isSuccess } = useQuery<AxiosResponse<IUser[]>, BackendError>("users", GetUsers)
     const { choice, setChoice } = useContext(ChoiceContext)
     useEffect(() => {
         if (isSuccess)
@@ -22,7 +20,7 @@ function UpdateLeadDialog({ lead }: { lead: ILead}) {
     return (
         <Dialog  
         open={choice === LeadChoiceActions.update_lead ? true : false}
-            onClose={() => setChoice({ type: LeadChoiceActions.close })}
+            onClose={() => setChoice({ type: LeadChoiceActions.close_lead })}
         >
             <DialogTitle textAlign="center">Update Lead Form</DialogTitle>
             <DialogContent>

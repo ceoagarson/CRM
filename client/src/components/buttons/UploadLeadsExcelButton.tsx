@@ -4,8 +4,7 @@ import { useMutation } from "react-query"
 import { styled } from "styled-components"
 import { BackendError } from "../../types"
 import { BulkLeadUpdateFromExcel } from "../../services/LeadsServices"
-import { queryClient } from "../../main"
-import { ILeadTemplate } from "../../types/leads/lead.template.types"
+import { ILeadTemplate } from "../../types/templates/lead.template.types"
 import { Button, CircularProgress, Snackbar } from "@mui/material"
 import ExportToExcel from "../../utils/ExportToExcel"
 import { Upload } from "@mui/icons-material"
@@ -18,12 +17,7 @@ function UploadLeadsExcelButton() {
   const [leads, setLeads] = React.useState<ILeadTemplate[]>()
   const { data, mutate, isLoading, isSuccess, isError, error } = useMutation
     <AxiosResponse<ILeadTemplate[]>, BackendError, FormData>
-    (BulkLeadUpdateFromExcel, {
-      onSuccess: () => {
-        queryClient.invalidateQueries('leads')
-        queryClient.invalidateQueries('customers')
-      }
-    })
+    (BulkLeadUpdateFromExcel)
   const [file, setFile] = React.useState<File | null>(null)
 
 

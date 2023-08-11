@@ -22,7 +22,7 @@ function UserMenu() {
     useEffect(() => {
         if (isSuccess) {
             setUser({ type: UserActions.logout })
-            setChoice({ type: UserChoiceActions.close })
+            setChoice({ type: UserChoiceActions.close_user })
             setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
             goto(paths.login)
         }

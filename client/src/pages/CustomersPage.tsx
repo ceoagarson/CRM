@@ -7,7 +7,7 @@ import { useQuery } from 'react-query'
 import { BackendError } from '../types'
 import LeadTableMenu from '../components/menu/LeadTableMenu'
 import { FuzzySearchCustomers, GetCustomers } from '../services/LeadsServices'
-import { ILead } from '../types/leads/lead.type'
+import { ILead } from '../types/models/lead.type'
 import { UserContext } from '../contexts/userContext'
 import UploadLeadsExcelButton from '../components/buttons/UploadLeadsExcelButton';
 import DBPagination from '../components/pagination/DBpagination';
@@ -36,12 +36,9 @@ export default function CustomersPage() {
   const currentItems = FuzzyMemoData.slice(itemOffset, endOffset)
 
 
-  const { data, isSuccess, isLoading } = useQuery<AxiosResponse<{ leads: ILead[], page: number, total: number, limit: number }>, BackendError>(["customers", paginationData], async () => GetCustomers({ limit: paginationData?.limit, page: paginationData?.page }), {
-    cacheTime: 200
-  })
+  const { data, isSuccess, isLoading } = useQuery<AxiosResponse<{ leads: ILead[], page: number, total: number, limit: number }>, BackendError>(["customers", paginationData], async () => GetCustomers({ limit: paginationData?.limit, page: paginationData?.page }))
 
   const { data: fuzzyLeads, isSuccess: isFuzzySuccess, isLoading: isFuzzyLoading, refetch: refetchFuzzy } = useQuery<AxiosResponse<ILead[]>, BackendError>(["fuzzycustomers", filter], async () => FuzzySearchCustomers(filter), {
-    cacheTime: 200,
     enabled: false
   })
 

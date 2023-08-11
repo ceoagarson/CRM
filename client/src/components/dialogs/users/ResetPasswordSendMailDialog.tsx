@@ -8,7 +8,7 @@ function ResetPasswordSendMailDialog() {
 
     return (
         <Dialog open={choice === UserChoiceActions.reset_password_mail ? true : false}
-            onClose={() => setChoice({ type: UserChoiceActions.close })}
+            onClose={() => setChoice({ type: UserChoiceActions.close_user })}
         >
             <DialogTitle textAlign="center">Reset Password  </DialogTitle>
             <DialogContent>

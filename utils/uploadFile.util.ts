@@ -1,5 +1,5 @@
 import cloudinary from "cloudinary"
-import { Asset } from "../types/users/asset.type";
+import { Asset } from "../types/types/asset.type";
 
 //upload a file in cloudinary
 export const uploadFileToCloudinary = async (filepath: string, storageLocation: string) => {

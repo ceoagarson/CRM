@@ -1,31 +1,31 @@
 import React, { useReducer } from "react"
 
-type UserChoices = "signup"| "reset_password_mail" | null | "new_user" | "update_user" | "update_profile" | "view_profile" | "update_password" | "reset_password" | "verify_email" | "control_access" | "delete_user" |
-  "block_user" | "unblock_user" | "make_admin" | "remove_admin" |"refresh_whatsapp"
+type UserChoices = "signup" | "reset_password_mail" | "close_user" | "new_user" | "update_user" | "update_profile" | "view_profile" | "update_password" | "reset_password" | "verify_email" | "control_access" | "delete_user" |
+  "block_user" | "unblock_user" | "make_admin" | "remove_admin" | "refresh_whatsapp"
 
-type LeadChoices = "create_lead" | "update_lead" | "update_remark" | "view_remarks" | null | "display_filter" | "delete_lead" |"convert_customer"|"open_filter"
+type LeadChoices = "create_lead" | "update_lead" | "update_remark" | "view_remarks" | "close_lead" | "display_filter" | "delete_lead" | "convert_customer" | "open_filter"
 
 
-type ChoiceState = UserChoices | LeadChoices 
+type ChoiceState = UserChoices | LeadChoices
 
-const initialState: ChoiceState = null
+const initialState: ChoiceState | null = null
 
 export enum LeadChoiceActions {
   create_lead = "create_lead",
   update_lead = "update_lead",
   delete_lead = "delete_lead",
   view_remarks = "view_remarks",
-  close ="close",
-  convert_customer ="convert_customer",
-  display_filter ="display_filter",
+  close_lead = "close_lead",
+  convert_customer = "convert_customer",
+  display_filter = "display_filter",
   update_remark = "update_remark",
-  open_filter ="open_filter"
+  open_filter = "open_filter"
 }
 
 export enum UserChoiceActions {
   signup = "signup",
   reset_password_mail = "reset_password_mail",
-  close = "close",
+  close_user = "close_user",
   new_user = "new_user",
   update_user = "update_user",
   update_profile = "update_profile",
@@ -38,8 +38,8 @@ export enum UserChoiceActions {
   make_admin = "make_admin",
   remove_admin = "remove_admin",
   delete_user = "delete_user",
-  control_access ="control_access",
-  refresh_whatsapp ="refresh_whatsapp"
+  control_access = "control_access",
+  refresh_whatsapp = "refresh_whatsapp"
 }
 
 type Action = {
@@ -47,7 +47,7 @@ type Action = {
 }
 
 // reducer
-function reducer(state: ChoiceState, action: Action) {
+function reducer(state: ChoiceState | null, action: Action) {
   let type = action.type
   switch (type) {
     // user dialogs choices
@@ -66,7 +66,7 @@ function reducer(state: ChoiceState, action: Action) {
     case UserChoiceActions.control_access: return type
     case UserChoiceActions.remove_admin: return type
     case UserChoiceActions.delete_user: return type
-    case UserChoiceActions.close: return null
+    case UserChoiceActions.close_user: return type
 
     // lead dialog choices
     case LeadChoiceActions.create_lead: return type
@@ -77,14 +77,14 @@ function reducer(state: ChoiceState, action: Action) {
     case LeadChoiceActions.delete_lead: return type
     case LeadChoiceActions.convert_customer: return type
     case LeadChoiceActions.open_filter: return type
-    case LeadChoiceActions.close: return null
+    case LeadChoiceActions.close_lead: return type
 
     default: return state
   }
 }
 // context
 type Context = {
-  choice: ChoiceState,
+  choice: ChoiceState | null,
   setChoice: React.Dispatch<Action>
 }
 export const ChoiceContext = React.createContext<Context>(

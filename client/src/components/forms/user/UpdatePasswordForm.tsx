@@ -62,7 +62,7 @@ function UpdatePasswordForm() {
     useEffect(() => {
         if (isSuccess) {
             setTimeout(() => {
-                setChoice({ type: UserChoiceActions.close })
+                setChoice({ type: UserChoiceActions.close_user })
             }, 1000)
         }
     }, [setChoice, isSuccess,])

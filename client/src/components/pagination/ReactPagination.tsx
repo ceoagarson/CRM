@@ -77,7 +77,7 @@ function ReactPagination({ reactPaginationData, data, setReactPaginationData }: 
                     <IconButton
                         disabled={reactPaginationData.page == reactPaginationData.total}
                         size="small" sx={{ p: 0, m: 0 }}
-                        onClick={(e) => {
+                        onClick={() => {
                             setReactPaginationData({
                                 ...reactPaginationData,
                                 page: reactPaginationData.page + 1

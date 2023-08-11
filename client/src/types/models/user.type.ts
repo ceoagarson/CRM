@@ -1,4 +1,4 @@
-import { Asset } from "./asset.type";
+import { Asset } from "../types/asset.type";
 
 export type LeadFieldType = "_id" | "name" | "customer_name" | "customer_designation" | "mobile" | "email" | "city" | "state" | "country" | "address" | "work_description" | "turnover" | "alternate_mobile1" | "alternate_mobile2" | "alternate_email" | "lead_type" | "stage" | "lead_source" | "remarks" | "lead_owners" | "visiting_card" | "is_customer" | "last_whatsapp_date" | "created_at" | "created_by" | "updated_at" | "updated_by"
 
@@ -39,8 +39,8 @@ export type IUser = {
     //ref properties
     created_by_username: string,
     created_by: IUser,
-    updated_by_username:string,
-    updated_by:IUser
+    updated_by_username: string,
+    updated_by: IUser
 
     //tokens
     resetPasswordToken: string | null,

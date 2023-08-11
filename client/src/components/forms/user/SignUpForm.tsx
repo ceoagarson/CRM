@@ -11,7 +11,7 @@ import { UserActions, UserContext } from '../../../contexts/userContext';
 import { paths } from '../../../Routes';
 import { Signup } from '../../../services/UserServices';
 import { BackendError, Target } from '../../../types';
-import { IUser } from '../../../types/users/user.type';
+import { IUser } from '../../../types/models/user.type';
 
 type TFormData = {
   username: string,
@@ -107,7 +107,7 @@ function OwnerSignUpForm() {
     if (isSuccess) {
       setTimeout(() => {
         setUser({ type: UserActions.login, payload: data.data })
-        setChoice({ type: UserChoiceActions.close })
+        setChoice({ type: UserChoiceActions.close_user })
         goto(paths.dashboard)
       }, 1000)
     }

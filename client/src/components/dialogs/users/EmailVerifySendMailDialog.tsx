@@ -7,7 +7,7 @@ function EmailVerifySendMailDialog() {
     const { choice, setChoice } = useContext(ChoiceContext)
     return (
         <Dialog open={choice === UserChoiceActions.verify_email ? true : false}
-            onClose={() => setChoice({ type: UserChoiceActions.close })}
+            onClose={() => setChoice({ type: UserChoiceActions.close_user })}
         >
             <DialogTitle textAlign="center">Verify Your Email</DialogTitle>
             <DialogContent>

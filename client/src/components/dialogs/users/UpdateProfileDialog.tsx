@@ -11,7 +11,7 @@ function UpdateProfileDialog() {
     const { user } = useContext(UserContext)
     return (
         <Dialog  open={choice === UserChoiceActions.update_profile ? true : false}
-            onClose={() => setChoice({ type: UserChoiceActions.close })}
+            onClose={() => setChoice({ type: UserChoiceActions.close_user })}
         >
             {isEditing ?
                 <DialogTitle textAlign="center">
@@ -65,7 +65,7 @@ function UpdateProfileDialog() {
                     fullWidth
                     onClick={() => {
                         setIsEditing(false)
-                        setChoice({ type: UserChoiceActions.close })
+                        setChoice({ type: UserChoiceActions.close_user })
                     }}
                 >
                     Cancel

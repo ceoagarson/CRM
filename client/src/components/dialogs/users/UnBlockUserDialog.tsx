@@ -5,31 +5,23 @@ import { useMutation } from 'react-query';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { UnBlockUser } from '../../../services/UserServices';
 import { BackendError } from '../../../types';
-import { queryClient } from '../../../main';
 
 function UnBlockUserDialog({ id }: { id: string }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
-        (UnBlockUser,
-            {
-                onSuccess: () => {
-                    queryClient.invalidateQueries('users')
-
-                }
-            }
-        )
+        (UnBlockUser)
 
     useEffect(() => {
         if (isSuccess)
             setTimeout(() => {
-                setChoice({ type: UserChoiceActions.close })
+                setChoice({ type: UserChoiceActions.close_user })
             }, 1000)
     }, [setChoice, isSuccess])
 
     return (
         <Dialog open={choice === UserChoiceActions.unblock_user ? true : false}
-            onClose={() => setChoice({ type: UserChoiceActions.close })}
+            onClose={() => setChoice({ type: UserChoiceActions.close_user })}
         >
             <DialogTitle textAlign="center">
                 Activate User
@@ -71,7 +63,7 @@ function UnBlockUserDialog({ id }: { id: string }) {
                 </Button>
                 <Button fullWidth variant="contained"
                     disabled={isLoading}
-                    color="warning" onClick={() => setChoice({ type: UserChoiceActions.close })}>Cancel</Button>
+                    color="warning" onClick={() => setChoice({ type: UserChoiceActions.close_user })}>Cancel</Button>
             </Stack >
         </Dialog >
     )

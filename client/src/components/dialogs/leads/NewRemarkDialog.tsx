@@ -2,14 +2,14 @@ import { Dialog, DialogContent,  DialogActions, Typography, CircularProgress } f
 import { useContext } from 'react'
 import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import NewRemarkForm from '../../forms/lead/NewRemarkForm'
-import { ILead } from '../../../types/leads/lead.type'
+import { ILead } from '../../../types/models/lead.type'
 
 function NewRemarkDialog({ lead }: { lead: ILead }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     return (
         <Dialog
             open={choice === LeadChoiceActions.update_remark ? true : false}
-            onClose={() => setChoice({ type: LeadChoiceActions.close })}
+            onClose={() => setChoice({ type: LeadChoiceActions.close_lead })}
         >
             <DialogContent>
                 {lead ?

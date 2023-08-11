@@ -8,7 +8,7 @@ function SignUpDialog() {
   return (
     <>
       <Dialog open={choice === UserChoiceActions.signup ? true : false}
-        onClose={() => setChoice({ type: UserChoiceActions.close })}
+        onClose={() => setChoice({ type: UserChoiceActions.close_user })}
         scroll="paper"
       >
         <DialogTitle textAlign={"center"}>Owner Signup Form</DialogTitle>
@@ -27,7 +27,7 @@ function SignUpDialog() {
               variant="body1"
               sx={{ cursor: "pointer" }}
               component="span"
-              onClick={() => setChoice({ type: UserChoiceActions.close })}
+              onClick={() => setChoice({ type: UserChoiceActions.close_user })}
             >
             <b>Close</b>
             </Typography >

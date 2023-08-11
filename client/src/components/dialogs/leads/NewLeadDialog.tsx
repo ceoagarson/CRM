@@ -5,14 +5,12 @@ import NewLeadForm from '../../forms/lead/NewLeadForm';
 import { GetUsers } from '../../../services/UserServices';
 import { AxiosResponse } from 'axios';
 import { useQuery } from 'react-query';
-import { IUser } from '../../../types/users/user.type';
+import { IUser } from '../../../types/models/user.type';
 import { BackendError } from '../../../types';
 
 function NewLeadDialog() {
   const [users,setUsers]=useState<IUser[]>([])
-  const {data,isSuccess}=useQuery<AxiosResponse<IUser[]>, BackendError>("users", GetUsers, {
-    refetchOnMount: true,
-  })
+  const {data,isSuccess}=useQuery<AxiosResponse<IUser[]>, BackendError>("users", GetUsers)
   const { choice, setChoice } = useContext(ChoiceContext)
   useEffect(()=>{
     if(isSuccess)
@@ -27,7 +25,7 @@ function NewLeadDialog() {
           <NewLeadForm users={users}/>
         </DialogContent>
         <DialogActions sx={{p:2}}>
-          <Button variant='outlined' fullWidth onClick={() => setChoice({ type: LeadChoiceActions.close })}>Cancel</Button>
+          <Button variant='outlined' fullWidth onClick={() => setChoice({ type: LeadChoiceActions.close_lead })}>Cancel</Button>
         </DialogActions>
       </Dialog>
     </>

@@ -7,7 +7,7 @@ import { useQuery } from 'react-query'
 import { BackendError } from '../types'
 import LeadTableMenu from '../components/menu/LeadTableMenu'
 import { FuzzySearchLeads, GetLeads } from '../services/LeadsServices'
-import { ILead } from '../types/leads/lead.type'
+import { ILead } from '../types/models/lead.type'
 import { UserContext } from '../contexts/userContext'
 import UploadLeadsExcelButton from '../components/buttons/UploadLeadsExcelButton';
 import DBPagination from '../components/pagination/DBpagination';
@@ -38,12 +38,9 @@ export default function LeadsPage() {
   const [selectedLeads, setSelectedLeads] = useState<ILead[]>([])
 
 
-  const { data, isSuccess, isLoading } = useQuery<AxiosResponse<{ leads: ILead[], page: number, total: number, limit: number }>, BackendError>(["leads", paginationData], async () => GetLeads({ limit: paginationData?.limit, page: paginationData?.page }), {
-    cacheTime: 200
-  })
+  const { data, isSuccess, isLoading } = useQuery<AxiosResponse<{ leads: ILead[], page: number, total: number, limit: number }>, BackendError>(["leads", paginationData], async () => GetLeads({ limit: paginationData?.limit, page: paginationData?.page }))
 
   const { data: fuzzyLeads, isSuccess: isFuzzySuccess, isLoading: isFuzzyLoading, refetch: refetchFuzzy } = useQuery<AxiosResponse<ILead[]>, BackendError>(["fuzzyleads", filter], async () => FuzzySearchLeads(filter), {
-    cacheTime: 200,
     enabled: false
   })
 
@@ -80,7 +77,6 @@ export default function LeadsPage() {
   useEffect(() => {
     setItemOffset(reactPaginationData.page * reactPaginationData.limit % reactPaginationData.total)
   }, [reactPaginationData])
-
   return (
     <>
 

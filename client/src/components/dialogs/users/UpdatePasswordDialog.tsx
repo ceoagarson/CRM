@@ -9,13 +9,13 @@ function UpdatePasswordDialog() {
     return (
         <>
             <Dialog open={choice === UserChoiceActions.update_password ? true : false}
-                onClose={() => setChoice({ type: UserChoiceActions.close })}
+                onClose={() => setChoice({ type: UserChoiceActions.close_user })}
             >
                 <DialogTitle textAlign="center">Update Password</DialogTitle>
                 <DialogContent>
                     <UpdatePasswordForm />
                 </DialogContent>
-                <Button onClick={() => setChoice({ type: UserChoiceActions.close })}>Cancel</Button>
+                <Button onClick={() => setChoice({ type: UserChoiceActions.close_user })}>Cancel</Button>
             </Dialog >
         </>
     )

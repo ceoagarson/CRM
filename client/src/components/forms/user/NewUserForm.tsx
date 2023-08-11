@@ -8,8 +8,7 @@ import * as Yup from "yup"
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { NewUser } from '../../../services/UserServices';
 import { BackendError, Target } from '../../../types';
-import { IUser } from '../../../types/users/user.type';
-import { queryClient } from '../../../main';
+import { IUser } from '../../../types/models/user.type';
 
 
 type TformData = {
@@ -23,9 +22,7 @@ type TformData = {
 function NewUserForm() {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<IUser>, BackendError, FormData>
-        (NewUser, {
-            onSuccess: () => queryClient.invalidateQueries('users')
-        })
+        (NewUser)
 
     const { setChoice } = useContext(ChoiceContext)
 
@@ -100,7 +97,7 @@ function NewUserForm() {
     useEffect(() => {
         if (isSuccess) {
             setTimeout(() => {
-                setChoice({ type: UserChoiceActions.close })
+                setChoice({ type: UserChoiceActions.close_user })
             }, 1000)
         }
     }, [isSuccess, setChoice])

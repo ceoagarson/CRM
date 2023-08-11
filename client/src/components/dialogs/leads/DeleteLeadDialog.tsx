@@ -4,33 +4,26 @@ import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { LeadChoiceActions,  ChoiceContext } from '../../../contexts/dialogContext';
 import { DeleteLead } from '../../../services/LeadsServices';
-import { ILead } from '../../../types/leads/lead.type';
+import { ILead } from '../../../types/models/lead.type';
 import { BackendError } from '../../../types';
-import { queryClient } from '../../../main';
 
 
 function DeleteLeadDialog({ lead }: { lead: ILead }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, {id:string}>
-        (DeleteLead,
-            {
-                onSuccess: () => {
-                    queryClient.invalidateQueries('leads')
-                }
-            }
-        )
+        (DeleteLead)
 
     useEffect(() => {
         if (isSuccess)
             setTimeout(() => {
-                setChoice({ type: LeadChoiceActions.close })
+                setChoice({ type: LeadChoiceActions.close_lead })
             }, 1000)
     }, [setChoice, isSuccess])
 
     return (
         <Dialog open={choice === LeadChoiceActions.delete_lead ? true : false}
-            onClose={() => setChoice({ type: LeadChoiceActions.close })}
+            onClose={() => setChoice({ type: LeadChoiceActions.close_lead })}
         >
             <DialogTitle textAlign="center">
                 Delete Lead
@@ -73,7 +66,7 @@ function DeleteLeadDialog({ lead }: { lead: ILead }) {
                 </Button>
                 <Button fullWidth variant="contained"
                     disabled={isLoading}
-                    onClick={() => setChoice({ type: LeadChoiceActions.close })}>Cancel</Button>
+                    onClick={() => setChoice({ type: LeadChoiceActions.close_lead })}>Cancel</Button>
             </Stack >
         </Dialog >
     )

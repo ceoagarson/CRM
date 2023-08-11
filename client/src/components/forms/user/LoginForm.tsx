@@ -11,7 +11,7 @@ import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContex
 import { UserActions, UserContext } from '../../../contexts/userContext';
 import { paths } from '../../../Routes';
 import { Login } from '../../../services/UserServices';
-import { IUser } from '../../../types/users/user.type';
+import { IUser } from '../../../types/models/user.type';
 import { BackendError } from '../../../types';
 
 
@@ -64,7 +64,7 @@ function LoginForm() {
     if (isSuccess) {
       setTimeout(() => {
         setUser({ type: UserActions.login, payload: data.data })
-        setChoice({ type: UserChoiceActions.close })
+        setChoice({ type: UserChoiceActions.close_user })
         goto(paths.dashboard)
       }, 400)
     }

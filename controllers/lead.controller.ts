@@ -3,11 +3,11 @@ import isMongoId from "validator/lib/isMongoId"
 import xlsx from "xlsx"
 import Lead from "../models/leads/lead.model.js"
 import { User } from "../models/users/user.model.js"
-import { ILead, TLeadBody } from "../types/crm/lead.type.js"
+import { ILead, TLeadBody } from "../types/models/lead.type.js"
 import { Remark } from "../models/leads/remark.model.js"
-import { IUser } from "../types/users/user.type.js"
+import { IUser } from "../types/models/user.type.js"
 import { uploadFileToCloudinary } from "../utils/uploadFile.util.js"
-import { ILeadTemplate } from "../types/crm/lead.template.types.js"
+import { ILeadTemplate } from "../types/templates/lead.template.types.js"
 import { isvalidDate } from "../utils/isValidDate.js"
 import { Types } from "mongoose"
 
@@ -449,7 +449,10 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
             if (mobile && !OldNumbers.includes(mobile)) {
                 uniqueNumbers.push(mobile)
                 OldNumbers.push(mobile)
+
             }
+            else
+                statusText = "duplicate"
             if (alternate_mobile1 && !OldNumbers.includes(alternate_mobile1)) {
                 uniqueNumbers.push(alternate_mobile1)
                 OldNumbers.push(alternate_mobile1)
