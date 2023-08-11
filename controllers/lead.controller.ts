@@ -52,8 +52,9 @@ export const CreateLead = async (req: Request, res: Response, next: NextFunction
         return res.status(400).json({ message: "one of the mobile numbers already exists" });
     }
     let new_lead_owners: IUser[] = []
-    for (let i = 0; i < lead_owners.length; i++) {
-        let owner = await User.findById(lead_owners[i]._id)
+    let owners = String(lead_owners).split(",")
+    for (let i = 0; i < owners.length; i++) {
+        let owner = await User.findById(owners[i])
         if (owner)
             new_lead_owners.push(owner)
     }
@@ -78,8 +79,8 @@ export const CreateLead = async (req: Request, res: Response, next: NextFunction
             return res.status(500).json({ message: "file uploading error" })
         }
     }
-    const lead = new Lead({
-        ...req.body,
+    let lead = new Lead({
+        ...body,
         visiting_card: visiting_card,
         mobile: uniqueNumbers[0] || null,
         alternate_mobile1: uniqueNumbers[1] || null,
@@ -253,8 +254,9 @@ export const UpdateLead = async (req: Request, res: Response, next: NextFunction
             OldNumbers.push(alternate_mobile2)
         }
     let new_lead_owners: IUser[] = []
-    for (let i = 0; i < lead_owners.length; i++) {
-        let owner = await User.findById(lead_owners[i]._id)
+    let owners = String(lead_owners).split(",")
+    for (let i = 0; i < owners.length; i++) {
+        let owner = await User.findById(owners[i])
         if (owner)
             new_lead_owners.push(owner)
     }
@@ -301,7 +303,7 @@ export const UpdateLead = async (req: Request, res: Response, next: NextFunction
         }
     }
     await Lead.findByIdAndUpdate(lead._id, {
-        ...req.body,
+        ...body,
         mobile: uniqueNumbers[0] || lead.mobile || null,
         alternate_mobile1: uniqueNumbers[1] || lead.alternate_mobile1 || null,
         alternate_mobile2: uniqueNumbers[2] || lead.alternate_mobile2 || null,
@@ -634,7 +636,16 @@ export const FuzzySearchLeads = async (req: Request, res: Response, next: NextFu
             }
         ]
     }).sort('-updated_at')
+    if (req.user?.is_admin)
+        return res.status(200).json(leads)
 
+    leads = leads.filter((lead) => {
+        let owners = lead.lead_owners.filter((owner) => {
+            return owner.username === req.user?.username
+        })
+        if (owners.length > 0)
+            return lead
+    })
     return res.status(200).json(leads)
 }
 export const FuzzySearchCustomers = async (req: Request, res: Response, next: NextFunction) => {
@@ -660,5 +671,15 @@ export const FuzzySearchCustomers = async (req: Request, res: Response, next: Ne
         ]
     }).sort('-updated_at')
 
+    if (req.user?.is_admin)
+        return res.status(200).json(leads)
+
+    leads = leads.filter((lead) => {
+        let owners = lead.lead_owners.filter((owner) => {
+            return owner.username === req.user?.username
+        })
+        if (owners.length > 0)
+            return lead
+    })
     return res.status(200).json(leads)
 }

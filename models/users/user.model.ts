@@ -9,7 +9,6 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
     type: String,
     required: true,
     trim: true,
-    index: true,
     lowercase: true,
   },
   password: {
@@ -21,14 +20,12 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
   email: {
     type: String,
     required: true,
-    index: true,
     trim: true,
     lowercase: true,
   },
   mobile: {
     type: String,
     trim: true,
-    index: true,
     required: true,
   },
   dp: {
@@ -95,7 +92,6 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
   created_by_username: {
     type: String,
     trim: true,
-    index: true,
     lowercase: true,
     required: true,
   },
@@ -113,7 +109,6 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
   updated_by_username: {
     type: String,
     trim: true,
-    index: true,
     lowercase: true,
     required: true,
   },
