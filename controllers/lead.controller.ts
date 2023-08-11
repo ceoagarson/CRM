@@ -609,30 +609,6 @@ export const ConvertCustomer = async (req: Request, res: Response, next: NextFun
 }
 
 
-export const AdvancedQuery = async (req: Request, res: Response, next: NextFunction) => {
-    const { city, owner, searchString, isOr } = req.body
-    const keys = String(searchString).split(",")
-    let user = await User.findOne({ username: owner })
-    let leads: ILead[] = []
-    if (isOr) {
-        leads = await Lead.find({
-            $or: [
-                { city: { $regex: keys[0] } },
-                { owner: { $regex: user } }
-            ]
-        })
-    }
-    else {
-        leads = await Lead.find({
-            $and: [
-                { city: { $regex: keys[0] } },
-                { owner: { $regex: user } }
-            ]
-        })
-    }
-    return res.status(200).json(leads)
-}
-
 export const FuzzySearchLeads = async (req: Request, res: Response, next: NextFunction) => {
     let key = String(req.query.key)
     if (!key)
@@ -700,5 +676,33 @@ export const FuzzySearchCustomers = async (req: Request, res: Response, next: Ne
         if (owners.length > 0)
             return lead
     })
+    return res.status(200).json(leads)
+}
+
+export const UpdateLeadFields = async (req: Request, res: Response, next: NextFunction) =>{
+
+}
+
+export const AdvancedQuery = async (req: Request, res: Response, next: NextFunction) => {
+    const { city, owner, searchString, isOr } = req.body
+    const keys = String(searchString).split(",")
+    let user = await User.findOne({ username: owner })
+    let leads: ILead[] = []
+    if (isOr) {
+        leads = await Lead.find({
+            $or: [
+                { city: { $regex: keys[0] } },
+                { owner: { $regex: user } }
+            ]
+        })
+    }
+    else {
+        leads = await Lead.find({
+            $and: [
+                { city: { $regex: keys[0] } },
+                { owner: { $regex: user } }
+            ]
+        })
+    }
     return res.status(200).json(leads)
 }
