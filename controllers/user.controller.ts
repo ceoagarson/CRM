@@ -69,14 +69,10 @@ export const SignUp = async (req: Request, res: Response, next: NextFunction) =>
 
     })
 
-    owner.created_by = {
-        username: owner.username,
-        user: owner
-    }
-    owner.updated_by = {
-        username: owner.username,
-        user: owner
-    }
+    owner.created_by = owner
+    owner.created_by_username = owner.username
+    owner.updated_by = owner
+    owner.updated_by_username = owner.username
     sendUserToken(res, owner.getAccessToken())
     await owner.save()
     owner = await User.findById(owner._id).populate("created_by").populate("updated_by") || owner
@@ -139,14 +135,10 @@ export const NewUser = async (req: Request, res: Response, next: NextFunction) =
 
     })
     if (req.user) {
-        user.created_by = {
-            username: req.user.username,
-            user: req.user
-        }
-        user.updated_by = {
-            username: req.user.username,
-            user: req.user
-        }
+        user.created_by = req.user
+        user.updated_by = req.user
+        user.created_by_username = req.user.username
+        user.updated_by_username = req.user.username
     }
     await user.save()
     user = await User.findById(user._id).populate("created_by").populate("updated_by") || user
@@ -236,8 +228,8 @@ export const UpdateUser = async (req: Request, res: Response, next: NextFunction
             return res.status(403).json({ message: `${email} already exists` });
     }
     // check first owner to update himself
-    if ((String(user.created_by.user._id) === String(user._id)))
-        if ((String(user.created_by.user._id) !== String(req.user?._id)))
+    if ((String(user.created_by._id) === String(user._id)))
+        if ((String(user.created_by._id) !== String(req.user?._id)))
             return res.status(403).json({ message: "not allowed contact crm administrator" })
 
     //handle dp
@@ -272,12 +264,12 @@ export const UpdateUser = async (req: Request, res: Response, next: NextFunction
         username,
         mobile,
         dp,
-        updated_by: {
-            username: req.user?.username,
-            user: req.user
-        },
+        updated_by_username: req.user?.username,
+        updated_by: req.user,
         updated_at: new Date(),
-    }).then(() => res.status(200).json({ message: "user updated" }))
+    }).then(() => {
+        return res.status(200).json({ message: "user updated" })
+    })
 }
 
 // get all users only admin can do
@@ -333,10 +325,8 @@ export const UpdateProfile = async (req: Request, res: Response, next: NextFunct
             dp,
             mobile,
             email_verified: false,
-            updated_by: {
-                username: user.username,
-                user: user
-            }
+            updated_by_username: user.username,
+            updated_by: user
         })
             .then(() => { return res.status(200).json({ message: "profile updated" }) })
     }
@@ -344,10 +334,8 @@ export const UpdateProfile = async (req: Request, res: Response, next: NextFunct
         email,
         mobile,
         dp,
-        updated_by: {
-            username: user.username,
-            user: user
-        }
+        updated_by_username: user.username,
+        updated_by: user
     })
         .then(() => res.status(200).json({ message: "profile updated" }))
 }
@@ -369,10 +357,8 @@ export const updatePassword = async (req: Request, res: Response, next: NextFunc
     if (!isPasswordMatched)
         return res.status(401).json({ message: "Old password is incorrect" })
     user.password = newPassword;
-    user.updated_by = {
-        username: user.username,
-        user: user
-    }
+    user.updated_by = user
+    user.updated_by_username = user.username
     await user.save();
     res.status(200).json({ message: "password updated" });
 }
@@ -388,11 +374,10 @@ export const MakeAdmin = async (req: Request, res: Response, next: NextFunction)
     if (user.is_admin)
         return res.status(404).json({ message: "already a admin" })
     user.is_admin = true
-    if (req.user)
-        user.updated_by = {
-            username: req.user.username,
-            user: req.user
-        }
+    if (req.user) {
+        user.updated_by = user
+        user.updated_by_username = user.username
+    }
     await user.save();
     res.status(200).json({ message: "admin role provided successfully" });
 }
@@ -410,16 +395,15 @@ export const BlockUser = async (req: Request, res: Response, next: NextFunction)
     if (!user.is_active)
         return res.status(404).json({ message: "user already blocked" })
 
-    if (String(user.created_by.user._id) === String(user._id))
+    if (String(user.created_by._id) === String(user._id))
         return res.status(403).json({ message: "not allowed contact crm administrator" })
     if (String(user._id) === String(req.user?._id))
         return res.status(403).json({ message: "not allowed this operation here, because you may block yourself" })
     user.is_active = false
-    if (req.user)
-        user.updated_by = {
-            username: req.user.username,
-            user: req.user
-        }
+    if (req.user) {
+        user.updated_by = user
+        user.updated_by_username = user.username
+    }
     await user.save();
     res.status(200).json({ message: "user blocked successfully" });
 }
@@ -435,11 +419,10 @@ export const UnBlockUser = async (req: Request, res: Response, next: NextFunctio
     if (user.is_active)
         return res.status(404).json({ message: "user is already active" })
     user.is_active = true
-    if (req.user)
-        user.updated_by = {
-            username: req.user.username,
-            user: req.user
-        }
+    if (req.user) {
+        user.updated_by = user
+        user.updated_by_username = user.username
+    }
     await user.save();
     res.status(200).json({ message: "user unblocked successfully" });
 }
@@ -453,7 +436,7 @@ export const RemoveAdmin = async (req: Request, res: Response, next: NextFunctio
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }
-    if (String(user.created_by.user._id) === String(user._id))
+    if (String(user.created_by._id) === String(user._id))
         return res.status(403).json({ message: "not allowed contact administrator" })
     if (String(user._id) === String(req.user?._id))
         return res.status(403).json({ message: "not allowed this operation here, because you may harm yourself" })
@@ -462,10 +445,8 @@ export const RemoveAdmin = async (req: Request, res: Response, next: NextFunctio
         res.status(400).json({ message: "you are not an admin" });
     await User.findByIdAndUpdate(id, {
         is_admin: false,
-        updated_by: {
-            username: req.user?.username,
-            user: req.user
-        }
+        updated_by_username: req.user?.username,
+        updated_by: req.user
     })
     res.status(200).json({ message: "admin role removed successfully" });
 }

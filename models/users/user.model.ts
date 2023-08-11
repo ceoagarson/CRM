@@ -92,13 +92,17 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
     required: true,
 
   },
+  created_by_username: {
+    type: String,
+    trim: true,
+    index: true,
+    lowercase: true,
+    required: true,
+  },
   created_by: {
-    username: String,
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true
-    }
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   },
   updated_at: {
     type: Date,
@@ -106,13 +110,17 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
     required: true,
 
   },
+  updated_by_username: {
+    type: String,
+    trim: true,
+    index: true,
+    lowercase: true,
+    required: true,
+  },
   updated_by: {
-    username: String,
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true
-    }
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   },
 
   resetPasswordToken: {

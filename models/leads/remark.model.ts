@@ -16,12 +16,9 @@ const RemarkSchema = new mongoose.Schema<IRemark, mongoose.Model<IRemark, {}, {}
 
     },
     created_by: {
-        username: String,
-        user: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
             required: true
-        }
     },
     updated_at: {
         type: Date,
@@ -30,12 +27,9 @@ const RemarkSchema = new mongoose.Schema<IRemark, mongoose.Model<IRemark, {}, {}
 
     },
     updated_by: {
-        username: String,
-        user: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
             required: true
-        }
     },
     lead: {
         type: mongoose.Schema.Types.ObjectId,

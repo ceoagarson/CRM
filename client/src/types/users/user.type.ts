@@ -32,19 +32,15 @@ export type IUser = {
     lead_fields: LeadField[],
     email_verified: Boolean,
     is_active: Boolean,
-
-    //date properties
     last_login: Date,
     created_at: Date,
-    created_by: {
-        username: string,
-        user: IUser
-    },
     updated_at: Date,
-    updated_by: {
-        username: string,
-        user: IUser
-    }
+
+    //ref properties
+    created_by_username: string,
+    created_by: IUser,
+    updated_by_username: string,
+    updated_by: IUser
 
     //tokens
     resetPasswordToken: string | null,
@@ -53,4 +49,10 @@ export type IUser = {
     emailVerifyExpire: Date | null
 }
 
-
+export type IUserMethods = {
+    getAccessToken: () => string,
+    comparePassword: (password: string) => boolean,
+    getResetPasswordToken: () => string,
+    getEmailVerifyToken: () => string
+}
+export type TUserBody = Request['body'] & IUser;

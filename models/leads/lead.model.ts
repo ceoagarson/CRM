@@ -89,20 +89,29 @@ const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
         trim: true,
         lowercase: true,
     },
-    remarks: {
-        last_remark: String,
-        remarks: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Remark'
-        }]
+    last_remark: {
+        type: String,
+        trim: true,
+        index: true,
+        lowercase: true
     },
-    lead_owners: [{
-        username: String,
-        user: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
+    lead_owners_username: [
+        {
+            type: String,
+            trim: true,
+            index: true,
+            lowercase: true,
             required: true
         }
+    ],
+    remarks: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Remark'
+    }],
+    lead_owners: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     }],
     visiting_card: {
         public_id: { type: String },
@@ -118,32 +127,42 @@ const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
     last_whatsapp_date: {
         type: Date
     },
-    updated_by: {
-        username: String,
-        user: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
-            required: true
-        }
-    },
-    created_by: {
-        username: String,
-        user: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
-            required: true
-        }
+    created_by_username: {
+        type: String,
+        trim: true,
+        index: true,
+        lowercase: true,
+        required: true,
     },
     created_at: {
         type: Date,
         default: new Date(),
         required: true,
+
+    },
+    created_by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     },
     updated_at: {
         type: Date,
         default: new Date(),
         required: true,
-    }
+
+    },
+    updated_by_username: {
+        type: String,
+        trim: true,
+        index: true,
+        lowercase: true,
+        required: true,
+    },
+    updated_by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
 })
 leadSchema.index({ '$**': 'text' })
 const Lead = mongoose.model<ILead, mongoose.Model<ILead>>("Lead", leadSchema);

@@ -312,7 +312,7 @@ export default function UsersPage() {
                                                                     textTransform: "capitalize", fontWeight: '600'
                                                                 }}>{user.username}</Typography>
                                                                 <Typography variant="caption" component="span" sx={{ fontWeight: '500' }}>
-                                                                    {user.created_by.user._id === user?._id ?
+                                                                    {user.created_by._id === user?._id ?
                                                                         "owner" : "admin"}
                                                                 </Typography>
                                                             </>
@@ -398,7 +398,7 @@ export default function UsersPage() {
                                                 {
                                                     user.is_admin ?
                                                         <>
-                                                            {LoggedInUser?.created_by.user._id === user._id ?
+                                                            {LoggedInUser?.created_by._id === user._id ?
                                                                 null
                                                                 :
                                                                 < Tooltip title="Remove admin"><IconButton size="medium"
@@ -429,7 +429,7 @@ export default function UsersPage() {
                                                 {
                                                     user?.is_active ?
                                                         <>
-                                                            {LoggedInUser?.created_by.user._id === user._id ?
+                                                            {LoggedInUser?.created_by._id === user._id ?
                                                                 null
                                                                 :
                                                                 <Tooltip title="block"><IconButton
@@ -461,7 +461,7 @@ export default function UsersPage() {
                                                 {
                                                     LoggedInUser?.is_admin ?
                                                         <>
-                                                            {LoggedInUser?.created_by.user._id === user._id ?
+                                                            {LoggedInUser?.created_by._id === user._id ?
                                                                 null
                                                                 :
                                                                 <Tooltip title="Change user Access Control">

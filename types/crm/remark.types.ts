@@ -6,15 +6,9 @@ export type IRemark = {
     remark: string,
     lead: ILead,
     created_at: Date,
-    created_by: {
-        username: string,
-        user: IUser
-    },
     updated_at: Date,
-    updated_by: {
-        username: string,
-        user: IUser
-    }
+    created_by: IUser,
+    updated_by: IUser
 }
 
 export type TRemarkBody = Request['body'] & IRemark;

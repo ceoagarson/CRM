@@ -23,29 +23,22 @@ export type ILead = {
     stage: string
     lead_source: string
 
-    remarks: {
-        last_remark: string,
-        remarks: IRemark[]
-    },
-    lead_owners: {
-        username: string,
-        user: IUser
-    }[],
+    // new
+    remarks: IRemark[]
+    last_remark: string,
+    lead_owners_username: string[]
+    lead_owners: IUser[],
 
     visiting_card: Asset,
     is_customer: boolean,
 
     last_whatsapp_date: Date,
     created_at: Date,
-    created_by: {
-        username: string,
-        user: IUser
-    },
     updated_at: Date,
-    updated_by: {
-        username: string,
-        user: IUser
-    }
+    created_by_username: string,
+    created_by: IUser,
+    updated_by_username: string,
+    updated_by: IUser
 }
 
-
+export type TLeadBody = Request['body'] & ILead;
