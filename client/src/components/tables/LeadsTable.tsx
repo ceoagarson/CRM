@@ -23,10 +23,11 @@ type Props = {
   selectAll: boolean,
   setSelectAll: React.Dispatch<React.SetStateAction<boolean>>,
   selectedLeads: ILead[]
-  setSelectedLeads: React.Dispatch<React.SetStateAction<ILead[]>>
+  setSelectedLeads: React.Dispatch<React.SetStateAction<ILead[]>>,
+  selectableLeads:ILead[]
 }
 
-function LeadsTable({ lead, leads, setLead, selectAll, setSelectAll, selectedLeads, setSelectedLeads }: Props) {
+function LeadsTable({ lead, leads, selectableLeads, setLead, selectAll, setSelectAll, selectedLeads, setSelectedLeads }: Props) {
   const { setChoice } = useContext(ChoiceContext)
   const { user: LoggedInUser } = useContext(UserContext)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -60,7 +61,7 @@ function LeadsTable({ lead, leads, setLead, selectAll, setSelectAll, selectedLea
 
                       size="small" onChange={(e) => {
                         if (e.currentTarget.checked) {
-                          setSelectedLeads(leads)
+                          setSelectedLeads(selectableLeads)
                           setSelectAll(true)
                         }
                         if (!e.currentTarget.checked) {

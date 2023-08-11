@@ -13,9 +13,10 @@ type Props = {
         limit: number;
         page: number;
         total: number;
-    }>>
+    }>>,
+    data: any[]
 }
-function ReactPagination({ reactPaginationData, setReactPaginationData }: Props) {
+function ReactPagination({ reactPaginationData, data, setReactPaginationData }: Props) {
     return (
         <Grid sx={{ bgcolor: "whitesmoke" }} container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
             <Grid item xs={12} md={6} >
@@ -30,7 +31,8 @@ function ReactPagination({ reactPaginationData, setReactPaginationData }: Props)
                         onChange={(e) => {
                             setReactPaginationData({
                                 ...reactPaginationData,
-                                limit: Number(e.target.value)
+                                limit: Number(e.target.value),
+                                total: Math.ceil(data.length / Number(e.target.value))
                             })
                         }}
                     >

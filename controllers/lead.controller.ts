@@ -383,7 +383,8 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
         let workbook_response: ILeadTemplate[] = xlsx.utils.sheet_to_json(
             workbook.Sheets[workbook_sheet[0]]
         );
-        let errors: ILeadTemplate[] = []
+        let statusText: string = ""
+        let result: ILeadTemplate[] = []
         let oldLeads = await Lead.find()
         let OldNumbers: number[] = []
         oldLeads.forEach((lead) => {
@@ -395,7 +396,6 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
                 OldNumbers.push(Number(lead.alternate_mobile2))
         })
 
-        console.log(workbook_response)
         workbook_response.forEach(async (lead) => {
             let mobile: number | null = Number(lead.mobile)
             let alternate_mobile1: number | null = Number(lead.alternate_mobile1)
@@ -406,28 +406,43 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
             let validated = true
 
             //important
-            if (mobile && Number.isNaN(mobile))
+            if (mobile && Number.isNaN(mobile)) {
                 validated = false
-            if (alternate_mobile1 && Number.isNaN(alternate_mobile1))
+                statusText = "invalid mobile"
+            }
+            if (alternate_mobile1 && Number.isNaN(alternate_mobile1)) {
                 validated = false
-            if (alternate_mobile2 && Number.isNaN(alternate_mobile2))
+                statusText = "invalid alternate mobile 1"
+            }
+            if (alternate_mobile2 && Number.isNaN(alternate_mobile2)) {
                 validated = false
-
+                statusText = "invalid alternate mobile 2"
+            }
             if (alternate_mobile1 && String(alternate_mobile1).length !== 10)
                 alternate_mobile1 = null
             if (alternate_mobile2 && String(alternate_mobile2).length !== 10)
                 alternate_mobile2 = null
 
-            if (lead.is_customer && typeof (lead.is_customer) !== "boolean")
+            if (lead.is_customer && typeof (lead.is_customer) !== "boolean") {
                 validated = false
-            if (mobile && String(mobile).length !== 10)
+                statusText = "invalid is icustomer"
+            }
+            if (mobile && String(mobile).length !== 10) {
                 validated = false
-            if (lead.last_whatsapp_date && !isvalidDate(new Date(lead.last_whatsapp_date)))
+                statusText = "invalid mobile"
+            }
+            if (lead.last_whatsapp_date && !isvalidDate(new Date(lead.last_whatsapp_date))) {
                 validated = false
-            if (lead.created_at && !isvalidDate(new Date(lead.created_at)))
+                statusText = "invalid date"
+            }
+            if (lead.created_at && !isvalidDate(new Date(lead.created_at))) {
                 validated = false
-            if (lead.updated_at && !isvalidDate(new Date(lead.updated_at)))
+                statusText = "invalid date"
+            }
+            if (lead.updated_at && !isvalidDate(new Date(lead.updated_at))) {
                 validated = false
+                statusText = "invalid date"
+            }
 
             // duplicate number checker
             let uniqueNumbers: number[] = []
@@ -445,6 +460,13 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
             }
             if (uniqueNumbers.length === 0)
                 validated = false
+
+            if (!isMongoId(String(lead._id)) && !validated) {
+                result.push({
+                    ...lead,
+                    status: statusText
+                })
+            }
 
             if (lead.lead_owners) {
                 let lead_owners = String((lead.lead_owners)).split(",")
@@ -478,15 +500,9 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
             }
 
 
-            if (!isMongoId(String(lead._id)) && !validated) {
-                errors.push(lead)
-            }
             console.log(validated)
-
             //update and create new nead
             if (lead._id && isMongoId(String(lead._id))) {
-                console.log("updating..")
-
                 let targetLead = await Lead.findById(lead._id)
                 if (targetLead) {
                     if (lead.remarks) {
@@ -566,9 +582,9 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
                 }
             }
         })
-        return res.status(200).send(errors);
+        return res.status(200).json(result);
     }
-    return res.status(404).send({
+    return res.status(404).json({
         message: "please provide an Excel file",
     });
 }

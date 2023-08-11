@@ -12,6 +12,7 @@ import { UserContext } from '../contexts/userContext'
 import UploadLeadsExcelButton from '../components/buttons/UploadLeadsExcelButton';
 import DBPagination from '../components/pagination/DBpagination';
 import CustomersTable from '../components/tables/CustomersTable'
+import ReactPagination from '../components/pagination/ReactPagination'
 
 
 export default function CustomersPage() {
@@ -26,8 +27,8 @@ export default function CustomersPage() {
   const [preFilteredData, setPreFilteredData] = useState<ILead[]>([])
   const [selectedLeads, setSelectedLeads] = useState<ILead[]>([])
 
-  const [fuzzyleads, setFuzzyLeads] = useState<ILead[]>([])
-  const FuzzyMemoData = React.useMemo(() => fuzzyleads, [fuzzyleads])
+  const [allfuzzyleads, setAllFuzzyLeads] = useState<ILead[]>([])
+  const FuzzyMemoData = React.useMemo(() => allfuzzyleads, [allfuzzyleads])
 
   // pagination  states
   const [itemOffset, setItemOffset] = useState(0);
@@ -65,7 +66,7 @@ export default function CustomersPage() {
 
   useEffect(() => {
     if (isFuzzySuccess) {
-      setFuzzyLeads(fuzzyLeads.data)
+      setAllFuzzyLeads(fuzzyLeads.data)
       setReactPaginationData({
         ...reactPaginationData,
         total: Math.ceil(fuzzyLeads.data.length / reactPaginationData.limit)
@@ -76,8 +77,7 @@ export default function CustomersPage() {
   useEffect(() => {
     setItemOffset(reactPaginationData.page * reactPaginationData.limit % reactPaginationData.total)
   }, [reactPaginationData])
-
-
+  console.log(selectedLeads)
   return (
     <>
 
@@ -144,9 +144,12 @@ export default function CustomersPage() {
         setSelectedLeads={setSelectedLeads}
         setSelectAll={setSelectAll}
         leads={filter ? currentItems : MemoData}
+        selectableLeads={filter ? allfuzzyleads : leads}
       />
 
-      {!filter && <DBPagination paginationData={paginationData} setPaginationData={setPaginationData} />}
+      {!filter ? <DBPagination paginationData={paginationData} setPaginationData={setPaginationData} /> :
+        <ReactPagination reactPaginationData={reactPaginationData} setReactPaginationData={setReactPaginationData} data={FuzzyMemoData} />
+      }
     </>
 
   )

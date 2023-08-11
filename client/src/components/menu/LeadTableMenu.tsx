@@ -86,7 +86,7 @@ function LeadTableMenu({ selectedFlatRows }: Props) {
                     lead_type: lead.lead_type,
                     stage: lead.stage,
                     lead_source: lead.lead_source,
-                    remarks: lead.remarks.last_remark || "",
+                    remarks: lead.last_remark || "",
                     is_customer: lead.is_customer,
                     last_whatsapp_date: lead.last_whatsapp_date,
                     created_at: lead.created_at,

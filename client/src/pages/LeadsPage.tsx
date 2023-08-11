@@ -22,9 +22,9 @@ export default function LeadsPage() {
   const { user: LoggedInUser } = useContext(UserContext)
   const [lead, setLead] = useState<ILead>()
   const [leads, setLeads] = useState<ILead[]>([])
-  
-  const [fuzzyleads, setFuzzyLeads] = useState<ILead[]>([])
-  const FuzzyMemoData = React.useMemo(() => fuzzyleads, [fuzzyleads])
+
+  const [allfuzzyleads, setAllFuzzyLeads] = useState<ILead[]>([])
+  const FuzzyMemoData = React.useMemo(() => allfuzzyleads, [allfuzzyleads])
 
   // pagination  states
   const [itemOffset, setItemOffset] = useState(0);
@@ -69,7 +69,7 @@ export default function LeadsPage() {
 
   useEffect(() => {
     if (isFuzzySuccess) {
-      setFuzzyLeads(fuzzyLeads.data)
+      setAllFuzzyLeads(fuzzyLeads.data)
       setReactPaginationData({
         ...reactPaginationData,
         total: Math.ceil(fuzzyLeads.data.length / reactPaginationData.limit)
@@ -123,6 +123,11 @@ export default function LeadsPage() {
                 fontSize: '1.1rem',
                 border: '0',
               }}
+              onKeyUp={(e) => {
+                if (e.key === "Enter") {
+                  refetchFuzzy()
+                }
+              }}
             />
             <IconButton
               sx={{ bgcolor: 'whitesmoke' }}
@@ -147,10 +152,12 @@ export default function LeadsPage() {
         setSelectedLeads={setSelectedLeads}
         setSelectAll={setSelectAll}
         leads={filter ? currentItems : MemoData}
+        selectableLeads={filter ? allfuzzyleads : leads}
       />
 
       {!filter ? <DBPagination paginationData={paginationData} setPaginationData={setPaginationData} /> :
-        <ReactPagination reactPaginationData={reactPaginationData} setReactPaginationData={setReactPaginationData} />
+        <ReactPagination reactPaginationData={reactPaginationData} setReactPaginationData={setReactPaginationData} data={FuzzyMemoData}
+        />
       }
 
     </>
