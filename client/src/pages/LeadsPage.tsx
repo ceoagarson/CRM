@@ -672,7 +672,7 @@ export default function LeadsPage() {
                     {/* last remark */}
                     <TableCell>
                       {lead.remarks ?
-                        <Typography sx={{ textTransform: "capitalize" }}> {lead.remarks.last_remark.slice(0, 50)}
+                        <Typography sx={{ textTransform: "capitalize" }}> {lead.last_remark && lead.last_remark.slice(0, 50)}
                         </Typography> : null
                       }
                     </TableCell>

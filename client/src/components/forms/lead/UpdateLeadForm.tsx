@@ -64,7 +64,7 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
       state: lead.state,
       country: lead.country,
       address: lead.address,
-      remark: lead.remarks.last_remark || "",
+      remark: lead.last_remark || "",
       work_description: lead.work_description,
       turnover: lead.turnover,
       lead_type: lead.lead_type,
@@ -74,7 +74,7 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
       alternate_email: lead.alternate_email,
       lead_source: lead.lead_source,
       lead_owners: lead.lead_owners.map((owner) => {
-        return owner.user._id
+        return owner._id
       }),
       is_customer: lead.is_customer,
       visiting_card: lead.visiting_card && lead.visiting_card.url
@@ -675,7 +675,7 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
             >
               {
                 lead.lead_owners.map(owner => {
-                  return (<option key={owner.user._id} value={owner.user._id}>
+                  return (<option key={owner._id} value={owner._id}>
                     {owner.username}
                   </option>)
                 })
