@@ -476,7 +476,7 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
               </option>
               {
 
-                fields&&fields.stages.map(stage => {
+                fields && fields.stages && fields.stages.map(stage => {
                   return (
                     <option key={stage} value={stage}>
                       {stage}
@@ -517,7 +517,7 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
               </option>
               {
 
-                fields && fields.lead_types.map(type => {
+                fields && fields.lead_types && fields.lead_types.map(type => {
                   return (
                     <option key={type} value={type}>
                       {type}
@@ -557,7 +557,7 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
               </option>
               {
 
-                fields && fields.lead_sources.map(source => {
+                fields && fields.lead_sources && fields.lead_sources.map(source => {
                   return (
                     <option key={source} value={source}>
                       {source}

@@ -443,7 +443,7 @@ function NewLeadForm({ users }: { users: IUser[] }) {
           </option>
           {
 
-            fields&&fields.stages.map(stage => {
+            fields && fields.stages && fields.stages.map(stage => {
               return (
                 <option key={stage} value={stage}>
                   {stage}
@@ -482,7 +482,7 @@ function NewLeadForm({ users }: { users: IUser[] }) {
 
           </option>
           {
-            fields && fields.lead_types.map((item) => {
+            fields && fields.lead_types && fields.lead_types.map((item) => {
               return (
                 <option key={item} value={item}>
                   {item}
@@ -522,7 +522,7 @@ function NewLeadForm({ users }: { users: IUser[] }) {
           </option>
           {
 
-            fields && fields.lead_sources.map(source => {
+            fields && fields.lead_sources && fields.lead_sources.map(source => {
               return (
                 <option key={source} value={source}>
                   {source}
