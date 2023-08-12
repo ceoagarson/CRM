@@ -7,7 +7,6 @@ import { useContext, useEffect, useState } from 'react'
 import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext'
 import { UserContext } from '../../contexts/userContext'
 import { BasicPOPUP } from '../popup/BasicPOPUP'
-import AddTaskIcon from '@mui/icons-material/AddTask';
 import UpdateLeadDialog from '../dialogs/leads/UpdateLeadDialog'
 import DeleteLeadDialog from '../dialogs/leads/DeleteLeadDialog'
 import ConvertLeadToCustomerDialog from '../dialogs/leads/ConvertLeadToCustomerDialog'
@@ -481,18 +480,7 @@ function CustomersTable({ lead, leads, selectableLeads, setLead, selectAll, setS
                                                                         <Delete />
                                                                     </IconButton>
                                                                 </Tooltip>
-                                                                <Tooltip title="Convert to Customer">
-                                                                    <IconButton color="warning"
-                                                                        onClick={() => {
-                                                                            setAnchorEl(null)
-                                                                            setChoice({ type: LeadChoiceActions.convert_customer })
-                                                                            setLead(lead)
-                                                                        }}
-                                                                    >
-                                                                        <AddTaskIcon />
-                                                                    </IconButton>
-                                                                </Tooltip>
-
+                                                               
                                                             </>
                                                             :
                                                             null
@@ -673,17 +661,7 @@ function CustomersTable({ lead, leads, selectableLeads, setLead, selectAll, setS
                                                                 >
                                                                     <Delete />
                                                                 </IconButton>
-                                                            </Tooltip>
-                                                            <Tooltip title="Convert to Customer">
-                                                                <IconButton color="warning"
-                                                                    onClick={() => {
-                                                                        setChoice({ type: LeadChoiceActions.convert_customer })
-                                                                        setLead(lead)
-                                                                    }}
-                                                                >
-                                                                    <AddTaskIcon />
-                                                                </IconButton>
-                                                            </Tooltip>
+                                                            </Tooltip>                                                     
 
                                                         </>
                                                         :

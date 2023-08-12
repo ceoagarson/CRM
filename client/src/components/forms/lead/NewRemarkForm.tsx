@@ -25,7 +25,7 @@ function NewRemarkForm({ lead }: { lead: ILead }) {
         },
         validationSchema: Yup.object({
             remark: Yup.string().required("required field")
-                .min(20, 'Must be 20 characters or more')
+                .min(5, 'Must be 5 characters or more')
                 .max(200, 'Must be 200 characters or less')
                 .required('Required field')
         }),

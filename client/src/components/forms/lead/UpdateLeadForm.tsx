@@ -1,21 +1,19 @@
 import { Alert, Button, Checkbox, CircularProgress, FormControlLabel, FormGroup, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext } from 'react';
-import { useMutation } from 'react-query';
+import { useEffect, useContext, useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
-import { UpdateLead } from '../../../services/LeadsServices';
+import { GetLeadFieldsUpdatable, UpdateLead } from '../../../services/LeadsServices';
 import { Countries } from '../../../utils/countries';
-import { Source } from '../../../utils/Source';
 import { States } from '../../../utils/states';
 import { Cities } from '../../../utils/cities';
 import { BackendError, Target } from '../../../types';
 import { ILead } from '../../../types/models/lead.type';
 import { IUser } from '../../../types/models/user.type';
 import { useLeadFields } from '../../hooks/LeadFieldsHook';
-import { LeadTypes } from '../../../utils/leadtype';
-import { Stages } from '../../../utils/stages';
+import { ILeadUpdatableField } from '../../../types/models/lead.updatable_field.type';
 
 export type TformData = {
   name: string,
@@ -45,6 +43,8 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
   const { mutate, isLoading, isSuccess, isError, error } = useMutation
     <AxiosResponse<ILead>, BackendError, { id: string, body: FormData }>
     (UpdateLead)
+  const { data, isSuccess: isFieldsSuccess } = useQuery<AxiosResponse<ILeadUpdatableField>, BackendError>("updateble-lead-leads", GetLeadFieldsUpdatable)
+  const [fields, setFields] = useState<ILeadUpdatableField>()
 
   const { setChoice } = useContext(ChoiceContext)
   const formik = useFormik<TformData>({
@@ -83,33 +83,33 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
       alternate_email: Yup.string()
         .email('provide a valid email id'),
       customer_name: Yup.string()
-        .min(4, 'Must be 4 characters or more')
-        .max(30, 'Must be 30 characters or less'),
+      ,
       customer_designation: Yup.string(),
       city: Yup.string()
-        .min(3, 'Must be 3 characters or more')
-        .max(30, 'Must be 30 characters or less'),
+      ,
       state: Yup.string()
-        .min(3, 'Must be 3 characters or more')
-        .max(30, 'Must be 30 characters or less'),
+      ,
       lead_type: Yup.string(),
       turnover: Yup.string(),
       stage: Yup.string(),
       lead_source: Yup.string(),
       country: Yup.string(),
       work_description: Yup.string()
-        .min(20, 'Must be 20 characters or more')
-        .max(1000, 'Must be 1000 characters or less'),
+      ,
       address: Yup.string()
-        .min(10, 'Must be 10 characters or more')
-        .max(300, 'Must be 300 characters or less'),
+      ,
       remark: Yup.string()
-        .min(10, 'Must be 10 characters or more')
-        .max(500, 'Must be 500 characters or less'),
+      ,
       mobile: Yup.string().required()
         .min(10, 'Must be 10 digits')
         .max(10, 'Must be 10 digits')
         .required('Required field'),
+      alternate_mobile1: Yup.string()
+        .min(10, 'Must be 10 digits')
+        .max(10, 'Must be 10 digits'),
+      alternate_mobile2: Yup.string()
+        .min(10, 'Must be 10 digits')
+        .max(10, 'Must be 10 digits'),
       is_customer: Yup.boolean(),
       visiting_card: Yup.mixed<File>()
         .test("size", "size is allowed only less than 10mb",
@@ -171,6 +171,13 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
       }, 1000)
     }
   }, [isSuccess, setChoice])
+
+  useEffect(() => {
+    if (isFieldsSuccess) {
+      setFields(data.data)
+    }
+  }, [isFieldsSuccess, data])
+
   return (
     <form onSubmit={formik.handleSubmit}>
       <Stack
@@ -469,7 +476,7 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
               </option>
               {
 
-                Stages.map(stage => {
+                fields&&fields.stages.map(stage => {
                   return (
                     <option key={stage} value={stage}>
                       {stage}
@@ -510,7 +517,7 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
               </option>
               {
 
-                LeadTypes.map(type => {
+                fields && fields.lead_types.map(type => {
                   return (
                     <option key={type} value={type}>
                       {type}
@@ -550,7 +557,7 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
               </option>
               {
 
-                Source.map(source => {
+                fields && fields.lead_sources.map(source => {
                   return (
                     <option key={source} value={source}>
                       {source}
@@ -713,18 +720,24 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
             : null
         }
         {
-          !hiddenFields?.includes('is_customer') ?
-            <FormGroup>
-              <FormControlLabel control={<Checkbox
-                disabled={Boolean(readonlyFields?.includes('is_customer'))}
-                defaultChecked={Boolean(formik.values.is_customer)}
-                {...formik.getFieldProps('is_customer')}
-              />} label="Is A Customer" />
-              <p>
-                {formik.touched.is_customer && formik.errors.is_customer ? formik.errors.is_customer : ""}
-              </p>
-            </FormGroup>
-            : null
+
+          !lead.is_customer ? <>
+            {
+              !hiddenFields?.includes('is_customer') ?
+                <FormGroup>
+                  <FormControlLabel control={<Checkbox
+                    disabled={Boolean(readonlyFields?.includes('is_customer'))}
+                    defaultChecked={Boolean(formik.values.is_customer)}
+                    {...formik.getFieldProps('is_customer')}
+                  />} label="Is A Customer" />
+                  <p>
+                    {formik.touched.is_customer && formik.errors.is_customer ? formik.errors.is_customer : ""}
+                  </p>
+                </FormGroup>
+                : null
+            }
+          </> : null
+
         }
         {
           !hiddenFields?.includes('visiting_card') ?

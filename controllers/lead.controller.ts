@@ -493,6 +493,10 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
                     created_by = req.user
 
             }
+            if (!lead.created_by) {
+                if (req.user)
+                    created_by = req.user
+            }
 
 
             if (lead.updated_by) {
@@ -503,7 +507,10 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
                 if (!user && req.user)
                     updated_by = req.user
             }
-
+            if (!lead.updated_by) {
+                if (req.user)
+                    updated_by = req.user
+            }
 
             console.log(validated)
             //update and create new nead
@@ -714,6 +721,8 @@ export const UpdateLeadFields = async (req: Request, res: Response, next: NextFu
 export const GetUpdatableLeadFields = async (req: Request, res: Response, next: NextFunction) => {
     const { stages, lead_types, lead_sources } = req.body as TLeadUpdatableFieldBody
     let fields = await LeadUpdatableField.findOne();
+    if (!fields)
+        return res.status(200).json([])
     return res.status(200).json(fields)
 }
 

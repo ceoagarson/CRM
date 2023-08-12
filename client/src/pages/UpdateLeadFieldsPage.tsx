@@ -4,7 +4,7 @@ import { ILeadUpdatableField } from '../types/models/lead.updatable_field.type'
 import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../types'
 import { useEffect, useState } from 'react'
-import { Button, Grid,  Snackbar, Stack, TextField, Typography } from '@mui/material'
+import { Button, Grid, Snackbar, Stack, TextField, Typography } from '@mui/material'
 
 
 function UpdateLeadFieldsPage() {
@@ -18,6 +18,7 @@ function UpdateLeadFieldsPage() {
     const { data, isSuccess: isFieldsSuccess } = useQuery<AxiosResponse<ILeadUpdatableField>, BackendError>("updateble-lead-leads", GetLeadFieldsUpdatable)
 
     const [fields, setFields] = useState<ILeadUpdatableField>()
+
     const [stages, setStages] = useState(fields?.stages)
     const [types, setTypes] = useState(fields?.lead_types)
     const [sources, setSources] = useState(fields?.lead_sources)
@@ -40,7 +41,9 @@ function UpdateLeadFieldsPage() {
             setSources(updated_fields.data.lead_sources)
         }
     }, [isSuccess, updated_fields])
-    console.log(fields)
+    console.log(stages)
+    console.log(types)
+    console.log(sources)
     return (
         <>
 
@@ -53,7 +56,7 @@ function UpdateLeadFieldsPage() {
                 message="Fields Saved Successfuly"
             />
 
-            <Button size="small" sx={{ position: 'absolute', right: 0,m:1 }} variant='outlined' color="primary" onClick={() => {
+            <Button size="small" sx={{ position: 'absolute', right: 0, m: 1 }} variant='outlined' color="primary" onClick={() => {
                 if (fields) {
                     mutate(fields)
                 }
@@ -65,7 +68,7 @@ function UpdateLeadFieldsPage() {
 
             {/* grid */}
             <Grid container spacing={2} padding={2}>
-                <Grid xs={12} md={4}>
+                <Grid item xs={12} md={4}>
                     <Stack spacing={2} p={1} direction="column">
                         <Typography variant="button" sx={{ fontWeight: 'bold' }}>Lead Stage</Typography>
                         <Stack spacing={2} direction="row" alignItems="center">
@@ -83,7 +86,7 @@ function UpdateLeadFieldsPage() {
                         })}
                     </Stack>
                 </Grid>
-                <Grid xs={12} md={4}>
+                <Grid item xs={12} md={4}>
                     <Stack spacing={2} p={1} direction="column">
                         <Typography variant="button" sx={{ fontWeight: 'bold' }}>Lead Types</Typography>
                         <Stack spacing={2} direction="row" alignItems="center">
@@ -101,7 +104,7 @@ function UpdateLeadFieldsPage() {
                         })}
                     </Stack>
                 </Grid>
-                <Grid xs={12} md={4}>
+                <Grid item xs={12} md={4}>
                     <Stack spacing={2} p={1} direction="column">
                         <Typography variant="button" sx={{ fontWeight: 'bold' }}>Lead Sources</Typography>
                         <Stack spacing={2} direction="row" alignItems="center">

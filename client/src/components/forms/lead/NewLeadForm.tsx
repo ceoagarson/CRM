@@ -1,20 +1,18 @@
 import { Alert, Button, Checkbox, CircularProgress, FormControlLabel, FormGroup, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext } from 'react';
-import { useMutation } from 'react-query';
+import { useEffect, useContext, useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
-import { NewLead } from '../../../services/LeadsServices';
+import { GetLeadFieldsUpdatable, NewLead } from '../../../services/LeadsServices';
 import { Countries } from '../../../utils/countries';
-import { Source } from '../../../utils/Source';
 import { States } from '../../../utils/states';
 import { Cities } from '../../../utils/cities';
 import { BackendError, Target } from '../../../types';
 import { ILead } from '../../../types/models/lead.type';
 import { IUser } from '../../../types/models/user.type';
-import { LeadTypes } from '../../../utils/leadtype';
-import { Stages } from '../../../utils/stages';
+import { ILeadUpdatableField } from '../../../types/models/lead.updatable_field.type';
 
 export type TformData = {
   name: string,
@@ -44,6 +42,8 @@ function NewLeadForm({ users }: { users: IUser[] }) {
   const { mutate, isLoading, isSuccess, isError, error } = useMutation
     <AxiosResponse<ILead>, BackendError, FormData>
     (NewLead)
+  const { data, isSuccess: isFieldsSuccess } = useQuery<AxiosResponse<ILeadUpdatableField>, BackendError>("updateble-lead-leads", GetLeadFieldsUpdatable)
+  const [fields, setFields] = useState<ILeadUpdatableField>()
   const { setChoice } = useContext(ChoiceContext)
   const formik = useFormik<TformData>({
     initialValues: {
@@ -70,39 +70,30 @@ function NewLeadForm({ users }: { users: IUser[] }) {
       visiting_card: ""
     },
     validationSchema: Yup.object({
-      name: Yup.string()
-        .min(4, 'Must be 4 characters or more')
-        .max(30, 'Must be 30 characters or less'),
+      name: Yup.string(),
       lead_owners: Yup.array()
         .required('field'),
       email: Yup.string()
         .email('provide a valid email id'),
       alternate_email: Yup.string()
         .email('provide a valid email id'),
-      customer_name: Yup.string()
-        .min(4, 'Must be 4 characters or more')
-        .max(30, 'Must be 30 characters or less'),
+      customer_name: Yup.string(),
       customer_designation: Yup.string(),
       city: Yup.string()
-        .min(3, 'Must be 3 characters or more')
-        .max(30, 'Must be 30 characters or less'),
+        ,
       state: Yup.string()
-        .min(3, 'Must be 3 characters or more')
-        .max(30, 'Must be 30 characters or less'),
+       ,
       lead_type: Yup.string(),
       turnover: Yup.string(),
       stage: Yup.string(),
       lead_source: Yup.string(),
       country: Yup.string(),
       work_description: Yup.string()
-        .min(20, 'Must be 20 characters or more')
-        .max(1000, 'Must be 1000 characters or less'),
+      ,
       address: Yup.string()
-        .min(10, 'Must be 10 characters or more')
-        .max(300, 'Must be 300 characters or less'),
+        ,
       remark: Yup.string()
-        .min(10, 'Must be 10 characters or more')
-        .max(500, 'Must be 500 characters or less'),
+       ,
       mobile: Yup.string().required("required mobile string")
         .min(10, 'Must be 10 digits')
         .max(10, 'Must be 10 digits'),
@@ -173,6 +164,12 @@ function NewLeadForm({ users }: { users: IUser[] }) {
       }, 1000)
     }
   }, [isSuccess, setChoice])
+
+  useEffect(() => {
+    if (isFieldsSuccess) {
+      setFields(data.data)
+    }
+  }, [isFieldsSuccess, data])
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -446,7 +443,7 @@ function NewLeadForm({ users }: { users: IUser[] }) {
           </option>
           {
 
-            Stages.map(stage => {
+            fields&&fields.stages.map(stage => {
               return (
                 <option key={stage} value={stage}>
                   {stage}
@@ -485,7 +482,7 @@ function NewLeadForm({ users }: { users: IUser[] }) {
 
           </option>
           {
-            LeadTypes.map((item) => {
+            fields && fields.lead_types.map((item) => {
               return (
                 <option key={item} value={item}>
                   {item}
@@ -525,7 +522,7 @@ function NewLeadForm({ users }: { users: IUser[] }) {
           </option>
           {
 
-            Source.map(source => {
+            fields && fields.lead_sources.map(source => {
               return (
                 <option key={source} value={source}>
                   {source}
