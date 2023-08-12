@@ -29,9 +29,9 @@ function UpdateLeadFieldsPage() {
 
     useEffect(() => {
         if (isSuccess) {
-            setOrigfields(data?.data)
+            setOrigfields(updated_fields?.data)
         }
-    }, [isSuccess, data])
+    }, [isSuccess, updated_fields])
 
     return (
         <>
