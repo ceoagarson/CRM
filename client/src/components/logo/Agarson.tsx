@@ -10,9 +10,9 @@ function AgarsonLogo() {
                 maxWidth: "70vw",
                 overflow: "hidden"
             }}>
-            <IconButton>
+            <IconButton title="Dashboard">
                 <Avatar
-                    sx={{ width: 30, height: 30, background: 'white' }}
+                    sx={{ width: 30, height: 30, borderRadius: 2, background: 'white' }}
                     alt="img1" src={logo} />
             </IconButton>
         </Stack>

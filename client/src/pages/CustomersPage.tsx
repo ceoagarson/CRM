@@ -74,7 +74,6 @@ export default function CustomersPage() {
   useEffect(() => {
     setItemOffset(reactPaginationData.page * reactPaginationData.limit % reactPaginationData.total)
   }, [reactPaginationData])
-  console.log(selectedLeads)
   return (
     <>
 

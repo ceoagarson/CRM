@@ -6,18 +6,18 @@ import { useContext } from 'react';
 import { MenuActions, MenuContext } from '../../contexts/menuContext';
 import { UserContext } from '../../contexts/userContext';
 import { paths } from '../../Routes';
-import DashboardMenu from '../menu/DashboardMenu';
 import UserMenu from '../menu/UserMenu';
 import ResetPasswordSendMailDialog from '../dialogs/users/ResetPasswordSendMailDialog';
 import SignUpDialog from '../dialogs/users/SignUpDialog';
 import { Menu } from '@mui/icons-material';
 import AgarsonLogo from '../logo/Agarson';
+import CRMDashboardMenu from '../menu/CRMDashboardMenu';
 
 export const StyledLink = styled(Link)`
     text-decoration: none;
     color:white;
 `
-export default function NavBar() {
+export default function CrmNavBar() {
     const { setMenu } = useContext(MenuContext)
     const { user } = useContext(UserContext)
     return (
@@ -50,10 +50,6 @@ export default function NavBar() {
                                         display: { xs: 'none', md: 'flex' }
                                     }}
                                 >
-
-
-                                    {
-                                        user.is_admin ? <StyledLink to={paths.users}>Users</StyledLink> : null}
                                     <StyledLink to={paths.leads}>Leads</StyledLink>
                                     <StyledLink to={paths.customers}>Customers</StyledLink>
                                     <StyledLink to={paths.updateble_fields_lead}>Fields</StyledLink>
@@ -99,7 +95,7 @@ export default function NavBar() {
                 </Stack>
             </Box >
             <Outlet />
-            <DashboardMenu />
+            <CRMDashboardMenu />
             <UserMenu />
             <ResetPasswordSendMailDialog />
             <SignUpDialog />
