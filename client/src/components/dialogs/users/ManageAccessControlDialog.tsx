@@ -2,7 +2,7 @@ import { useContext } from "react"
 import { ChoiceContext, UserChoiceActions } from "../../../contexts/dialogContext"
 import { Avatar, Button, Dialog, DialogContent, DialogTitle, Stack, Typography } from "@mui/material"
 import LeadControlAccessForm from "../../forms/user/LeadControlAccessForm"
-import { IUser } from "../../../types/models/user.type"
+import { IUser } from "../../../types/users/user.type"
 
 function ManageAccessControlDialog({ user}: { user:IUser }) {
   const { choice, setChoice } = useContext(ChoiceContext)

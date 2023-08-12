@@ -1,4 +1,4 @@
-import { IFlow } from "../types/models/flow.types";
+import { IFlow } from "../types/bot/flow.types";
 import { apiClient } from "./utils/AxiosInterceptor";
 
 

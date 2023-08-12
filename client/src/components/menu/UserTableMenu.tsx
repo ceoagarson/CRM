@@ -5,7 +5,7 @@ import { MenuActions, MenuContext } from '../../contexts/menuContext';
 import { ChoiceContext, UserChoiceActions } from '../../contexts/dialogContext';
 import ExportToExcel from '../../utils/ExportToExcel';
 import NewUserDialog from '../dialogs/users/NewUserDialog';
-import { IUser } from '../../types/models/user.type';
+import { IUser } from '../../types/users/user.type';
 
 type Props = {
     selectedFlatRows: IUser[]

@@ -1,6 +1,6 @@
 import { GetLeadFieldsUpdatable, UpdateLeadFieldsUpdatable } from '../services/LeadsServices'
 import { AxiosResponse } from 'axios'
-import { ILeadUpdatableField } from '../types/models/lead.updatable_field.type'
+import { ILeadUpdatableField } from '../types/leads/lead.updatable_field.type'
 import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../types'
 import { useEffect, useState } from 'react'

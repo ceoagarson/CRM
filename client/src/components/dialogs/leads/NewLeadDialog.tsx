@@ -5,7 +5,7 @@ import NewLeadForm from '../../forms/lead/NewLeadForm';
 import { GetUsers } from '../../../services/UserServices';
 import { AxiosResponse } from 'axios';
 import { useQuery } from 'react-query';
-import { IUser } from '../../../types/models/user.type';
+import { IUser } from '../../../types/users/user.type';
 import { BackendError } from '../../../types';
 
 function NewLeadDialog() {

@@ -11,7 +11,7 @@ import { UserActions, UserContext } from '../../../contexts/userContext';
 import { paths } from '../../../Routes';
 import { Signup } from '../../../services/UserServices';
 import { BackendError, Target } from '../../../types';
-import { IUser } from '../../../types/models/user.type';
+import { IUser } from '../../../types/users/user.type';
 
 type TFormData = {
   username: string,

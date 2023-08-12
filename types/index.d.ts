@@ -1,4 +1,4 @@
-import { IUser } from "./models/user.type";
+import { IUser } from "./users/user.type";
 
 //recognize it as module
 export { }

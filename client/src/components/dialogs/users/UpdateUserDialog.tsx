@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogTitle, DialogActions,  Button } from '@mui/material'
 import { useContext } from 'react'
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
-import { IUser } from '../../../types/models/user.type'
+import { IUser } from '../../../types/users/user.type'
 import UpdateUserForm from '../../forms/user/UpdateUserForm'
 
 function UpdateUserDialog({ user }: { user: IUser }) {

@@ -11,8 +11,8 @@ import { States } from '../../../utils/states';
 import { Cities } from '../../../utils/cities';
 import { BackendError, Target } from '../../../types';
 import { ILead } from '../../../types/models/lead.type';
-import { IUser } from '../../../types/models/user.type';
-import { ILeadUpdatableField } from '../../../types/models/lead.updatable_field.type';
+import { IUser } from '../../../types/users/user.type';
+import { ILeadUpdatableField } from '../../../types/leads/lead.updatable_field.type';
 
 export type TformData = {
   name: string,

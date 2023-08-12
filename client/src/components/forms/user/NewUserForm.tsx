@@ -8,7 +8,7 @@ import * as Yup from "yup"
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { NewUser } from '../../../services/UserServices';
 import { BackendError, Target } from '../../../types';
-import { IUser } from '../../../types/models/user.type';
+import { IUser } from '../../../types/users/user.type';
 
 
 type TformData = {

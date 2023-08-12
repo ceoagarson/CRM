@@ -1,5 +1,5 @@
 import { ILead } from "./lead.type";
-import { IUser } from "./user.type";
+import { IUser } from "../users/user.type";
 
 export type IRemark = {
     _id: string,

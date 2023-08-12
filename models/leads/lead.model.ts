@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { ILead } from "../../types/models/lead.type";
+import { ILead } from "../../types/leads/lead.type";
 
 const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
     name: {

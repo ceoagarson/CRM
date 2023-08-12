@@ -1,7 +1,7 @@
 import { Block, Edit, GroupAdd, GroupRemove, Key, RemoveCircle } from '@mui/icons-material'
 import { Avatar, Box, Checkbox, FormControlLabel, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Tooltip, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
-import { IUser } from '../../types/models/user.type'
+import { IUser } from '../../types/users/user.type'
 import { color1, color2, headColor } from '../../utils/colors'
 import { useContext, useEffect, useState } from 'react'
 import { ChoiceContext, UserChoiceActions } from '../../contexts/dialogContext'

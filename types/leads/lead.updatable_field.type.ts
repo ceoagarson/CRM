@@ -1,4 +1,4 @@
-import { IUser } from "./user.type";
+import { IUser } from "../users/user.type";
 
 export type ILeadUpdatableField = {
     _id: string,

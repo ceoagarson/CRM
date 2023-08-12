@@ -6,7 +6,7 @@ import { useMutation } from 'react-query';
 import * as Yup from "yup"
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { UpdateUser } from '../../../services/UserServices';
-import { IUser } from '../../../types/models/user.type';
+import { IUser } from '../../../types/users/user.type';
 import { BackendError, Target } from '../../../types';
 
 

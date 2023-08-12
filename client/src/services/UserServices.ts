@@ -1,4 +1,4 @@
-import { LeadField } from "../types/models/user.type";
+import { LeadField } from "../types/users/user.type";
 import { apiClient } from "./utils/AxiosInterceptor";
 
 // login

@@ -6,7 +6,7 @@ import { UpdateProfile } from '../../../services/UserServices';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { useContext, useEffect } from 'react';
 import { AxiosResponse } from 'axios';
-import { IUser } from '../../../types/models/user.type';
+import { IUser } from '../../../types/users/user.type';
 import { BackendError, Target } from '../../../types';
 
 

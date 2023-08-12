@@ -3,10 +3,10 @@ import isEmail from "validator/lib/isEmail";
 import { uploadFileToCloudinary } from '../utils/uploadFile.util';
 import { deleteToken, sendUserToken } from '../middlewares/auth.middleware';
 import { User } from '../models/users/user.model';
-import { Asset } from '../types/types/asset.type';
+import { Asset } from '../types/users/asset.type';
 import isMongoId from "validator/lib/isMongoId";
 import { destroyFile } from "../utils/destroyFile.util";
-import { LeadField, TUserBody, all_fields } from '../types/models/user.type';
+import { LeadField, TUserBody, all_fields } from '../types/users/user.type';
 import { sendEmail } from '../utils/sendEmail.util';
 
 
