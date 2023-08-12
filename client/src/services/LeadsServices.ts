@@ -34,4 +34,17 @@ export const BulkLeadUpdateFromExcel = async (body: FormData) => {
 export const NewRemark = async ({ id, remark }: { id: string, remark: string }) => {
   return await apiClient.patch(`remarks/leads/${id}`, { remark: remark })
 }
+export const UpdateLeadFieldsUpdatable = async (
+  body: {
+    stages: string[],
+    lead_types: string[],
+    lead_sources: string[],
+  }
+) => {
+  return await apiClient.put(`fields/lead/update`, body)
+}
+export const GetLeadFieldsUpdatable = async () => {
+  return await apiClient.get(`lead-updatable-fields`)
+}
+
 

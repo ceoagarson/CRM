@@ -10,6 +10,8 @@ import { uploadFileToCloudinary } from "../utils/uploadFile.util.js"
 import { ILeadTemplate } from "../types/templates/lead.template.types.js"
 import { isvalidDate } from "../utils/isValidDate.js"
 import { Types } from "mongoose"
+import { TLeadUpdatableFieldBody } from "../types/models/lead.updatable_field.type.js"
+import { LeadUpdatableField } from "../models/leads/lead.fields.model.js"
 
 
 // create lead any one can do in the organization
@@ -679,9 +681,40 @@ export const FuzzySearchCustomers = async (req: Request, res: Response, next: Ne
     return res.status(200).json(leads)
 }
 
-export const UpdateLeadFields = async (req: Request, res: Response, next: NextFunction) =>{
+export const UpdateLeadFields = async (req: Request, res: Response, next: NextFunction) => {
+    const { stages, lead_types, lead_sources } = req.body as TLeadUpdatableFieldBody
+    let fields = await LeadUpdatableField.findOne();
 
+    if (!fields) {
+        fields = await new LeadUpdatableField({
+            stages: ["open", "closed", "potential"],
+            lead_sources: ["internet", "leads gorilla", "whatsapp", "visit"],
+            lead_types: ["wholesale", "company", "retail"],
+            created_at: new Date(),
+            updated_at: new Date(),
+            created_by: req.user,
+            updated_by: req.user
+        }).save()
+        return res.status(200).json(fields)
+    }
+
+    fields.stages = stages
+    fields.lead_types = lead_types
+    fields.lead_sources = lead_sources
+    fields.updated_at = new Date()
+    if (req.user)
+        fields.updated_by = req.user
+    await fields.save()
+    return res.status(200).json(fields)
 }
+
+export const GetUpdatableLeadFields = async (req: Request, res: Response, next: NextFunction) => {
+    const { stages, lead_types, lead_sources } = req.body as TLeadUpdatableFieldBody
+    let fields = await LeadUpdatableField.findOne();
+    return res.status(200).json(fields)
+}
+
+
 
 export const AdvancedQuery = async (req: Request, res: Response, next: NextFunction) => {
     const { city, owner, searchString, isOr } = req.body

@@ -22,7 +22,7 @@ export default function NavBar() {
     const { user } = useContext(UserContext)
     return (
         <>
-            <Box sx={{ bgcolor: '#0039a6', width: '100%' }}>
+            <Box sx={{ bgcolor: '#0039a6', width: '100%', p: 0.6 }}>
                 {/* parent stack */}
                 <Stack direction="row" sx={{
                     justifyContent: "space-between", alignItems: "center"
@@ -56,6 +56,7 @@ export default function NavBar() {
                                         user.is_admin ? <StyledLink to={paths.users}>Users</StyledLink> : null}
                                     <StyledLink to={paths.leads}>Leads</StyledLink>
                                     <StyledLink to={paths.customers}>Customers</StyledLink>
+                                    <StyledLink to={paths.updateble_fields_lead}>Fields</StyledLink>
                                 </Stack>
 
                                 {/* stack2 right icons*/}

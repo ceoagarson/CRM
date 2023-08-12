@@ -24,7 +24,7 @@ type Props = {
   setSelectAll: React.Dispatch<React.SetStateAction<boolean>>,
   selectedLeads: ILead[]
   setSelectedLeads: React.Dispatch<React.SetStateAction<ILead[]>>,
-  selectableLeads:ILead[]
+  selectableLeads: ILead[]
 }
 
 function LeadsTable({ lead, leads, selectableLeads, setLead, selectAll, setSelectAll, selectedLeads, setSelectedLeads }: Props) {
@@ -58,7 +58,7 @@ function LeadsTable({ lead, leads, selectableLeads, setLead, selectAll, setSelec
                 >
                   <FormControlLabel sx={{ fontSize: 12 }} control={
                     <Checkbox
-
+                      indeterminate={selectAll ? true : false}
                       size="small" onChange={(e) => {
                         if (e.currentTarget.checked) {
                           setSelectedLeads(selectableLeads)

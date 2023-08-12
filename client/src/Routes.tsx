@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage'
 import DashBoardPage from './pages/DashBoardPage'
 import NavBar from './components/navbar/NavBar'
 import CustomersPage from './pages/CustomersPage'
+import UpdateLeadFieldsPage from './pages/UpdateLeadFieldsPage'
 const LeadsPage = React.lazy(() => import('./pages/LeadsPage'))
 const UsersPage = React.lazy(() => import('./pages/UsersPage'))
 
@@ -18,6 +19,7 @@ export enum paths {
   customers = "customers",
   machines = "machines",
   categories = "categories",
+  updateble_fields_lead = "updateble_fields_lead",
   reports = "reports",
   users = "users",
   productions = "productions",
@@ -48,6 +50,14 @@ function AppRoutes() {
 
               }
             />
+            <Route
+              path={paths.updateble_fields_lead} element={
+                <Suspense fallback={<LinearProgress />}><UpdateLeadFieldsPage />
+                </Suspense>
+
+              }
+            />
+
             <Route
               path={paths.leads} element={
                 <Suspense fallback={<LinearProgress />}><LeadsPage /></Suspense>
