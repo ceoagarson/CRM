@@ -686,10 +686,13 @@ export const UpdateLeadFields = async (req: Request, res: Response, next: NextFu
     let fields = await LeadUpdatableField.findOne();
 
     if (!fields) {
+        let stages = ["open", "closed", "potential"]
+        let lead_sources = ["internet", "leads gorilla", "whatsapp", "visit"]
+        let lead_types = ["wholesale", "company", "retail"]
         fields = await new LeadUpdatableField({
-            stages: ["open", "closed", "potential"],
-            lead_sources: ["internet", "leads gorilla", "whatsapp", "visit"],
-            lead_types: ["wholesale", "company", "retail"],
+            stages: stages,
+            lead_sources: lead_sources,
+            lead_types: lead_types,
             created_at: new Date(),
             updated_at: new Date(),
             created_by: req.user,
