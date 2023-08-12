@@ -50,28 +50,28 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
   const formik = useFormik<TformData>({
     initialValues: {
       name: lead.name,
-      customer_name: lead.customer_name,
-      customer_designation: lead.customer_designation,
-      mobile: lead.mobile,
-      email: lead.email,
-      city: lead.city,
-      state: lead.state,
-      country: lead.country,
-      address: lead.address,
+      customer_name: lead.customer_name || "",
+      customer_designation: lead.customer_designation || "",
+      mobile: lead.mobile || "",
+      email: lead.email || "",
+      city: lead.city || "",
+      state: lead.state || "",
+      country: lead.country || "",
+      address: lead.address || "",
       remark: lead.last_remark || "",
-      work_description: lead.work_description,
-      turnover: lead.turnover,
-      lead_type: lead.lead_type,
-      stage: lead.stage,
-      alternate_mobile1: lead.alternate_mobile1,
-      alternate_mobile2: lead.alternate_mobile2,
-      alternate_email: lead.alternate_email,
-      lead_source: lead.lead_source,
+      work_description: lead.work_description || "",
+      turnover: lead.turnover || "",
+      lead_type: lead.lead_type || "",
+      stage: lead.stage || "",
+      alternate_mobile1: lead.alternate_mobile1 || "",
+      alternate_mobile2: lead.alternate_mobile2 || "",
+      alternate_email: lead.alternate_email || "",
+      lead_source: lead.lead_source || "",
       lead_owners: lead.lead_owners.map((owner) => {
         return owner._id
       }),
       is_customer: lead.is_customer,
-      visiting_card: lead.visiting_card && lead.visiting_card.url
+      visiting_card: lead.visiting_card && lead.visiting_card.url || ""
     },
     validationSchema: Yup.object({
       name: Yup.string()
