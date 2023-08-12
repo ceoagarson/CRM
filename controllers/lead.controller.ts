@@ -12,6 +12,7 @@ import { isvalidDate } from "../utils/isValidDate.js"
 import { Types } from "mongoose"
 import { TLeadUpdatableFieldBody } from "../types/models/lead.updatable_field.type.js"
 import { LeadUpdatableField } from "../models/leads/lead.fields.model.js"
+import { destroyFile } from "../utils/destroyFile.util.js"
 
 
 // create lead any one can do in the organization
@@ -272,8 +273,10 @@ export const UpdateLead = async (req: Request, res: Response, next: NextFunction
         if (req.file.size > 500 * 1024)
             return res.status(400).json({ message: `${req.file.originalname} is too large limit is :200Kb` })
         const doc = await uploadFileToCloudinary(req.file.path, storageLocation)
-        if (doc)
+        if (doc) {
+            await destroyFile(lead.visiting_card?.public_id || "")
             visiting_card = doc
+        }
         else {
             return res.status(500).json({ message: "file uploading error" })
         }
@@ -334,6 +337,7 @@ export const DeleteLead = async (req: Request, res: Response, next: NextFunction
         await remark.remove()
     })
     await lead.remove()
+    await destroyFile(lead.visiting_card?.public_id || "")
     return res.status(200).json({ message: "lead and related remarks are deleted" })
 }
 
