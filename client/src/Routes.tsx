@@ -14,6 +14,7 @@ import DashBoardNavBar from './components/navbar/DashBoardNavBar'
 import BroadcastNavBar from './components/navbar/BroadcastNavBar'
 import UsersNavBar from './components/navbar/UsersNavBar'
 import DashBoardPage from './pages/DashBoardPage'
+import WelcomeNavBar from './components/navbar/WelcomeNavbar'
 const LeadsPage = React.lazy(() => import('./pages/LeadsPage'))
 const UsersPage = React.lazy(() => import('./pages/UsersPage'))
 
@@ -45,7 +46,9 @@ function AppRoutes() {
     <Routes >
       {
         !user ?
-          <Route path={paths.login} element={<LoginPage />} />
+          <Route path={paths.login} element={<WelcomeNavBar />}>
+            <Route index path={paths.login} element={<LoginPage />} />
+          </Route>
           :
           <Route>
             < Route element={<DashBoardNavBar />

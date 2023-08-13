@@ -4,7 +4,7 @@ import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { ConvertCustomer } from '../../../services/LeadsServices';
-import { ILead } from '../../../types/models/lead.type';
+import { ILead } from '../../../types/leads/lead.type';
 import { BackendError } from '../../../types';
 
 

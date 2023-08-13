@@ -7,12 +7,12 @@ import { useQuery } from 'react-query'
 import { BackendError } from '../types'
 import LeadTableMenu from '../components/menu/LeadTableMenu'
 import { FuzzySearchLeads, GetLeads } from '../services/LeadsServices'
-import { ILead } from '../types/models/lead.type'
 import { UserContext } from '../contexts/userContext'
 import UploadLeadsExcelButton from '../components/buttons/UploadLeadsExcelButton';
 import DBPagination from '../components/pagination/DBpagination';
 import LeadsTable from '../components/tables/LeadsTable';
 import ReactPagination from '../components/pagination/ReactPagination'
+import { ILead } from '../types/leads/lead.type'
 
 
 export default function LeadsPage() {

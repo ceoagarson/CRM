@@ -2,7 +2,7 @@ import { Dialog, DialogContent,  DialogActions, Typography, CircularProgress } f
 import { useContext } from 'react'
 import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import NewRemarkForm from '../../forms/lead/NewRemarkForm'
-import { ILead } from '../../../types/models/lead.type'
+import { ILead } from '../../../types/leads/lead.type'
 
 function NewRemarkDialog({ lead }: { lead: ILead }) {
     const { choice, setChoice } = useContext(ChoiceContext)

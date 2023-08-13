@@ -7,7 +7,7 @@ import { useQuery } from 'react-query'
 import { BackendError } from '../types'
 import LeadTableMenu from '../components/menu/LeadTableMenu'
 import { FuzzySearchCustomers, GetCustomers } from '../services/LeadsServices'
-import { ILead } from '../types/models/lead.type'
+import { ILead } from '../types/leads/lead.type'
 import { UserContext } from '../contexts/userContext'
 import UploadLeadsExcelButton from '../components/buttons/UploadLeadsExcelButton';
 import DBPagination from '../components/pagination/DBpagination';
@@ -110,6 +110,11 @@ export default function CustomersPage() {
               fullWidth
               size="small"
               onChange={(e) => setFilter(e.currentTarget.value)}
+              onKeyUp={(e) => {
+                if (e.key === "Enter") {
+                  refetchFuzzy()
+                }
+              }}
               autoFocus
               placeholder={`${MemoData?.length} records...`}
               style={{

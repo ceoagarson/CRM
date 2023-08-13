@@ -2,7 +2,7 @@ import { Dialog, DialogContent,  Button, DialogActions } from '@mui/material';
 import { useContext } from 'react';
 import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import AllRemarksPage from '../../../pages/AllRemarksPage';
-import { ILead } from '../../../types/models/lead.type';
+import { ILead } from '../../../types/leads/lead.type';
 
 function ViewRemarksDialog({ lead }: { lead: ILead }) {
   const { choice, setChoice } = useContext(ChoiceContext)

@@ -7,7 +7,7 @@ import * as Yup from "yup"
 import { NewRemark } from '../../../services/LeadsServices';
 import { ChoiceContext, LeadChoiceActions } from '../../../contexts/dialogContext';
 import { BackendError } from '../../../types';
-import { ILead } from '../../../types/models/lead.type';
+import { ILead } from '../../../types/leads/lead.type';
 
 
 function NewRemarkForm({ lead }: { lead: ILead }) {

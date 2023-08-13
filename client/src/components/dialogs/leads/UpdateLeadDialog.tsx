@@ -5,7 +5,7 @@ import UpdateLeadForm from '../../forms/lead/UpdateLeadForm'
 import { useQuery } from 'react-query'
 import { AxiosResponse } from 'axios'
 import { GetUsers } from '../../../services/UserServices'
-import { ILead } from '../../../types/models/lead.type'
+import { ILead } from '../../../types/leads/lead.type'
 import { IUser } from '../../../types/users/user.type'
 import { BackendError } from '../../../types'
 

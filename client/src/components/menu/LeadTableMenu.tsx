@@ -5,7 +5,7 @@ import { MenuActions, MenuContext } from '../../contexts/menuContext';
 import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext';
 import ExportToExcel from '../../utils/ExportToExcel';
 import NewLeadDialog from '../dialogs/leads/NewLeadDialog';
-import { ILead } from '../../types/models/lead.type';
+import { ILead } from '../../types/leads/lead.type';
 import { ILeadTemplate } from '../../types/leads/lead.template.types';
 
 let template: ILeadTemplate[] = [

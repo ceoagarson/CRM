@@ -1,7 +1,7 @@
 import { Link, Outlet } from 'react-router-dom';
 import { Stack } from '@mui/system';
 import styled from '@emotion/styled';
-import { Avatar, Box, IconButton, Tooltip } from '@mui/material';
+import { Avatar, Box, IconButton, Tooltip, Typography } from '@mui/material';
 import { useContext } from 'react';
 import { MenuActions, MenuContext } from '../../contexts/menuContext';
 import { UserContext } from '../../contexts/userContext';
@@ -20,62 +20,68 @@ export default function DashBoardNavBar() {
     const { user } = useContext(UserContext)
     return (
         <>
-            <Box sx={{ bgcolor: '#0039a6', width: '100%', p: 0.6 }}>
-                {/* parent stack */}
-                <Stack direction="row" sx={{
-                    justifyContent: "space-between", alignItems: "center"
-                }}
-                >
-                    {/* child stack1 */}
-                    <Stack direction="column" gap={2} pl={1}>
-                        <StyledLink to={paths.dashboard}>
-                            <AgarsonLogo />
-                        </StyledLink>
-                    </Stack>
-                    {/* child stack2 */}
-                    <Stack direction="row"
-                        justifyContent={"center"}
-                        alignItems="center"
+            <Box p={2}>
+                <Box sx={{ width: '100%', p: 0.6, borderBottom: 2, borderColor: 'violet' }}>
+                    {/* parent stack */}
+                    <Stack direction="row" sx={{
+                        justifyContent: "space-between", alignItems: "center"
+                    }}
                     >
-                        {user ?
-                            <>
-                                {/* stack1 nav links*/}
-                                <Stack
-                                    direction="row"
-                                    gap={2}
-                                    px={2}
-                                    sx={{
-                                        display: { xs: 'none', md: 'flex' }
-                                    }}
-                                >
-                                </Stack>
+                        {/* child stack1 */}
+                        <Stack direction="row" justifyContent={"center"}
+                            alignItems="center" gap={2} pl={1}>
+                            <StyledLink to={paths.dashboard}>
+                                <AgarsonLogo />
+                            </StyledLink>
+                            <Typography component={"h1"} sx={{ fontWeight: 600, fontSize: 20 }} variant="button">
+                                Dashboard
+                            </Typography>
+                        </Stack>
+                        {/* child stack2 */}
+                        <Stack direction="row"
+                            justifyContent={"center"}
+                            alignItems="center"
+                        >
+                            {user ?
+                                <>
+                                    {/* stack1 nav links*/}
+                                    <Stack
+                                        direction="row"
+                                        gap={2}
+                                        px={2}
+                                        sx={{
+                                            display: { xs: 'none', md: 'flex' }
+                                        }}
+                                    >
+                                    </Stack>
 
-                                {/* stack2 right icons*/}
-                                <Stack
-                                    direction="row"
-                                    justifyContent={"center"}
-                                    alignItems="center"
-                                    gap={2}
-                                >
+                                    {/* stack2 right icons*/}
+                                    <Stack
+                                        direction="row"
+                                        justifyContent={"center"}
+                                        alignItems="center"
+                                        gap={2}
+                                    >
 
-                                    <Tooltip title={user.username || "open settings"}>
-                                        <IconButton
-                                            onClick={(e) => setMenu({ type: MenuActions.user_menu, payload: { type: MenuActions.user_menu, anchorEl: e.currentTarget } })
-                                            }
-                                        >
-                                            <Avatar
-                                                sx={{ width: 30, height: 30 }}
-                                                alt="img1" src={user.dp?.url} />
-                                        </IconButton>
-                                    </Tooltip>
-                                </Stack>
-                            </>
-                            :
-                            null
-                        }
-                    </Stack >
-                </Stack>
-            </Box >
+                                        <Tooltip title={user.username || "open settings"}>
+                                            <IconButton
+                                                onClick={(e) => setMenu({ type: MenuActions.user_menu, payload: { type: MenuActions.user_menu, anchorEl: e.currentTarget } })
+                                                }
+                                            >
+                                                <Avatar
+                                                    sx={{ width: 30, height: 30 }}
+                                                    alt="img1" src={user.dp?.url} />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </Stack>
+                                </>
+                                :
+                                null
+                            }
+                        </Stack >
+                    </Stack>
+                </Box >
+            </Box>
             <Outlet />
             <ProfileMenu />
             <ResetPasswordSendMailDialog />

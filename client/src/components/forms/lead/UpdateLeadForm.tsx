@@ -10,7 +10,7 @@ import { Countries } from '../../../utils/countries';
 import { States } from '../../../utils/states';
 import { Cities } from '../../../utils/cities';
 import { BackendError, Target } from '../../../types';
-import { ILead } from '../../../types/models/lead.type';
+import { ILead } from '../../../types/leads/lead.type';
 import { IUser } from '../../../types/users/user.type';
 import { useLeadFields } from '../../hooks/LeadFieldsHook';
 import { ILeadUpdatableField } from '../../../types/leads/lead.updatable_field.type';
