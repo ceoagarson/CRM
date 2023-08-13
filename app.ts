@@ -1,4 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
+
+import compression from "compression"
+import { createServer } from "http"
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import cloudinary from "cloudinary";
@@ -9,31 +12,74 @@ import UserRoutes from "./routes/user.routes";
 import LeadRoutes from "./routes/lead.routes";
 import path from 'path';
 import morgan from "morgan";
+import { Server } from "socket.io";
+import { Socket } from "socket.io";
+import { ControlMessage } from "./utils/ControlMessage";
+import { createWhatsappClient, getCurrentUser, userJoin, userLeave } from "./utils/CreateWhatsappClient";
+
+
 const app = express()
+export const server = createServer(app)
+
 
 //env setup
 dotenv.config();
 const PORT = Number(process.env.PORT) || 5000
 const HOST = process.env.HOST || "http://localhost"
 const ENV = process.env.NODE_ENV || "development"
+let AppSocket: Socket;
 
 app.use(express.json({ limit: '30mb' }))
 app.use(cookieParser());
+app.use(compression())
 
 //logger
 app.use(morgan('tiny'))
 
 
-//cors for devlopment
+//mongodb database
+connectDatabase();
+
+let origin = ""
 if (ENV === "development") {
+    origin = "http://localhost:3000"
     app.use(cors({
-        origin: ['http://localhost:3000'],
+        origin: [origin],
         credentials: true
     }))
 }
 
-//mongodb database
-connectDatabase();
+let io: Server | undefined = undefined
+io = new Server(server, {
+    cors: {
+        origin: origin,
+        credentials: true
+    }
+});
+
+io.on("connection", (socket) => {
+    console.log("socket connected")
+    AppSocket = socket
+    socket.on('JoinRoom', async (id: string, path: string) => {
+        console.log("running in room", id, path)
+        const user = userJoin(id)
+        socket.join(user.id)
+        if (io)
+            createWhatsappClient(id, path, io)
+        socket.on("disconnect", (reason) => {
+            let user = getCurrentUser(id)
+            if (user)
+                userLeave(user.id)
+            console.log(`socket ${socket.id} disconnected due to ${reason}`);
+        });
+    })
+
+});
+
+
+
+
+
 
 //cloudinary config
 cloudinary.v2.config({
@@ -76,6 +122,8 @@ if (!PORT) {
     console.log("Server Port not specified in the environment")
     process.exit(1)
 }
-app.listen(PORT, () => {
-    console.log(`⚡️[server]: Server is running at ${HOST}:${PORT}`);
+server.listen(PORT, () => {
+    console.log(`running on ${HOST}:${PORT}`)
 });
+
+export { io }

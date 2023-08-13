@@ -1,8 +1,8 @@
-import { GetLeadFieldsUpdatable, UpdateLeadFieldsUpdatable } from '../services/LeadsServices'
+import { GetLeadFieldsUpdatable, UpdateLeadFieldsUpdatable } from '../../services/LeadsServices'
 import { AxiosResponse } from 'axios'
-import { ILeadUpdatableField } from '../types/leads/lead.updatable_field.type'
+import { ILeadUpdatableField } from '../../types/leads/lead.updatable_field.type'
 import { useMutation, useQuery } from 'react-query'
-import { BackendError } from '../types'
+import { BackendError } from '../../types'
 import { useEffect, useState } from 'react'
 import { Button, Grid, Snackbar, Stack, TextField, Typography } from '@mui/material'
 

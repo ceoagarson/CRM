@@ -3,8 +3,8 @@ import { AxiosResponse } from 'axios'
 import { useEffect, useMemo } from 'react'
 import { useMutation } from 'react-query'
 import { useNavigate, useParams } from 'react-router-dom'
-import { VerifyEmail } from '../services/UserServices'
-import { BackendError } from '../types'
+import { VerifyEmail } from '../../services/UserServices'
+import { BackendError } from '../../types'
 
 export default function EmailVerifyPage() {
   const goto = useNavigate()

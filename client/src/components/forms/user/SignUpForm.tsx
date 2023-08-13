@@ -7,7 +7,7 @@ import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from "yup"
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
-import { UserActions, UserContext } from '../../../contexts/userContext';
+import { UserContext } from '../../../contexts/userContext';
 import { paths } from '../../../Routes';
 import { Signup } from '../../../services/UserServices';
 import { BackendError, Target } from '../../../types';
@@ -106,7 +106,7 @@ function OwnerSignUpForm() {
   useEffect(() => {
     if (isSuccess) {
       setTimeout(() => {
-        setUser({ type: UserActions.login, payload: data.data })
+        setUser(undefined)
         setChoice({ type: UserChoiceActions.close_user })
         goto(paths.dashboard)
       }, 1000)
@@ -120,7 +120,7 @@ function OwnerSignUpForm() {
         direction="column"
         gap={2}
       >
-      
+
         <TextField
           variant='standard'
 

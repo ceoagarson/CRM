@@ -8,7 +8,7 @@ import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
-import { UserActions, UserContext } from '../../../contexts/userContext';
+import {  UserContext } from '../../../contexts/userContext';
 import { paths } from '../../../Routes';
 import { Login } from '../../../services/UserServices';
 import { IUser } from '../../../types/users/user.type';
@@ -63,7 +63,7 @@ function LoginForm() {
   useEffect(() => {
     if (isSuccess) {
       setTimeout(() => {
-        setUser({ type: UserActions.login, payload: data.data })
+        setUser(data.data)
         setChoice({ type: UserChoiceActions.close_user })
         goto(paths.dashboard)
       }, 400)

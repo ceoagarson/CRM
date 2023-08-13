@@ -2,7 +2,6 @@ import { Link, Outlet } from 'react-router-dom';
 import { Stack } from '@mui/system';
 import styled from '@emotion/styled';
 import { Box } from '@mui/material';
-import { paths } from '../../Routes';
 import ResetPasswordSendMailDialog from '../dialogs/users/ResetPasswordSendMailDialog';
 import SignUpDialog from '../dialogs/users/SignUpDialog';
 import AgarsonLogo from '../logo/Agarson';
@@ -14,7 +13,7 @@ export const StyledLink = styled(Link)`
 export default function WelcomeNavBar() {
     return (
         <>
-            <Box sx={{ width: '100%', p: 0.6}}>
+            <Box sx={{ width: '100%', p: 0.6 }}>
                 {/* parent stack */}
                 <Stack direction="row" sx={{
                     justifyContent: "space-between", alignItems: "center"
@@ -22,9 +21,7 @@ export default function WelcomeNavBar() {
                 >
                     {/* child stack1 */}
                     <Stack direction="column" gap={2} pl={1}>
-                        <StyledLink to={paths.dashboard}>
-                            <AgarsonLogo />
-                        </StyledLink>
+                        <AgarsonLogo />
                     </Stack>
                 </Stack>
             </Box >

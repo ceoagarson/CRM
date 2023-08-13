@@ -8,8 +8,11 @@ import { UserContext } from '../../contexts/userContext';
 import { paths } from '../../Routes';
 import ResetPasswordSendMailDialog from '../dialogs/users/ResetPasswordSendMailDialog';
 import SignUpDialog from '../dialogs/users/SignUpDialog';
+import { Menu } from '@mui/icons-material';
 import AgarsonLogo from '../logo/Agarson';
-import ProfileMenu from '../menu/ProfileMenu';
+import BotMenu from '../menu/bot/BotMenu';
+import ProfileMenu from '../menu/users/ProfileMenu';
+import RefreshWhatsappButton from '../buttons/RefreshWhatsappButton';
 
 export const StyledLink = styled(Link)`
     text-decoration: none;
@@ -27,10 +30,11 @@ export default function BotNavBar() {
                 }}
                 >
                     {/* child stack1 */}
-                    <Stack direction="column" gap={2} pl={1}>
+                    <Stack direction="row" gap={2} pl={1}>
                         <StyledLink to={paths.dashboard}>
                             <AgarsonLogo />
                         </StyledLink>
+                        <RefreshWhatsappButton />
                     </Stack>
                     {/* child stack2 */}
                     <Stack direction="row"
@@ -48,9 +52,8 @@ export default function BotNavBar() {
                                         display: { xs: 'none', md: 'flex' }
                                     }}
                                 >
-
-                                    {
-                                        user.is_admin ? <StyledLink to={paths.users}>Bot</StyledLink> : null}
+                                    <StyledLink to={paths.flows}>Flows</StyledLink>
+                                    <StyledLink to={paths.trackers}>Trackers</StyledLink>
                                 </Stack>
 
                                 {/* stack2 right icons*/}
@@ -60,6 +63,20 @@ export default function BotNavBar() {
                                     alignItems="center"
                                     gap={2}
                                 >
+
+                                    <Tooltip title="open menu">
+                                        <IconButton
+                                            onClick={(e) => setMenu({ type: MenuActions.dashboard_menu, payload: { type: MenuActions.dashboard_menu, anchorEl: e.currentTarget } })
+                                            }
+                                            sx={{
+                                                color: "white",
+                                                display: {
+                                                    xs: 'block', md: 'none'
+                                                }
+                                            }}>
+                                            <Menu />
+                                        </IconButton>
+                                    </Tooltip>
                                     <Tooltip title={user.username || "open settings"}>
                                         <IconButton
                                             onClick={(e) => setMenu({ type: MenuActions.user_menu, payload: { type: MenuActions.user_menu, anchorEl: e.currentTarget } })
@@ -79,6 +96,7 @@ export default function BotNavBar() {
                 </Stack>
             </Box >
             <Outlet />
+            <BotMenu />
             <ProfileMenu />
             <ResetPasswordSendMailDialog />
             <SignUpDialog />

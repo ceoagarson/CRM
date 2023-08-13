@@ -4,15 +4,15 @@ import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
 import React, { useContext, useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
-import { BackendError } from '../types'
-import LeadTableMenu from '../components/menu/LeadTableMenu'
-import { FuzzySearchLeads, GetLeads } from '../services/LeadsServices'
-import { UserContext } from '../contexts/userContext'
-import UploadLeadsExcelButton from '../components/buttons/UploadLeadsExcelButton';
-import DBPagination from '../components/pagination/DBpagination';
-import LeadsTable from '../components/tables/LeadsTable';
-import ReactPagination from '../components/pagination/ReactPagination'
-import { ILead } from '../types/leads/lead.type'
+import { BackendError } from '../../types'
+import LeadTableMenu from '../../components/menu/crm/LeadTableMenu'
+import { FuzzySearchLeads, GetLeads } from '../../services/LeadsServices'
+import { UserContext } from '../../contexts/userContext'
+import UploadLeadsExcelButton from '../../components/buttons/UploadLeadsExcelButton';
+import DBPagination from '../../components/pagination/DBpagination';
+import LeadsTable from '../../components/tables/LeadsTable';
+import ReactPagination from '../../components/pagination/ReactPagination'
+import { ILead } from '../../types/leads/lead.type'
 
 
 export default function LeadsPage() {

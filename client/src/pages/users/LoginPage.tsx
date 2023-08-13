@@ -1,11 +1,11 @@
 import { Typography, Stack, Paper } from '@mui/material'
 import { useContext } from 'react';
-import ResetPasswordSendMailDialog from '../components/dialogs/users/ResetPasswordSendMailDialog';
-import SignUpDialog from '../components/dialogs/users/SignUpDialog';
-import LoginForm from '../components/forms/user/LoginForm';
-import { ChoiceContext, UserChoiceActions } from '../contexts/dialogContext';
-import { darkColor } from '../utils/colors';
-import AgarsonLogo from '../components/logo/Agarson';
+import ResetPasswordSendMailDialog from '../../components/dialogs/users/ResetPasswordSendMailDialog';
+import SignUpDialog from '../../components/dialogs/users/SignUpDialog';
+import LoginForm from '../../components/forms/user/LoginForm';
+import { ChoiceContext, UserChoiceActions } from '../../contexts/dialogContext';
+import { darkColor } from '../../utils/colors';
+import AgarsonLogo from '../../components/logo/Agarson';
 
 
 function LoginPage() {

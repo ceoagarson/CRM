@@ -4,13 +4,13 @@ import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
-import { GetUsers } from '../services/UserServices'
-import { BackendError } from '../types'
-import { IUser } from '../types/users/user.type'
-import { headColor } from '../utils/colors'
-import UserTableMenu from '../components/menu/UserTableMenu'
+import { GetUsers } from '../../services/UserServices'
+import { BackendError } from '../../types'
+import { IUser } from '../../types/users/user.type'
+import { headColor } from '../../utils/colors'
+import UserTableMenu from '../../components/menu/users/UserTableMenu'
 import FuzzySearch from "fuzzy-search";
-import UsersTable from '../components/tables/UsersTable'
+import UsersTable from '../../components/tables/UsersTable'
 
 
 export default function UsersPage() {

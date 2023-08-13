@@ -3,10 +3,10 @@ import React, { Suspense, useContext } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import ResetPasswordDialog from './components/dialogs/users/ResetPasswordDialog'
 import { UserContext } from './contexts/userContext'
-import EmailVerifyPage from './pages/EmailVerifyPage'
-import LoginPage from './pages/LoginPage'
-import CustomersPage from './pages/CustomersPage'
-import UpdateLeadFieldsPage from './pages/UpdateLeadFieldsPage'
+import EmailVerifyPage from './pages/users/EmailVerifyPage'
+import LoginPage from './pages/users/LoginPage'
+import CustomersPage from './pages/crm/CustomersPage'
+import UpdateLeadFieldsPage from './pages/crm/UpdateLeadFieldsPage'
 import CrmNavBar from './components/navbar/CrmNavBar'
 import BotNavBar from './components/navbar/BotNavBar'
 import SchedulerNavBar from './components/navbar/SchedulerNavBar'
@@ -15,8 +15,10 @@ import BroadcastNavBar from './components/navbar/BroadcastNavBar'
 import UsersNavBar from './components/navbar/UsersNavBar'
 import DashBoardPage from './pages/DashBoardPage'
 import WelcomeNavBar from './components/navbar/WelcomeNavbar'
-const LeadsPage = React.lazy(() => import('./pages/LeadsPage'))
-const UsersPage = React.lazy(() => import('./pages/UsersPage'))
+import FlowsPage from './pages/bot/FlowsPage'
+import TrackersPage from './pages/bot/TrackersPage'
+const LeadsPage = React.lazy(() => import('./pages/crm/LeadsPage'))
+const UsersPage = React.lazy(() => import('./pages/users/UsersPage'))
 
 export enum paths {
   //navbars
@@ -28,14 +30,17 @@ export enum paths {
   scheduler = "/scheduler",
   users = "users",
 
-  //sub items
+  //leads
   leads = "leads",
   customers = "customers",
-  machines = "machines",
-  categories = "categories",
   updateble_fields_lead = "updateble_fields_lead",
-  reports = "reports",
-  productions = "productions",
+
+  //bot
+
+  flows = "flows",
+  trackers = "trackers",
+
+  //users
   reset_password = "/password/reset/:token",
   verify_email = "/email/verify/:token"
 }
@@ -50,6 +55,7 @@ function AppRoutes() {
             <Route index path={paths.login} element={<LoginPage />} />
           </Route>
           :
+
           <Route>
             < Route element={<DashBoardNavBar />
             }>
@@ -92,11 +98,24 @@ function AppRoutes() {
               <Route
                 index element={
                   <Suspense fallback={<LinearProgress />}>
-                    <DashBoardPage />
+                    <FlowsPage />
                   </Suspense>
                 }
               />
+              <Route path={paths.flows} element={
+                <Suspense fallback={<LinearProgress />}>
+                  < FlowsPage />
+                </Suspense>
+              }
+              />
+              <Route path={paths.trackers} element={
+                <Suspense fallback={<LinearProgress />}>
+                  < TrackersPage />
+                </Suspense>
+              }
+              />
             </Route>
+
             {/* scheduler nav bar */}
             < Route path={paths.scheduler} element={<SchedulerNavBar />
             }>

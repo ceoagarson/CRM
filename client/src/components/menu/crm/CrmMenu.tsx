@@ -2,9 +2,8 @@ import styled from '@emotion/styled';
 import { Menu, MenuItem } from '@mui/material'
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { MenuActions, MenuContext } from '../../contexts/menuContext';
-import { UserContext } from '../../contexts/userContext';
-import { paths } from '../../Routes';
+import { MenuActions, MenuContext } from '../../../contexts/menuContext';
+import { paths } from '../../../Routes';
 
 
 export const StyledLink = styled(Link)`
@@ -12,32 +11,14 @@ export const StyledLink = styled(Link)`
     color:black;
 `
 
-function DashboardMenu() {
+function CrmMenu() {
     const { menu, setMenu } = useContext(MenuContext)
-    const { user } = useContext(UserContext)
     return (
         <Menu
             anchorEl={menu.anchorEl}
             open={Boolean(menu.type === MenuActions.dashboard_menu)}
             onClose={() => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })}
         >
-            {/* nav links */}
-            <MenuItem
-                onClick={
-                    () => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
-                }
-
-            >
-                <StyledLink to={paths.dashboard}>Dashboard</StyledLink>
-            </MenuItem>
-
-            {
-                user?.is_admin ? <MenuItem
-                    onClick={
-                        () => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
-                    }>
-                    <StyledLink to={paths.users}>Users</StyledLink>
-                </MenuItem> : null}
             <MenuItem
                 onClick={
                     () => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
@@ -60,4 +41,4 @@ function DashboardMenu() {
     )
 }
 
-export default DashboardMenu
+export default CrmMenu

@@ -4,15 +4,15 @@ import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
 import React, { useContext, useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
-import { BackendError } from '../types'
-import LeadTableMenu from '../components/menu/LeadTableMenu'
-import { FuzzySearchCustomers, GetCustomers } from '../services/LeadsServices'
-import { ILead } from '../types/leads/lead.type'
-import { UserContext } from '../contexts/userContext'
-import UploadLeadsExcelButton from '../components/buttons/UploadLeadsExcelButton';
-import DBPagination from '../components/pagination/DBpagination';
-import CustomersTable from '../components/tables/CustomersTable'
-import ReactPagination from '../components/pagination/ReactPagination'
+import { BackendError } from '../../types'
+import LeadTableMenu from '../../components/menu/crm/LeadTableMenu'
+import { FuzzySearchCustomers, GetCustomers } from '../../services/LeadsServices'
+import { ILead } from '../../types/leads/lead.type'
+import { UserContext } from '../../contexts/userContext'
+import UploadLeadsExcelButton from '../../components/buttons/UploadLeadsExcelButton';
+import DBPagination from '../../components/pagination/DBpagination';
+import CustomersTable from '../../components/tables/CustomersTable'
+import ReactPagination from '../../components/pagination/ReactPagination'
 
 
 export default function CustomersPage() {

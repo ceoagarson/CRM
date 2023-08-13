@@ -5,11 +5,28 @@ type UserChoices = "signup" | "reset_password_mail" | "close_user" | "new_user" 
 
 type LeadChoices = "create_lead" | "update_lead" | "update_remark" | "view_remarks" | "close_lead" | "display_filter" | "delete_lead" | "convert_customer" | "open_filter"
 
+type BotChoices = "create_flow"
+  | "refresh_whatsapp"
+  | "update_flow"
+  | "toogle_bot_status"
+  | "update_tracker"
+  | "delete_flow"
+  | "close_bot"
 
-type ChoiceState = UserChoices | LeadChoices
+type ChoiceState = UserChoices | LeadChoices | BotChoices
 
 const initialState: ChoiceState | null = null
 
+
+export enum BotChoiceActions {
+  create_flow = "create_flow",
+  refresh_whatsapp = "refresh_whatsapp",
+  update_flow = "update_flow",
+  toogle_bot_status = "toogle_bot_status",
+  update_tracker = "update_tracker",
+  delete_flow = "delete_flow",
+  close_bot = "close_bot"
+}
 export enum LeadChoiceActions {
   create_lead = "create_lead",
   update_lead = "update_lead",
@@ -43,7 +60,7 @@ export enum UserChoiceActions {
 }
 
 type Action = {
-  type: UserChoiceActions | LeadChoiceActions
+  type: UserChoiceActions | LeadChoiceActions | BotChoiceActions
 }
 
 // reducer
@@ -78,6 +95,16 @@ function reducer(state: ChoiceState | null, action: Action) {
     case LeadChoiceActions.convert_customer: return type
     case LeadChoiceActions.open_filter: return type
     case LeadChoiceActions.close_lead: return type
+
+
+    //bot choice actions
+    case BotChoiceActions.refresh_whatsapp: return type
+    case BotChoiceActions.delete_flow: return type
+    case BotChoiceActions.update_flow: return type
+    case BotChoiceActions.create_flow: return type
+    case BotChoiceActions.update_tracker: return type
+    case BotChoiceActions.toogle_bot_status: return type
+    case BotChoiceActions.close_bot: return type
 
     default: return state
   }

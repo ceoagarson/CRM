@@ -2,15 +2,15 @@ import { Button, Menu, MenuItem } from '@mui/material'
 import { useContext, useEffect } from 'react'
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
-import { MenuActions, MenuContext } from '../../contexts/menuContext';
-import { UserActions, UserContext } from '../../contexts/userContext';
-import { ChoiceContext, UserChoiceActions } from '../../contexts/dialogContext';
-import { paths } from '../../Routes';
-import NewUserDialog from '../dialogs/users/NewUserDialog';
-import EmailVerifySendMailDialog from '../dialogs/users/EmailVerifySendMailDialog';
-import UpdateProfileDialog from '../dialogs/users/UpdateProfileDialog';
-import UpdatePasswordDialog from '../dialogs/users/UpdatePasswordDialog';
-import { Logout } from '../../services/UserServices';
+import { MenuActions, MenuContext } from '../../../contexts/menuContext';
+import { ChoiceContext, UserChoiceActions } from '../../../contexts/dialogContext';
+import { paths } from '../../../Routes';
+import NewUserDialog from '../../dialogs/users/NewUserDialog';
+import EmailVerifySendMailDialog from '../../dialogs/users/EmailVerifySendMailDialog';
+import UpdateProfileDialog from '../../dialogs/users/UpdateProfileDialog';
+import UpdatePasswordDialog from '../../dialogs/users/UpdatePasswordDialog';
+import { Logout } from '../../../services/UserServices';
+import { UserContext } from '../../../contexts/userContext';
 
 
 function ProfileMenu() {
@@ -21,7 +21,7 @@ function ProfileMenu() {
     const goto = useNavigate()
     useEffect(() => {
         if (isSuccess) {
-            setUser({ type: UserActions.logout })
+            setUser(undefined)
             setChoice({ type: UserChoiceActions.close_user })
             setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
             goto(paths.login)

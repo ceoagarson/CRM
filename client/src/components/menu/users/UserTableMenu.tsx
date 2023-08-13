@@ -1,11 +1,11 @@
 import { Fade, IconButton, Menu, MenuItem, Snackbar } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
 import { Menu as MenuIcon } from '@mui/icons-material';
-import { MenuActions, MenuContext } from '../../contexts/menuContext';
-import { ChoiceContext, UserChoiceActions } from '../../contexts/dialogContext';
-import ExportToExcel from '../../utils/ExportToExcel';
-import NewUserDialog from '../dialogs/users/NewUserDialog';
-import { IUser } from '../../types/users/user.type';
+import { MenuActions, MenuContext } from '../../../contexts/menuContext';
+import { ChoiceContext, UserChoiceActions } from '../../../contexts/dialogContext';
+import ExportToExcel from '../../../utils/ExportToExcel';
+import NewUserDialog from '../../dialogs/users/NewUserDialog';
+import { IUser } from '../../../types/users/user.type';
 
 type Props = {
     selectedFlatRows: IUser[]

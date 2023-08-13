@@ -9,7 +9,7 @@ import { paths } from '../../Routes';
 import ResetPasswordSendMailDialog from '../dialogs/users/ResetPasswordSendMailDialog';
 import SignUpDialog from '../dialogs/users/SignUpDialog';
 import AgarsonLogo from '../logo/Agarson';
-import ProfileMenu from '../menu/ProfileMenu';
+import ProfileMenu from '../menu/users/ProfileMenu';
 
 export const StyledLink = styled(Link)`
     text-decoration: none;

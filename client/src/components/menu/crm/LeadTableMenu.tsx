@@ -1,12 +1,12 @@
 import { Fade, IconButton, Menu, MenuItem, Snackbar } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
 import { Menu as MenuIcon } from '@mui/icons-material';
-import { MenuActions, MenuContext } from '../../contexts/menuContext';
-import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext';
-import ExportToExcel from '../../utils/ExportToExcel';
-import NewLeadDialog from '../dialogs/leads/NewLeadDialog';
-import { ILead } from '../../types/leads/lead.type';
-import { ILeadTemplate } from '../../types/leads/lead.template.types';
+import { MenuActions, MenuContext } from '../../../contexts/menuContext';
+import { ChoiceContext, LeadChoiceActions } from '../../../contexts/dialogContext';
+import ExportToExcel from '../../../utils/ExportToExcel';
+import NewLeadDialog from '../../dialogs/leads/NewLeadDialog';
+import { ILead } from '../../../types/leads/lead.type';
+import { ILeadTemplate } from '../../../types/leads/lead.template.types';
 
 let template: ILeadTemplate[] = [
     {

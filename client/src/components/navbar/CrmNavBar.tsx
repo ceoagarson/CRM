@@ -6,12 +6,12 @@ import { useContext } from 'react';
 import { MenuActions, MenuContext } from '../../contexts/menuContext';
 import { UserContext } from '../../contexts/userContext';
 import { paths } from '../../Routes';
-import UserMenu from '../menu/ProfileMenu';
 import ResetPasswordSendMailDialog from '../dialogs/users/ResetPasswordSendMailDialog';
 import SignUpDialog from '../dialogs/users/SignUpDialog';
 import { Menu } from '@mui/icons-material';
 import AgarsonLogo from '../logo/Agarson';
-import CRMDashboardMenu from '../menu/CrmMenu';
+import CRMDashboardMenu from '../menu/crm/CrmMenu';
+import ProfileMenu from '../menu/users/ProfileMenu';
 
 export const StyledLink = styled(Link)`
     text-decoration: none;
@@ -96,7 +96,7 @@ export default function CrmNavBar() {
             </Box >
             <Outlet />
             <CRMDashboardMenu />
-            <UserMenu />
+            <ProfileMenu />
             <ResetPasswordSendMailDialog />
             <SignUpDialog />
         </>
