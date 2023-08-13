@@ -1,6 +1,7 @@
 import { Box, Button, Card, CardActions, CardContent, Grid, Typography } from "@mui/material"
 import { useNavigate } from "react-router-dom"
 import { paths } from "../Routes"
+import { darkColor } from "../utils/colors"
 
 
 function DashBoardPage() {
@@ -9,7 +10,7 @@ function DashBoardPage() {
     <>
       <Box>
         <Grid container padding={1}>
-          <Grid item xs={6} md={4} sx={{ p: 1 }}>
+          <Grid item xs={12} md={4} sx={{ p: 1 }}>
             <Card sx={{ bgcolor: "whitesmoke" }}>
               <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
@@ -22,7 +23,7 @@ function DashBoardPage() {
               </CardActions>
             </Card>
           </Grid>
-          <Grid item xs={6} md={4} sx={{ p: 1 }}>
+          <Grid item xs={12} md={4} sx={{ p: 1 }}>
             <Card sx={{ bgcolor: "whitesmoke" }}>
               <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
@@ -35,7 +36,7 @@ function DashBoardPage() {
               </CardActions>
             </Card>
           </Grid>
-          <Grid item xs={6} md={4} sx={{ p: 1 }}>
+          <Grid item xs={12} md={4} sx={{ p: 1 }}>
             <Card sx={{ bgcolor: "whitesmoke" }}>
               <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
@@ -48,7 +49,7 @@ function DashBoardPage() {
               </CardActions>
             </Card>
           </Grid>
-          <Grid item xs={6} md={4} sx={{ p: 1 }}>
+          <Grid item xs={12} md={4} sx={{ p: 1 }}>
             <Card sx={{ bgcolor: "whitesmoke" }}>
               <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
@@ -61,11 +62,11 @@ function DashBoardPage() {
               </CardActions>
             </Card>
           </Grid>
-          <Grid item xs={6} md={4} sx={{ p: 1 }}>
+          <Grid item xs={12} md={4} sx={{ p: 1 }}>
             <Card sx={{ bgcolor: "whitesmoke" }}>
               <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
-                  Reminders
+                  Scheduler
                 </Typography>
               </CardContent>
               <CardActions>
@@ -77,6 +78,8 @@ function DashBoardPage() {
         </Grid>
 
       </Box>
+      <Typography border={2} bgcolor={darkColor} sx={{ width: '100%', color: 'white', position: 'absolute', bottom: 0, alignText: 'center' }}
+        variant="caption"><Typography style={{ textAlign: "center" }}>Copyright &copy; Nishu kumar</Typography></Typography>
     </>
   )
 }

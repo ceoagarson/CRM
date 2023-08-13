@@ -6,7 +6,7 @@ import { useContext } from 'react';
 import { MenuActions, MenuContext } from '../../contexts/menuContext';
 import { UserContext } from '../../contexts/userContext';
 import { paths } from '../../Routes';
-import UserMenu from '../menu/UserMenu';
+import ProfileMenu from '../menu/ProfileMenu';
 import ResetPasswordSendMailDialog from '../dialogs/users/ResetPasswordSendMailDialog';
 import SignUpDialog from '../dialogs/users/SignUpDialog';
 import AgarsonLogo from '../logo/Agarson';
@@ -77,7 +77,7 @@ export default function DashBoardNavBar() {
                 </Stack>
             </Box >
             <Outlet />
-            <UserMenu />
+            <ProfileMenu />
             <ResetPasswordSendMailDialog />
             <SignUpDialog />
         </>

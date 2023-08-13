@@ -6,12 +6,10 @@ import { useContext } from 'react';
 import { MenuActions, MenuContext } from '../../contexts/menuContext';
 import { UserContext } from '../../contexts/userContext';
 import { paths } from '../../Routes';
-import DashboardMenu from '../menu/DashboardMenu';
-import UserMenu from '../menu/UserMenu';
 import ResetPasswordSendMailDialog from '../dialogs/users/ResetPasswordSendMailDialog';
 import SignUpDialog from '../dialogs/users/SignUpDialog';
-import { Menu } from '@mui/icons-material';
 import AgarsonLogo from '../logo/Agarson';
+import ProfileMenu from '../menu/ProfileMenu';
 
 export const StyledLink = styled(Link)`
     text-decoration: none;
@@ -51,12 +49,8 @@ export default function BroadcastNavBar() {
                                     }}
                                 >
 
-
                                     {
-                                        user.is_admin ? <StyledLink to={paths.users}>Users</StyledLink> : null}
-                                    <StyledLink to={paths.leads}>BroadcastNavBar</StyledLink>
-                                    <StyledLink to={paths.customers}>Customers</StyledLink>
-                                    <StyledLink to={paths.updateble_fields_lead}>Fields</StyledLink>
+                                        user.is_admin ? <StyledLink to={paths.users}>Broadcast</StyledLink> : null}
                                 </Stack>
 
                                 {/* stack2 right icons*/}
@@ -66,20 +60,6 @@ export default function BroadcastNavBar() {
                                     alignItems="center"
                                     gap={2}
                                 >
-
-                                    <Tooltip title="open menu">
-                                        <IconButton
-                                            onClick={(e) => setMenu({ type: MenuActions.dashboard_menu, payload: { type: MenuActions.dashboard_menu, anchorEl: e.currentTarget } })
-                                            }
-                                            sx={{
-                                                color: "white",
-                                                display: {
-                                                    xs: 'block', md: 'none'
-                                                }
-                                            }}>
-                                            <Menu />
-                                        </IconButton>
-                                    </Tooltip>
                                     <Tooltip title={user.username || "open settings"}>
                                         <IconButton
                                             onClick={(e) => setMenu({ type: MenuActions.user_menu, payload: { type: MenuActions.user_menu, anchorEl: e.currentTarget } })
@@ -99,8 +79,7 @@ export default function BroadcastNavBar() {
                 </Stack>
             </Box >
             <Outlet />
-            <DashboardMenu />
-            <UserMenu />
+            <ProfileMenu />
             <ResetPasswordSendMailDialog />
             <SignUpDialog />
         </>

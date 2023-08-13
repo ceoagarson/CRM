@@ -13,7 +13,7 @@ import UpdatePasswordDialog from '../dialogs/users/UpdatePasswordDialog';
 import { Logout } from '../../services/UserServices';
 
 
-function UserMenu() {
+function ProfileMenu() {
     const { menu, setMenu } = useContext(MenuContext)
     const { user, setUser } = useContext(UserContext)
     const { setChoice } = useContext(ChoiceContext)
@@ -81,4 +81,4 @@ function UserMenu() {
     )
 }
 
-export default UserMenu
+export default ProfileMenu

@@ -3,7 +3,6 @@ import { Menu, MenuItem } from '@mui/material'
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { MenuActions, MenuContext } from '../../contexts/menuContext';
-import { UserContext } from '../../contexts/userContext';
 import { paths } from '../../Routes';
 
 
@@ -12,7 +11,7 @@ export const StyledLink = styled(Link)`
     color:black;
 `
 
-function CRMDashboardMenu() {
+function UsersMenu() {
     const { menu, setMenu } = useContext(MenuContext)
     return (
         <Menu
@@ -42,4 +41,4 @@ function CRMDashboardMenu() {
     )
 }
 
-export default CRMDashboardMenu
+export default UsersMenu

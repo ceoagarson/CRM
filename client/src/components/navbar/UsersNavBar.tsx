@@ -9,15 +9,13 @@ import { paths } from '../../Routes';
 import UserMenu from '../menu/ProfileMenu';
 import ResetPasswordSendMailDialog from '../dialogs/users/ResetPasswordSendMailDialog';
 import SignUpDialog from '../dialogs/users/SignUpDialog';
-import { Menu } from '@mui/icons-material';
 import AgarsonLogo from '../logo/Agarson';
-import CRMDashboardMenu from '../menu/CrmMenu';
 
 export const StyledLink = styled(Link)`
     text-decoration: none;
     color:white;
 `
-export default function CrmNavBar() {
+export default function UsersNavBar() {
     const { setMenu } = useContext(MenuContext)
     const { user } = useContext(UserContext)
     return (
@@ -50,9 +48,10 @@ export default function CrmNavBar() {
                                         display: { xs: 'none', md: 'flex' }
                                     }}
                                 >
-                                    <StyledLink to={paths.leads}>Leads</StyledLink>
-                                    <StyledLink to={paths.customers}>Customers</StyledLink>
-                                    <StyledLink to={paths.updateble_fields_lead}>Fields</StyledLink>
+
+
+                                    {
+                                        user.is_admin ? <StyledLink to={paths.users}>Users</StyledLink> : null}
                                 </Stack>
 
                                 {/* stack2 right icons*/}
@@ -62,20 +61,6 @@ export default function CrmNavBar() {
                                     alignItems="center"
                                     gap={2}
                                 >
-
-                                    <Tooltip title="open menu">
-                                        <IconButton
-                                            onClick={(e) => setMenu({ type: MenuActions.dashboard_menu, payload: { type: MenuActions.dashboard_menu, anchorEl: e.currentTarget } })
-                                            }
-                                            sx={{
-                                                color: "white",
-                                                display: {
-                                                    xs: 'block', md: 'none'
-                                                }
-                                            }}>
-                                            <Menu />
-                                        </IconButton>
-                                    </Tooltip>
                                     <Tooltip title={user.username || "open settings"}>
                                         <IconButton
                                             onClick={(e) => setMenu({ type: MenuActions.user_menu, payload: { type: MenuActions.user_menu, anchorEl: e.currentTarget } })
@@ -95,7 +80,6 @@ export default function CrmNavBar() {
                 </Stack>
             </Box >
             <Outlet />
-            <CRMDashboardMenu />
             <UserMenu />
             <ResetPasswordSendMailDialog />
             <SignUpDialog />
