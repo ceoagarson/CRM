@@ -1,24 +1,26 @@
 import { LinearProgress } from '@mui/material'
 import React, { Suspense, useContext } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
-import ResetPasswordDialog from './components/dialogs/users/ResetPasswordDialog'
 import { UserContext } from './contexts/userContext'
-import EmailVerifyPage from './pages/users/EmailVerifyPage'
 import LoginPage from './pages/users/LoginPage'
-import CustomersPage from './pages/crm/CustomersPage'
-import UpdateLeadFieldsPage from './pages/crm/UpdateLeadFieldsPage'
+import DashBoardNavBar from './components/navbar/DashBoardNavBar'
 import CrmNavBar from './components/navbar/CrmNavBar'
 import BotNavBar from './components/navbar/BotNavBar'
 import SchedulerNavBar from './components/navbar/SchedulerNavBar'
-import DashBoardNavBar from './components/navbar/DashBoardNavBar'
 import BroadcastNavBar from './components/navbar/BroadcastNavBar'
 import UsersNavBar from './components/navbar/UsersNavBar'
-import DashBoardPage from './pages/DashBoardPage'
+import EmailVerifyPage from './pages/users/EmailVerifyPage'
 import WelcomeNavBar from './components/navbar/WelcomeNavbar'
+import UsersPage from './pages/users/UsersPage'
+import DashBoardPage from './pages/DashBoardPage'
+import LeadsPage from './pages/crm/LeadsPage'
 import FlowsPage from './pages/bot/FlowsPage'
-import TrackersPage from './pages/bot/TrackersPage'
-const LeadsPage = React.lazy(() => import('./pages/crm/LeadsPage'))
-const UsersPage = React.lazy(() => import('./pages/users/UsersPage'))
+
+// lazy loding
+const ResetPasswordDialog = React.lazy(() => import('./components/dialogs/users/ResetPasswordDialog'))
+const CustomersPage = React.lazy(() => import('./pages/crm/CustomersPage'))
+const UpdateLeadFieldsPage = React.lazy(() => import('./pages/crm/UpdateLeadFieldsPage'))
+const TrackersPage = React.lazy(() => import('./pages/bot/TrackersPage'))
 
 export enum paths {
   //navbars
@@ -62,9 +64,7 @@ function AppRoutes() {
               <Route
                 path={paths.dashboard}
                 element={
-                  <Suspense fallback={<LinearProgress />}>
-                    <DashBoardPage />
-                  </Suspense>
+                  <DashBoardPage />
                 }
               />
             </Route>
@@ -72,7 +72,7 @@ function AppRoutes() {
             < Route path={paths.crm} element={<CrmNavBar />
             }>
               <Route index element={
-                <Suspense fallback={<LinearProgress />}><LeadsPage /></Suspense>
+                <LeadsPage />
               }
               />
               <Route path={paths.leads} index element={
@@ -97,15 +97,11 @@ function AppRoutes() {
             }>
               <Route
                 index element={
-                  <Suspense fallback={<LinearProgress />}>
-                    <FlowsPage />
-                  </Suspense>
+                  <FlowsPage />
                 }
               />
               <Route path={paths.flows} element={
-                <Suspense fallback={<LinearProgress />}>
-                  < FlowsPage />
-                </Suspense>
+                < FlowsPage />
               }
               />
               <Route path={paths.trackers} element={
@@ -121,9 +117,7 @@ function AppRoutes() {
             }>
               <Route
                 index element={
-                  <Suspense fallback={<LinearProgress />}>
-                    <DashBoardPage />
-                  </Suspense>
+                  <DashBoardPage />
                 }
               />
             </Route>
@@ -132,9 +126,7 @@ function AppRoutes() {
             }>
               <Route
                 index element={
-                  <Suspense fallback={<LinearProgress />}>
-                    <DashBoardPage />
-                  </Suspense>
+                  <DashBoardPage />
                 }
               />
             </Route>
@@ -142,16 +134,12 @@ function AppRoutes() {
             < Route path={paths.users} element={<UsersNavBar />}>
               <Route index
                 element={
-                  <Suspense fallback={<LinearProgress />}><UsersPage />
-                  </Suspense>
-
+                  <UsersPage />
                 }
               />
               <Route
                 path={paths.users} element={
-                  <Suspense fallback={<LinearProgress />}><UsersPage />
-                  </Suspense>
-
+                  <UsersPage />
                 }
               />
             </Route>

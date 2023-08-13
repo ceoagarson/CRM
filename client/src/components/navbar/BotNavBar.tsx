@@ -30,7 +30,7 @@ export default function BotNavBar() {
                 }}
                 >
                     {/* child stack1 */}
-                    <Stack direction="row" gap={2} pl={1}>
+                    <Stack direction="row" spacing={1}>
                         <StyledLink to={paths.dashboard}>
                             <AgarsonLogo />
                         </StyledLink>

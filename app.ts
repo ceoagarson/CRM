@@ -10,11 +10,11 @@ import { MulterError } from 'multer';
 import { connectDatabase } from './config/db';
 import UserRoutes from "./routes/user.routes";
 import LeadRoutes from "./routes/lead.routes";
+import BotRoutes from "./routes/bot.routes";
 import path from 'path';
 import morgan from "morgan";
 import { Server } from "socket.io";
 import { Socket } from "socket.io";
-import { ControlMessage } from "./utils/ControlMessage";
 import { createWhatsappClient, getCurrentUser, userJoin, userLeave } from "./utils/CreateWhatsappClient";
 
 
@@ -93,6 +93,7 @@ cloudinary.v2.config({
 //server routes
 app.use("/api/v1", UserRoutes)
 app.use("/api/v1", LeadRoutes)
+app.use("/api/v1", BotRoutes)
 
 
 //react app handler

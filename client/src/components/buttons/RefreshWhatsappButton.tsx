@@ -9,7 +9,7 @@ function RefreshWhatsappButton() {
     const { user } = useContext(UserContext)
     return (
         <>
-            <Button variant="text" className='p-0 m-0' size="small" onClick={() => {
+            <Button variant="text" size="small" onClick={() => {
                 setChoice({ type: BotChoiceActions.refresh_whatsapp })
             }}>
                 {user && user.is_whatsapp_active ?

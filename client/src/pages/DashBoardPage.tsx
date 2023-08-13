@@ -11,75 +11,75 @@ function DashBoardPage() {
   const goto = useNavigate()
   return (
     <>
-      <Box sx={{ bgcolor: "whitesmoke" }}>
-        <Grid container padding={1}>
+      <Box sx={{ bgcolor: "#0039a6",m: 0, p: 0 }}>
+        <Grid container >
           <Grid item xs={12} md={4} sx={{ p: 1 }}>
-            <Card sx={{ bgcolor: 'white',boxShadow:4,border:2,borderColor:'violet',p:2}}>
+            <Card sx={{ bgcolor: 'whitesmoke', boxShadow: 4, border: 10, borderRadius: 3, borderColor: 'whitesmoke', p: 2 }}>
               <CardContent sx={{ display: 'flex', direction: "row", alignItems: "center", gap: 2 }}>
-                <Person3Icon />
-                <Typography variant="h5" component="div">
+                <Person3Icon sx={{ color: 'darkgreen' }} />
+                <Typography variant="button" sx={{ color: 'darkgreen' }} component="div">
                   Users
                 </Typography>
               </CardContent>
               <CardActions>
-                <Button variant="contained" color="secondary" size="small" onClick={() => goto(paths.users)}>View All</Button>
-                <Button variant="contained" color="secondary" size="small">View Reports</Button>
+                <Button variant="contained" color="success" size="small" onClick={() => goto(paths.users)}>View All</Button>
+                <Button variant="contained" color="success" size="small">View Reports</Button>
               </CardActions>
             </Card>
           </Grid>
           <Grid item xs={12} md={4} sx={{ p: 1 }}>
-            <Card sx={{ bgcolor: 'white',boxShadow:4,border:2,borderColor:'violet',p:2}}>
+            <Card sx={{ bgcolor: 'whitesmoke', boxShadow: 4, border: 10, borderRadius: 3, borderColor: 'whitesmoke', p: 2 }}>
               <CardContent sx={{ display: 'flex', direction: "row", alignItems: "center", gap: 2 }}>
-                <AirplayIcon />
-                <Typography variant="h5" component="div">
+                <AirplayIcon sx={{ color: 'darkgreen' }} />
+                <Typography variant="button" sx={{ color: 'darkgreen' }} component="div">
                   CRM
                 </Typography>
               </CardContent>
               <CardActions>
-                <Button variant="contained" color="secondary" size="small" onClick={() => goto(paths.crm)}>View All</Button>
-                <Button variant="contained" color="secondary" size="small">View Reports</Button>
+                <Button variant="contained" color="success" size="small" onClick={() => goto(paths.crm)}>View All</Button>
+                <Button variant="contained" color="success" size="small">View Reports</Button>
               </CardActions>
             </Card>
           </Grid>
           <Grid item xs={12} md={4} sx={{ p: 1 }}>
-            <Card sx={{ bgcolor: 'white',boxShadow:4,border:2,borderColor:'violet',p:2}}>
+            <Card sx={{ bgcolor: 'whitesmoke', boxShadow: 4, border: 10, borderRadius: 3, borderColor: 'whitesmoke', p: 2 }}>
               <CardContent sx={{ display: 'flex', direction: "row", alignItems: "center", gap: 2 }}>
-                <AdbIcon />
-                <Typography variant="h5" component="div">
+                <AdbIcon sx={{ color: 'darkgreen' }} />
+                <Typography variant="button" sx={{ color: 'darkgreen' }} component="div">
                   Whatsapp BOT
                 </Typography>
               </CardContent>
               <CardActions>
-                <Button variant="contained" color="secondary" size="small" onClick={() => goto(paths.bot)}>View All</Button>
-                <Button variant="contained" color="secondary" size="small">View Reports</Button>
+                <Button variant="contained" color="success" size="small" onClick={() => goto(paths.bot)}>View All</Button>
+                <Button variant="contained" color="success" size="small">View Reports</Button>
               </CardActions>
             </Card>
           </Grid>
           <Grid item xs={12} md={4} sx={{ p: 1 }}>
-            <Card sx={{ bgcolor: 'white',boxShadow:4,border:2,borderColor:'violet',p:2}}>
+            <Card sx={{ bgcolor: 'whitesmoke', boxShadow: 4, border: 10, borderRadius: 3, borderColor: 'whitesmoke', p: 2 }}>
               <CardContent sx={{ display: 'flex', direction: "row", alignItems: "center", gap: 2 }}>
-                <CampaignIcon />
-                <Typography variant="h5" component="div">
+                <CampaignIcon sx={{ color: 'darkgreen' }} />
+                <Typography variant="button" sx={{ color: 'darkgreen' }} component="div">
                   Broadcast
                 </Typography>
               </CardContent>
               <CardActions>
-                <Button variant="contained" color="secondary" size="small" onClick={() => goto(paths.broadcast)}>View All</Button>
-                <Button variant="contained" color="secondary" size="small">View Reports</Button>
+                <Button variant="contained" color="success" size="small" onClick={() => goto(paths.broadcast)}>View All</Button>
+                <Button variant="contained" color="success" size="small">View Reports</Button>
               </CardActions>
             </Card>
           </Grid>
           <Grid item xs={12} md={4} sx={{ p: 1 }}>
-            <Card sx={{ bgcolor: 'white',boxShadow:4,border:2,borderColor:'violet',p:2}}>
+            <Card sx={{ bgcolor: 'whitesmoke', boxShadow: 4, border: 10, borderRadius: 3, borderColor: 'whitesmoke', p: 2 }}>
               <CardContent sx={{ display: 'flex', direction: "row", alignItems: "center", gap: 2 }}>
-                <AddAlarmIcon />
-                <Typography variant="h5" component="div">
+                <AddAlarmIcon sx={{ color: 'darkgreen' }} />
+                <Typography variant="button" sx={{ color: 'darkgreen' }} component="div">
                   Scheduler
                 </Typography>
               </CardContent>
               <CardActions >
-                <Button variant="contained" color="secondary" size="small" onClick={() => goto(paths.scheduler)}>View All</Button>
-                <Button variant="contained" color="secondary" size="small">View Reports</Button>
+                <Button variant="contained" color="success" size="small" onClick={() => goto(paths.scheduler)}>View All</Button>
+                <Button variant="contained" color="success" size="small">View Reports</Button>
               </CardActions>
             </Card>
           </Grid>
