@@ -20,7 +20,7 @@ export default function DashBoardNavBar() {
     const { user } = useContext(UserContext)
     return (
         <>
-            <Box sx={{ bgcolor: '#0039a6', width: '100%', pb: 2 }}>
+            <Box sx={{ bgcolor: '#0039a6', width: '100%', pt: 2, pb: 2, pr: 1 }}>
                 {/* parent stack */}
                 <Stack direction="row" sx={{
                     justifyContent: "space-between", alignItems: "center"
@@ -30,7 +30,7 @@ export default function DashBoardNavBar() {
                     <Stack direction="row" justifyContent={"center"}
                         alignItems="center" gap={2} pl={1}>
                         <StyledLink to={paths.dashboard}>
-                            <AgarsonLogo />
+                            <AgarsonLogo width={35} height={35} title='Go To Dashboard' />
                         </StyledLink>
                         <Typography component={"h1"} sx={{ fontWeight: 600, fontSize: 20, color: 'white' }} variant="button">
                             Dashboard

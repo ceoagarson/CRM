@@ -4,7 +4,6 @@ import ResetPasswordSendMailDialog from '../../components/dialogs/users/ResetPas
 import SignUpDialog from '../../components/dialogs/users/SignUpDialog';
 import LoginForm from '../../components/forms/user/LoginForm';
 import { ChoiceContext, UserChoiceActions } from '../../contexts/dialogContext';
-import { darkColor } from '../../utils/colors';
 import AgarsonLogo from '../../components/logo/Agarson';
 
 
@@ -25,8 +24,9 @@ function LoginPage() {
                     }}
                     elevation={8}>
                     <Stack justifyContent={"center"} alignItems="center">
-                        <AgarsonLogo />
-                        <Typography component={"h1"} sx={{ fontWeight: 600, fontSize: 20 }} variant="button">Agarson Shoes</Typography>
+                        <a href="https://agarsonshoes.in/">
+                            <AgarsonLogo width={80} height={80} title='Agarson Shoes' />
+                        </a>
                     </Stack>
                     <LoginForm />
                     <Stack
@@ -57,13 +57,14 @@ function LoginPage() {
                     </Stack>
                 </Paper>
             </Stack>
-            <SignUpDialog />
-            <ResetPasswordSendMailDialog />
-            <Stack bgcolor={darkColor} sx={{ width: '100%', color: 'white', position: 'absolute', bottom: 0, alignText: 'center', p: 2 }}
+
+            <Stack sx={{ width: '100%', position: 'absolute', bottom: 0, alignText: 'center', p: 2 }}
             >
                 <Typography component="h1" variant="button" style={{ textAlign: "center", fontWeight: 'bold' }}>Copyright &copy; Agarson Shoes Pvt Ltd </Typography>
-                <Typography variant="caption" component="p" sx={{ textAlign: "center",fontWeight:'300' }}><a style={{ color: 'white' }} href="https://github.com/kumarnishu">Developer : Nishu kumar 91-7056943283</a></Typography>
+                <Typography variant="caption" component="p" sx={{ textAlign: "center", fontWeight: '400' }}><a href="https://github.com/kumarnishu">Developer : Nishu kumar 91-7056943283</a></Typography>
             </Stack>
+            <SignUpDialog />
+            <ResetPasswordSendMailDialog />
         </>
     )
 }

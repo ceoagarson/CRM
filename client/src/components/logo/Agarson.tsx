@@ -1,21 +1,18 @@
-import { Avatar, IconButton, Stack } from "@mui/material"
+import { Avatar } from "@mui/material"
 import logo from "/logo.png";
 
-function AgarsonLogo() {
+type Props = {
+    width?: number,
+    height?: number,
+    title: string
+}
+function AgarsonLogo({ width, height, title }: Props) {
     return (
-        <Stack direction="row"
-            alignItems="center"
-            gap={1}
-            sx={{
-                maxWidth: "70vw",
-                overflow: "hidden"
-            }}>
-            <IconButton title="Dashboard">
-                <Avatar
-                    sx={{ width: 30, height: 30, borderRadius: 2, background: 'white' }}
-                    alt="img1" src={logo} />
-            </IconButton>
-        </Stack>
+
+        <Avatar title={title}
+            sx={{ width: width, height: height, borderRadius: 2, background: 'white' }}
+            alt="img1" src={logo} 
+            />
     )
 }
 

@@ -279,6 +279,14 @@ export const GetUsers =
         res.status(200).json(users)
     }
 
+export const GetProfile =
+    async (req: Request, res: Response, next: NextFunction) => {
+        let id = req.user?._id
+        const user = await User.findById(id).populate("created_by").populate("updated_by")
+        res.status(200).json(user)
+    }
+
+
 //update profile 
 export const UpdateProfile = async (req: Request, res: Response, next: NextFunction) => {
     let user = await User.findById(req.user?._id);

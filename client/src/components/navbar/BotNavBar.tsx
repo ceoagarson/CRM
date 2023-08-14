@@ -32,7 +32,7 @@ export default function BotNavBar() {
                     {/* child stack1 */}
                     <Stack direction="row" spacing={1}>
                         <StyledLink to={paths.dashboard}>
-                            <AgarsonLogo />
+                            <AgarsonLogo width={35} height={35} title='Go To Dashboard' />
                         </StyledLink>
                         <RefreshWhatsappButton />
                     </Stack>

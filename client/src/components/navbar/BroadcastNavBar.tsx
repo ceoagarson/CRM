@@ -29,7 +29,7 @@ export default function BroadcastNavBar() {
                     {/* child stack1 */}
                     <Stack direction="column" gap={2} pl={1}>
                         <StyledLink to={paths.dashboard}>
-                            <AgarsonLogo />
+                            <AgarsonLogo width={35} height={35} title='Go To Dashboard' />
                         </StyledLink>
                     </Stack>
                     {/* child stack2 */}
