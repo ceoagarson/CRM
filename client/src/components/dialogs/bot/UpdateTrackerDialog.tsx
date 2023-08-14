@@ -91,7 +91,7 @@ function UpdateTrackerDialog({ tracker }: Props) {
                         label="Customer Name"
                         fullWidth
                         helperText={
-                            formik.touched.customer_name && formik.errors.customer_name ? formik.errors.customer_name : ""
+                            formik.touched.customer_name && formik.errors.customer_name ? formik.errors.customer_name : "this will be sent to customer in greeting"
                         }
                         {...formik.getFieldProps('customer_name')}
                     />

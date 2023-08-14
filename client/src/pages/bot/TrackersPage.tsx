@@ -10,7 +10,7 @@ import ToogleBotDialog from '../../components/dialogs/bot/ToogleBotDialog'
 import AcUnitIcon from '@mui/icons-material/AcUnit';
 import { Box, Button, IconButton, Stack, Table, TableBody, TableCell, TableHead, TableRow, Tooltip, Typography } from "@mui/material"
 import { color1, color2, headColor } from '../../utils/colors'
-import { AccountCircle,  Start, Stop } from '@mui/icons-material'
+import { AccountCircle, Start, Stop } from '@mui/icons-material'
 import { UserContext } from '../../contexts/userContext'
 
 
@@ -31,10 +31,12 @@ function TrackersPage() {
                 overflow: "scroll",
                 minHeight: '73.5vh'
             }}>
-                <Button size="small" sx={{ m: 1, gap: 1 }} variant="text" color="primary"
+                <Button sx={{ m: 1, gap: 1 }} variant="contained" color="primary"
                 >
-                    <AcUnitIcon />
-                    <span >Trackers</span>
+                    <Stack direction="row" alignItems="center" gap={1}>
+                        <AcUnitIcon />
+                        <span> Trackers</span>
+                    </Stack>
                 </Button>
                 <Table
                     stickyHeader

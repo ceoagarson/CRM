@@ -4,7 +4,7 @@ import "reactflow/dist/style.css";
 import { v4 as uuidv4 } from 'uuid';
 import { MenuNode, DefaultNode, StartNode, OutputNode, CommonNode } from "../../nodes/NodeTypes"
 import SaveNewFlow from "./SaveNewFlowDialog";
-import { Dialog } from "@mui/material";
+import { Box, Dialog, Stack } from "@mui/material";
 import { BotChoiceActions, ChoiceContext } from "../../../contexts/dialogContext";
 import { IFlow } from "../../../types/bot/flow.types";
 import UpdateNodeDialog from "./UpdateNodeDialog";
@@ -284,44 +284,58 @@ function CreateFlowDialog() {
                     <MiniMap pannable={true} nodeStrokeWidth={5}
                         zoomable={true} nodeColor="grey" />
                     <Controls position="top-left" />
-                    <Panel position="top-right" className="d-flex flex-column gap-1">
+                    <Panel position="top-right">
                         {/* @ts-ignore */}
-                        <div style={{ cursor: "pointer", maxWidth: 100, backgroundColor: '#ff8080' }} className="react-flow__node-default btn  p-1 fs-6 mt-1 text-light" onDragStart={(event: DragEvent) => onDragStart(event, 'DefaultNode')} draggable
+
+                        <Box sx={{
+                            cursor: "pointer", maxWidth: 100, backgroundColor: 'whitesmoke', border: 1, borderRadius: 1, p: 1, marginBottom: 1
+                        }}
+
+                            onDragStart={(event: DragEvent) => onDragStart(event, 'DefaultNode')} draggable
                             onDoubleClick={() => handleNewNodeONClick("DefaultNode")}
                         >
-                            <div className="d-flex gap-1 align-items-center justify-content-center"
+                            <Stack direction="row" alignItems="center" gap={1}
                             >
                                 <img width="20" height="20" src="https://img.icons8.com/arcade/64/box.png" alt="undo" />
                                 <span>Default</span>
-                            </div>
-                        </div>
-                        <div style={{ cursor: "pointer", maxWidth: 100, backgroundColor: '#32CD32' }} className="react-flow__node-default btn  p-1 fs-6 mt-1 text-light"
-                            //@ts-ignore
+                            </Stack>
+                        </Box>
+
+
+                        {/* @ts-ignore */}
+                        <Box sx={{
+                            cursor: "pointer", maxWidth: 100, backgroundColor: 'lightgreen', border: 1, borderRadius: 1, p: 1, marginBottom: 1
+                        }}
+
                             onDragStart={(event: DragEvent) => onDragStart(event, 'OutputNode')}
                             draggable
                             onDoubleClick={() => handleNewNodeONClick("OutputNode")}
                         >
-                            <div className="d-flex gap-1 align-items-center justify-content-center">
+                            <Stack direction="row" alignItems="center" gap={1}
+                            >
                                 <img width="20" height="20" src="https://img.icons8.com/arcade/64/box.png" alt="undo" />
                                 <span>Output</span>
-                            </div>
-                        </div>
-                        <div style={{ cursor: "pointer", maxWidth: 100, backgroundColor: '#72A0C1' }} className="react-flow__node-default btn p-1 fs-6 mt-1 text-light"
-                        >
-                            <div className="d-flex gap-1 align-items-center justify-content-center"
+                            </Stack>
+                        </Box>
+
+                        <Box sx={{
+                            cursor: "pointer", maxWidth: 100, backgroundColor: 'lightblue', border: 1, borderRadius: 1, p: 1, marginBottom: 1
+                        }}>
+                            <Stack direction="row" alignItems="center" gap={1}
                                 onClick={() => {
                                     setDisplaySaveModal(true)
                                 }}
                             >
                                 <img width="20" height="20" src="https://img.icons8.com/color/48/save--v1.png" alt="close" />
                                 <span >Save</span>
-                            </div>
-                        </div>
+                            </Stack>
+                        </Box>
 
 
-                        <div style={{ cursor: "pointer", maxWidth: 100, backgroundColor: '#72A0C1' }} className="react-flow__node-default btn p-1 fs-6 mt-1 text-light"
-                        >
-                            <div className="d-flex gap-1 align-items-center justify-content-center"
+                        <Box sx={{
+                            cursor: "pointer", maxWidth: 100, backgroundColor: 'whitesmoke', border: 1, borderRadius: 1, p: 1, marginBottom: 1
+                        }}>
+                            <Stack direction="row" alignItems="center" gap={1}
                                 onClick={() => {
                                     setChoice({ type: BotChoiceActions.close_bot })
                                     setFlow(undefined)
@@ -331,11 +345,13 @@ function CreateFlowDialog() {
                             >
                                 <img width="20" height="20" src="https://img.icons8.com/fluency/48/delete-sign.png" alt="close" />
                                 <span >Close</span>
-                            </div>
-                        </div>
-                        <div style={{ cursor: "pointer", maxWidth: 100, backgroundColor: '#72A0C1' }} className="react-flow__node-default btn p-1 fs-6 mt-1 text-light"
-                        >
-                            <div className="d-flex gap-1 align-items-center justify-content-center"
+                            </Stack>
+                        </Box>
+
+                        <Box sx={{
+                            cursor: "pointer", maxWidth: 100, backgroundColor: '#FFCCCB', border: 1, borderRadius: 1, p: 1, marginBottom: 1
+                        }}>
+                            <Stack direction="row" alignItems="center" gap={1}
                                 onClick={() => {
                                     setFlow(undefined)
                                     setNodes(initialNodes)
@@ -344,15 +360,15 @@ function CreateFlowDialog() {
                             >
                                 <img width="20" height="20" src="https://img.icons8.com/ios-filled/50/update-left-rotation.png" alt="close" />
                                 <span>Reset</span>
-                            </div>
-                        </div>
+                            </Stack>
+                        </Box>
                     </Panel>
                 </ReactFlow >
                 {displayNodeUpdateModal && selectedNode ? <UpdateNodeDialog updateNode={UpdateNode} selectedNode={selectedNode} setDisplayNodeUpdateModal={setDisplayNodeUpdateModal} displayNodeUpdateModal={displayNodeUpdateModal} /> : null}
                 {displaySaveModal && flow ? <SaveNewFlow setFlow={setFlow} flow={flow} setDisplaySaveModal={setDisplaySaveModal}
                 /> : null}
             </div>
-        </Dialog>
+        </Dialog >
     )
 }
 

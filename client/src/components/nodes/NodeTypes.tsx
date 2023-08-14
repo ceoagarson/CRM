@@ -19,7 +19,7 @@ export function CommonNode({ data }: { data: any }) {
     return (
         <>
             <CustomHandle type="target" position={Position.Top} isConnectable={2} />
-            <Stack sx={{ backgroundColor: "whitesmoke", border: 2, borderColor: 'black', borderRadius: 2, p: 1 }}>
+            <Stack sx={{ backgroundColor: "#FFCCCB", border: 2, borderColor: 'black', borderRadius: 2, p: 1 }}>
                 {data.media_value || "Common"}
             </Stack>
             <CustomHandle type="source" position={Position.Bottom} />

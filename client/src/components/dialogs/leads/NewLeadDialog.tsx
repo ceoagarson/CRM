@@ -9,22 +9,23 @@ import { IUser } from '../../../types/users/user.type';
 import { BackendError } from '../../../types';
 
 function NewLeadDialog() {
-  const [users,setUsers]=useState<IUser[]>([])
-  const {data,isSuccess}=useQuery<AxiosResponse<IUser[]>, BackendError>("users", GetUsers)
+  const [users, setUsers] = useState<IUser[]>([])
+  const { data, isSuccess } = useQuery<AxiosResponse<IUser[]>, BackendError>("users", GetUsers)
   const { choice, setChoice } = useContext(ChoiceContext)
-  useEffect(()=>{
-    if(isSuccess)
-    setUsers(data?.data)
-  }, [users, isSuccess,data])
+  useEffect(() => {
+    if (isSuccess)
+      setUsers(data?.data)
+  }, [users, isSuccess, data])
   return (
     <>
-      <Dialog  open={choice === LeadChoiceActions.create_lead ? true : false}
+      <Dialog open={choice === LeadChoiceActions.create_lead ? true : false}
+        onClose={() => setChoice({ type: LeadChoiceActions.close_lead })}
       >
         <DialogTitle textAlign={"center"}>New Lead</DialogTitle>
         <DialogContent>
-          <NewLeadForm users={users}/>
+          <NewLeadForm users={users} />
         </DialogContent>
-        <DialogActions sx={{p:2}}>
+        <DialogActions sx={{ p: 2 }}>
           <Button variant='outlined' fullWidth onClick={() => setChoice({ type: LeadChoiceActions.close_lead })}>Cancel</Button>
         </DialogActions>
       </Dialog>

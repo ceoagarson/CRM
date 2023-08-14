@@ -11,7 +11,7 @@ import UpdateFlowDialog from "../../components/dialogs/bot/UpdateFlowDialog"
 import CreateFlowDialog from "../../components/dialogs/bot/CreateFlowDialog"
 import DeleteFlowDialog from "../../components/dialogs/bot/DeleteFlowDialog"
 import { color1, color2, headColor } from "../../utils/colors"
-import { Delete, Edit } from "@mui/icons-material"
+import { AddOutlined, Delete, Edit } from "@mui/icons-material"
 
 
 export default function FlowsPage() {
@@ -33,11 +33,13 @@ export default function FlowsPage() {
         overflow: "scroll",
         minHeight: '73.5vh'
       }}>
-        <Button size="small" sx={{ m: 1 }} variant="outlined" color="primary"
+        <Button sx={{ m: 1 }} variant="outlined" color="warning"
           onClick={() => setChoice({ type: BotChoiceActions.create_flow })}
         >
-          <img width="20" height="20" src="https://img.icons8.com/plasticine/100/serial-tasks.png" alt="undo" />
-          <span >New Flow</span>
+          <Stack direction="row" alignItems="center" gap={1}>
+            <AddOutlined />
+            <span> New Flow</span>
+          </Stack>
         </Button>
         <Table
           stickyHeader
