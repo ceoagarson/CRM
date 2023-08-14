@@ -35,8 +35,6 @@ export function UserProvider(props: { children: JSX.Element }) {
 
   }, [localUser, user])
 
-  console.log(user)
-
   return (
     <UserContext.Provider value={{ user, setUser }}>
       {props.children}
