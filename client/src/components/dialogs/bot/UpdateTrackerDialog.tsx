@@ -5,7 +5,7 @@ import { AxiosResponse } from 'axios'
 import { useMutation } from 'react-query'
 import { BackendError } from '../../../types'
 import { UpdateCustomerName } from '../../../services/BotServices'
-import { Button, Dialog, DialogContent, DialogTitle, Snackbar, TextField } from '@mui/material'
+import { Button, Dialog, DialogContent,  Snackbar, TextField } from '@mui/material'
 import { BotChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { ITracker } from '../../../types/bot/flow.types'
 

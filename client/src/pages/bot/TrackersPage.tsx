@@ -10,7 +10,7 @@ import ToogleBotDialog from '../../components/dialogs/bot/ToogleBotDialog'
 import AcUnitIcon from '@mui/icons-material/AcUnit';
 import { Box, Button, IconButton, Stack, Table, TableBody, TableCell, TableHead, TableRow, Tooltip, Typography } from "@mui/material"
 import { color1, color2, headColor } from '../../utils/colors'
-import { AccountCircle, Edit, Start, Stop } from '@mui/icons-material'
+import { AccountCircle,  Start, Stop } from '@mui/icons-material'
 import { UserContext } from '../../contexts/userContext'
 
 
