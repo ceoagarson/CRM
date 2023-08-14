@@ -1,5 +1,12 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { IUser } from "../types/users/user.type";
+
+
+function getInitialState() {
+  const user = localStorage.getItem('user')
+  if (user)
+    return JSON.parse(user)
+}
 
 
 // usercontext
@@ -15,7 +22,21 @@ export const UserContext = createContext<Context>({
 
 // user provider
 export function UserProvider(props: { children: JSX.Element }) {
-  const [user, setUser] = useState<IUser>();
+  const [user, setUser] = useState<IUser | any>(getInitialState);
+  const [localUser, setLocalUser] = useState<IUser | any>()
+
+  useEffect(() => {
+    if (user) {
+      setLocalUser(user)
+    }
+    if (localUser) {
+      localStorage.setItem('user', JSON.stringify(user))
+    }
+
+  }, [localUser, user])
+
+  console.log(user)
+
   return (
     <UserContext.Provider value={{ user, setUser }}>
       {props.children}
