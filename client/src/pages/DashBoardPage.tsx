@@ -2,10 +2,10 @@ import { Box, Button, Card, CardActions, CardContent, Grid, Typography } from "@
 import { useNavigate } from "react-router-dom"
 import { paths } from "../Routes"
 import Person3Icon from '@mui/icons-material/Person3';
-import AirplayIcon from '@mui/icons-material/Airplay';
-import AdbIcon from '@mui/icons-material/Adb';
-import AddAlarmIcon from '@mui/icons-material/AddAlarm';
+import BackupIcon from '@mui/icons-material/Backup';
+import Diversity3Icon from '@mui/icons-material/Diversity3';
 import CampaignIcon from '@mui/icons-material/Campaign';
+import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
 
 function DashBoardPage() {
   const goto = useNavigate()
@@ -13,77 +13,92 @@ function DashBoardPage() {
     <>
       <Box sx={{ bgcolor: "#0039a6", m: 0, p: 0 }}>
         <Grid container >
-          <Grid item xs={12} md={3} sx={{ p: 1 }}>
-            <Card sx={{ bgcolor: 'whitesmoke', boxShadow: 4, border: 10, borderRadius: 3, borderColor: 'whitesmoke', p: 1 }}>
-              <CardContent sx={{ display: 'flex', direction: "row", alignItems: "center", gap: 1,ml:-1 }}>
-                <Person3Icon sx={{ color: 'darkgreen' }} />
-                <Typography variant="button" sx={{ fontSize: 25 }} component="div">
+          <Grid item xs={12} md={4} sx={{ p: 1 }}>
+            <Card sx={{ bgcolor: 'whitesmoke', boxShadow: 4, border: 10, borderRadius: 3, borderColor: 'whitesmoke', p: 2 }}>
+              <CardContent sx={{ display: 'flex', direction: "row", alignItems: "center", gap: 2 }}>
+                <Person3Icon sx={{ color: 'darkgreen', height: 50, width: 50 }} />
+                <Typography variant="button" sx={{ color: 'darkgreen', fontSize: 16 }} component="div">
                   Users
                 </Typography>
               </CardContent>
-              <CardActions sx={{gap:2}}>
-                <Button variant="contained" color="primary" size="small" onClick={() => goto(paths.users)}>Explore</Button>
-                <Button variant="outlined" color="primary" size="small"> Reports</Button>
+              <CardActions>
+                <Button variant="contained" color="success" size="small" onClick={() => goto(paths.users)}>View All</Button>
+                <Button variant="contained" color="success" size="small">View Reports</Button>
               </CardActions>
             </Card>
           </Grid>
-          <Grid item xs={12} md={3} sx={{ p: 1 }}>
-            <Card sx={{ bgcolor: 'whitesmoke', boxShadow: 4, border: 10, borderRadius: 3, borderColor: 'whitesmoke', p: 1 }}>
-              <CardContent sx={{ display: 'flex', direction: "row", alignItems: "center", gap: 1,ml:-1 }}>
-                <AirplayIcon sx={{ color: 'darkgreen' }} />
-                <Typography variant="button" sx={{ fontSize: 25 }} component="div">
+          <Grid item xs={12} md={4} sx={{ p: 1 }}>
+            <Card sx={{ bgcolor: 'whitesmoke', boxShadow: 4, border: 10, borderRadius: 3, borderColor: 'whitesmoke', p: 2 }}>
+              <CardContent sx={{ display: 'flex', direction: "row", alignItems: "center", gap: 2 }}>
+                <Diversity3Icon sx={{ color: 'darkgreen', height: 50, width: 50 }} />
+                <Typography variant="button" sx={{ color: 'darkgreen', fontSize: 16 }} component="div">
                   CRM
                 </Typography>
               </CardContent>
-              <CardActions sx={{gap:2}}>
-                <Button variant="contained" color="primary" size="small" onClick={() => goto(paths.crm)}>Explore</Button>
-                <Button variant="outlined" color="primary" size="small"> Reports</Button>
+              <CardActions>
+                <Button variant="contained" color="success" size="small" onClick={() => goto(paths.crm)}>View All</Button>
+                <Button variant="contained" color="success" size="small">View Reports</Button>
               </CardActions>
             </Card>
           </Grid>
-          <Grid item xs={12} md={3} sx={{ p: 1 }}>
-            <Card sx={{ bgcolor: 'whitesmoke', boxShadow: 4, border: 10, borderRadius: 3, borderColor: 'whitesmoke', p: 1 }}>
-              <CardContent sx={{ display: 'flex', direction: "row", alignItems: "center", gap: 1,ml:-1 }}>
-                <AdbIcon sx={{ color: 'darkgreen' }} />
-                <Typography variant="button" sx={{ fontSize: 25 }} component="div">
-                  Whatsapp BOT
+          <Grid item xs={12} md={4} sx={{ p: 1 }}>
+            <Card sx={{ bgcolor: 'whitesmoke', boxShadow: 4, border: 10, borderRadius: 3, borderColor: 'whitesmoke', p: 2 }}>
+              <CardContent sx={{ display: 'flex', direction: "row", alignItems: "center", gap: 2 }}>
+                <img width="50" height="50" src="https://img.icons8.com/3d-fluency/94/whatsapp.png" alt="whatsapp" />
+                <Typography variant="button" sx={{ color: 'darkgreen', fontSize: 16 }} component="div">
+                  WA BOT
                 </Typography>
               </CardContent>
-              <CardActions sx={{gap:2}}>
-                <Button variant="contained" color="primary" size="small" onClick={() => goto(paths.bot)}>Explore</Button>
-                <Button variant="outlined" color="primary" size="small"> Reports</Button>
+              <CardActions>
+                <Button variant="contained" color="success" size="small" onClick={() => goto(paths.bot)}>View All</Button>
+                <Button variant="contained" color="success" size="small">View Reports</Button>
               </CardActions>
             </Card>
           </Grid>
-          <Grid item xs={12} md={3} sx={{ p: 1 }}>
-            <Card sx={{ bgcolor: 'whitesmoke', boxShadow: 4, border: 10, borderRadius: 3, borderColor: 'whitesmoke', p: 1 }}>
-              <CardContent sx={{ display: 'flex', direction: "row", alignItems: "center", gap: 1,ml:-1 }}>
-                <CampaignIcon sx={{ color: 'darkgreen' }} />
-                <Typography variant="button" sx={{ fontSize: 25 }} component="div">
+          <Grid item xs={12} md={4} sx={{ p: 1 }}>
+            <Card sx={{ bgcolor: 'whitesmoke', boxShadow: 4, border: 10, borderRadius: 3, borderColor: 'whitesmoke', p: 2 }}>
+              <CardContent sx={{ display: 'flex', direction: "row", alignItems: "center", gap: 2 }}>
+                <CampaignIcon sx={{ color: 'darkgreen', height: 50, width: 50 }} />
+                <Typography variant="button" sx={{ color: 'darkgreen', fontSize: 16 }} component="div">
                   Broadcast
                 </Typography>
               </CardContent>
-              <CardActions sx={{gap:2}}>
-                <Button variant="contained" color="primary" size="small" onClick={() => goto(paths.broadcast)}>Explore</Button>
-                <Button variant="outlined" color="primary" size="small"> Reports</Button>
+              <CardActions>
+                <Button variant="contained" color="success" size="small" onClick={() => goto(paths.broadcast)}>View All</Button>
+                <Button variant="contained" color="success" size="small">View Reports</Button>
               </CardActions>
             </Card>
           </Grid>
-          <Grid item xs={12} md={3} sx={{ p: 1 }}>
-            <Card sx={{ bgcolor: 'whitesmoke', boxShadow: 4, border: 10, borderRadius: 3, borderColor: 'whitesmoke', p: 1 }}>
-              <CardContent sx={{ display: 'flex', direction: "row", alignItems: "center", gap: 1,ml:-1 }}>
-                <AddAlarmIcon sx={{ color: 'darkgreen' }} />
-                <Typography variant="button" sx={{ fontSize: 25 }} component="div">
+          <Grid item xs={12} md={4} sx={{ p: 1 }}>
+            <Card sx={{ bgcolor: 'whitesmoke', boxShadow: 4, border: 10, borderRadius: 3, borderColor: 'whitesmoke', p: 2 }}>
+              <CardContent sx={{ display: 'flex', direction: "row", alignItems: "center", gap: 2 }}>
+                <AccessTimeFilledIcon sx={{ color: 'darkgreen', height: 50, width: 50 }} />
+                <Typography variant="button" sx={{ color: 'darkgreen', fontSize: 16 }} component="div">
                   Scheduler
                 </Typography>
               </CardContent>
               <CardActions >
-                <Button variant="contained" color="primary" size="small" onClick={() => goto(paths.scheduler)}>Explore</Button>
-                <Button variant="outlined" color="primary" size="small"> Reports</Button>
+                <Button variant="contained" color="success" size="small" onClick={() => goto(paths.scheduler)}>View All</Button>
+                <Button variant="contained" color="success" size="small">View Reports</Button>
+              </CardActions>
+            </Card>
+          </Grid>
+          <Grid item xs={12} md={4} sx={{ p: 1 }}>
+            <Card sx={{ bgcolor: 'whitesmoke', boxShadow: 4, border: 10, borderRadius: 3, borderColor: 'whitesmoke', p: 2 }}>
+              <CardContent sx={{ display: 'flex', direction: "row", alignItems: "center", gap: 2 }}>
+                <BackupIcon sx={{ color: 'darkgreen', height: 50, width: 50 }} />
+                <Typography variant="button" sx={{ color: 'darkgreen', fontSize: 16 }} component="div">
+                  Backup Database
+                </Typography>
+              </CardContent>
+              <CardActions >
+                <Button variant="contained" color="success" size="small" onClick={() => goto(paths.scheduler)}>View All</Button>
+                <Button variant="contained" color="success" size="small">Manage</Button>
               </CardActions>
             </Card>
           </Grid>
         </Grid>
+
       </Box>
     </>
   )
