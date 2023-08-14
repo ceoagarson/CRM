@@ -4,7 +4,7 @@ import { AxiosResponse } from 'axios'
 import { BackendError } from '../../../types'
 import { useMutation } from 'react-query'
 import { BotChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
-import { Button, Dialog, Snackbar } from '@mui/material'
+import { Button, Dialog, DialogContent, DialogTitle, Snackbar, Stack } from '@mui/material'
 import { IFlow } from '../../../types/bot/flow.types'
 
 function DeleteFlowDialog({ flow }: { flow: IFlow }) {
@@ -16,8 +16,9 @@ function DeleteFlowDialog({ flow }: { flow: IFlow }) {
         >(DestroyFlow)
 
     return (
-        <Dialog fullScreen open={choice === BotChoiceActions.delete_flow ? true : false}
+        <Dialog open={choice === BotChoiceActions.delete_flow ? true : false}
             onClose={() => setChoice({ type: BotChoiceActions.close_bot })}
+            sx={{ padding: 2 }}
         >
 
             {
@@ -50,20 +51,20 @@ function DeleteFlowDialog({ flow }: { flow: IFlow }) {
 
                 ) : null
             }
-            <div className="modal-header">
-                <h5 className='modal-title'>
-                    {`This will permanently delete this ${flow.flow_name}`}
-                </h5>
-            </div>
-            <div className='p-2 d-flex justify-content-end gap-2'>
-                <Button onClick={() => setChoice({ type: BotChoiceActions.close_bot })}>Cancel</Button>
-                <Button variant="outlined" color="error" onClick={() => {
-                    if (flow && flow._id) mutate(flow._id)
-                    setChoice({ type: BotChoiceActions.close_bot })
-                }
-                }
-                    disabled={isLoading}>Delete</Button>
-            </div>
+            <DialogTitle>
+                {`This will permanently delete this ${flow.flow_name}`}
+            </DialogTitle>
+            <DialogContent>
+                <Stack direction="row" gap={1} justifyContent={"center"}>
+                    <Button variant='contained' onClick={() => setChoice({ type: BotChoiceActions.close_bot })}>Cancel</Button>
+                    <Button variant="outlined" color="error" onClick={() => {
+                        if (flow && flow._id) mutate(flow._id)
+                        setChoice({ type: BotChoiceActions.close_bot })
+                    }
+                    }
+                        disabled={isLoading}>Delete</Button>
+                </Stack>
+            </DialogContent>
         </Dialog>
     )
 }

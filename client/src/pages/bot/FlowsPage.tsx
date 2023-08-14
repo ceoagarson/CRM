@@ -6,10 +6,12 @@ import { useEffect, useContext, useState } from "react"
 import { IFlow } from "../../types/bot/flow.types"
 import { BotChoiceActions, ChoiceContext } from "../../contexts/dialogContext"
 import { UserContext } from "../../contexts/userContext"
-import { Button } from "@mui/material"
+import { Box, Button, IconButton, Stack, Table, TableBody, TableCell, TableHead, TableRow, Tooltip, Typography } from "@mui/material"
 import UpdateFlowDialog from "../../components/dialogs/bot/UpdateFlowDialog"
 import CreateFlowDialog from "../../components/dialogs/bot/CreateFlowDialog"
 import DeleteFlowDialog from "../../components/dialogs/bot/DeleteFlowDialog"
+import { color1, color2, headColor } from "../../utils/colors"
+import { Delete, Edit } from "@mui/icons-material"
 
 
 export default function FlowsPage() {
@@ -27,68 +29,189 @@ export default function FlowsPage() {
 
   return (
     <>
-
-      <div className="d-flex-column gap-2 p-2 pt-4 overflow-auto">
-        <div style={{ cursor: "pointer" }} className="border-danger btn m-2 rounded  fs-6 mt-1"
+      <Box sx={{
+        overflow: "scroll",
+        minHeight: '73.5vh'
+      }}>
+        <Button size="small" sx={{ m: 1 }} variant="outlined" color="primary"
+          onClick={() => setChoice({ type: BotChoiceActions.create_flow })}
         >
-          <div className="d-flex gap-1 align-items-center justify-content-center"
-            onClick={() => setChoice({ type: BotChoiceActions.create_flow })}
+          <img width="20" height="20" src="https://img.icons8.com/plasticine/100/serial-tasks.png" alt="undo" />
+          <span >New Flow</span>
+        </Button>
+        <Table
+          stickyHeader
+          sx={{ minWidth: "1400px" }}
+          size="small">
+          <TableHead
           >
-            <img width="30" height="30" src="https://img.icons8.com/plasticine/100/serial-tasks.png" alt="undo" />
-            <span >New Flow</span>
-          </div>
-        </div>
-        <table className="table">
-          <thead >
-            <tr>
-              <th style={{ minWidth: '150px' }} scope="col">Index</th>
-              <th style={{ minWidth: '150px' }} scope="col">Status</th>
-              <th style={{ minWidth: '150px' }} scope="col">Connected Phone</th>
-              <th style={{ minWidth: '150px' }} scope="col">Flow Name</th>
-              <th style={{ minWidth: '150px' }} scope="col">Triggers</th>
-              <th style={{ minWidth: '150px' }} scope="col">Last Updated</th>
-              <th style={{ minWidth: '150px' }} scope="col">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
+            <TableRow>
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Actions
+                </Stack>
+              </TableCell>
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Index
+                </Stack>
+              </TableCell>
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Status
+                </Stack>
+              </TableCell>
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Connected Phone
+                </Stack>
+              </TableCell>
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Triggers
+                </Stack>
+              </TableCell>
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Flow Name
+                </Stack>
+              </TableCell>
+
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Updated By
+                </Stack>
+              </TableCell>
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Last Updated
+                </Stack>
+              </TableCell>
+
+            </TableRow>
+          </TableHead>
+          <TableBody >
             {
-              flows && flows.length > 0 ?
-                <>
-                  {flows.map((flow, index) => {
-                    return (
-                      <tr key={index}>
-                        <th scope="row">{index + 1}</th>
-                        <td>{user?.connected_number ? "active" : "disabled"}</td>
-                        <td>{String(user?.connected_number).replace("@c.us", "")}</td>
-                        <td>{flow.flow_name}</td>
-                        <td>{flow.trigger_keywords}</td>
-                        <td>{flow.updated_at && new Date(flow.updated_at).toLocaleString()}</td>
-                        <td className="d-flex gap-1">
-                          <Button size="small" variant="contained" onClick={() => {
-                            setFlow(flow)
-                            setChoice({ type: BotChoiceActions.update_flow })
-                          }}>Edit</Button>
-                          <Button
-                            size="small"
-                            variant="outlined" color="error"
-                            onClick={() => {
-                              setFlow(flow)
-                              setChoice({ type: BotChoiceActions.delete_flow })
-                            }}
-                          >Delete</Button>
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </>
-                : null
-            }
-          </tbody>
-        </table>
-        {flow ? <UpdateFlowDialog selectedFlow={flow} /> : null}
-        <CreateFlowDialog />
-        {flow ? <DeleteFlowDialog flow={flow} /> : null}
-      </div>
+              flows && flows.length > 0 && flows.map((flow, index) => {
+                return (
+                  <TableRow
+                    key={index}
+                    sx={{
+                      '&:nth-of-type(odd)': { bgcolor: color1 },
+                      '&:nth-of-type(even)': { bgcolor: color2 },
+                      '&:hover': { bgcolor: 'rgba(0,0,0,0.1)', cursor: 'pointer' }
+                    }}>
+
+                    {/* actions */}
+                    <TableCell>
+                      {
+                        user?.is_admin ?
+                          <>
+                            <Tooltip title="Edit">
+                              <IconButton color="error"
+                                onClick={() => {
+                                  setFlow(flow)
+                                  setChoice({ type: BotChoiceActions.update_flow })
+                                }}
+                              >
+                                <Edit />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Delete">
+                              <IconButton color="warning"
+                                onClick={() => {
+                                  setFlow(flow)
+                                  setChoice({ type: BotChoiceActions.delete_flow })
+                                }}
+                              >
+                                <Delete />
+                              </IconButton>
+                            </Tooltip>
+
+                          </>
+                          :
+                          null
+                      }
+                    </TableCell>
+                    <TableCell>
+                      <Typography sx={{ textTransform: "capitalize" }}>{index + 1}</Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography sx={{ textTransform: "capitalize" }}>{user?.connected_number ? "active" : "disabled"}</Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography sx={{ textTransform: "capitalize" }}>{user?.connected_number ? String(user?.connected_number).replace("@c.us", "") : 'not exists'}</Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography sx={{ textTransform: "capitalize" }}>{flow.trigger_keywords.slice(0, 50)}</Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography sx={{ textTransform: "capitalize" }}>{flow.flow_name}</Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography sx={{ textTransform: "capitalize" }}>{flow.updated_by?.username}</Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography sx={{ textTransform: "capitalize" }}>{flow.updated_at && new Date(flow.updated_at).toLocaleString()}</Typography>
+                    </TableCell>
+
+                  </TableRow>
+                )
+              })}
+          </TableBody>
+        </Table>
+      </Box>
+      {flow ? <UpdateFlowDialog selectedFlow={flow} /> : null}
+      <CreateFlowDialog />
+      {flow ? <DeleteFlowDialog flow={flow} /> : null}
     </>
 
   )

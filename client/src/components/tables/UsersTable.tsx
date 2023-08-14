@@ -34,7 +34,7 @@ function UsersTable({ user, selectAll, users,  setSelectAll, setUser, selectedUs
         <>
             <Box sx={{
                 overflow: "scroll",
-                height: '73.5vh'
+                minHeight: '73.5vh'
             }}>
                 <Table
                     stickyHeader

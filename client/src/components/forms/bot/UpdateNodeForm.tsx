@@ -1,7 +1,7 @@
 import { useFormik } from 'formik';
 import * as Yup from "yup"
 import { Node } from 'reactflow';
-import { Button } from '@mui/material';
+import { Button, DialogTitle, Stack, TextField } from '@mui/material';
 
 type Props = {
     selectedNode: Node,
@@ -33,27 +33,67 @@ function UpdateNodeForm({ updateNode, selectedNode, setDisplayNodeUpdateModal }:
         },
     });
     return (
-        <form onSubmit={formik.handleSubmit} className='shadow w-100 p-3 bg-body-tertiary border border-1 rounded bg-light align-self-center'>
-            <h1 className="d-block fs-4 text-center">Update Node</h1>
-
-
-            <input placeholder="Message or Media Url"
-                {...formik.getFieldProps('media_value')}
-            />
-            <p>{formik.touched.media_value && formik.errors.media_value ? formik.errors.media_value : ""}</p>
-
-            <input placeholder="Message or Media Url"
-                {...formik.getFieldProps('index')}
-            />
-            <p>{formik.touched.index && formik.errors.index ? formik.errors.index : ""}</p>
-
-            <select  {...formik.getFieldProps('media_type')}>
-                <option value="message">Message</option>
-                <option value="media">Media</option>
-            </select>
-            <p className='pl-2 text-muted'>{formik.touched.media_type && formik.errors.media_type ? formik.errors.media_type : "videos,gifts and stickers not supported"}</p>
-            <Button variant="contained" className='w-100' type="submit"
-            >Update</Button>
+        <form onSubmit={formik.handleSubmit} >
+            <DialogTitle>
+                Update Node
+            </DialogTitle>
+            <Stack gap={2}>
+                < TextField
+                    variant='standard'
+                    focused
+                    required
+                    error={
+                        formik.touched.media_value && formik.errors.media_value ? true : false
+                    }
+                    id="media_value"
+                    label="Message"
+                    placeholder='Message or Media Url'
+                    fullWidth
+                    helperText={
+                        formik.touched.media_value && formik.errors.media_value ? formik.errors.media_value : ""
+                    }
+                    {...formik.getFieldProps('media_value')}
+                />
+                < TextField
+                    variant='standard'
+                    focused
+                    required
+                    error={
+                        formik.touched.index && formik.errors.index ? true : false
+                    }
+                    id="index"
+                    label="Index"
+                    placeholder='Message or Media Url'
+                    fullWidth
+                    helperText={
+                        formik.touched.index && formik.errors.index ? formik.errors.index : ""
+                    }
+                    {...formik.getFieldProps('index')}
+                />
+                < TextField
+                    variant='standard'
+                    select
+                    SelectProps={{
+                        native: true
+                    }}
+                    focused
+                    error={
+                        formik.touched.media_type && formik.errors.media_type ? true : false
+                    }
+                    id="media_type"
+                    label="Media Type"
+                    fullWidth
+                    helperText={
+                        formik.touched.media_type && formik.errors.media_type ? formik.errors.media_type : "videos,gifts and stickers not supported"
+                    }
+                    {...formik.getFieldProps('media_type')}
+                >
+                    <option value="message">Message</option>
+                    <option value="media">Media</option>
+                </TextField>
+                <Button variant="contained" fullWidth type="submit"
+                >Update</Button>
+            </Stack>
         </form>
     )
 }

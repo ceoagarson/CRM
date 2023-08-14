@@ -4,7 +4,7 @@ import { AxiosResponse } from 'axios'
 import { BackendError } from '../../../types'
 import { useMutation } from 'react-query'
 import { BotChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
-import { Button, Dialog, Snackbar } from '@mui/material'
+import { Button, Dialog, DialogContent, DialogTitle, Snackbar, Stack } from '@mui/material'
 import { ITracker } from '../../../types/bot/flow.types'
 
 function ToogleBotDialog({ tracker }: { tracker: ITracker }) {
@@ -17,7 +17,7 @@ function ToogleBotDialog({ tracker }: { tracker: ITracker }) {
 
     return (
 
-        <Dialog fullScreen open={choice === BotChoiceActions.toogle_bot_status ? true : false}
+        <Dialog  open={choice === BotChoiceActions.toogle_bot_status ? true : false}
             onClose={() => setChoice({ type: BotChoiceActions.close_bot })}
         >
             {
@@ -47,23 +47,23 @@ function ToogleBotDialog({ tracker }: { tracker: ITracker }) {
                 ) : null
             }
 
-
-            <div className="modal-header">
-                <h5 className='modal-title'>
-                    {`This will change bot status for this ${tracker.phone_number}`}
-                </h5>
-            </div>
-            <div className='p-2 d-flex justify-content-end gap-2'>
-                <Button onClick={() => setChoice({ type: BotChoiceActions.close_bot })}>Cancel</Button>
-                <Button variant="outlined" color="error" onClick={() => {
-                    if (tracker && tracker._id) mutate({
-                        body: { phone_number: tracker.phone_number, bot_number: tracker.bot_number }
-                    })
-                    setChoice({ type: BotChoiceActions.close_bot })
-                }
-                }
-                    disabled={isLoading}>{tracker.is_active ? "stop" : "start"}</Button>
-            </div>
+            <DialogTitle>
+                {`This will change bot status for this ${tracker.phone_number}`}
+            </DialogTitle>
+            <DialogContent>
+                <Stack direction="row" gap={1} justifyContent={"center"}>
+                    <Button variant='contained' onClick={() => setChoice({ type: BotChoiceActions.close_bot })}>Cancel</Button>
+                    <Button variant="outlined" color="error" onClick={() => {
+                        if (tracker && tracker._id) mutate({
+                            body: { phone_number: tracker.phone_number, bot_number: tracker.bot_number }
+                        })
+                        setChoice({ type: BotChoiceActions.close_bot })
+                    }
+                    }
+                        disabled={isLoading}>{tracker.is_active ? "stop" : "start"}</Button>
+                </Stack>
+            </DialogContent>
+            
         </Dialog>
     )
 }

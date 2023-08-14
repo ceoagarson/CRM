@@ -1,5 +1,5 @@
 import { Node } from "reactflow"
-import { Button, Dialog } from "@mui/material"
+import { Button, Dialog, DialogContent } from "@mui/material"
 import UpdateNodeForm from "../../forms/bot/UpdateNodeForm"
 
 type Props = {
@@ -10,16 +10,19 @@ type Props = {
 }
 function UpdateNodeDialog({ updateNode, selectedNode, setDisplayNodeUpdateModal, displayNodeUpdateModal }: Props) {
     return (
-        <Dialog fullScreen open={displayNodeUpdateModal ? true : false}
+        <Dialog open={displayNodeUpdateModal ? true : false}
             onClose={() => setDisplayNodeUpdateModal(false)}
         >
-            {selectedNode ?
-                <UpdateNodeForm selectedNode={selectedNode} updateNode={updateNode} setDisplayNodeUpdateModal={setDisplayNodeUpdateModal} /> : null}
+            <DialogContent>
+                {selectedNode ?
+                    <UpdateNodeForm selectedNode={selectedNode} updateNode={updateNode} setDisplayNodeUpdateModal={setDisplayNodeUpdateModal} /> : null}
+            </DialogContent>
 
             <Button variant="outlined" onClick={() => {
                 setDisplayNodeUpdateModal(false)
             }
             }>Close</Button>
+
         </Dialog>
     )
 }

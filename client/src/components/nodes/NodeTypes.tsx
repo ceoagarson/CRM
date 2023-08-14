@@ -1,40 +1,16 @@
 import { Position } from "reactflow"
 import CustomHandle from "./CustomHandle"
-import { styled } from "styled-components"
+import { darkColor } from "../../utils/colors"
+import { Stack, Typography } from "@mui/material"
 
-
-const MenuDiv = styled.div`
-background-color:#0040ff;
-font-size:10px;
-`
-const StartDiv = styled.div`
-background-color:#c72246;
-font-size:10px;
-
-`
-const DefaultDiv = styled.div`
-background-color:#5e635f;
-font-size:10px;
-    `
-const CommonDiv = styled.div`
-background-color:#ff8080;
-font-size:10px;
-    `
-const OutPutDiv = styled.div`
-background-color:#32CD32;
-font-size:10px;
-max-width:200px;
-overflow:hidden;
-
-`
 
 export function StartNode({ data }: { data: any }) {
     return (
         <>
-            <StartDiv className="p-1 rounded-5 text-light  white" >
+            <Stack sx={{ backgroundColor: darkColor, border: '5', borderColor: 'white', color: 'white', borderRadius: 2, p: 1 }}>
                 {data.media_value || "type trigger keywords"}
-            </StartDiv>
-            <CustomHandle className="bg-secondary border border-2 white" type="source" position={Position.Bottom} isConnectable={1} />
+            </Stack>
+            <CustomHandle type="source" position={Position.Bottom} isConnectable={1} />
         </>
     )
 }
@@ -42,13 +18,11 @@ export function StartNode({ data }: { data: any }) {
 export function CommonNode({ data }: { data: any }) {
     return (
         <>
-            <CustomHandle className=" bg-info border border-2 white" type="target" position={Position.Top} isConnectable={2} />
-            <CommonDiv className="d-flex gap-1 p-1 rounded ">
-                <div className="rounded text-light ">
-                    {data.media_value || "Common"}
-                </div>
-            </CommonDiv>
-            <CustomHandle className=" bg-secondary border border-2 rounded white" type="source" position={Position.Bottom} />
+            <CustomHandle type="target" position={Position.Top} isConnectable={2} />
+            <Stack sx={{ backgroundColor: "whitesmoke", border: 2, borderColor: 'black', borderRadius: 2, p: 1 }}>
+                {data.media_value || "Common"}
+            </Stack>
+            <CustomHandle type="source" position={Position.Bottom} />
         </>
     )
 }
@@ -56,13 +30,11 @@ export function CommonNode({ data }: { data: any }) {
 export function MenuNode({ data }: { data: any }) {
     return (
         <>
-            <CustomHandle className=" bg-warning border border-2 white rounded" type="target" position={Position.Top} />
-            <MenuDiv className="react-flow-menu-node d-flex gap-1 p-1 rounded">
-                <div className="rounded text-light ">
-                    {data.media_value || "Menu"}
-                </div>
-            </MenuDiv>
-            <CustomHandle className="bg-secondary border border-2 white" type="source" position={Position.Bottom} />
+            <CustomHandle type="target" position={Position.Top} />
+            <Stack sx={{ backgroundColor: "lightblue", border: 2, borderColor: 'black', borderRadius: 2, p: 1 }}>
+                {data.media_value || "Menu"}
+            </Stack >
+            <CustomHandle type="source" position={Position.Bottom} />
         </>
     )
 }
@@ -70,21 +42,23 @@ export function MenuNode({ data }: { data: any }) {
 export function DefaultNode({ data }: { data: any }) {
     return (
         <>
-            <CustomHandle className=" bg-info border border-2 white" type="target" position={Position.Top} isConnectable={2} />
-            <DefaultDiv className="d-flex gap-1 p-1 rounded ">
-                {
-                    data.index ?
-                        <div style={{ width: 15, height: 15, borderRadius: '50% ' }} className="d-flex align-items-center  bg-light  text-dark p-1">{data.index}
-                        </div> : null
+            <CustomHandle type="target" position={Position.Top} isConnectable={2} />
+            <Stack sx={{ backgroundColor: "whitesmoke", border: 2, borderColor: 'black', borderRadius: 2, p: 1 }}>
+                <Stack direction="row" justifyContent={"center"} alignItems={"center"} spacing={1}>
+                    {
+                        data.index ?
+                            <Typography variant="button" sx={{ borderRadius: 5, p: 1, backgroundColor: 'lightskyblue' }}>
+                                {data.index}
+                            </Typography> : null
 
-                }
+                    }
+                    <Typography variant="subtitle1">
+                        {data.media_value || "Default"}
+                    </Typography>
+                </Stack>
 
-
-                <div className="rounded text-light ">
-                    {data.media_value || "Default"}
-                </div>
-            </DefaultDiv>
-            <CustomHandle className=" bg-secondary border border-2 rounded white" type="source" position={Position.Bottom} />
+            </Stack>
+            <CustomHandle type="source" position={Position.Bottom} />
         </>
     )
 }
@@ -93,17 +67,21 @@ export function OutputNode({ data }: { data: any }) {
     return (
         <>
             <CustomHandle className=" bg-info border border-2 white" type="target" position={Position.Top} isConnectable={1} />
-            <OutPutDiv className="d-flex gap-1 p-1 rounded text-light ">
-                {
-                    data.index ?
-                        <div style={{ width: 15, height: 15, borderRadius: '50% ' }} className="d-flex align-items-center  bg-light  text-dark p-1">{data.index}
-                        </div> : null
+            <Stack sx={{ backgroundColor: "lightgreen", border: 2, borderColor: 'black', borderRadius: 2, p: 1 }}>
+                <Stack direction="row" justifyContent={"center"} alignItems={"center"} spacing={1}>
+                    {
+                        data.index ?
+                            <Typography variant="button" sx={{ borderRadius: 5, p: 1, backgroundColor: 'whitesmoke' }}>
+                                {data.index}
+                            </Typography> : null
 
-                }
-                <div className="rounded text-light ">
-                    {data.media_type === "media" ? "media" : data.media_value}
-                </div>
-            </OutPutDiv>
+                    }
+                    <Typography variant="subtitle1">
+                        {data.media_value || "Output"}
+                    </Typography>
+                </Stack>
+
+            </Stack>
         </>
     )
 }

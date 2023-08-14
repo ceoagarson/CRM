@@ -63,16 +63,24 @@ export const UpdateFlow = async (req: Request, res: Response, next: NextFunction
 
 
 export const GetFlows = async (req: Request, res: Response, next: NextFunction) => {
-    let flows = await Flow.find({ created_by: req.user }).sort('-updated_at')
+    let flows = await Flow.find({ created_by: req.user }).sort('-updated_at').populate('created_by').populate('updated_by')
     return res.status(200).json(flows)
 }
 
 export const DestroyFlow = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     let flow = await Flow.findById(id)
+    let menuTrackers = await MenuTracker.find({ flow: flow })
+    let keywordTrackers = await KeywordTracker.find({ flow: flow })
     if (!flow)
         return res.status(404).json({ message: "flow not exists" })
-    await Flow.findByIdAndDelete(id)
+    await Flow.findByIdAndDelete(flow._id)
+    menuTrackers.forEach(async (tracker) => {
+        await MenuTracker.findByIdAndDelete(tracker._id)
+    })
+    keywordTrackers.forEach(async (tracker) => {
+        await KeywordTracker.findByIdAndDelete(tracker._id)
+    })
     return res.status(200).json({ message: "deleted flow" })
 }
 

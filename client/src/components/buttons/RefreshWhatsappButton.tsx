@@ -13,14 +13,13 @@ function RefreshWhatsappButton() {
                 setChoice({ type: BotChoiceActions.refresh_whatsapp })
             }}>
                 {user && user.is_whatsapp_active ?
-                    <img width="40F" height="40F" src="https://img.icons8.com/3d-fluency/94/whatsapp.png" alt="whatsapp" />
+                    <img width="30" height="30" src="https://img.icons8.com/3d-fluency/94/whatsapp.png" alt="whatsapp" />
 
                     :
                     <img height="30" width="30" className="m-1" alt="icon" src="https://img.icons8.com/external-tal-revivo-tritone-tal-revivo/64/external-whatsapp-messenger-cross-platform-mobile-devices-messaging-application-logo-tritone-tal-revivo.png" />
                 }
             </Button>
             <RefreshWhatsappDialog />
-
         </>
 
     )

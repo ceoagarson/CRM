@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 import { socket } from '../../../socket'
 import QRCode from 'react-qr-code'
-import { Box, Button, Dialog } from '@mui/material'
+import { Box, Button, Dialog, Typography } from '@mui/material'
 import { BotChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { UserContext } from '../../../contexts/userContext'
 
@@ -54,10 +54,10 @@ function RefreshWhatsappDialog() {
             onClose={() => setChoice({ type: BotChoiceActions.close_bot })}
         >
 
-            <Box className='p-4'>
+            <Box sx={{ p: 2 }}>
                 {!loading ?
                     <>
-                        <Button size="large" className='w-100'
+                        <Button fullWidth variant="contained" size="large"
                             disabled={Boolean(loading)}
                             onClick={() => {
                                 if (user) {
@@ -67,9 +67,19 @@ function RefreshWhatsappDialog() {
                             }}>Check Whatsapp Status
                         </Button>
 
-                        <Box className='p-4'>
+                        <Box sx={{ p: 2 }}>
                             <>
-                                {user && user.is_whatsapp_active ? <p className='p-2'>Congrats {String(user?.connected_number).replace("@c.us", "")} Connected,Click Above Button to confirm</p> : null}
+                                {user && user.is_whatsapp_active ?
+                                    <>
+                                        <Typography>
+                                            Congrats {String(user?.connected_number).replace("@c.us", "")} Connected
+                                        </Typography>
+                                        
+                                        <Typography  variant="caption" sx={{pt:2}}>
+                                            Click Above Button to confirm
+                                        </Typography>
+                                    </>
+                                    : null}
                                 {loading && !qrCode ? <h1>Loading qr code...</h1> : null}
                                 {qrCode ?
                                     <>

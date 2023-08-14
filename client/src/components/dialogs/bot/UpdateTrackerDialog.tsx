@@ -1,11 +1,11 @@
-import  { useContext, useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { useFormik } from 'formik'
 import * as Yup from "yup"
 import { AxiosResponse } from 'axios'
 import { useMutation } from 'react-query'
 import { BackendError } from '../../../types'
 import { UpdateCustomerName } from '../../../services/BotServices'
-import { Button, Dialog, Snackbar } from '@mui/material'
+import { Button, Dialog, DialogContent, DialogTitle, Snackbar, TextField } from '@mui/material'
 import { BotChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { ITracker } from '../../../types/bot/flow.types'
 
@@ -48,11 +48,10 @@ function UpdateTrackerDialog({ tracker }: Props) {
     }, [isSuccess, setChoice])
     return (
 
-        <Dialog fullScreen open={choice === BotChoiceActions.toogle_bot_status ? true : false}
+        <Dialog open={choice === BotChoiceActions.update_tracker ? true : false}
             onClose={() => setChoice({ type: BotChoiceActions.close_bot })}
         >
             <form onSubmit={formik.handleSubmit}>
-                <h1>Save Flow</h1>
                 {
                     isError ? (
 
@@ -80,13 +79,26 @@ function UpdateTrackerDialog({ tracker }: Props) {
                     ) : null
                 }
 
-                <input type="text"
-                    {...formik.getFieldProps('customer_name')}
-                />
-                <p>{formik.touched.customer_name && formik.errors.customer_name ? formik.errors.customer_name : "r"}</p>
-                <Button variant="contained" className='w-100' type="submit"
-                    disabled={isLoading}
-                >{isLoading ? "saving..." : "Update"}</Button>
+               
+                <DialogContent>
+                    < TextField
+                        variant='standard'
+                        focused
+                        error={
+                            formik.touched.customer_name && formik.errors.customer_name ? true : false
+                        }
+                        id="customer_name"
+                        label="Customer Name"
+                        fullWidth
+                        helperText={
+                            formik.touched.customer_name && formik.errors.customer_name ? formik.errors.customer_name : ""
+                        }
+                        {...formik.getFieldProps('customer_name')}
+                    />
+                    <Button sx={{mt:2}}fullWidth variant="contained" type="submit"
+                        disabled={isLoading}
+                    >{isLoading ? "saving..." : "Change"}</Button>
+                </DialogContent>
             </form>
         </Dialog >
     )

@@ -5,7 +5,7 @@ import { AxiosResponse } from 'axios'
 import { useMutation } from 'react-query'
 import { BackendError } from '../../../types'
 import { UpdateFlow } from '../../../services/BotServices'
-import { Button, Dialog, Snackbar } from '@mui/material'
+import { Button, Dialog, DialogContent, DialogTitle, Snackbar, TextField } from '@mui/material'
 import { BotChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { IFlow } from '../../../types/bot/flow.types'
 
@@ -61,11 +61,13 @@ function SaveUpdateFlowDialog({ flow, setDisplayUpdateModal, displayUpdateModal 
     console.log(flow)
     return (
 
-        <Dialog fullScreen open={displayUpdateModal ? true : false}
+        <Dialog open={displayUpdateModal ? true : false}
             onClose={() => setDisplayUpdateModal(false)}
         >
-            <form onSubmit={formik.handleSubmit} className='shadow w-100  p-3 bg-body-tertiary border border-1 rounded bg-light align-self-center'>
-                <h1 className="d-block fs-4 text-center">Save Flow</h1>
+            <form onSubmit={formik.handleSubmit} >
+                <DialogTitle>
+                    Save Flow
+                </DialogTitle>
                 {
                     isError ? (
 
@@ -92,13 +94,25 @@ function SaveUpdateFlowDialog({ flow, setDisplayUpdateModal, displayUpdateModal 
                         />
                     ) : null
                 }
-                <input type="text"
-                    {...formik.getFieldProps('flow_name')}
-                />
-                <p>{formik.touched.flow_name && formik.errors.flow_name ? formik.errors.flow_name : "this is permanent, can not be changed later"}</p>
-                <Button variant="contained" fullWidth type="submit"
-                    disabled={isLoading}
-                >{isLoading ? "updating..." : "Update"}</Button>
+                <DialogContent>
+                    < TextField
+                        variant='standard'
+                        focused
+                        error={
+                            formik.touched.flow_name && formik.errors.flow_name ? true : false
+                        }
+                        id="flow_name"
+                        label="Customer Name"
+                        fullWidth
+                        helperText={
+                            formik.touched.flow_name && formik.errors.flow_name ? formik.errors.flow_name : ""
+                        }
+                        {...formik.getFieldProps('flow_name')}
+                    />
+                    <Button sx={{ mt: 2 }} fullWidth variant="contained" type="submit"
+                        disabled={isLoading}
+                    >{isLoading ? "updating..." : "Update"}</Button>
+                </DialogContent>
             </form>
         </Dialog>
     )
