@@ -10,14 +10,17 @@ const apiClient = axios.create({
   withCredentials: true
 })
 
-// apiClient.interceptors.response.use(function (response) {
-//   return response;
-// }, function (error) {
-//   if (error.response.data.message === "please login to access this resource" || error.response.data.message === "login again ! session expired") {
-//     window.location.replace("/")
-//   }
-//   return Promise.reject(error);
-// });
+apiClient.interceptors.response.use(function (response) {
+  return response;
+}, function (error) {
+  if (error.response.data.message === "please login to access this resource" || error.response.data.message === "login again ! session expired") {
+    let node = document.getElementById("login_msg")
+    if (node)
+      node.innerText = "Logged out ,Login Again"
+    
+  }
+  return Promise.reject(error);
+});
 
 export {
   BaseURL,
