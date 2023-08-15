@@ -40,7 +40,7 @@ function UsersTable({ user, selectAll, users, setSelectAll, setUser, selectedUse
             }}>
                 <Table
                     stickyHeader
-                    sx={{ minWidth: "1800px" }}
+                    sx={{ minWidth: "1350px" }}
                     size="small">
                     <TableHead
                     >
@@ -70,7 +70,17 @@ function UsersTable({ user, selectAll, users, setSelectAll, setUser, selectedUse
                                     />
                                 </Stack>
                             </TableCell>
-
+                            <TableCell
+                                sx={{ bgcolor: headColor }}                         >
+                                <Stack
+                                    direction="row"
+                                    justifyContent="left"
+                                    alignItems="left"
+                                    spacing={2}
+                                >
+                                    Actions
+                                </Stack>
+                            </TableCell>
                             <TableCell
                                 sx={{ bgcolor: headColor }}                         >
                                 <Stack
@@ -82,6 +92,7 @@ function UsersTable({ user, selectAll, users, setSelectAll, setUser, selectedUse
                                     User Name
                                 </Stack>
                             </TableCell>
+
                             <TableCell
                                 sx={{ bgcolor: headColor }}                         >
                                 <Stack
@@ -137,17 +148,7 @@ function UsersTable({ user, selectAll, users, setSelectAll, setUser, selectedUse
                                     Last Login
                                 </Stack>
                             </TableCell>
-                            <TableCell
-                                sx={{ bgcolor: headColor }}                         >
-                                <Stack
-                                    direction="row"
-                                    justifyContent="left"
-                                    alignItems="left"
-                                    spacing={2}
-                                >
-                                    Allowed Actions
-                                </Stack>
-                            </TableCell>
+
                         </TableRow>
                     </TableHead>
                     <TableBody >
@@ -203,107 +204,6 @@ function UsersTable({ user, selectAll, users, setSelectAll, setUser, selectedUse
                                             :
                                             null
                                         }
-
-                                        {/* profiles picture */}
-                                        <TableCell>
-                                            <Stack direction="row"
-                                                spacing={2}
-                                                justifyContent="left"
-                                                alignItems="center"
-                                            >
-                                                <Stack>
-                                                    <Avatar
-                                                        sx={{ width: 30, height: 30 }}
-                                                        onClick={() => {
-                                                            setChoice({ type: UserChoiceActions.control_access })
-                                                            setUser(user)
-                                                        }}
-                                                        alt="display picture" src={user.dp?.url} />
-                                                    {
-                                                        user.is_active ?
-                                                            <Typography variant="caption" sx={{
-                                                                color: "green",
-                                                            }}>active</Typography>
-                                                            : <Typography variant="caption" sx={{
-                                                                color: "red",
-                                                            }}>blocked</Typography>
-
-                                                    }
-                                                </Stack >
-                                                <Stack>
-                                                    {
-                                                        user.is_admin ?
-                                                            <>
-                                                                <Typography sx={{
-                                                                    textTransform: "capitalize", fontWeight: '600'
-                                                                }}>{user.username}</Typography>
-                                                                <Typography variant="caption" component="span" sx={{ fontWeight: '500' }}>
-                                                                    {user.created_by._id === user?._id ?
-                                                                        "owner" : "admin"}
-                                                                </Typography>
-                                                            </>
-                                                            :
-                                                            <>
-                                                                <Typography sx={{ textTransform: "capitalize" }}>{user.username}</Typography>
-                                                                <Typography variant="caption" component="span">
-                                                                    user
-                                                                </Typography>
-                                                            </>
-                                                    }
-                                                </Stack >
-                                            </Stack>
-                                        </TableCell>
-                                        {/* email */}
-                                        <TableCell>
-                                            <Stack>
-                                                <Typography variant="body1" sx={{}}>{user.email}</Typography>
-                                                {
-                                                    user.email_verified ? <Typography variant="caption" sx={{
-                                                        color: "green"
-                                                    }}>verified</Typography >
-
-                                                        :
-                                                        <Typography variant="caption" sx={{
-                                                            color: "red"
-                                                        }}>not verified</Typography >
-                                                }
-
-                                            </Stack>
-                                        </TableCell>
-                                        {/* mobiles */}
-                                        <TableCell>
-                                            <Stack>
-                                                <Typography variant="body1" sx={{}}>{user.mobile}</Typography>                                                {
-                                                    user.email_verified ? <Typography variant="caption">{"verified"}</Typography>
-
-                                                        :
-                                                        <Typography sx={{ color: "red" }} variant="caption">{"not verified"}</Typography>
-                                                }
-
-                                            </Stack>
-                                        </TableCell>
-                                        {/* created by */}
-                                        <TableCell>
-                                            <Stack>
-                                                <Typography sx={{ textTransform: "capitalize" }}>{user.created_by.username}</Typography>
-                                                <Typography variant="caption" component="span">
-                                                    {new Date(user.created_at).toLocaleDateString()}
-                                                </Typography>
-                                            </Stack >
-                                        </TableCell>
-                                        {/* updated by */}
-                                        <TableCell>
-                                            <Stack>
-                                                <Typography sx={{ textTransform: "capitalize" }}>{user.updated_by.username}</Typography>
-                                                <Typography variant="caption" component="span">
-                                                    {new Date(user.updated_at).toLocaleDateString()}
-                                                </Typography>
-                                            </Stack >
-                                        </TableCell>
-                                        {/* login date */}
-                                        <TableCell>
-                                            <Typography variant="body1">{new Date(user.last_login).toLocaleString()}</Typography>
-                                        </TableCell>
                                         {/* actions */}
 
                                         <TableCell>
@@ -407,6 +307,108 @@ function UsersTable({ user, selectAll, users, setSelectAll, setUser, selectedUse
                                                 }
                                             </Stack>
                                         </TableCell>
+                                        {/* profiles picture */}
+                                        <TableCell>
+                                            <Stack direction="row"
+                                                spacing={2}
+                                                justifyContent="left"
+                                                alignItems="center"
+                                            >
+                                                <Stack>
+                                                    <Avatar
+                                                        sx={{ width: 30, height: 30 }}
+                                                        onClick={() => {
+                                                            setChoice({ type: UserChoiceActions.control_access })
+                                                            setUser(user)
+                                                        }}
+                                                        alt="display picture" src={user.dp?.url} />
+                                                    {
+                                                        user.is_active ?
+                                                            <Typography variant="caption" sx={{
+                                                                color: "green",
+                                                            }}>active</Typography>
+                                                            : <Typography variant="caption" sx={{
+                                                                color: "red",
+                                                            }}>blocked</Typography>
+
+                                                    }
+                                                </Stack >
+                                                <Stack>
+                                                    {
+                                                        user.is_admin ?
+                                                            <>
+                                                                <Typography sx={{
+                                                                    textTransform: "capitalize", fontWeight: '600'
+                                                                }}>{user.username}</Typography>
+                                                                <Typography variant="caption" component="span" sx={{ fontWeight: '500' }}>
+                                                                    {user.created_by._id === user?._id ?
+                                                                        "owner" : "admin"}
+                                                                </Typography>
+                                                            </>
+                                                            :
+                                                            <>
+                                                                <Typography sx={{ textTransform: "capitalize" }}>{user.username}</Typography>
+                                                                <Typography variant="caption" component="span">
+                                                                    user
+                                                                </Typography>
+                                                            </>
+                                                    }
+                                                </Stack >
+                                            </Stack>
+                                        </TableCell>
+
+                                        {/* email */}
+                                        <TableCell>
+                                            <Stack>
+                                                <Typography variant="body1" sx={{}}>{user.email}</Typography>
+                                                {
+                                                    user.email_verified ? <Typography variant="caption" sx={{
+                                                        color: "green"
+                                                    }}>verified</Typography >
+
+                                                        :
+                                                        <Typography variant="caption" sx={{
+                                                            color: "red"
+                                                        }}>not verified</Typography >
+                                                }
+
+                                            </Stack>
+                                        </TableCell>
+                                        {/* mobiles */}
+                                        <TableCell>
+                                            <Stack>
+                                                <Typography variant="body1" sx={{}}>{user.mobile}</Typography>                                                {
+                                                    user.email_verified ? <Typography variant="caption">{"verified"}</Typography>
+
+                                                        :
+                                                        <Typography sx={{ color: "red" }} variant="caption">{"not verified"}</Typography>
+                                                }
+
+                                            </Stack>
+                                        </TableCell>
+                                        {/* created by */}
+                                        <TableCell>
+                                            <Stack>
+                                                <Typography sx={{ textTransform: "capitalize" }}>{user.created_by.username}</Typography>
+                                                <Typography variant="caption" component="span">
+                                                    {new Date(user.created_at).toLocaleDateString()}
+                                                </Typography>
+                                            </Stack >
+                                        </TableCell>
+                                        {/* updated by */}
+                                        <TableCell>
+                                            <Stack>
+                                                <Typography sx={{ textTransform: "capitalize" }}>{user.updated_by.username}</Typography>
+                                                <Typography variant="caption" component="span">
+                                                    {new Date(user.updated_at).toLocaleDateString()}
+                                                </Typography>
+                                            </Stack >
+                                        </TableCell>
+                                        {/* login date */}
+                                        <TableCell>
+                                            <Typography variant="body1">{new Date(user.last_login).toLocaleString()}</Typography>
+                                        </TableCell>
+
                                     </TableRow>
                                 )
                             })}

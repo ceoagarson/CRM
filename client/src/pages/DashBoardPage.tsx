@@ -6,13 +6,17 @@ import BackupIcon from '@mui/icons-material/Backup';
 import Diversity3Icon from '@mui/icons-material/Diversity3';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
+import { useContext } from "react";
+import { UserContext } from "../contexts/userContext";
 
 function DashBoardPage() {
   const goto = useNavigate()
+  const { user } = useContext(UserContext)
   return (
-    <>
-      <Box sx={{ bgcolor: "#0039a6", m: 0, p: 0 }}>
-        <Grid container >
+    <Box sx={{ bgcolor: "#0039a6", m: 0, p: 0 }}>
+      <Grid container >
+
+        {user?.created_by._id === user?._id &&
           <Grid item xs={12} md={4} lg={3} sx={{ p: 1 }}>
             <Card sx={{ bgcolor: 'whitesmoke', boxShadow: 4, border: 10, borderRadius: 3, borderColor: 'whitesmoke', p: 1 }}>
               <CardContent sx={{ display: 'flex', direction: "row", alignItems: "center", gap: 2 }}>
@@ -26,7 +30,8 @@ function DashBoardPage() {
                 <Button variant="contained" color="inherit" size="small">Manage</Button>
               </CardActions>
             </Card>
-          </Grid>
+          </Grid>}
+        {user?.is_admin &&
           <Grid item xs={12} md={4} lg={3} sx={{ p: 1 }}>
             <Card sx={{ bgcolor: 'whitesmoke', boxShadow: 4, border: 10, borderRadius: 3, borderColor: 'whitesmoke', p: 1 }}>
               <CardContent sx={{ display: 'flex', direction: "row", alignItems: "center", gap: 2 }}>
@@ -40,7 +45,8 @@ function DashBoardPage() {
                 <Button variant="contained" color="inherit" size="small">View Reports</Button>
               </CardActions>
             </Card>
-          </Grid>
+          </Grid>}
+        {user?.created_by._id === user?._id &&
           <Grid item xs={12} md={4} lg={3} sx={{ p: 1 }}>
             <Card sx={{ bgcolor: 'whitesmoke', boxShadow: 4, border: 10, borderRadius: 3, borderColor: 'whitesmoke', p: 1 }}>
               <CardContent sx={{ display: 'flex', direction: "row", alignItems: "center", gap: 2 }}>
@@ -54,7 +60,8 @@ function DashBoardPage() {
                 <Button variant="contained" color="inherit" size="small">View Reports</Button>
               </CardActions>
             </Card>
-          </Grid>
+          </Grid>}
+        {user?.created_by._id === user?._id &&
           <Grid item xs={12} md={4} lg={3} sx={{ p: 1 }}>
             <Card sx={{ bgcolor: 'whitesmoke', boxShadow: 4, border: 10, borderRadius: 3, borderColor: 'whitesmoke', p: 1 }}>
               <CardContent sx={{ display: 'flex', direction: "row", alignItems: "center", gap: 2 }}>
@@ -68,7 +75,8 @@ function DashBoardPage() {
                 <Button variant="contained" color="inherit" size="small">View Reports</Button>
               </CardActions>
             </Card>
-          </Grid>
+          </Grid>}
+        {user?.created_by._id === user?._id &&
           <Grid item xs={12} md={4} lg={3} sx={{ p: 1 }}>
             <Card sx={{ bgcolor: 'whitesmoke', boxShadow: 4, border: 10, borderRadius: 3, borderColor: 'whitesmoke', p: 1 }}>
               <CardContent sx={{ display: 'flex', direction: "row", alignItems: "center", gap: 2 }}>
@@ -82,7 +90,8 @@ function DashBoardPage() {
                 <Button variant="contained" color="inherit" size="small">View Reports</Button>
               </CardActions>
             </Card>
-          </Grid>
+          </Grid>}
+        {user?.created_by._id === user?._id &&
           <Grid item xs={12} md={4} lg={3} sx={{ p: 1 }}>
             <Card sx={{ bgcolor: 'whitesmoke', boxShadow: 4, border: 10, borderRadius: 3, borderColor: 'whitesmoke', p: 1 }}>
               <CardContent sx={{ display: 'flex', direction: "row", alignItems: "center", gap: 2 }}>
@@ -96,11 +105,10 @@ function DashBoardPage() {
                 <Button variant="contained" color="inherit" size="small">Manage</Button>
               </CardActions>
             </Card>
-          </Grid>
-        </Grid>
+          </Grid>}
+      </Grid>
 
-      </Box>
-    </>
+    </Box>
   )
 }
 

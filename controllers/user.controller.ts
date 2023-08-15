@@ -487,7 +487,11 @@ export const SendPasswordResetMail = async (req: Request, res: Response, next: N
     const userEmail = String(email).toLowerCase().trim();
     if (!isEmail(userEmail))
         return res.status(400).json({ message: "provide a valid email" })
-    const user = await User.findOne({ email: userEmail });
+    let user = await User.findOne({ email: userEmail }).populate('created_by')
+    if (user) {
+        if (String(user._id) !== String(user.created_by._id))
+            return res.status(403).json({ message: "not allowed this service" })
+    }
     if (!user)
         return res.status(404).json({ message: "you have no account with this email id" })
     const resetToken = await user.getResetPasswordToken();
@@ -543,7 +547,7 @@ export const SendVerifyEmail = async (req: Request, res: Response, next: NextFun
     const userEmail = String(email).toLowerCase().trim();
     if (!isEmail(userEmail))
         return res.status(400).json({ message: "provide a valid email" })
-    const user = await User.findOne({ email: userEmail });
+    const user = await User.findOne({ email: userEmail })
     if (!user)
         return res.status(404).json({ message: "you have no account with this email id" })
     const verifyToken = await user.getEmailVerifyToken();
