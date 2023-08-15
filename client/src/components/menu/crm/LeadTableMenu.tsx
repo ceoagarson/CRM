@@ -7,7 +7,6 @@ import ExportToExcel from '../../../utils/ExportToExcel';
 import NewLeadDialog from '../../dialogs/leads/NewLeadDialog';
 import { ILead } from '../../../types/leads/lead.type';
 import { ILeadTemplate } from '../../../types/leads/lead.template.types';
-import { userInfo } from 'os';
 import { UserContext } from '../../../contexts/userContext';
 
 let template: ILeadTemplate[] = [
