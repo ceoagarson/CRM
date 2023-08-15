@@ -76,7 +76,7 @@ function UpdateLeadFieldsPage() {
                                     })
                             }}>+</Button>
                         </Stack>
-                        {fields && fields.stages.length > 0 && fields.stages?.map((stage, index) => {
+                        {fields && fields.stages && fields.stages?.map((stage, index) => {
                             return (
                                 <Stack key={index} spacing={2} direction="row" alignItems="center">
                                     <TextField defaultValue={stage}>
@@ -113,7 +113,7 @@ function UpdateLeadFieldsPage() {
                                 +
                             </Button>
                         </Stack>
-                        {fields && fields?.lead_types.length > 0 && fields.lead_types.map((type, index) => {
+                        {fields && fields?.lead_types && fields.lead_types.map((type, index) => {
                             return (
                                 <Stack key={index} spacing={2} direction="row" alignItems="center">
                                     <TextField defaultValue={type}>
@@ -148,7 +148,7 @@ function UpdateLeadFieldsPage() {
                                     })
                             }}>+</Button>
                         </Stack>
-                        {fields && fields?.lead_sources.length > 0 && fields.lead_sources.map((field, index) => {
+                        {fields && fields?.lead_sources && fields.lead_sources.map((field, index) => {
                             return (
                                 <Stack key={index} spacing={2} direction="row" alignItems="center">
                                     <TextField defaultValue={field}>

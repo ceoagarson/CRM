@@ -25,11 +25,12 @@ export const isAuthenticatedUser = async (req: Request, res: Response, next: Nex
     );
 }
 
+
 //check admin
 export const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
-        if (req.user?.is_admin) 
-            return next();
-        return res.status(403).json({ message: "!must be admin" });
+    if (req.user?.is_admin)
+        return next();
+    return res.status(403).json({ message: "!must be admin" });
 }
 
 // login

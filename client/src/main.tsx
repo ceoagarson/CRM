@@ -7,6 +7,7 @@ import { UserProvider } from "./contexts/userContext";
 import { BrowserRouter } from "react-router-dom";
 import { ChoiceProvider } from "./contexts/dialogContext";
 import { MenuProvider } from "./contexts/menuContext";
+import { LoadingProvider } from './contexts/loaderContext.tsx';
 
 
 const queryClient = new QueryClient({
@@ -23,11 +24,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <UserProvider>
-        <ChoiceProvider>
-          <MenuProvider>
-            <App />
-          </MenuProvider>
-        </ChoiceProvider>
+        <LoadingProvider>
+          <ChoiceProvider>
+            <MenuProvider>
+              <App />
+            </MenuProvider>
+          </ChoiceProvider>
+        </LoadingProvider>
       </UserProvider>
     </BrowserRouter>
   </QueryClientProvider>
