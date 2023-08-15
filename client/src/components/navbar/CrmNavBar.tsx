@@ -39,58 +39,57 @@ export default function CrmNavBar() {
                         justifyContent={"center"}
                         alignItems="center"
                     >
-                        {user ?
-                            <>
-                                {/* stack1 nav links*/}
-                                <Stack
-                                    direction="row"
-                                    gap={2}
-                                    px={2}
+
+                        {/* stack1 nav links*/}
+                        <Stack
+                            direction="row"
+                            gap={2}
+                            px={2}
+                            sx={{
+                                display: { xs: 'none', md: 'flex' }
+                            }}
+                        >
+                            <StyledLink to={paths.leads}>Leads</StyledLink>
+                            <StyledLink to={paths.customers}>Customers</StyledLink>
+                            {
+                                user?.is_admin &&
+                                <StyledLink to={paths.updateble_fields_lead}>Fields</StyledLink>
+                            }
+                        </Stack>
+
+                        {/* stack2 right icons*/}
+                        <Stack
+                            direction="row"
+                            justifyContent={"center"}
+                            alignItems="center"
+                            gap={2}
+                        >
+
+                            <Tooltip title="open menu">
+                                <IconButton
+                                    onClick={(e) => setMenu({ type: MenuActions.dashboard_menu, payload: { type: MenuActions.dashboard_menu, anchorEl: e.currentTarget } })
+                                    }
                                     sx={{
-                                        display: { xs: 'none', md: 'flex' }
-                                    }}
+                                        color: "white",
+                                        display: {
+                                            xs: 'block', md: 'none'
+                                        }
+                                    }}>
+                                    <Menu />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title={user?.username || "open settings"}>
+                                <IconButton
+                                    onClick={(e) => setMenu({ type: MenuActions.user_menu, payload: { type: MenuActions.user_menu, anchorEl: e.currentTarget } })
+                                    }
                                 >
-                                    <StyledLink to={paths.leads}>Leads</StyledLink>
-                                    <StyledLink to={paths.customers}>Customers</StyledLink>
-                                    <StyledLink to={paths.updateble_fields_lead}>Fields</StyledLink>
-                                </Stack>
+                                    <Avatar
+                                        sx={{ width: 30, height: 30 }}
+                                        alt="img1" src={user?.dp?.url} />
+                                </IconButton>
+                            </Tooltip>
+                        </Stack>
 
-                                {/* stack2 right icons*/}
-                                <Stack
-                                    direction="row"
-                                    justifyContent={"center"}
-                                    alignItems="center"
-                                    gap={2}
-                                >
-
-                                    <Tooltip title="open menu">
-                                        <IconButton
-                                            onClick={(e) => setMenu({ type: MenuActions.dashboard_menu, payload: { type: MenuActions.dashboard_menu, anchorEl: e.currentTarget } })
-                                            }
-                                            sx={{
-                                                color: "white",
-                                                display: {
-                                                    xs: 'block', md: 'none'
-                                                }
-                                            }}>
-                                            <Menu />
-                                        </IconButton>
-                                    </Tooltip>
-                                    <Tooltip title={user.username || "open settings"}>
-                                        <IconButton
-                                            onClick={(e) => setMenu({ type: MenuActions.user_menu, payload: { type: MenuActions.user_menu, anchorEl: e.currentTarget } })
-                                            }
-                                        >
-                                            <Avatar
-                                                sx={{ width: 30, height: 30 }}
-                                                alt="img1" src={user.dp?.url} />
-                                        </IconButton>
-                                    </Tooltip>
-                                </Stack>
-                            </>
-                            :
-                            null
-                        }
                     </Stack >
                 </Stack>
             </Box >

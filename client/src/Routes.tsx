@@ -14,7 +14,6 @@ import UsersPage from './pages/users/UsersPage'
 import DashBoardPage from './pages/DashBoardPage'
 import LeadsPage from './pages/crm/LeadsPage'
 import FlowsPage from './pages/bot/FlowsPage'
-import { LoadingContext } from './contexts/loaderContext'
 
 // lazy loding
 const ResetPasswordDialog = React.lazy(() => import('./components/dialogs/users/ResetPasswordDialog'))
@@ -49,118 +48,104 @@ export enum paths {
 
 function AppRoutes() {
   const { user } = useContext(UserContext)
-  const { loading } = useContext(LoadingContext)
 
   return (
-    <>
-
+    <Routes >
       {
-        loading ? <LinearProgress /> :
-          <>
-            {
-              <Routes >
-                {
-                  !user && <Route path={paths.login} element={<LoginPage />} />}
-                {
-                  user && <Route>
-                    < Route element={<DashBoardNavBar />
-                    }>
-                      <Route
-                        path={paths.dashboard}
-                        element={
-                          <DashBoardPage />
-                        }
-                      />
-                    </Route>
-                    {/* crm nav bar */}
-                    < Route path={paths.crm} element={<CrmNavBar />
-                    }>
-                      <Route index element={
-                        <LeadsPage />
-                      }
-                      />
-                      <Route path={paths.leads} index element={
-                        <Suspense fallback={<LinearProgress />}><LeadsPage /></Suspense>
-                      }
-                      />
-                      <Route
-                        path={paths.customers} element={
-                          <Suspense fallback={<LinearProgress />}><CustomersPage /></Suspense>
-
-                        }
-                      />
-                      <Route
-                        path={paths.updateble_fields_lead} element={
-                          <Suspense fallback={<LinearProgress />}><UpdateLeadFieldsPage />
-                          </Suspense>
-                        }
-                      />
-                    </Route>
-                    {/* bot nav bar */}
-                    < Route path={paths.bot} element={<BotNavBar />
-                    }>
-                      <Route
-                        index element={
-                          <FlowsPage />
-                        }
-                      />
-                      <Route path={paths.flows} element={
-                        < FlowsPage />
-                      }
-                      />
-                      <Route path={paths.trackers} element={
-                        <Suspense fallback={<LinearProgress />}>
-                          < TrackersPage />
-                        </Suspense>
-                      }
-                      />
-                    </Route>
-
-                    {/* scheduler nav bar */}
-                    < Route path={paths.scheduler} element={<SchedulerNavBar />
-                    }>
-                      <Route
-                        index element={
-                          <DashBoardPage />
-                        }
-                      />
-                    </Route>
-                    {/* broadcast nav bar */}
-                    < Route path={paths.broadcast} element={<BroadcastNavBar />
-                    }>
-                      <Route
-                        index element={
-                          <DashBoardPage />
-                        }
-                      />
-                    </Route>
-                    {/* users nav bar */}
-                    < Route path={paths.users} element={<UsersNavBar />}>
-                      <Route index
-                        element={
-                          <UsersPage />
-                        }
-                      />
-                      <Route
-                        path={paths.users} element={
-                          <UsersPage />
-                        }
-                      />
-                    </Route>
-                  </Route>
-                }
-
-                <Route path={paths.reset_password} element={<ResetPasswordDialog />} />
-                <Route path={paths.verify_email} element={<EmailVerifyPage />} />
-                <Route path="*" element={<Navigate to={paths.login} />} />
-              </Routes >
+        !user && <Route path={paths.login} element={<LoginPage />} />}
+      {
+        user && <Route>
+          < Route element={<DashBoardNavBar />
+          }>
+            <Route
+              path={paths.dashboard}
+              element={
+                <DashBoardPage />
+              }
+            />
+          </Route>
+          {/* crm nav bar */}
+          < Route path={paths.crm} element={<CrmNavBar />
+          }>
+            <Route index element={
+              <LeadsPage />
             }
-          </>
+            />
+            <Route path={paths.leads} index element={
+              <Suspense fallback={<LinearProgress />}><LeadsPage /></Suspense>
+            }
+            />
+            <Route
+              path={paths.customers} element={
+                <Suspense fallback={<LinearProgress />}><CustomersPage /></Suspense>
 
+              }
+            />
+            <Route
+              path={paths.updateble_fields_lead} element={
+                <Suspense fallback={<LinearProgress />}><UpdateLeadFieldsPage />
+                </Suspense>
+              }
+            />
+          </Route>
+          {/* bot nav bar */}
+          < Route path={paths.bot} element={<BotNavBar />
+          }>
+            <Route
+              index element={
+                <FlowsPage />
+              }
+            />
+            <Route path={paths.flows} element={
+              < FlowsPage />
+            }
+            />
+            <Route path={paths.trackers} element={
+              <Suspense fallback={<LinearProgress />}>
+                < TrackersPage />
+              </Suspense>
+            }
+            />
+          </Route>
+
+          {/* scheduler nav bar */}
+          < Route path={paths.scheduler} element={<SchedulerNavBar />
+          }>
+            <Route
+              index element={
+                <DashBoardPage />
+              }
+            />
+          </Route>
+          {/* broadcast nav bar */}
+          < Route path={paths.broadcast} element={<BroadcastNavBar />
+          }>
+            <Route
+              index element={
+                <DashBoardPage />
+              }
+            />
+          </Route>
+          {/* users nav bar */}
+          < Route path={paths.users} element={<UsersNavBar />}>
+            <Route index
+              element={
+                <UsersPage />
+              }
+            />
+            <Route
+              path={paths.users} element={
+                <UsersPage />
+              }
+            />
+          </Route>
+        </Route>
       }
 
-
-    </>
+      <Route path={paths.reset_password} element={<ResetPasswordDialog />} />
+      <Route path={paths.verify_email} element={<EmailVerifyPage />} />
+      <Route path="*" element={<Navigate to={paths.login} />} />
+    </Routes >
 
   )
 }
