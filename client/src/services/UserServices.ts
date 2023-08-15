@@ -46,8 +46,8 @@ export const UnBlockUser = async (id: string) => {
   return await apiClient.patch(`unblock/user/${id}`)
 }
 // make leads controlled
-export const UpdateUserLeadAccess = async ({ id, leadFields }: { id: string, leadFields: { lead_fields :LeadField[]}}) => {
-  return await apiClient.patch(`update-lead-field-roles/user/${id}`,leadFields)
+export const UpdateUserLeadAccess = async ({ id, leadFields }: { id: string, leadFields: { lead_fields: LeadField[] } }) => {
+  return await apiClient.patch(`update-lead-field-roles/user/${id}`, leadFields)
 }
 // make admin
 export const MakeAdmin = async (id: string) => {
@@ -58,7 +58,7 @@ export const RemoveAdmin = async (id: string) => {
   return await apiClient.patch(`remove-admin/user/${id}`)
 }
 // get profile
-export const GetProfile = async ()=> {
+export const GetProfile = async () => {
   return await apiClient.get("profile");
 };
 // update profile
@@ -69,6 +69,9 @@ export const UpdateProfile = async (body: FormData) => {
 // //update password
 export const UpdatePassword = async (body: { oldPassword: string, newPassword: string, confirmPassword: string }) => {
   return await apiClient.patch("password/update", body)
+};
+export const UpdateUserPassword = async ({ id, body }: { id: string, body: { newPassword: string, confirmPassword: string } }) => {
+  return await apiClient.patch(`password/update/${id}`, body)
 };
 // //update password
 export const ResetPassword = async ({ token, body }:

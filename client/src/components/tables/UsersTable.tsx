@@ -12,6 +12,8 @@ import BlockUserDialog from '../dialogs/users/BlockUserDialog'
 import UnBlockUserDialog from '../dialogs/users/UnBlockUserDialog'
 import MakeAdminDialog from '../dialogs/users/MakeAdminDialog'
 import RemoveAdminDialog from '../dialogs/users/RemoveAdminDialog'
+import UpdatePasswordDialog from '../dialogs/users/UpdatePasswordDialog'
+import UpdateUsePasswordDialog from '../dialogs/users/UpdateUsePasswordDialog'
 
 type Props = {
     user: IUser | undefined,
@@ -22,7 +24,7 @@ type Props = {
     selectedUsers: IUser[]
     setSelectedUsers: React.Dispatch<React.SetStateAction<IUser[]>>,
 }
-function UsersTable({ user, selectAll, users,  setSelectAll, setUser, selectedUsers, setSelectedUsers }: Props) {
+function UsersTable({ user, selectAll, users, setSelectAll, setUser, selectedUsers, setSelectedUsers }: Props) {
     const [data, setData] = useState<IUser[]>(users)
     const { setChoice } = useContext(ChoiceContext)
     const { user: LoggedInUser } = useContext(UserContext)
@@ -388,11 +390,11 @@ function UsersTable({ user, selectAll, users,  setSelectAll, setUser, selectedUs
                                                             {LoggedInUser?.created_by._id === user._id ?
                                                                 null
                                                                 :
-                                                                <Tooltip title="Change user Access Control">
+                                                                <Tooltip title="Change Password for this user">
                                                                     <IconButton
                                                                         color="warning" size="medium"
                                                                         onClick={() => {
-                                                                            setChoice({ type: UserChoiceActions.control_access })
+                                                                            setChoice({ type: UserChoiceActions.update_user_password })
                                                                             setUser(user)
                                                                         }}>
                                                                         <Key />
@@ -415,11 +417,13 @@ function UsersTable({ user, selectAll, users,  setSelectAll, setUser, selectedUs
                 user ?
                     <>
                         <UpdateUserDialog user={user} />
+                        <UpdatePasswordDialog />
                         <ManageAccessControlDialog user={user} />
                         <BlockUserDialog id={user._id} />
                         <UnBlockUserDialog id={user._id} />
                         <MakeAdminDialog id={user._id} />
                         <RemoveAdminDialog id={user._id} />
+                        <UpdateUsePasswordDialog user={user} />
                     </>
                     : null
             }

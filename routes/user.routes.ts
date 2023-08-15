@@ -1,6 +1,6 @@
 import express from "express";
 import multer from "multer";
-import { BlockUser, GetProfile, GetUsers, Login, Logout, MakeAdmin, NewUser, RemoveAdmin, ResetPassword, SendPasswordResetMail, SendVerifyEmail, SignUp, UnBlockUser, UpdateLeadFieldRoles, UpdateProfile, UpdateUser, VerifyEmail, updatePassword } from "../controllers/user.controller";
+import { BlockUser, GetProfile, GetUsers, Login, Logout, MakeAdmin, NewUser, RemoveAdmin, ResetPassword, SendPasswordResetMail, SendVerifyEmail, SignUp, UnBlockUser, UpdateLeadFieldRoles, UpdateProfile, UpdateUser, VerifyEmail, updatePassword, updateUserPassword } from "../controllers/user.controller";
 import { isAdmin, isAuthenticatedUser, } from "../middlewares/auth.middleware";
 
 const router = express.Router()
@@ -21,7 +21,9 @@ router.post("/logout", Logout)
 router.route("/profile")
     .get(isAuthenticatedUser, GetProfile)
     .put(isAuthenticatedUser, upload.single("dp"), UpdateProfile)
-router.route("/password/update").patch(isAuthenticatedUser, updatePassword)
+router.route("/password/update").patch(isAuthenticatedUser, isAdmin, updatePassword)
+router.route("/password/update/:id").patch(isAuthenticatedUser, isAdmin, updateUserPassword)
+
 router.post("/email/verify", isAuthenticatedUser, SendVerifyEmail)
 router.patch("/email/verify/:token", VerifyEmail)
 router.post("/password/reset", SendPasswordResetMail)

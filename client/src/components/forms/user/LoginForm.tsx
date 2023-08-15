@@ -8,7 +8,7 @@ import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
-import {  UserContext } from '../../../contexts/userContext';
+import { UserContext } from '../../../contexts/userContext';
 import { paths } from '../../../Routes';
 import { Login } from '../../../services/UserServices';
 import { IUser } from '../../../types/users/user.type';
@@ -33,12 +33,8 @@ function LoginForm() {
     },
     validationSchema: Yup.object({
       username: Yup.string()
-        .min(4, 'Must be 4 characters or more')
-        .max(30, 'Must be 30 characters or less')
         .required(),
       password: Yup.string()
-        .min(6, 'Must be 6 characters or more')
-        .max(30, 'Must be 30 characters or less')
         .required()
     }),
     onSubmit: (values: {

@@ -371,6 +371,27 @@ export const updatePassword = async (req: Request, res: Response, next: NextFunc
     res.status(200).json({ message: "password updated" });
 }
 
+export const updateUserPassword = async (req: Request, res: Response, next: NextFunction) => {
+    const { newPassword, confirmPassword } = req.body as TUserBody & { oldPassword: string, newPassword: string, confirmPassword: string };
+    if (!newPassword || !confirmPassword)
+        return res.status(400).json({ message: "please fill required fields" })
+    if (newPassword !== confirmPassword)
+        return res.status(403).json({ message: "new password and confirm password not matched" })
+    let id = req.params.id
+    if (!isMongoId(id)) {
+        return res.status(404).json({ message: "user id not valid" })
+    }
+    let user = await User.findById(id);
+    if (!user) {
+        return res.status(404).json({ message: "user not found" })
+    }
+    user.password = newPassword;
+    user.updated_by = user
+    user.updated_by_username = user.username
+    await user.save();
+    res.status(200).json({ message: "password updated" });
+}
+
 // make admin
 export const MakeAdmin = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;

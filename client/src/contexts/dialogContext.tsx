@@ -1,7 +1,7 @@
 import React, { useReducer } from "react"
 
 type UserChoices = "signup" | "reset_password_mail" | "close_user" | "new_user" | "update_user" | "update_profile" | "view_profile" | "update_password" | "reset_password" | "verify_email" | "control_access" | "delete_user" |
-  "block_user" | "unblock_user" | "make_admin" | "remove_admin" | "refresh_whatsapp"
+  "block_user" | "unblock_user" | "make_admin" | "remove_admin" | "refresh_whatsapp" | "update_user_password"
 
 type LeadChoices = "create_lead" | "update_lead" | "update_remark" | "view_remarks" | "close_lead" | "display_filter" | "delete_lead" | "convert_customer" | "open_filter"
 
@@ -56,7 +56,8 @@ export enum UserChoiceActions {
   remove_admin = "remove_admin",
   delete_user = "delete_user",
   control_access = "control_access",
-  refresh_whatsapp = "refresh_whatsapp"
+  refresh_whatsapp = "refresh_whatsapp",
+  update_user_password = "update_user_password"
 }
 
 type Action = {
@@ -84,6 +85,7 @@ function reducer(state: ChoiceState | null, action: Action) {
     case UserChoiceActions.remove_admin: return type
     case UserChoiceActions.delete_user: return type
     case UserChoiceActions.close_user: return type
+    case UserChoiceActions.update_user_password: return type
 
     // lead dialog choices
     case LeadChoiceActions.create_lead: return type
