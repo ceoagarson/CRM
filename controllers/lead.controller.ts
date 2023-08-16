@@ -735,3 +735,8 @@ export const AdvancedQuery = async (req: Request, res: Response, next: NextFunct
     }
     return res.status(200).json(leads)
 }
+
+export const BackUpAllLieds = async (req: Request, res: Response, next: NextFunction) => {
+    let leads = await Lead.find({ is_customer: false }).populate('created_by').populate('updated_by').populate('lead_owners')
+    return res.status(200).json(leads)
+}

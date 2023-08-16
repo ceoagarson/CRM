@@ -4,6 +4,11 @@ import { apiClient } from "./utils/AxiosInterceptor"
 export const GetLeads = async ({ limit, page }: { limit: number | undefined, page: number | undefined }) => {
   return await apiClient.get(`leads?limit=${limit}&page=${page}`)
 }
+
+export const BackupAllLeads = async () => {
+  return await apiClient.get("/backup/leads")
+}
+
 export const FuzzySearchLeads = async (searchString?: string) => {
   return await apiClient.get(`search/leads?key=${searchString}`)
 }

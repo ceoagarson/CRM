@@ -14,6 +14,7 @@ import UsersPage from './pages/users/UsersPage'
 import DashBoardPage from './pages/DashBoardPage'
 import LeadsPage from './pages/crm/LeadsPage'
 import FlowsPage from './pages/bot/FlowsPage'
+import BackupPage from './pages/backup/BackupPage'
 
 // lazy loding
 const ResetPasswordDialog = React.lazy(() => import('./components/dialogs/users/ResetPasswordDialog'))
@@ -43,7 +44,10 @@ export enum paths {
 
   //users
   reset_password = "/password/reset/:token",
-  verify_email = "/email/verify/:token"
+  verify_email = "/email/verify/:token",
+
+  //backup
+  backup_page = "backup_page"
 }
 
 function AppRoutes() {
@@ -136,6 +140,19 @@ function AppRoutes() {
             <Route
               path={paths.users} element={
                 <UsersPage />
+              }
+            />
+          </Route>
+          {/* backup */}
+          <Route path={paths.backup_page} element={<DashBoardNavBar />}>
+            <Route index
+              element={
+                <BackupPage />
+              }
+            />
+            <Route
+              path={paths.backup_page} element={
+                <BackupPage />
               }
             />
           </Route>
