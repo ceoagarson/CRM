@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { UpdateUserLeadAccess } from '../../../services/UserServices';
-import { Button, Checkbox, FormControlLabel, Typography, Table, TableBody, TableRow, TableCell, CircularProgress, Stack, Alert } from '@mui/material'
+import { Button, Checkbox, FormControlLabel, Typography,  CircularProgress, Stack, Alert } from '@mui/material'
 import { IUser, LeadField, LeadFieldType } from '../../../types/users/user.type';
 import { BackendError } from '../../../types';
 
