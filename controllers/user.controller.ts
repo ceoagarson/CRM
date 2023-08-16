@@ -257,7 +257,7 @@ export const UpdateUser = async (req: Request, res: Response, next: NextFunction
             dp,
             email_verified: false
         })
-            .then(() => { return res.status(200).json({ message: "user updated" }) })
+        return res.status(200).json({ message: "user updated" })
     }
     await User.findByIdAndUpdate(user.id, {
         email,
@@ -487,7 +487,8 @@ export const SendPasswordResetMail = async (req: Request, res: Response, next: N
     const userEmail = String(email).toLowerCase().trim();
     if (!isEmail(userEmail))
         return res.status(400).json({ message: "provide a valid email" })
-    let user = await User.findOne({ email: userEmail }).populate('created_by')
+    let users = await User.find({ email: userEmail }).populate('created_by')
+    let user = users.filter((user) => { return String(user._id) === String(user.created_by._id) })[0]
     if (user) {
         if (String(user._id) !== String(user.created_by._id))
             return res.status(403).json({ message: "not allowed this service" })
