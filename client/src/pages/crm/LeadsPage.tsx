@@ -56,7 +56,7 @@ export default function LeadsPage() {
         total: data.data.total
       })
     }
-  }, [isSuccess])
+  }, [isSuccess,data])
 
 
   useEffect(() => {
@@ -73,7 +73,7 @@ export default function LeadsPage() {
         total: Math.ceil(fuzzyLeads.data.length / reactPaginationData.limit)
       })
     }
-  }, [isFuzzySuccess])
+  }, [isFuzzySuccess, fuzzyLeads])
 
   useEffect(() => {
     setItemOffset(reactPaginationData.page * reactPaginationData.limit % reactPaginationData.total)

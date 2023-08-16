@@ -22,12 +22,13 @@ export default function UsersPage() {
     const [preFilteredData, setPreFilteredData] = useState<IUser[]>([])
     const [selectedUsers, setSelectedUsers] = useState<IUser[]>([])
     const [filter, setFilter] = useState<string | undefined>()
+
     useEffect(() => {
         if (isSuccess) {
             setUsers(data.data)
             setPreFilteredData(data.data)
         }
-    }, [isSuccess, users])
+    }, [isSuccess, users, data])
 
     useEffect(() => {
         if (filter) {

@@ -17,6 +17,7 @@ function NewRemarkForm({ lead }: { lead: ILead }) {
         (NewRemark,{
             onSuccess: () => {
                 queryClient.invalidateQueries('leads')
+                queryClient.invalidateQueries('customers')
             }
         })
 

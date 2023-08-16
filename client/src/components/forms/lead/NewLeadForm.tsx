@@ -45,6 +45,7 @@ function NewLeadForm({ users }: { users: IUser[] }) {
     (NewLead,{
       onSuccess: () => {
         queryClient.invalidateQueries('leads')
+        queryClient.invalidateQueries('customers')
       }
     })
   const { data, isSuccess: isFieldsSuccess } = useQuery<AxiosResponse<ILeadUpdatableField>, BackendError>("updateble-lead-leads", GetLeadFieldsUpdatable)
