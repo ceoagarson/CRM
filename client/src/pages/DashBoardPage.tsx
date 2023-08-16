@@ -61,7 +61,7 @@ function DashBoardPage() {
               </CardActions>
             </Card>
           </Grid>}
-        {user?.created_by._id === user?._id &&
+        {user?.is_admin &&
           <Grid item xs={12} md={4} lg={3} sx={{ p: 1 }}>
             <Card sx={{ bgcolor: 'whitesmoke', boxShadow: 4, border: 10, borderRadius: 3, borderColor: 'whitesmoke', p: 1 }}>
               <CardContent sx={{ display: 'flex', direction: "row", alignItems: "center", gap: 2 }}>
@@ -76,7 +76,7 @@ function DashBoardPage() {
               </CardActions>
             </Card>
           </Grid>}
-        {user?.created_by._id === user?._id &&
+        {user?.is_admin &&
           <Grid item xs={12} md={4} lg={3} sx={{ p: 1 }}>
             <Card sx={{ bgcolor: 'whitesmoke', boxShadow: 4, border: 10, borderRadius: 3, borderColor: 'whitesmoke', p: 1 }}>
               <CardContent sx={{ display: 'flex', direction: "row", alignItems: "center", gap: 2 }}>
@@ -91,7 +91,7 @@ function DashBoardPage() {
               </CardActions>
             </Card>
           </Grid>}
-        {user?.created_by._id === user?._id &&
+        {user?.is_admin &&
           <Grid item xs={12} md={4} lg={3} sx={{ p: 1 }}>
             <Card sx={{ bgcolor: 'whitesmoke', boxShadow: 4, border: 10, borderRadius: 3, borderColor: 'whitesmoke', p: 1 }}>
               <CardContent sx={{ display: 'flex', direction: "row", alignItems: "center", gap: 2 }}>
