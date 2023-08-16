@@ -5,13 +5,18 @@ import { useMutation } from 'react-query';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { BlockUser } from '../../../services/UserServices';
 import { BackendError } from '../../../types';
+import { queryClient } from '../../../main';
 
 
 function BlockUserDialog({ id }: { id: string }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
-        (BlockUser)
+        (BlockUser,{
+            onSuccess: () => {
+                queryClient.invalidateQueries('users')
+            }
+        })
 
     useEffect(() => {
         if (isSuccess)

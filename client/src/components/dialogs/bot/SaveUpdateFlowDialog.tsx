@@ -8,6 +8,7 @@ import { UpdateFlow } from '../../../services/BotServices'
 import { Button, Dialog, DialogContent, DialogTitle, Snackbar, TextField } from '@mui/material'
 import { BotChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { IFlow } from '../../../types/bot/flow.types'
+import { queryClient } from '../../../main'
 
 type Props = {
     setDisplayUpdateModal: React.Dispatch<React.SetStateAction<boolean>>,
@@ -20,7 +21,9 @@ function SaveUpdateFlowDialog({ flow, setDisplayUpdateModal, displayUpdateModal 
         <AxiosResponse<IFlow>,
             BackendError,
             { id: string, body: IFlow }
-        >(UpdateFlow)
+        >(UpdateFlow,{
+            onSuccess: () => queryClient.invalidateQueries('flows')
+        })
 
     const formik = useFormik<IFlow>({
         initialValues: {

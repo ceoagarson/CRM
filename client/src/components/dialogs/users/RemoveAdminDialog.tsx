@@ -5,12 +5,17 @@ import { useMutation } from 'react-query';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { RemoveAdmin } from '../../../services/UserServices';
 import { BackendError } from '../../../types';
+import { queryClient } from '../../../main';
 
 function RemoveAdminDialog({ id }: { id: string }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
-        (RemoveAdmin)
+        (RemoveAdmin,{
+            onSuccess: () => {
+                queryClient.invalidateQueries('users')
+            }
+        })
 
     useEffect(() => {
         if (isSuccess)

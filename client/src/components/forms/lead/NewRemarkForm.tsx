@@ -8,12 +8,17 @@ import { NewRemark } from '../../../services/LeadsServices';
 import { ChoiceContext, LeadChoiceActions } from '../../../contexts/dialogContext';
 import { BackendError } from '../../../types';
 import { ILead } from '../../../types/leads/lead.type';
+import { queryClient } from '../../../main';
 
 
 function NewRemarkForm({ lead }: { lead: ILead }) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, { id: string, remark: string }>
-        (NewRemark)
+        (NewRemark,{
+            onSuccess: () => {
+                queryClient.invalidateQueries('leads')
+            }
+        })
 
     const { setChoice } = useContext(ChoiceContext)
 

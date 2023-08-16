@@ -5,13 +5,18 @@ import { useMutation } from 'react-query';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { MakeAdmin } from '../../../services/UserServices';
 import { BackendError } from '../../../types';
+import { queryClient } from '../../../main';
 
 
 function MakeAdminDialog({ id }: { id: string }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
-        (MakeAdmin)
+        (MakeAdmin,{
+            onSuccess: () => {
+                queryClient.invalidateQueries('users')
+            }
+        })
 
     useEffect(() => {
         if (isSuccess)

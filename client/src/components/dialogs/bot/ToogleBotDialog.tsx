@@ -6,6 +6,7 @@ import { useMutation } from 'react-query'
 import { BotChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { Button, Dialog, DialogContent, DialogTitle, Snackbar, Stack } from '@mui/material'
 import { ITracker } from '../../../types/bot/flow.types'
+import { queryClient } from '../../../main'
 
 function ToogleBotDialog({ tracker }: { tracker: ITracker }) {
     const { choice, setChoice } = useContext(ChoiceContext)
@@ -13,7 +14,9 @@ function ToogleBotDialog({ tracker }: { tracker: ITracker }) {
         <AxiosResponse<ITracker>,
             BackendError,
             { body: { phone_number: string, bot_number: string } }
-        >(ToogleBotStatus)
+        >(ToogleBotStatus,{
+            onSuccess: () => queryClient.invalidateQueries('trackers')
+        })
 
     return (
 

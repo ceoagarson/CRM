@@ -8,6 +8,7 @@ import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContex
 import { UpdateUser } from '../../../services/UserServices';
 import { IUser } from '../../../types/users/user.type';
 import { BackendError, Target } from '../../../types';
+import { queryClient } from '../../../main';
 
 
 type TformData = {
@@ -22,7 +23,11 @@ type Props = {
 function UpdateUserForm({ user }: Props) {
   const { mutate, isLoading, isSuccess, isError, error } = useMutation
     <AxiosResponse<IUser>, BackendError, { id: string, body: FormData }>
-    (UpdateUser)
+    (UpdateUser,{
+      onSuccess: () => {
+        queryClient.invalidateQueries('users')
+      }
+    })
   const { setChoice } = useContext(ChoiceContext)
   const formik = useFormik<TformData>({
     initialValues: {

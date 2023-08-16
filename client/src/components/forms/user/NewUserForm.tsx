@@ -9,6 +9,7 @@ import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContex
 import { NewUser } from '../../../services/UserServices';
 import { BackendError, Target } from '../../../types';
 import { IUser } from '../../../types/users/user.type';
+import { queryClient } from '../../../main';
 
 
 type TformData = {
@@ -22,7 +23,11 @@ type TformData = {
 function NewUserForm() {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<IUser>, BackendError, FormData>
-        (NewUser)
+        (NewUser,{
+            onSuccess: () => {
+                queryClient.invalidateQueries('users')
+            }
+        })
 
     const { setChoice } = useContext(ChoiceContext)
 

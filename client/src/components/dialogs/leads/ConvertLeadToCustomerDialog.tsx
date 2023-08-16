@@ -6,13 +6,19 @@ import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContex
 import { ConvertCustomer } from '../../../services/LeadsServices';
 import { ILead } from '../../../types/leads/lead.type';
 import { BackendError } from '../../../types';
+import { queryClient } from '../../../main';
 
 
 function ConvertLeadToCustomerDialog({ lead }: { lead: ILead }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, { id: string }>
-        (ConvertCustomer)
+        (ConvertCustomer, {
+            onSuccess: () => {
+                queryClient.invalidateQueries('customers')
+                queryClient.invalidateQueries('leads')
+            }
+        })
 
     useEffect(() => {
         if (isSuccess)

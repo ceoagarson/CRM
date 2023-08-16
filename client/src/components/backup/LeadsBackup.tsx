@@ -10,7 +10,9 @@ import { useContext, useState } from 'react'
 import { UserContext } from '../../contexts/userContext'
 
 function LeadsBackup() {
-    const { data,  isLoading } = useQuery<AxiosResponse<ILead[]>, BackendError>("backup_leads", BackupAllLeads)
+    const { data, isLoading } = useQuery<AxiosResponse<ILead[]>, BackendError>("backup_leads", BackupAllLeads, {
+        staleTime: 50000
+    })
     const { user } = useContext(UserContext)
     const [isSent, setIsSent] = useState(false)
     function handleExport() {
@@ -52,7 +54,9 @@ function LeadsBackup() {
                     })
             })
             ExportToExcel(result, "all_leads_backup")
+            setIsSent(true)
         }
+
     }
 
     function extractMobiles() {
@@ -70,6 +74,7 @@ function LeadsBackup() {
                     mobiles.push({ mobile: Number(lead.alternate_mobile2) })
             })
             ExportToExcel(mobiles, "all_mobiles_backup")
+            setIsSent(true)
         }
     }
     return (

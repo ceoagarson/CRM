@@ -8,6 +8,7 @@ import { CreateFlow } from '../../../services/BotServices'
 import { BotChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { IFlow } from '../../../types/bot/flow.types'
 import { Button, Dialog, DialogContent, DialogTitle, Snackbar, TextField } from '@mui/material'
+import { queryClient } from '../../../main'
 
 type Props = {
     setFlow: React.Dispatch<React.SetStateAction<IFlow | undefined>>,
@@ -21,7 +22,9 @@ function SaveNewFlowDialog({ flow, setFlow, setDisplaySaveModal }: Props) {
         <AxiosResponse<IFlow>,
             BackendError,
             IFlow
-        >(CreateFlow)
+        >(CreateFlow,{
+            onSuccess: () => queryClient.invalidateQueries('flows')
+        })
 
     const formik = useFormik<IFlow>({
         initialValues: {

@@ -8,6 +8,7 @@ import { useContext, useEffect } from 'react';
 import { AxiosResponse } from 'axios';
 import { IUser } from '../../../types/users/user.type';
 import { BackendError, Target } from '../../../types';
+import { queryClient } from '../../../main';
 
 
 type TformData = {
@@ -19,7 +20,11 @@ type TformData = {
 function UpdateProfileForm({ user }: { user: IUser }) {
   const { mutate, isLoading, isSuccess, isError, error } = useMutation
     <AxiosResponse<IUser>, BackendError, FormData>
-    (UpdateProfile)
+    (UpdateProfile,{
+      onSuccess: () => {
+        queryClient.invalidateQueries('users')
+      }
+    })
   const { setChoice } = useContext(ChoiceContext)
 
   const formik = useFormik<TformData>({

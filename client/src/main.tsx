@@ -10,12 +10,13 @@ import { MenuProvider } from "./contexts/menuContext";
 import { LoadingProvider } from './contexts/loaderContext.tsx';
 
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnReconnect: true,
       retry: false,
-      refetchOnMount: true
+      refetchOnMount: true,
+      staleTime:100
     }
   }
 });

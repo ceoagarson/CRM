@@ -6,6 +6,7 @@ import { UpdateUserLeadAccess } from '../../../services/UserServices';
 import { Button, Checkbox, FormControlLabel, Typography,  CircularProgress, Stack, Alert } from '@mui/material'
 import { IUser, LeadField, LeadFieldType } from '../../../types/users/user.type';
 import { BackendError } from '../../../types';
+import { queryClient } from '../../../main';
 
 
 
@@ -14,7 +15,11 @@ function LeadControlAccessForm({ user }: { user: IUser }) {
     const [LeadFields, setLeadFields] = useState(user.lead_fields)
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<any>, BackendError, { id: string, leadFields: { lead_fields: LeadField[] } }>
-        (UpdateUserLeadAccess)
+        (UpdateUserLeadAccess,{
+            onSuccess: () => {
+                queryClient.invalidateQueries('users')
+            }
+        })
     function handleHidden(key: LeadFieldType) {
         let newFields = LeadFields
         newFields = LeadFields.map((item) => {

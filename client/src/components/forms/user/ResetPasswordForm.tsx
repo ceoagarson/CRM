@@ -11,6 +11,7 @@ import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContex
 import { paths } from '../../../Routes';
 import { ResetPassword } from '../../../services/UserServices';
 import { BackendError } from '../../../types';
+import { queryClient } from '../../../main';
 
 
 function ResetPasswordForm({ token }: { token: string }) {
@@ -21,7 +22,11 @@ function ResetPasswordForm({ token }: { token: string }) {
       BackendError,
       { token: string, body: { newPassword: string, confirmPassword: string } }
     >
-    (ResetPassword)
+    (ResetPassword,{
+      onSuccess: () => {
+        queryClient.invalidateQueries('users')
+      }
+    })
 
   const formik = useFormik({
     initialValues: {

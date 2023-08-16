@@ -14,6 +14,7 @@ import { ILead } from '../../../types/leads/lead.type';
 import { IUser } from '../../../types/users/user.type';
 import { useLeadFields } from '../../hooks/LeadFieldsHook';
 import { ILeadUpdatableField } from '../../../types/leads/lead.updatable_field.type';
+import { queryClient } from '../../../main';
 
 export type TformData = {
   name: string,
@@ -42,7 +43,11 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
   const { hiddenFields, readonlyFields } = useLeadFields()
   const { mutate, isLoading, isSuccess, isError, error } = useMutation
     <AxiosResponse<ILead>, BackendError, { id: string, body: FormData }>
-    (UpdateLead)
+    (UpdateLead,{
+      onSuccess: () => {
+        queryClient.invalidateQueries('leads')
+      }
+    })
   const { data, isSuccess: isFieldsSuccess } = useQuery<AxiosResponse<ILeadUpdatableField>, BackendError>("updateble-lead-leads", GetLeadFieldsUpdatable)
   const [fields, setFields] = useState<ILeadUpdatableField>()
 

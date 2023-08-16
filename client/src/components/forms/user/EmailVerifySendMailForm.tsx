@@ -11,6 +11,7 @@ import { paths } from '../../../Routes';
 import { SendVerifyEmail } from '../../../services/UserServices';
 import { UserContext } from '../../../contexts/userContext';
 import { BackendError } from '../../../types';
+import { queryClient } from '../../../main';
 
 
 function EmailVerifySendMailForm() {
@@ -20,7 +21,11 @@ function EmailVerifySendMailForm() {
     <AxiosResponse<string>,
       BackendError,
       { email: string }
-    >(SendVerifyEmail)
+    >(SendVerifyEmail,{
+      onSuccess: () => {
+        queryClient.invalidateQueries('users')
+      }
+    })
   const { setChoice } = useContext(ChoiceContext)
 
   const formik = useFormik({

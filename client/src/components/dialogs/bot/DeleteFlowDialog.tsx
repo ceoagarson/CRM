@@ -6,6 +6,7 @@ import { useMutation } from 'react-query'
 import { BotChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { Button, Dialog, DialogContent, DialogTitle, Snackbar, Stack } from '@mui/material'
 import { IFlow } from '../../../types/bot/flow.types'
+import { queryClient } from '../../../main'
 
 function DeleteFlowDialog({ flow }: { flow: IFlow }) {
     const { choice, setChoice } = useContext(ChoiceContext)
@@ -13,7 +14,7 @@ function DeleteFlowDialog({ flow }: { flow: IFlow }) {
         <AxiosResponse<IFlow>,
             BackendError,
             string
-        >(DestroyFlow)
+        >(DestroyFlow, { onSuccess: () => queryClient.invalidateQueries('flows') })
 
     return (
         <Dialog open={choice === BotChoiceActions.delete_flow ? true : false}
