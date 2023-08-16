@@ -15,8 +15,7 @@ const queryClient = new QueryClient({
     queries: {
       refetchOnReconnect: true,
       retry: false,
-      refetchOnMount: true,
-      cacheTime: 200
+      refetchOnMount: true
     }
   }
 });

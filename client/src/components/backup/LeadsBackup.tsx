@@ -6,12 +6,13 @@ import { BackendError } from '../../types'
 import { Button, Snackbar, Stack } from '@mui/material'
 import { ILeadTemplate } from '../../types/leads/lead.template.types'
 import ExportToExcel from '../../utils/ExportToExcel'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { UserContext } from '../../contexts/userContext'
 
 function LeadsBackup() {
-    const { data, isSuccess, isLoading } = useQuery<AxiosResponse<ILead[]>, BackendError>("backup_leads", BackupAllLeads)
+    const { data,  isLoading } = useQuery<AxiosResponse<ILead[]>, BackendError>("backup_leads", BackupAllLeads)
     const { user } = useContext(UserContext)
+    const [isSent, setIsSent] = useState(false)
     function handleExport() {
         let leads = data?.data
         let result: ILeadTemplate[] = []
@@ -75,9 +76,9 @@ function LeadsBackup() {
         <>
             {/* export snak bar */}
             < Snackbar
-                open={isSuccess}
+                open={isSent}
                 autoHideDuration={6000}
-                onClose={() => null}
+                onClose={() => setIsSent(false)}
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
                 message="Data Exported Successfuly"
             />
