@@ -52,7 +52,7 @@ export default function CrmNavBar() {
                             <StyledLink to={paths.leads}>Leads</StyledLink>
                             <StyledLink to={paths.customers}>Customers</StyledLink>
                             {
-                                user?.is_admin &&
+                                user?.created_by._id === user?._id &&
                                 <StyledLink to={paths.updateble_fields_lead}>Fields</StyledLink>
                             }
                         </Stack>

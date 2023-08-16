@@ -119,11 +119,13 @@ function UpdateLeadFieldsPage() {
                                     <TextField disabled defaultValue={type}>
                                     </TextField>
                                     <Button color="error" sx={{ borderRadius: 2 }} variant="contained" onClick={() => {
-                                        if (stage && fields?.stages)
+                                        if (type && fields?.lead_types)
                                             setFields({
                                                 ...fields,
                                                 lead_types: fields.lead_types.filter((item) => { return item !== type })
                                             })
+
+
                                     }}>
                                         <Delete />
                                     </Button>
@@ -154,10 +156,10 @@ function UpdateLeadFieldsPage() {
                                     <TextField disabled defaultValue={field}>
                                     </TextField>
                                     <Button color="error" sx={{ borderRadius: 2 }} variant="contained" onClick={() => {
-                                        if (stage && fields?.stages)
+                                        if (field && fields?.lead_sources)
                                             setFields({
                                                 ...fields,
-                                                lead_sources: fields.lead_sources.filter((item) => { return item !== source })
+                                                lead_sources: fields.lead_sources.filter((source) => { return source !== field })
                                             })
                                     }}>
                                         <Delete />

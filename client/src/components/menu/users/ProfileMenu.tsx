@@ -11,6 +11,7 @@ import UpdateProfileDialog from '../../dialogs/users/UpdateProfileDialog';
 import UpdatePasswordDialog from '../../dialogs/users/UpdatePasswordDialog';
 import { Logout } from '../../../services/UserServices';
 import { UserContext } from '../../../contexts/userContext';
+import ProfileDialog from '../../dialogs/users/ProfileDialog';
 
 
 function ProfileMenu() {
@@ -38,7 +39,7 @@ function ProfileMenu() {
             >
                 <MenuItem
                     onClick={() => {
-                        setChoice({ type: UserChoiceActions.update_profile })
+                        setChoice({ type: UserChoiceActions.view_profile })
                         setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
                     }
                     }
@@ -81,6 +82,7 @@ function ProfileMenu() {
             <EmailVerifySendMailDialog />
             <UpdateProfileDialog />
             <UpdatePasswordDialog />
+            {user && <ProfileDialog profile={user} />}
         </>
     )
 }

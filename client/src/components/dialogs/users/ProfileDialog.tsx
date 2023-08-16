@@ -16,13 +16,17 @@ function ProfileDialog({ profile }: { profile: IUser }) {
             <DialogContent>
                 <Box>
                     <Stack p={2} justifyContent="center" alignItems="center">
-                        <Avatar src={profile?.dp?.url} sx={{ height: "150px", width: "150px" }} alt="profile pic" />
+                        <Avatar src={profile?.dp?.url} sx={{ height: "100px", width: "150px" }} alt="profile pic" />
                     </Stack>
                     <Stack direction="column" justifyContent="center" alignItems="center">
                         <Typography variant="h6" component="h2">
                             {profile?.username}</Typography>
                         <Typography variant="caption" component="p">
-                            {profile?.is_admin?"admin":"user"}</Typography>
+                            {profile?.is_admin ? "admin" : "user"}</Typography>
+                        <Typography variant="caption" component="p">
+                            {profile?.mobile}</Typography>
+                        <Typography variant="caption" component="p">
+                            {profile?.email}</Typography>
                     </Stack>
                 </Box>
             </DialogContent>

@@ -33,7 +33,7 @@ function CrmMenu() {
                 }>
                 <StyledLink to={paths.customers}>Customers</StyledLink>
             </MenuItem>
-            {user?.is_admin &&
+            {user?.created_by._id === user?._id  &&
                 <MenuItem
                     onClick={
                         () => setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
