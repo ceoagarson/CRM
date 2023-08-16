@@ -18,7 +18,7 @@ export const isAuthenticatedUser = async (req: Request, res: Response, next: Nex
                 return res.status(403).json({ message: "login again ! session expired" })
             }
             if (decodedData) {
-                req.user = await User.findById(decodedData.id)
+                req.user = await User.findById(decodedData.id).populate('created_by').populate('updated_by')
                 next();
             }
         }
@@ -39,7 +39,7 @@ export const isProfileAuthenticated = async (req: Request, res: Response, next: 
                 return res.status(403).json({ message: "login again " })
             }
             if (decodedData) {
-                req.user = await User.findById(decodedData.id)
+                req.user = await User.findById(decodedData.id).populate('created_by').populate('updated_by')
                 next();
             }
         }

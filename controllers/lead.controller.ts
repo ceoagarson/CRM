@@ -337,7 +337,8 @@ export const DeleteLead = async (req: Request, res: Response, next: NextFunction
         await remark.remove()
     })
     await lead.remove()
-    await destroyFile(lead.visiting_card?.public_id || "")
+    if (lead.visiting_card.url !== "")
+        await destroyFile(lead.visiting_card?.public_id || "")
     return res.status(200).json({ message: "lead and related remarks are deleted" })
 }
 
@@ -378,6 +379,12 @@ export const NewRemark = async (req: Request, res: Response, next: NextFunction)
 }
 
 export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next: NextFunction) => {
+    let result: ILeadTemplate[] = []
+    let create_operation = true
+    if (!req.file)
+        return res.status(400).json({
+            message: "please provide an Excel file",
+        });
     if (req.file) {
         const allowedFiles = ["application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "text/csv"];
         if (!allowedFiles.includes(req.file.mimetype))
@@ -390,7 +397,6 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
             workbook.Sheets[workbook_sheet[0]]
         );
         let statusText: string = ""
-        let result: ILeadTemplate[] = []
         let oldLeads = await Lead.find()
         let OldNumbers: number[] = []
         oldLeads.forEach((lead) => {
@@ -406,8 +412,6 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
             let mobile: number | null = Number(lead.mobile)
             let alternate_mobile1: number | null = Number(lead.alternate_mobile1)
             let alternate_mobile2: number | null = Number(lead.alternate_mobile2)
-            let created_by: IUser | undefined = undefined
-            let updated_by: IUser | undefined = undefined
             let new_lead_owners: IUser[] = []
             let validated = true
 
@@ -489,54 +493,55 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
                 new_lead_owners.push(req.user)
             console.log(validated)
             //update and create new nead
-            if (req.user) {
-                if (String(req.user._id) === String(req.user.created_by._id))
-                    if (lead._id && isMongoId(String(lead._id))) {
-                        let targetLead = await Lead.findById(lead._id)
-                        if (targetLead) {
-                            if (lead.remarks) {
-                                if (!lead.remarks.length) {
-                                    let new_remark = new Remark({
-                                        remark: lead.remarks,
-                                        lead: lead,
-                                        created_at: new Date(),
-                                        created_by: req.user,
-                                        updated_at: new Date(),
-                                        updated_by: req.user
-                                    })
-                                    await new_remark.save()
-                                    targetLead.last_remark = lead.remarks
-                                    targetLead.remarks = [new_remark]
-                                }
-                                else {
-                                    let last_remark = targetLead.remarks[targetLead.remarks.length - 1]
-                                    await Remark.findByIdAndUpdate(last_remark._id, {
-                                        remark: lead.remarks,
-                                        lead: lead,
-                                        updated_at: new Date(),
-                                        updated_by: req.user
-                                    })
-                                    targetLead.last_remark = last_remark.remark
-                                }
 
+            if (lead._id && isMongoId(String(lead._id))) {
+                create_operation = false
+                if (String(req.user?._id) === String(req.user?.created_by._id)) {
+                    let targetLead = await Lead.findById(lead._id)
+                    if (targetLead) {
+                        if (lead.remarks) {
+                            if (!lead.remarks.length) {
+                                let new_remark = new Remark({
+                                    remark: lead.remarks,
+                                    lead: lead,
+                                    created_at: new Date(),
+                                    created_by: req.user,
+                                    updated_at: new Date(),
+                                    updated_by: req.user
+                                })
+                                await new_remark.save()
+                                targetLead.last_remark = lead.remarks
+                                targetLead.remarks = [new_remark]
+                            }
+                            else {
+                                let last_remark = targetLead.remarks[targetLead.remarks.length - 1]
+                                await Remark.findByIdAndUpdate(last_remark._id, {
+                                    remark: lead.remarks,
+                                    lead: lead,
+                                    updated_at: new Date(),
+                                    updated_by: req.user
+                                })
+                                targetLead.last_remark = last_remark.remark
                             }
 
-                            await Lead.findByIdAndUpdate(lead._id, {
-                                ...lead,
-                                remarks: targetLead.remarks,
-                                mobile: uniqueNumbers[0] || mobile,
-                                alternate_mobile1: uniqueNumbers[1] || alternate_mobile1 || null,
-                                alternate_mobile2: uniqueNumbers[2] || alternate_mobile2 || null,
-                                lead_owners: new_lead_owners,
-                                lead_owners_username: new_lead_owners.map(user => { return user.username }),
-                                updated_by: req.user,
-                                updated_by_username: req.user?.username,
-                                updated_at: new Date(Date.now())
-                            })
                         }
 
+                        await Lead.findByIdAndUpdate(lead._id, {
+                            ...lead,
+                            remarks: targetLead.remarks,
+                            mobile: uniqueNumbers[0] || mobile,
+                            alternate_mobile1: uniqueNumbers[1] || alternate_mobile1 || null,
+                            alternate_mobile2: uniqueNumbers[2] || alternate_mobile2 || null,
+                            lead_owners: new_lead_owners,
+                            lead_owners_username: new_lead_owners.map(user => { return user.username }),
+                            updated_by: req.user,
+                            updated_by_username: req.user?.username,
+                            updated_at: new Date(Date.now())
+                        })
                     }
+                }
             }
+
             if (validated) {
                 if (!lead._id || !isMongoId(String(lead._id))) {
                     let newlead = new Lead({
@@ -572,11 +577,12 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
                 }
             }
         })
-        return res.status(200).json(result);
+
     }
-    return res.status(404).json({
-        message: "please provide an Excel file",
-    });
+    if (!create_operation && String(req.user?._id) !== String(req.user?.created_by._id))
+        return res.status(403).json({ message: "not allowed this operation" })
+    return res.status(200).json(result);
+
 }
 
 export const ConvertCustomer = async (req: Request, res: Response, next: NextFunction) => {

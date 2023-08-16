@@ -15,6 +15,7 @@ import ReactPagination from '../../components/pagination/ReactPagination'
 import { ILead } from '../../types/leads/lead.type'
 
 
+
 export default function LeadsPage() {
   const [paginationData, setPaginationData] = useState({ limit: 10, page: 1, total: 1 });
   const [reactPaginationData, setReactPaginationData] = useState({ limit: 10, page: 1, total: 1 });
@@ -36,7 +37,7 @@ export default function LeadsPage() {
   const MemoData = React.useMemo(() => leads, [leads])
   const [preFilteredData, setPreFilteredData] = useState<ILead[]>([])
   const [selectedLeads, setSelectedLeads] = useState<ILead[]>([])
-
+  
 
   const { data, isSuccess, isLoading } = useQuery<AxiosResponse<{ leads: ILead[], page: number, total: number, limit: number }>, BackendError>(["leads", paginationData], async () => GetLeads({ limit: paginationData?.limit, page: paginationData?.page }))
 

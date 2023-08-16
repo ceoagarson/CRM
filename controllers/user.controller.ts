@@ -417,7 +417,7 @@ export const BlockUser = async (req: Request, res: Response, next: NextFunction)
     //update role of user
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
-    let user = await User.findById(id)
+    let user = await User.findById(id).populate('created_by')
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }
@@ -461,7 +461,7 @@ export const RemoveAdmin = async (req: Request, res: Response, next: NextFunctio
     //update role of user
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
-    let user = await User.findById(id)
+    let user = await User.findById(id).populate('created_by')
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }
@@ -608,18 +608,18 @@ export const testRoute = async (req: Request, res: Response, next: NextFunction)
             })
         })
     }
-    all_fields.map((field) => {
-        LeadFields.push({
-            field: field,
-            readonly: true,
-            hidden: false
+    else
+        all_fields.map((field) => {
+            LeadFields.push({
+                field: field,
+                readonly: true,
+                hidden: false
+            })
         })
-    })
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }
-    await User.findByIdAndUpdate(user._id, {
-        lead_fields: LeadFields
-    })
+    user.lead_fields = LeadFields
+    await user.save()
     res.status(200).json({ message: "user lead fields roles updated" })
 }

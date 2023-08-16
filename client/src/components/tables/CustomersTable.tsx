@@ -31,7 +31,7 @@ function CustomersTable({ lead, leads, selectableLeads, setLead, selectAll, setS
     const { user: LoggedInUser } = useContext(UserContext)
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const [data, setData] = useState<ILead[]>(leads)
-    const { hiddenFields } = useLeadFields()
+    const { hiddenFields, readonlyFields } = useLeadFields()
 
     useEffect(() => {
         setData(leads)
@@ -555,63 +555,71 @@ function CustomersTable({ lead, leads, selectableLeads, setLead, selectAll, setS
                                                     {
                                                         LoggedInUser?.created_by._id === LoggedInUser?._id ?
                                                             <>
-                                                                <Tooltip title="delete">
-                                                                    <IconButton color="error"
-                                                                        onClick={() => {
-                                                                            setAnchorEl(null)
-                                                                            setChoice({ type: LeadChoiceActions.delete_lead })
-                                                                            setLead(lead)
+                                                                {!hiddenFields?.includes('allow_delete') &&
+                                                                    <Tooltip title="delete">
+                                                                        <IconButton color="error"
+                                                                            onClick={() => {
+                                                                                setAnchorEl(null)
+                                                                                setChoice({ type: LeadChoiceActions.delete_lead })
+                                                                                setLead(lead)
 
-                                                                        }}
-                                                                    >
-                                                                        <Delete />
-                                                                    </IconButton>
-                                                                </Tooltip>
+                                                                            }}
+                                                                            disabled={readonlyFields?.includes('allow_delete')}
+                                                                        >
+                                                                            <Delete />
+                                                                        </IconButton>
+                                                                    </Tooltip>}
+                                                                {!hiddenFields?.includes('allow_update') &&
+                                                                    <Tooltip title="edit">
+                                                                        <IconButton color="secondary"
+                                                                            onClick={() => {
+                                                                                setAnchorEl(null)
+                                                                                setChoice({ type: LeadChoiceActions.update_lead })
+                                                                                setLead(lead)
 
+
+                                                                            }}
+                                                                            disabled={readonlyFields?.includes('allow_update')}
+                                                                        >
+                                                                            <Edit />
+                                                                        </IconButton>
+                                                                    </Tooltip>}
                                                             </>
                                                             :
                                                             null
                                                     }
+                                                    {!hiddenFields?.includes('view_remarks') &&
 
-                                                    <Tooltip title="edit">
-                                                        <IconButton color="secondary"
-                                                            onClick={() => {
-                                                                setAnchorEl(null)
-                                                                setChoice({ type: LeadChoiceActions.update_lead })
-                                                                setLead(lead)
-
-
-                                                            }}
-                                                        >
-                                                            <Edit />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                    <Tooltip title="view remarks">
-                                                        <IconButton color="primary"
-                                                            onClick={() => {
-                                                                setAnchorEl(null)
-                                                                setChoice({ type: LeadChoiceActions.view_remarks })
-                                                                setLead(lead)
+                                                        <Tooltip title="view remarks">
+                                                            <IconButton color="primary"
+                                                                onClick={() => {
+                                                                    setAnchorEl(null)
+                                                                    setChoice({ type: LeadChoiceActions.view_remarks })
+                                                                    setLead(lead)
 
 
-                                                            }}
-                                                        >
-                                                            <Visibility />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                    <Tooltip title="Add Remark">
-                                                        <IconButton
-                                                            color="success"
-                                                            onClick={() => {
-                                                                setAnchorEl(null)
-                                                                setChoice({ type: LeadChoiceActions.update_remark })
-                                                                setLead(lead)
+                                                                }}
+                                                                disabled={readonlyFields?.includes('view_remarks')}
+                                                            >
+                                                                <Visibility />
+                                                            </IconButton>
+                                                        </Tooltip>}
+                                                    {!hiddenFields?.includes('add_remarks') &&
+                                                        <Tooltip title="Add Remark">
+                                                            <IconButton
+                                                                color="success"
+                                                                onClick={() => {
+                                                                    setAnchorEl(null)
+                                                                    setChoice({ type: LeadChoiceActions.update_remark })
+                                                                    setLead(lead)
 
-                                                            }}
-                                                        >
-                                                            <Comment />
-                                                        </IconButton>
-                                                    </Tooltip>
+                                                                }}
+                                                                disabled={readonlyFields?.includes('add_remarks')}
+
+                                                            >
+                                                                <Comment />
+                                                            </IconButton>
+                                                        </Tooltip>}
                                                 </Stack>}
                                                 anchor={anchorEl}
                                             />
@@ -815,53 +823,71 @@ function CustomersTable({ lead, leads, selectableLeads, setLead, selectAll, setS
                                                 {
                                                     LoggedInUser?.created_by._id === LoggedInUser?._id ?
                                                         <>
-                                                            <Tooltip title="delete">
-                                                                <IconButton color="error"
-                                                                    onClick={() => {
-                                                                        setChoice({ type: LeadChoiceActions.delete_lead })
-                                                                        setLead(lead)
-                                                                    }}
-                                                                >
-                                                                    <Delete />
-                                                                </IconButton>
-                                                            </Tooltip>
+                                                            {!hiddenFields?.includes('allow_delete') &&
+                                                                <Tooltip title="delete">
+                                                                    <IconButton color="error"
+                                                                        onClick={() => {
+                                                                            setAnchorEl(null)
+                                                                            setChoice({ type: LeadChoiceActions.delete_lead })
+                                                                            setLead(lead)
 
+                                                                        }}
+                                                                        disabled={readonlyFields?.includes('allow_delete')}
+                                                                    >
+                                                                        <Delete />
+                                                                    </IconButton>
+                                                                </Tooltip>}
+                                                            {!hiddenFields?.includes('allow_update') &&
+                                                                <Tooltip title="edit">
+                                                                    <IconButton color="secondary"
+                                                                        onClick={() => {
+                                                                            setAnchorEl(null)
+                                                                            setChoice({ type: LeadChoiceActions.update_lead })
+                                                                            setLead(lead)
+
+
+                                                                        }}
+                                                                        disabled={readonlyFields?.includes('allow_update')}
+                                                                    >
+                                                                        <Edit />
+                                                                    </IconButton>
+                                                                </Tooltip>}
                                                         </>
                                                         :
                                                         null
                                                 }
+                                                {!hiddenFields?.includes('view_remarks') &&
 
-                                                <Tooltip title="edit">
-                                                    <IconButton color="secondary"
-                                                        onClick={() => {
-                                                            setChoice({ type: LeadChoiceActions.update_lead })
-                                                            setLead(lead)
-                                                        }}
-                                                    >
-                                                        <Edit />
-                                                    </IconButton>
-                                                </Tooltip>
-                                                <Tooltip title="view remarks">
-                                                    <IconButton color="primary"
-                                                        onClick={() => {
-                                                            setChoice({ type: LeadChoiceActions.view_remarks })
-                                                            setLead(lead)
-                                                        }}
-                                                    >
-                                                        <Visibility />
-                                                    </IconButton>
-                                                </Tooltip>
-                                                <Tooltip title="Add Remark">
-                                                    <IconButton
-                                                        color="success"
-                                                        onClick={() => {
-                                                            setChoice({ type: LeadChoiceActions.update_remark })
-                                                            setLead(lead)
-                                                        }}
-                                                    >
-                                                        <Comment />
-                                                    </IconButton>
-                                                </Tooltip>
+                                                    <Tooltip title="view remarks">
+                                                        <IconButton color="primary"
+                                                            onClick={() => {
+                                                                setAnchorEl(null)
+                                                                setChoice({ type: LeadChoiceActions.view_remarks })
+                                                                setLead(lead)
+
+
+                                                            }}
+                                                            disabled={readonlyFields?.includes('view_remarks')}
+                                                        >
+                                                            <Visibility />
+                                                        </IconButton>
+                                                    </Tooltip>}
+                                                {!hiddenFields?.includes('add_remarks') &&
+                                                    <Tooltip title="Add Remark">
+                                                        <IconButton
+                                                            color="success"
+                                                            onClick={() => {
+                                                                setAnchorEl(null)
+                                                                setChoice({ type: LeadChoiceActions.update_remark })
+                                                                setLead(lead)
+
+                                                            }}
+                                                            disabled={readonlyFields?.includes('add_remarks')}
+
+                                                        >
+                                                            <Comment />
+                                                        </IconButton>
+                                                    </Tooltip>}
                                             </Stack>
 
                                         </TableCell>

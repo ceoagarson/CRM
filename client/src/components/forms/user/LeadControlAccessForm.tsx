@@ -55,37 +55,28 @@ function LeadControlAccessForm({ user }: { user: IUser }) {
 
     return (
         <>
-            <Typography variant={"subtitle1"} sx={{ fontWeight: "bold", textAlign: 'center', backgroundColor: 'rgba(0,0,0,0.1)' }}>Leads Access Control For The Selected User</Typography>
-            <Stack sx={{ maxWidth: '100vw', display: 'flex', overflow: 'scroll' }}>
-                <Table
 
-                    sx={{ minWidth: "5000px" }}
-                >
-                    <TableBody>
-                        <TableRow>
-                            {
-                                LeadFields.map((field, index) => {
-                                    return (
-                                        <TableCell key={index} >
-                                            <Stack direction="column">
-                                                <Typography sx={{ fontSize: 15, fontWeight: 'bold' }}>{field.field.replace("_", " ").toLocaleUpperCase()}</Typography>
-                                                <FormControlLabel sx={{ fontSize: 12 }} control={<Checkbox size="small" checked={Boolean(field.hidden)} />} onChange={() => {
-                                                    handleHidden(field.field)
-                                                }} label="Hidden" />
-                                                <FormControlLabel sx={{ fontSize: 12 }} control={<Checkbox size="small" checked={Boolean(field.readonly)} />}
-                                                    onChange={() => {
-                                                        handleReadOnly(field.field)
-                                                    }}
-                                                    label="Read Only"
-                                                />
-                                            </Stack>
-                                        </TableCell>
-                                    )
-                                })
-                            }
-                        </TableRow>
-                    </TableBody>
-                </Table>
+            <Stack direction={"column"} sx={{ maxWidth: '300px',backgroundColor:'whitesmoke' }} gap={1}>
+                <Typography variant={"subtitle1"} sx={{ fontWeight: "bold", textAlign: 'center', backgroundColor: 'rgba(0,0,0,0.1)' }}>Leads Options for Selected User</Typography>
+
+                {
+                    LeadFields.map((field, index) => {
+                        return (
+                            <Stack key={index} direction="column" justifyContent={"left"}>
+                                <Typography sx={{ fontSize: 15, fontWeight: 'bold' }}>{field.field.replace("_", " ").toLocaleUpperCase()}</Typography>
+                                <FormControlLabel sx={{ fontSize: 12 }} control={<Checkbox size="small" checked={Boolean(field.hidden)} />} onChange={() => {
+                                    handleHidden(field.field)
+                                }} label="Hidden" />
+                                <FormControlLabel sx={{ fontSize: 12 }} control={<Checkbox size="small" checked={Boolean(field.readonly)} />}
+                                    onChange={() => {
+                                        handleReadOnly(field.field)
+                                    }}
+                                    label="Read Only"
+                                />
+                            </Stack>
+                        )
+                    })
+                }
             </Stack>
 
             {

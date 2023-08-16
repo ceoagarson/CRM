@@ -8,6 +8,7 @@ import NewLeadDialog from '../../dialogs/leads/NewLeadDialog';
 import { ILead } from '../../../types/leads/lead.type';
 import { ILeadTemplate } from '../../../types/leads/lead.template.types';
 import { UserContext } from '../../../contexts/userContext';
+import { useLeadFields } from '../../hooks/LeadFieldsHook';
 
 let template: ILeadTemplate[] = [
     {
@@ -49,6 +50,7 @@ function LeadTableMenu({ selectedFlatRows }: Props) {
     const [selectedData, setSelectedData] = useState<ILeadTemplate[]>(template)
     const [sent, setSent] = useState(false)
     const { setChoice } = useContext(ChoiceContext)
+    const { hiddenFields, readonlyFields } = useLeadFields()
     const { user } = useContext(UserContext)
     function handleExcel() {
         setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
@@ -136,18 +138,26 @@ function LeadTableMenu({ selectedFlatRows }: Props) {
                 }}
                 sx={{ borderRadius: 2 }}
             >
-                <MenuItem onClick={() => {
-                    setChoice({ type: LeadChoiceActions.create_lead })
-                    setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
-                }}
-                >Add New</MenuItem>
+                {!hiddenFields?.includes('allow_create') &&
+                    <MenuItem
+                        onClick={() => {
+                            setChoice({ type: LeadChoiceActions.create_lead })
+                            setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
+                        }}
+                        disabled={readonlyFields?.includes('allow_create')}
+                    > Add New</MenuItem>}
                 {
                     user?.is_admin &&
-                    <MenuItem onClick={handleExcel}
-                    >Export To Excel</MenuItem>
+                    <>
+                        {!hiddenFields?.includes('export_to_excel') &&
+                            < MenuItem onClick={handleExcel}
+                                disabled={readonlyFields?.includes('export_to_excel')}
+                            >Export To Excel</MenuItem>
+                        }
+                    </>
                 }
 
-            </Menu>
+            </Menu >
             <NewLeadDialog />
         </>
     )

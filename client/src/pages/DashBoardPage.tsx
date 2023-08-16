@@ -31,21 +31,20 @@ function DashBoardPage() {
               </CardActions>
             </Card>
           </Grid>}
-        {user?.is_admin &&
-          <Grid item xs={12} md={4} lg={3} sx={{ p: 1 }}>
-            <Card sx={{ bgcolor: 'whitesmoke', boxShadow: 4, border: 10, borderRadius: 3, borderColor: 'whitesmoke', p: 1 }}>
-              <CardContent sx={{ display: 'flex', direction: "row", alignItems: "center", gap: 2 }}>
-                <Diversity3Icon sx={{ color: 'darkblue', height: 50, width: 50 }} />
-                <Typography variant="button" sx={{ color: 'darkblue', fontSize: 16 }} component="div">
-                  CRM
-                </Typography>
-              </CardContent>
-              <CardActions>
-                <Button variant="contained" color="primary" size="small" onClick={() => goto(paths.crm)}>View All</Button>
-                <Button variant="contained" color="inherit" size="small">View Reports</Button>
-              </CardActions>
-            </Card>
-          </Grid>}
+        <Grid item xs={12} md={4} lg={3} sx={{ p: 1 }}>
+          <Card sx={{ bgcolor: 'whitesmoke', boxShadow: 4, border: 10, borderRadius: 3, borderColor: 'whitesmoke', p: 1 }}>
+            <CardContent sx={{ display: 'flex', direction: "row", alignItems: "center", gap: 2 }}>
+              <Diversity3Icon sx={{ color: 'darkblue', height: 50, width: 50 }} />
+              <Typography variant="button" sx={{ color: 'darkblue', fontSize: 16 }} component="div">
+                CRM
+              </Typography>
+            </CardContent>
+            <CardActions>
+              <Button variant="contained" color="primary" size="small" onClick={() => goto(paths.crm)}>View All</Button>
+              <Button variant="contained" color="inherit" size="small">View Reports</Button>
+            </CardActions>
+          </Card>
+        </Grid>
         {user?.created_by._id === user?._id &&
           <Grid item xs={12} md={4} lg={3} sx={{ p: 1 }}>
             <Card sx={{ bgcolor: 'whitesmoke', boxShadow: 4, border: 10, borderRadius: 3, borderColor: 'whitesmoke', p: 1 }}>
