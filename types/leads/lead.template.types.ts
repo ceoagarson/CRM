@@ -25,9 +25,9 @@ export type ILeadTemplate = {
 
     last_whatsapp_date: Date,
     created_at: Date,
-    created_by: string,
+    created_by_username: string,
     updated_at: Date,
-    updated_by: string,
+    updated_by_username: string,
     status?: string
 }
 

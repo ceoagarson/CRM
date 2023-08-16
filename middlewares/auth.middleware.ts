@@ -25,6 +25,26 @@ export const isAuthenticatedUser = async (req: Request, res: Response, next: Nex
     );
 }
 
+//special case for profile
+export const isProfileAuthenticated = async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.cookies.accessToken)
+        return res.status(403).json({ message: "please login " })
+    if (!UserTokens.includes(req.cookies.accessToken))
+        return res.status(403).json({ message: "login again " })
+    jwt.verify(
+        req.cookies.accessToken,
+        process.env.JWT_ACCESS_USER_SECRET || "some random secret",
+        async (err: any, decodedData: any) => {
+            if (err) {
+                return res.status(403).json({ message: "login again " })
+            }
+            if (decodedData) {
+                req.user = await User.findById(decodedData.id)
+                next();
+            }
+        }
+    );
+}
 
 //check admin
 export const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
@@ -34,7 +54,7 @@ export const isAdmin = async (req: Request, res: Response, next: NextFunction) =
 }
 
 export const isOwner = async (req: Request, res: Response, next: NextFunction) => {
-    if (req.user?.created_by === req.user)
+    if (req.user?.created_by_username === req.user?.username)
         return next();
     return res.status(403).json({ message: "!must be owner" });
 }

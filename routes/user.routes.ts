@@ -1,7 +1,8 @@
 import express from "express";
 import multer from "multer";
-import { BlockUser, GetProfile, GetUsers, Login, Logout, MakeAdmin, NewUser, RemoveAdmin, ResetPassword, SendPasswordResetMail, SendVerifyEmail, SignUp, UnBlockUser, UpdateLeadFieldRoles, UpdateProfile, UpdateUser, VerifyEmail, updatePassword, updateUserPassword } from "../controllers/user.controller";
-import { isAdmin, isAuthenticatedUser, } from "../middlewares/auth.middleware";
+
+import { BlockUser, GetProfile, GetUsers, Login, Logout, MakeAdmin, NewUser, RemoveAdmin, ResetPassword, SendPasswordResetMail, SendVerifyEmail, SignUp, UnBlockUser, UpdateLeadFieldRoles, UpdateProfile, UpdateUser, VerifyEmail, testRoute, updatePassword, updateUserPassword } from "../controllers/user.controller";
+import { isAdmin, isAuthenticatedUser, isProfileAuthenticated, } from "../middlewares/auth.middleware";
 
 const router = express.Router()
 export const upload = multer({ storage: multer.diskStorage({ destination: "/tmp/" }) })
@@ -19,7 +20,7 @@ router.patch("/update-lead-field-roles/user/:id", isAuthenticatedUser, isAdmin, 
 router.post("/login", Login)
 router.post("/logout", Logout)
 router.route("/profile")
-    .get(isAuthenticatedUser, GetProfile)
+    .get(isProfileAuthenticated, GetProfile)
     .put(isAuthenticatedUser, upload.single("dp"), UpdateProfile)
 router.route("/password/update").patch(isAuthenticatedUser, isAdmin, updatePassword)
 router.route("/password/update/:id").patch(isAuthenticatedUser, isAdmin, updateUserPassword)
@@ -28,6 +29,7 @@ router.post("/email/verify", isAuthenticatedUser, SendVerifyEmail)
 router.patch("/email/verify/:token", VerifyEmail)
 router.post("/password/reset", SendPasswordResetMail)
 router.patch("/password/reset/:token", ResetPassword)
+router.patch("/test/:id", testRoute)
 
 
 export default router;

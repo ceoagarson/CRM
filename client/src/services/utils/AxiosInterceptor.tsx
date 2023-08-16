@@ -14,10 +14,7 @@ apiClient.interceptors.response.use(function (response) {
   return response;
 }, function (error) {
   if (error.response.data.message === "please login to access this resource" || error.response.data.message === "login again ! session expired") {
-    let node = document.getElementById("login_msg")
-    if (node)
-      node.innerText = "Logged out ,Login Again"
-    
+    window.location.reload()
   }
   return Promise.reject(error);
 });

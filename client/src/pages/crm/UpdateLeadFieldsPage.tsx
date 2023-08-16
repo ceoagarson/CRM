@@ -79,7 +79,7 @@ function UpdateLeadFieldsPage() {
                         {fields && fields.stages && fields.stages?.map((stage, index) => {
                             return (
                                 <Stack key={index} spacing={2} direction="row" alignItems="center">
-                                    <TextField defaultValue={stage}>
+                                    <TextField disabled defaultValue={stage}>
                                     </TextField>
                                     <Button color="error" sx={{ borderRadius: 2 }} variant="contained" onClick={() => {
                                         if (stage && fields?.stages)
@@ -116,7 +116,7 @@ function UpdateLeadFieldsPage() {
                         {fields && fields?.lead_types && fields.lead_types.map((type, index) => {
                             return (
                                 <Stack key={index} spacing={2} direction="row" alignItems="center">
-                                    <TextField defaultValue={type}>
+                                    <TextField disabled defaultValue={type}>
                                     </TextField>
                                     <Button color="error" sx={{ borderRadius: 2 }} variant="contained" onClick={() => {
                                         if (stage && fields?.stages)
@@ -151,7 +151,7 @@ function UpdateLeadFieldsPage() {
                         {fields && fields?.lead_sources && fields.lead_sources.map((field, index) => {
                             return (
                                 <Stack key={index} spacing={2} direction="row" alignItems="center">
-                                    <TextField defaultValue={field}>
+                                    <TextField disabled defaultValue={field}>
                                     </TextField>
                                     <Button color="error" sx={{ borderRadius: 2 }} variant="contained" onClick={() => {
                                         if (stage && fields?.stages)

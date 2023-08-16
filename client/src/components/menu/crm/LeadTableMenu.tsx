@@ -34,9 +34,9 @@ let template: ILeadTemplate[] = [
         is_customer: false,
         last_whatsapp_date: new Date(),
         created_at: new Date(),
-        created_by: "nishu",
+        created_by_username: "nishu",
         updated_at: new Date(),
-        updated_by: "nishu",
+        updated_by_username: "nishu",
     }
 ]
 
@@ -91,9 +91,9 @@ function LeadTableMenu({ selectedFlatRows }: Props) {
                     is_customer: lead.is_customer,
                     last_whatsapp_date: lead.last_whatsapp_date,
                     created_at: lead.created_at,
-                    created_by: lead.created_by.username,
+                    created_by_username: lead.created_by.username,
                     updated_at: lead.updated_at,
-                    updated_by: lead.updated_by.username,
+                    updated_by_username: lead.updated_by.username,
                     lead_owners: lead.lead_owners.map((owner) => {
                         return owner.username + ","
                     }).toString()

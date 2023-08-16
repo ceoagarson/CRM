@@ -487,37 +487,7 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
             }
             if (new_lead_owners.length === 0 && req.user)
                 new_lead_owners.push(req.user)
-
-
-            if (lead.created_by) {
-                let user = await User.findOne({ username: lead.created_by })
-                if (user)
-                    created_by = user
-                if (!user && req.user)
-                    created_by = req.user
-
-            }
-            if (!lead.created_by) {
-                if (req.user)
-                    created_by = req.user
-            }
-
-
-            if (lead.updated_by) {
-                let user = await User.findOne({ username: lead.updated_by })
-                if (user)
-                    updated_by = user
-
-                if (!user && req.user)
-                    updated_by = req.user
-            }
-            if (!lead.updated_by) {
-                if (req.user)
-                    updated_by = req.user
-            }
-
             console.log(validated)
-            console.log(updated_by)
             //update and create new nead
             if (req.user) {
                 if (String(req.user._id) === String(req.user.created_by._id))
@@ -559,8 +529,8 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
                                 alternate_mobile2: uniqueNumbers[2] || alternate_mobile2 || null,
                                 lead_owners: new_lead_owners,
                                 lead_owners_username: new_lead_owners.map(user => { return user.username }),
-                                updated_by: updated_by,
-                                updated_by_username: updated_by?.username,
+                                updated_by: req.user,
+                                updated_by_username: req.user?.username,
                                 updated_at: new Date(Date.now())
                             })
                         }
@@ -577,10 +547,10 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
                         alternate_mobile2: uniqueNumbers[2] || null,
                         lead_owners: new_lead_owners,
                         lead_owners_username: new_lead_owners.map(user => { return user.username }),
-                        created_by: created_by || req.user,
-                        updated_by: updated_by || req.user,
-                        updated_by_username: updated_by?.username,
-                        created_by_username: created_by?.username,
+                        created_by: req.user,
+                        updated_by: req.user,
+                        updated_by_username: req.user?.username,
+                        created_by_username: req.user?.username,
                         updated_at: new Date(Date.now()),
                         created_at: new Date(Date.now()),
                     })
