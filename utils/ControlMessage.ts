@@ -51,7 +51,7 @@ export const ControlMessage = async (client: Client, msg: WAWebJS.Message) => {
                 }
             ]
         })
-
+        console.log(flows)
         if (flows.length > 0) {
             let flow = flows.find((flow) => {
                 let keys = flow.trigger_keywords.split(",");
@@ -63,6 +63,7 @@ export const ControlMessage = async (client: Client, msg: WAWebJS.Message) => {
                         })
                     }
                 }
+                console.log(flow)
                 return null
             })
             if (flow && from) {
