@@ -43,11 +43,14 @@ export const ControlMessage = async (client: Client, msg: WAWebJS.Message) => {
     let flows = await Flow.find({ is_active: true }).populate('connected_users')
 
     flows = flows.filter((flow) => {
-        if (flow.connected_users && flow.connected_users.find((u) => {
+        let flow_numbers = flow.connected_users && flow.connected_users.map((u) => { return u.connected_number })
 
-            return u.connected_number === user?.connected_number && u.connected_number !== String(from?._serialized)
+        if (flow.connected_users && flow.connected_users.find((u) => {
+            return u.connected_number === user?.connected_number
         }))
-            return flow
+            if (!flow_numbers.includes(String(from?._serialized)))
+                return flow
+
     })
     if (flows.length > 0) {
         if (!tracker) {
