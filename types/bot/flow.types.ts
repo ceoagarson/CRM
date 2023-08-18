@@ -20,9 +20,6 @@ export type IFlow = {
     connected_users: IUser[]
 }
 
-export type TFlowBody = Request['body'] & IFlow & FlowNode;
-export type TrackerBody = Request['body'] & IMenuTracker
-
 
 //keyword based tracker
 export type IKeywordTracker = {
@@ -35,6 +32,7 @@ export type IKeywordTracker = {
     updated_at: Date
 }
 
+
 //menu id based tracker
 export type IMenuTracker = {
     _id: string,
@@ -46,4 +44,12 @@ export type IMenuTracker = {
     flow: IFlow,
     updated_at: Date
 }
+
+export type TFlowBody = Request['body'] & IFlow & FlowNode;
+export type TrackerBody = Request['body'] & IMenuTracker
+
+
+
+
+
 
