@@ -5,6 +5,7 @@ import { MenuTracker } from "../models/bot/MenuTracker";
 import { KeywordTracker } from "../models/bot/KeywordTracker";
 import { User } from "../models/users/user.model";
 import { IUser } from "../types/users/user.type";
+import isMongoId from "validator/lib/isMongoId";
 
 export const CreateFlow = async (req: Request, res: Response, next: NextFunction) => {
     const { flow_name, nodes, edges, trigger_keywords } = req.body as TFlowBody
@@ -28,6 +29,18 @@ export const CreateFlow = async (req: Request, res: Response, next: NextFunction
     return res.status(201).json("new flow created")
 }
 
+export const ToogleFlowStatus = async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    if (!isMongoId(id)) return res.status(403).json({ message: "flow id not valid" })
+    let flow = await Flow.findById(id);
+    if (!flow) {
+        return res.status(404).json({ message: "flow not found" })
+    }
+    await Flow.findByIdAndUpdate(id, {
+        is_active: !flow.is_active
+    })
+    return res.status(200).json({ message: "flow status updated" })
+}
 
 export const UpdateFlow = async (req: Request, res: Response, next: NextFunction) => {
     const { flow_name, nodes, edges, trigger_keywords } = req.body as TFlowBody

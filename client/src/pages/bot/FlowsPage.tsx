@@ -11,9 +11,10 @@ import UpdateFlowDialog from "../../components/dialogs/bot/UpdateFlowDialog"
 import CreateFlowDialog from "../../components/dialogs/bot/CreateFlowDialog"
 import DeleteFlowDialog from "../../components/dialogs/bot/DeleteFlowDialog"
 import { color1, color2, headColor } from "../../utils/colors"
-import { AddOutlined, Assignment, Delete, Edit, PanoramaFishEye } from "@mui/icons-material"
+import { AddOutlined, Assignment, Delete, Edit, LocalActivity, PanoramaFishEye } from "@mui/icons-material"
 import ViewConnectedUsersDialog from "../../components/dialogs/bot/ViewConnectedUsersDialog"
 import UpdateConnectedUsersDialog from "../../components/dialogs/bot/UpdateConnectedUsersDialog"
+import ToogleFlowStatusDialog from "../../components/dialogs/bot/ToogleFlowStatusDialog"
 
 
 export default function FlowsPage() {
@@ -22,7 +23,7 @@ export default function FlowsPage() {
   const { setChoice } = useContext(ChoiceContext)
   const { user } = useContext(UserContext)
   const { data, isLoading } = useQuery<AxiosResponse<IFlow[]>, BackendError>("flows", GetFlows)
-  
+
 
   useEffect(() => {
     if (data)
@@ -160,6 +161,16 @@ export default function FlowsPage() {
                       {
                         user?.is_admin ?
                           <>
+                            <Tooltip title="Change Status">
+                              <IconButton color="error"
+                                onClick={() => {
+                                  setFlow(flow)
+                                  setChoice({ type: BotChoiceActions.toogle_flow_status })
+                                }}
+                              >
+                                <LocalActivity />
+                              </IconButton>
+                            </Tooltip>
                             <Tooltip title="Edit">
                               <IconButton color="error"
                                 onClick={() => {
@@ -213,7 +224,7 @@ export default function FlowsPage() {
                         <Typography sx={{ textTransform: "capitalize" }}>Loading..</Typography>
                       </TableCell> :
                         <TableCell>
-                          <Typography sx={{ textTransform: "capitalize" }}>{flow && flow.connected_users && flow.connected_users.length > 0 ? "active" : "disabled"}</Typography>
+                          <Typography sx={{ textTransform: "capitalize" }}>{flow.is_active ? "active" : "disabled"}</Typography>
                         </TableCell>
 
                     }
@@ -245,6 +256,7 @@ export default function FlowsPage() {
       {flow ? <DeleteFlowDialog flow={flow} /> : null}
       {flow ? <ViewConnectedUsersDialog selectedFlow={flow} /> : null}
       {flow ? <UpdateConnectedUsersDialog selectedFlow={flow} /> : null}
+      {flow ? <ToogleFlowStatusDialog flow={flow} /> : null}
     </>
 
   )

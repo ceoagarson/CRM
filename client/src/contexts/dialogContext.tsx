@@ -1,6 +1,6 @@
 import React, { useReducer } from "react"
 
-type UserChoices = "signup" | "reset_password_mail" | "close_user" | "new_user" | "update_user" | "update_profile" | "view_profile" | "update_password" | "reset_password" | "verify_email" | "control_access" | "delete_user" |
+type UserChoices = "signup" | "reset_password_mail" | "close_user" | "new_user" | "update_user" | "update_profile" | "view_profile" | "update_password" | "reset_password" | "verify_email" | "control_access" | "delete_user" | "toogle_flow_status" |
   "block_user" | "unblock_user" | "make_admin" | "remove_admin" | "refresh_whatsapp" | "update_user_password"
 
 type LeadChoices = "create_lead" | "update_lead" | "update_remark" | "view_remarks" | "close_lead" | "display_filter" | "delete_lead" | "convert_customer" | "open_filter"
@@ -14,6 +14,7 @@ type BotChoices = "create_flow"
   | "close_bot"
   | "view_connected_users"
   | "update_connected_users"
+  | "toogle_flow_status"
 
 type ChoiceState = UserChoices | LeadChoices | BotChoices
 
@@ -29,7 +30,8 @@ export enum BotChoiceActions {
   delete_flow = "delete_flow",
   close_bot = "close_bot",
   view_connected_users = "view_connected_users",
-  update_connected_users = "update_connected_users"
+  update_connected_users = "update_connected_users",
+  toogle_flow_status = "toogle_flow_status"
 }
 export enum LeadChoiceActions {
   create_lead = "create_lead",
@@ -112,6 +114,7 @@ function reducer(state: ChoiceState | null, action: Action) {
     case BotChoiceActions.toogle_bot_status: return type
     case BotChoiceActions.close_bot: return type
     case BotChoiceActions.view_connected_users: return type
+    case BotChoiceActions.toogle_flow_status: return type
     case BotChoiceActions.update_connected_users: return type
 
     default: return state

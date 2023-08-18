@@ -1,6 +1,6 @@
 import express from "express";
 import { isAdmin, isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { AssignFlow, CreateFlow, DestroyFlow, FuzzySearchTrackers, GetConnectedUsers, GetFlows, GetTrackers, ToogleTrackerStatus, UpdateFlow, UpdateTrackerName } from "../controllers/bot.controller";
+import { AssignFlow, CreateFlow, DestroyFlow, FuzzySearchTrackers, GetConnectedUsers, GetFlows, GetTrackers, ToogleFlowStatus, ToogleTrackerStatus, UpdateFlow, UpdateTrackerName } from "../controllers/bot.controller";
 
 const router = express.Router()
 
@@ -13,6 +13,8 @@ router.route("/trackers/:id").put(isAuthenticatedUser, isAdmin, UpdateTrackerNam
 router.route("/toogle").post(isAuthenticatedUser, isAdmin, ToogleTrackerStatus)
 router.route("/connected/users").get(isAuthenticatedUser, GetConnectedUsers)
 router.route("/flows/asign/:id").patch(isAuthenticatedUser, AssignFlow)
+router.route("/flows/toogle/:id").patch(isAuthenticatedUser, ToogleFlowStatus)
+
 router.route("/search/trackers").get(isAuthenticatedUser, FuzzySearchTrackers)
 export default router
 

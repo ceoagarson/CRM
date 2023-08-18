@@ -20,6 +20,9 @@ export const GetConnectedUsers = async () => {
 export const AssignFlow = async ({ id, body }: { id: string, body: { user_ids: string[] } }) => {
     return await apiClient.patch(`flows/asign/${id}`, body);
 };
+export const ToogleFlowStatus = async (id: string) => {
+    return await apiClient.patch(`flows/toogle/${id}`);
+};
 
 export const DestroyFlow = async (id: string) => {
     return await apiClient.delete(`flows/${id}`);
