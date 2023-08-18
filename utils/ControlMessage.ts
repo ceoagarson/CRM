@@ -54,9 +54,9 @@ export const ControlMessage = async (client: Client, msg: WAWebJS.Message) => {
                         })
                     }
                 }
-                return null
             })
             console.log(from)
+            console.log(flow)
             if (flow && from) {
                 let commonNode = flow.nodes.find((node) => node.id === "common_message")
                 sendingMessage = sendingMessage + String(commonNode?.data.media_value) + "\n\n"
