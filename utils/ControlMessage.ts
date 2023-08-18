@@ -13,7 +13,15 @@ export const ControlMessage = async (client: Client, msg: WAWebJS.Message) => {
     const from = await client.getNumberId(msg.from);
     let comingMessage = String(msg.body).toLowerCase()
     let sendingMessage = ""
-    let trackers = await KeywordTracker.find({ phone_number: from?._serialized, bot_number: msg.to }).populate('flow')
+    let trackers = await KeywordTracker.find({ phone_number: from?._serialized, bot_number: msg.to }).populate({
+        path: 'flow',
+        populate: [
+            {
+                path: 'connected_users',
+                model: 'User'
+            }
+        ]
+    })
     let tracker = trackers.find((tracker) => {
         let keys = tracker.flow.trigger_keywords.split(",");
         for (let i = 0; i < keys.length; i++) {
@@ -22,19 +30,19 @@ export const ControlMessage = async (client: Client, msg: WAWebJS.Message) => {
             }
         }
     })
-    let menuTracker = await MenuTracker.findOne({ phone_number: from?._serialized, bot_number: String(msg.to) }).populate('flow')
+    let menuTracker = await MenuTracker.findOne({ phone_number: from?._serialized, bot_number: String(msg.to) }).populate({
+        path: 'flow',
+        populate: [
+            {
+                path: 'connected_users',
+                model: 'User'
+            }
+        ]
+    })
 
     if (!tracker) {
         let user = await User.findOne({ connected_number: String(msg.to) })
-        let flows = await Flow.find().populate({
-            path: 'flow',
-            populate: [
-                {
-                    path: 'connected_users',
-                    model: 'User'
-                }
-            ]
-        })
+        let flows = await Flow.find().populate('connected_users')
         console.log(flows)
         if (flows.length > 0) {
             let flow = flows.find((flow) => {
