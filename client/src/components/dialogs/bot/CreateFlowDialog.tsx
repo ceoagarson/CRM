@@ -314,7 +314,7 @@ function CreateFlowDialog() {
                             <Stack direction="row" alignItems="center" gap={1}
                             >
                                 <img width="20" height="20" src="https://img.icons8.com/arcade/64/box.png" alt="undo" />
-                                <span>Output</span>
+                                <span>Reply</span>
                             </Stack>
                         </Box>
 
