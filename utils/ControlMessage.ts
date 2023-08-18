@@ -43,25 +43,29 @@ export const ControlMessage = async (client: Client, msg: WAWebJS.Message) => {
     if (!tracker) {
         let user = await User.findOne({ connected_number: String(msg.to) })
         let flows = await Flow.find().populate('connected_users')
+        flows = flows.filter((flow) => {
+            if (user?.connected_number && flow.connected_users) {
+                flow.connected_users.map((u) => {
+                    return u.connected_number === user?.connected_number
+                })
+            }
+        })
+        console.log(flows)
         if (flows.length > 0) {
             let flow = flows.find((flow) => {
                 let keys = flow.trigger_keywords.split(",");
                 for (let i = 0; i < keys.length; i++) {
                     if (comingMessage.split(" ").includes(keys[i])) {
-                        flow.connected_users.forEach((u) => {
-                            if (u.username === user?.username)
-                                return flow
-                        })
+                        return flow
                     }
                 }
+                return null
             })
-            console.log(from)
             console.log(flow)
             if (flow && from) {
                 let commonNode = flow.nodes.find((node) => node.id === "common_message")
                 sendingMessage = sendingMessage + String(commonNode?.data.media_value) + "\n\n"
                 let parent = flow.nodes.find(node => node.parentNode === "common_message")
-                console.log(parent)
                 if (parent) {
                     let sendingNodes = flow.nodes.filter((node) => { return node.parentNode === parent?.id })
                     sendingNodes.sort(function (a, b) {
@@ -94,9 +98,9 @@ export const ControlMessage = async (client: Client, msg: WAWebJS.Message) => {
                         let id = flow.nodes.find(node => node.parentNode === "common_message")?.id
                         if (id) {
                             menuTracker.menu_id = id
-                            menuTracker.flow = flow
-                            menuTracker.updated_at = new Date()
-                            await menuTracker.save()
+                            menuTracker.flow = flow,
+                                menuTracker.updated_at = new Date(),
+                                await menuTracker.save()
                         }
 
                     }
