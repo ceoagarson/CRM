@@ -43,12 +43,12 @@ export const ControlMessage = async (client: Client, msg: WAWebJS.Message) => {
     if (!tracker) {
         let user = await User.findOne({ connected_number: String(msg.to) })
         let flows = await Flow.find().populate('connected_users')
+
         flows = flows.filter((flow) => {
-            if (user?.connected_number && flow.connected_users) {
-                flow.connected_users.map((u) => {
-                    return u.connected_number === user?.connected_number
-                })
-            }
+            if (flow.connected_users && flow.connected_users.find((u) => {
+                return u.connected_number === user?.connected_number
+            }))
+                return flow
         })
         console.log(flows)
         if (flows.length > 0) {
@@ -66,6 +66,7 @@ export const ControlMessage = async (client: Client, msg: WAWebJS.Message) => {
                 let commonNode = flow.nodes.find((node) => node.id === "common_message")
                 sendingMessage = sendingMessage + String(commonNode?.data.media_value) + "\n\n"
                 let parent = flow.nodes.find(node => node.parentNode === "common_message")
+                console.log(parent)
                 if (parent) {
                     let sendingNodes = flow.nodes.filter((node) => { return node.parentNode === parent?.id })
                     sendingNodes.sort(function (a, b) {
