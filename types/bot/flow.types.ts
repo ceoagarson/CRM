@@ -16,7 +16,8 @@ export type IFlow = {
     updated_by: IUser,
     nodes: FlowNode[],
     edges: Object[],
-    is_active: Boolean
+    is_active: Boolean,
+    connected_users: IUser[]
 }
 
 export type TFlowBody = Request['body'] & IFlow & FlowNode;

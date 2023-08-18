@@ -44,7 +44,13 @@ const FlowSchema = new mongoose.Schema<IFlow, mongoose.Model<IFlow, {}, {}>, {}>
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
+    },
+    connected_users: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     }
+    ]
 })
 
 export const Flow = mongoose.model<IFlow, mongoose.Model<IFlow, {}, {}>>("Flow", FlowSchema)

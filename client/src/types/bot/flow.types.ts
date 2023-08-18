@@ -11,7 +11,8 @@ export type IFlow = {
     updated_by?: IUser,
     nodes: Node[],
     edges: Edge[],
-    is_active?: boolean
+    is_active?: boolean,
+    connected_users?: IUser[]
 }
 export type ITracker = {
     _id: string,

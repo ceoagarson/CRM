@@ -11,7 +11,9 @@ import UpdateFlowDialog from "../../components/dialogs/bot/UpdateFlowDialog"
 import CreateFlowDialog from "../../components/dialogs/bot/CreateFlowDialog"
 import DeleteFlowDialog from "../../components/dialogs/bot/DeleteFlowDialog"
 import { color1, color2, headColor } from "../../utils/colors"
-import { AddOutlined, Delete, Edit } from "@mui/icons-material"
+import { AddOutlined, Assignment, Delete, Edit, PanoramaFishEye } from "@mui/icons-material"
+import ViewConnectedUsersDialog from "../../components/dialogs/bot/ViewConnectedUsersDialog"
+import UpdateConnectedUsersDialog from "../../components/dialogs/bot/UpdateConnectedUsersDialog"
 
 
 export default function FlowsPage() {
@@ -19,7 +21,8 @@ export default function FlowsPage() {
   const [flow, setFlow] = useState<IFlow>()
   const { setChoice } = useContext(ChoiceContext)
   const { user } = useContext(UserContext)
-  const { data } = useQuery<AxiosResponse<IFlow[]>, BackendError>("flows", GetFlows)
+  const { data, isLoading } = useQuery<AxiosResponse<IFlow[]>, BackendError>("flows", GetFlows)
+  
 
   useEffect(() => {
     if (data)
@@ -89,17 +92,6 @@ export default function FlowsPage() {
                   alignItems="left"
                   spacing={2}
                 >
-                  Connected Phone
-                </Stack>
-              </TableCell>
-              <TableCell
-                sx={{ bgcolor: headColor }}                         >
-                <Stack
-                  direction="row"
-                  justifyContent="left"
-                  alignItems="left"
-                  spacing={2}
-                >
                   Triggers
                 </Stack>
               </TableCell>
@@ -124,6 +116,17 @@ export default function FlowsPage() {
                   spacing={2}
                 >
                   Updated By
+                </Stack>
+              </TableCell>
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Created By
                 </Stack>
               </TableCell>
               <TableCell
@@ -177,7 +180,26 @@ export default function FlowsPage() {
                                 <Delete />
                               </IconButton>
                             </Tooltip>
-
+                            <Tooltip title="View Connected Numbers">
+                              <IconButton color="warning"
+                                onClick={() => {
+                                  setChoice({ type: BotChoiceActions.view_connected_users })
+                                  setFlow(flow)
+                                }}
+                              >
+                                <PanoramaFishEye />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Manage Connected Numbers">
+                              <IconButton color="warning"
+                                onClick={() => {
+                                  setChoice({ type: BotChoiceActions.update_connected_users })
+                                  setFlow(flow)
+                                }}
+                              >
+                                <Assignment />
+                              </IconButton>
+                            </Tooltip>
                           </>
                           :
                           null
@@ -186,12 +208,16 @@ export default function FlowsPage() {
                     <TableCell>
                       <Typography sx={{ textTransform: "capitalize" }}>{index + 1}</Typography>
                     </TableCell>
-                    <TableCell>
-                      <Typography sx={{ textTransform: "capitalize" }}>{user?.connected_number ? "active" : "disabled"}</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography sx={{ textTransform: "capitalize" }}>{user?.connected_number ? String(user?.connected_number).replace("@c.us", "") : 'not exists'}</Typography>
-                    </TableCell>
+                    {
+                      isLoading ? <TableCell>
+                        <Typography sx={{ textTransform: "capitalize" }}>Loading..</Typography>
+                      </TableCell> :
+                        <TableCell>
+                          <Typography sx={{ textTransform: "capitalize" }}>{flow && flow.connected_users && flow.connected_users.length > 0 ? "active" : "disabled"}</Typography>
+                        </TableCell>
+
+                    }
+
                     <TableCell>
                       <Typography sx={{ textTransform: "capitalize" }}>{flow.trigger_keywords.slice(0, 50)}</Typography>
                     </TableCell>
@@ -200,6 +226,9 @@ export default function FlowsPage() {
                     </TableCell>
                     <TableCell>
                       <Typography sx={{ textTransform: "capitalize" }}>{flow.updated_by?.username}</Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography sx={{ textTransform: "capitalize" }}>{flow.created_by?.username}</Typography>
                     </TableCell>
                     <TableCell>
                       <Typography sx={{ textTransform: "capitalize" }}>{flow.updated_at && new Date(flow.updated_at).toLocaleString()}</Typography>
@@ -214,6 +243,8 @@ export default function FlowsPage() {
       {flow ? <UpdateFlowDialog selectedFlow={flow} /> : null}
       <CreateFlowDialog />
       {flow ? <DeleteFlowDialog flow={flow} /> : null}
+      {flow ? <ViewConnectedUsersDialog selectedFlow={flow} /> : null}
+      {flow ? <UpdateConnectedUsersDialog selectedFlow={flow} /> : null}
     </>
 
   )

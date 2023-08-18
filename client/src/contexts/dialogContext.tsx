@@ -12,6 +12,8 @@ type BotChoices = "create_flow"
   | "update_tracker"
   | "delete_flow"
   | "close_bot"
+  | "view_connected_users"
+  | "update_connected_users"
 
 type ChoiceState = UserChoices | LeadChoices | BotChoices
 
@@ -25,7 +27,9 @@ export enum BotChoiceActions {
   toogle_bot_status = "toogle_bot_status",
   update_tracker = "update_tracker",
   delete_flow = "delete_flow",
-  close_bot = "close_bot"
+  close_bot = "close_bot",
+  view_connected_users = "view_connected_users",
+  update_connected_users = "update_connected_users"
 }
 export enum LeadChoiceActions {
   create_lead = "create_lead",
@@ -107,6 +111,8 @@ function reducer(state: ChoiceState | null, action: Action) {
     case BotChoiceActions.update_tracker: return type
     case BotChoiceActions.toogle_bot_status: return type
     case BotChoiceActions.close_bot: return type
+    case BotChoiceActions.view_connected_users: return type
+    case BotChoiceActions.update_connected_users: return type
 
     default: return state
   }

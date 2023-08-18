@@ -67,6 +67,13 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
       hidden: { type: Boolean, default: false }
     }
   ],
+  bot_fields: [
+    {
+      field: { type: String },
+      readonly: { type: Boolean, default: true },
+      hidden: { type: Boolean, default: false }
+    }
+  ],
   email_verified: {
     type: Boolean,
     default: false,

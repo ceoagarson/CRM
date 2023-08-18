@@ -5,9 +5,7 @@ export const GetLeads = async ({ limit, page }: { limit: number | undefined, pag
   return await apiClient.get(`leads?limit=${limit}&page=${page}`)
 }
 
-export const BackupAllLeads = async () => {
-  return await apiClient.get("/backup/leads")
-}
+
 
 export const FuzzySearchLeads = async (searchString?: string) => {
   return await apiClient.get(`search/leads?key=${searchString}`)
@@ -15,7 +13,9 @@ export const FuzzySearchLeads = async (searchString?: string) => {
 export const FuzzySearchCustomers = async (searchString?: string) => {
   return await apiClient.get(`search/customers?key=${searchString}`)
 }
-
+export const BackupAllLeads = async () => {
+  return await apiClient.get("/backup/leads")
+}
 export const GetCustomers = async ({ limit, page }: { limit: number | undefined, page: number | undefined }) => {
   return await apiClient.get(`customers?limit=${limit}&page=${page}`)
 }

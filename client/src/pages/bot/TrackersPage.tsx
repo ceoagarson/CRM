@@ -1,205 +1,161 @@
-import { useContext, useEffect, useState } from 'react'
+import { Search } from '@mui/icons-material'
+import { IconButton, LinearProgress, TextField, Typography } from '@mui/material'
+import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
+import React, {  useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../../types'
-import { GetTrackers } from '../../services/BotServices'
+import DBPagination from '../../components/pagination/DBpagination';
+import TrackersTable from '../../components/tables/TrackersTable';
+import ReactPagination from '../../components/pagination/ReactPagination'
+import { FuzzySearchTrackers, GetTrackers } from '../../services/BotServices'
 import { ITracker } from '../../types/bot/flow.types'
-import { BotChoiceActions, ChoiceContext } from '../../contexts/dialogContext'
-import UpdateTrackerDialog from '../../components/dialogs/bot/UpdateTrackerDialog'
-import ToogleBotDialog from '../../components/dialogs/bot/ToogleBotDialog'
-import AcUnitIcon from '@mui/icons-material/AcUnit';
-import { Box, Button, IconButton, Stack, Table, TableBody, TableCell, TableHead, TableRow, Tooltip, Typography } from "@mui/material"
-import { color1, color2, headColor } from '../../utils/colors'
-import { AccountCircle, Start, Stop } from '@mui/icons-material'
-import { UserContext } from '../../contexts/userContext'
+import TrackerTableMenu from '../../components/menu/bot/TrackerTableMenu'
 
 
-function TrackersPage() {
-    const [trackers, setTrackers] = useState<ITracker[]>()
+
+export default function TrackersPage() {
+    const [paginationData, setPaginationData] = useState({ limit: 10, page: 1, total: 1 });
+    const [reactPaginationData, setReactPaginationData] = useState({ limit: 10, page: 1, total: 1 });
+    const [filter, setFilter] = useState<string | undefined>()
     const [tracker, setTracker] = useState<ITracker>()
-    const { setChoice } = useContext(ChoiceContext)
-    const { data } = useQuery<AxiosResponse<ITracker[]>, BackendError>("trackers", GetTrackers)
-    const { user } = useContext(UserContext)
+    const [trackers, setTrackers] = useState<ITracker[]>([])
+
+    const [allfuzzytrackers, setAllFuzzyTrackers] = useState<ITracker[]>([])
+    const FuzzyMemoData = React.useMemo(() => allfuzzytrackers, [allfuzzytrackers])
+
+    // pagination  states
+    const [itemOffset, setItemOffset] = useState(0);
+    const endOffset = itemOffset + reactPaginationData.limit;
+    const currentItems = FuzzyMemoData.slice(itemOffset, endOffset)
+
+
+    const [selectAll, setSelectAll] = useState(false)
+    const MemoData = React.useMemo(() => trackers, [trackers])
+    const [preFilteredData, setPreFilteredData] = useState<ITracker[]>([])
+    const [selectedTrackers, setSelectedTrackers] = useState<ITracker[]>([])
+
+
+    const { data, isSuccess, isLoading } = useQuery<AxiosResponse<{ trackers: ITracker[], page: number, total: number, limit: number }>, BackendError>(["trackers", paginationData], async () => GetTrackers({ limit: paginationData?.limit, page: paginationData?.page }))
+
+    const { data: fuzzyTrackers, isSuccess: isFuzzySuccess, isLoading: isFuzzyLoading, refetch: refetchFuzzy } = useQuery<AxiosResponse<ITracker[]>, BackendError>(["fuzzytrackers", filter], async () => FuzzySearchTrackers(filter), {
+        enabled: false
+    })
 
     useEffect(() => {
-        if (data)
-            setTrackers(data.data)
-    }, [data])
+        if (isSuccess) {
+            setTrackers((data.data.trackers))
+            setPreFilteredData(data.data.trackers)
+            setPaginationData({
+                ...paginationData,
+                page: data.data.page,
+                limit: data.data.limit,
+                total: data.data.total
+            })
+        }
+    }, [isSuccess, data])
+
+
+    useEffect(() => {
+        if (!filter)
+            setTrackers(preFilteredData)
+    }, [filter])
+
+
+    useEffect(() => {
+        if (isFuzzySuccess) {
+            setAllFuzzyTrackers(fuzzyTrackers.data)
+            setReactPaginationData({
+                ...reactPaginationData,
+                total: Math.ceil(fuzzyTrackers.data.length / reactPaginationData.limit)
+            })
+        }
+    }, [isFuzzySuccess, fuzzyTrackers])
+
+    useEffect(() => {
+        setItemOffset(reactPaginationData.page * reactPaginationData.limit % reactPaginationData.total)
+    }, [reactPaginationData])
     return (
         <>
-            <Box sx={{
-                overflow: "scroll",
-                minHeight: '73.5vh'
-            }}>
-                <Button sx={{ m: 1, gap: 1 }} variant="contained" color="primary"
+
+            {
+                isLoading && <LinearProgress />
+            }
+            {
+                isFuzzyLoading && <LinearProgress />
+            }
+            {/*heading, search bar and table menu */}
+            <Stack
+                spacing={2}
+                padding={1}
+                direction="row"
+                justifyContent="space-between"
+                width="100vw"
+            >
+                <Typography
+                    variant={'h6'}
+                    component={'h1'}
+                    sx={{ pl: 1 }}
                 >
-                    <Stack direction="row" alignItems="center" gap={1}>
-                        <AcUnitIcon />
-                        <span> Trackers</span>
-                    </Stack>
-                </Button>
-                <Table
-                    stickyHeader
-                    sx={{ minWidth: "1200px" }}
-                    size="small">
-                    <TableHead
-                    >
-                        <TableRow>
-                            <TableCell
-                                sx={{ bgcolor: headColor }}                         >
-                                <Stack
-                                    direction="row"
-                                    justifyContent="left"
-                                    alignItems="left"
-                                    spacing={2}
-                                >
-                                    Actions
-                                </Stack>
-                            </TableCell>
-                            <TableCell
-                                sx={{ bgcolor: headColor }}                         >
-                                <Stack
-                                    direction="row"
-                                    justifyContent="left"
-                                    alignItems="left"
-                                    spacing={2}
-                                >
-                                    Index
-                                </Stack>
-                            </TableCell>
-                            <TableCell
-                                sx={{ bgcolor: headColor }}                         >
-                                <Stack
-                                    direction="row"
-                                    justifyContent="left"
-                                    alignItems="left"
-                                    spacing={2}
-                                >
-                                    Customer Name
-                                </Stack>
-                            </TableCell>
-                            <TableCell
-                                sx={{ bgcolor: headColor }}                         >
-                                <Stack
-                                    direction="row"
-                                    justifyContent="left"
-                                    alignItems="left"
-                                    spacing={2}
-                                >
-                                    Customer Phone
-                                </Stack>
-                            </TableCell>
-                            <TableCell
-                                sx={{ bgcolor: headColor }}                         >
-                                <Stack
-                                    direction="row"
-                                    justifyContent="left"
-                                    alignItems="left"
-                                    spacing={2}
-                                >
-                                    Flow Name
-                                </Stack>
-                            </TableCell>
-                            <TableCell
-                                sx={{ bgcolor: headColor }}                         >
-                                <Stack
-                                    direction="row"
-                                    justifyContent="left"
-                                    alignItems="left"
-                                    spacing={2}
-                                >
-                                    Last Interaction
-                                </Stack>
-                            </TableCell>
+                    Trackers
+                </Typography>
 
+                <Stack
+                    direction="row"
+                >
+                    {/* search bar */}
+                    < Stack direction="row" spacing={2}>
+                       
+                        <TextField
+                            fullWidth
+                            size="small"
+                            onChange={(e) => setFilter(e.currentTarget.value)}
+                            autoFocus
+                            placeholder={`${MemoData?.length} records...`}
+                            style={{
+                                fontSize: '1.1rem',
+                                border: '0',
+                            }}
+                            onKeyUp={(e) => {
+                                if (e.key === "Enter") {
+                                    refetchFuzzy()
+                                }
+                            }}
+                        />
+                        <IconButton
+                            sx={{ bgcolor: 'whitesmoke' }}
+                            onClick={() => {
+                                refetchFuzzy()
+                            }}
+                        >
+                            <Search />
+                        </IconButton>
+                    </Stack >
+                    <TrackerTableMenu
+                        selectedFlatRows={selectedTrackers}
+                    />
+                </Stack>
+            </Stack>
+            {/* table */}
+            <TrackersTable
+                tracker={tracker}
+                setTracker={setTracker}
+                selectAll={selectAll}
+                selectedTrackers={selectedTrackers}
+                setSelectedTrackers={setSelectedTrackers}
+                setSelectAll={setSelectAll}
+                trackers={filter ? currentItems : MemoData}
+                selectableTrackers={filter ? allfuzzytrackers : trackers}
+            />
 
+            {!filter ? <DBPagination paginationData={paginationData} setPaginationData={setPaginationData} /> :
+                <ReactPagination reactPaginationData={reactPaginationData} setReactPaginationData={setReactPaginationData} data={FuzzyMemoData}
+                />
+            }
 
-                        </TableRow>
-                    </TableHead>
-                    <TableBody >
-                        {
-                            trackers && trackers.map((tracker, index) => {
-                                return (
-                                    <TableRow
-                                        key={index}
-                                        sx={{
-                                            '&:nth-of-type(odd)': { bgcolor: color1 },
-                                            '&:nth-of-type(even)': { bgcolor: color2 },
-                                            '&:hover': { bgcolor: 'rgba(0,0,0,0.1)', cursor: 'pointer' }
-                                        }}>
-
-                                        {/* actions */}
-                                        <TableCell>
-                                            {
-                                                user?.is_admin ?
-                                                    <>
-                                                        <Tooltip title="Change Customer Name">
-                                                            <IconButton color="error"
-                                                                onClick={() => {
-                                                                    setTracker(tracker)
-                                                                    setChoice({ type: BotChoiceActions.update_tracker })
-                                                                }}
-                                                            >
-                                                                <AccountCircle />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                        {
-                                                            tracker.is_active ?
-                                                                <Tooltip title="Stop bot for this person">
-                                                                    <IconButton color="warning"
-                                                                        onClick={() => {
-                                                                            setTracker(tracker)
-                                                                            setChoice({ type: BotChoiceActions.toogle_bot_status })
-                                                                        }}
-                                                                    >
-                                                                        <Stop />
-                                                                    </IconButton>
-                                                                </Tooltip> :
-                                                                <Tooltip title="Start bot for this person">
-                                                                    <IconButton color="warning"
-                                                                        onClick={() => {
-                                                                            setTracker(tracker)
-                                                                            setChoice({ type: BotChoiceActions.toogle_bot_status })
-                                                                        }}
-                                                                    >
-                                                                        <Start />
-                                                                    </IconButton>
-                                                                </Tooltip>
-
-                                                        }
-                                                    </>
-                                                    :
-                                                    null
-                                            }
-                                        </TableCell>
-                                        <TableCell>
-                                            <Typography sx={{ textTransform: "capitalize" }}>{index + 1}</Typography>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Typography sx={{ textTransform: "capitalize" }}>{tracker.customer_name ? tracker.customer_name : "unknown"}</Typography>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Typography sx={{ textTransform: "capitalize" }}>{String(tracker.phone_number).replace("@c.us", "")}</Typography>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Typography sx={{ textTransform: "capitalize" }}>{tracker.flow && tracker.flow.flow_name}</Typography>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Typography sx={{ textTransform: "capitalize" }}>{tracker.updated_at && new Date(tracker.updated_at).toLocaleString()}</Typography>
-                                        </TableCell>
-
-                                    </TableRow>
-                                )
-                            })}
-                    </TableBody>
-                </Table>
-            </Box>
-            {tracker ? <UpdateTrackerDialog tracker={tracker} /> : null}
-            {tracker ? <ToogleBotDialog tracker={tracker} /> : null}
         </>
+
     )
+
 }
-
-export default TrackersPage
-
 

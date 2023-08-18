@@ -6,7 +6,7 @@ import { User } from '../models/users/user.model';
 import { Asset } from '../types/users/asset.type';
 import isMongoId from "validator/lib/isMongoId";
 import { destroyFile } from "../utils/destroyFile.util";
-import { LeadField, TUserBody, all_fields } from '../types/users/user.type';
+import { BotField, LeadField, TUserBody, all_Bot_fields, all_fields } from '../types/users/user.type';
 import { sendEmail } from '../utils/sendEmail.util';
 
 
@@ -56,12 +56,21 @@ export const SignUp = async (req: Request, res: Response, next: NextFunction) =>
             hidden: false
         })
     })
+    let BotFields: BotField[] = []
+    all_Bot_fields.map((field) => {
+        BotFields.push({
+            field: field,
+            readonly: true,
+            hidden: false
+        })
+    })
     let owner = new User({
         username,
         password,
         email,
         mobile,
         lead_fields: LeadFields,
+        bot_fields: BotFields,
         is_admin: true,
         dp,
         client_id: username.replace(" ", "") + `${Number(new Date())}`,
@@ -122,12 +131,22 @@ export const NewUser = async (req: Request, res: Response, next: NextFunction) =
             hidden: false
         })
     })
+
+    let BotFields: BotField[] = []
+    all_Bot_fields.map((field) => {
+        BotFields.push({
+            field: field,
+            readonly: true,
+            hidden: false
+        })
+    })
     let user = new User({
         username,
         password,
         email,
         mobile,
         lead_fields: LeadFields,
+        bot_fields: BotFields,
         is_admin: false,
         dp,
         client_id: username.replace(" ", "") + `${Number(new Date())}`,
@@ -599,10 +618,10 @@ export const testRoute = async (req: Request, res: Response, next: NextFunction)
     if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
     let user = await User.findById(id);
 
-    let LeadFields: LeadField[] = []
+    let BotFields: LeadField[] = []
     if (user?.is_admin) {
         all_fields.map((field) => {
-            LeadFields.push({
+            BotFields.push({
                 field: field,
                 readonly: false,
                 hidden: false
@@ -611,7 +630,7 @@ export const testRoute = async (req: Request, res: Response, next: NextFunction)
     }
     else
         all_fields.map((field) => {
-            LeadFields.push({
+            BotFields.push({
                 field: field,
                 readonly: true,
                 hidden: false
@@ -620,7 +639,7 @@ export const testRoute = async (req: Request, res: Response, next: NextFunction)
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }
-    user.lead_fields = LeadFields
+    user.lead_fields = BotFields
     await user.save()
-    res.status(200).json({ message: "user lead fields roles updated" })
+    res.status(200).json({ message: "user bot fields roles updated" })
 }

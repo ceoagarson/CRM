@@ -13,12 +13,25 @@ export const UpdateFlow = async ({ id, body }: { id: string, body: IFlow }) => {
 export const GetFlows = async () => {
     return await apiClient.get(`flows`);
 };
+export const GetConnectedUsers = async () => {
+    return await apiClient.get(`connected/users`);
+};
+
+export const AssignFlow = async ({ id, body }: { id: string, body: { user_ids: string[] } }) => {
+    return await apiClient.patch(`flows/asign/${id}`, body);
+};
 
 export const DestroyFlow = async (id: string) => {
     return await apiClient.delete(`flows/${id}`);
 };
-export const GetTrackers = async () => {
-    return await apiClient.get(`trackers`);
+
+
+export const GetTrackers = async ({ limit, page }: { limit: number | undefined, page: number | undefined }) => {
+    return await apiClient.get(`trackers?limit=${limit}&page=${page}`)
+}
+
+export const FuzzySearchTrackers = async (searchString?: string) => {
+    return await apiClient.get(`search/trackers?key=${searchString}`)
 }
 
 export const UpdateCustomerName = async ({ id, body }: { id: string, body: { customer_name: string } }) => {

@@ -3,66 +3,55 @@ import { ChoiceContext, UserChoiceActions } from "../../../contexts/dialogContex
 import { Avatar, Button, Dialog, DialogContent, DialogTitle, Stack, Typography } from "@mui/material"
 import LeadControlAccessForm from "../../forms/user/LeadControlAccessForm"
 import { IUser } from "../../../types/users/user.type"
+import BotControlAccessForm from "../../forms/user/BotControlAccessForm"
 
-function ManageAccessControlDialog({ user}: { user:IUser }) {
+function ManageAccessControlDialog({ user }: { user: IUser }) {
   const { choice, setChoice } = useContext(ChoiceContext)
- 
+
   return (
     <>
       <Dialog fullScreen open={choice === UserChoiceActions.control_access ? true : false}
         onClose={() => setChoice({ type: UserChoiceActions.close_user })}
       >
+
         <DialogTitle textAlign="center">
           <Stack direction="row"
             spacing={2}
             justifyContent="center"
             alignItems="center"
           >
-            <Stack>
+            <Stack gap={1} alignItems="center" direction="row">
+
               <Avatar
                 alt="display picture" src={user.dp?.url} />
-              {
-                user.is_active ?
-                  <Typography variant="caption" sx={{
-                    color: "green",
-                  }}>active</Typography>
-                  : <Typography variant="caption" sx={{
-                    color: "red",
-                  }}>blocked</Typography>
+              <Typography variant="button">
+                Access Control Page <u><b>{user.username}</b></u>
+              </Typography>
+              <Button size="small" variant="outlined" color="warning"
+                onClick={() => setChoice({ type: UserChoiceActions.close_user })}>Close</Button>
+            </Stack >
 
-              }
-            </Stack >
-            <Stack>
-              {
-                user.is_admin ?
-                  <>
-                    <Typography sx={{ textTransform: "capitalize", color: "green" }}>{user.username}</Typography>
-                    <Typography variant="caption" component="span">
-                        admin
-                    </Typography>
-                  </>
-                  :
-                  <>
-                    <Typography sx={{ textTransform: "capitalize" }}>{user.username}</Typography>
-                    <Typography variant="caption" component="span">
-                      user
-                    </Typography>
-                  </>
-              }
-            </Stack >
           </Stack>
         </DialogTitle>
         <DialogContent>
-          {
-          user?
-          <>
-              <LeadControlAccessForm user={user} />
-          </>
-          :null
-        }
+          <Stack direction="row" gap={2}>
+            {
+              user ?
+                <>
+                  <LeadControlAccessForm user={user} />
+                </>
+                : null
+            }
+            {
+              user ?
+                <>
+                  <BotControlAccessForm user={user} />
+                </>
+                : null
+            }
+          </Stack>
         </DialogContent>
-          <Button fullWidth variant="contained"
-            onClick={() => setChoice({ type: UserChoiceActions.close_user })}>Close</Button>
+
       </Dialog >
     </>
   )

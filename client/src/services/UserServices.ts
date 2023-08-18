@@ -1,4 +1,4 @@
-import { LeadField } from "../types/users/user.type";
+import { BotField, LeadField } from "../types/users/user.type";
 import { apiClient } from "./utils/AxiosInterceptor";
 
 // login
@@ -49,6 +49,10 @@ export const UnBlockUser = async (id: string) => {
 export const UpdateUserLeadAccess = async ({ id, leadFields }: { id: string, leadFields: { lead_fields: LeadField[] } }) => {
   return await apiClient.patch(`update-lead-field-roles/user/${id}`, leadFields)
 }
+export const UpdateUserBotAccess = async ({ id, botFields }: { id: string, botFields: { bot_fields: BotField[] } }) => {
+  return await apiClient.patch(`update-bot-field-roles/user/${id}`, botFields)
+}
+
 // make admin
 export const MakeAdmin = async (id: string) => {
   return await apiClient.patch(`make-admin/user/${id}`)

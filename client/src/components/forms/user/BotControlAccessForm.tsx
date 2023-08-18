@@ -2,27 +2,28 @@ import { AxiosResponse } from 'axios';
 import { useContext, useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
-import { UpdateUserLeadAccess } from '../../../services/UserServices';
+import { UpdateUserBotAccess } from '../../../services/UserServices';
 import { Button, Checkbox, FormControlLabel, Typography, CircularProgress, Stack, Alert } from '@mui/material'
-import { IUser, LeadField, LeadFieldType } from '../../../types/users/user.type';
+import { IUser, BotField, BotFieldType } from '../../../types/users/user.type';
 import { BackendError } from '../../../types';
 import { queryClient } from '../../../main';
 
 
 
-function LeadControlAccessForm({ user }: { user: IUser }) {
+function BotControlAccessForm({ user }: { user: IUser }) {
     const { setChoice } = useContext(ChoiceContext)
-    const [LeadFields, setLeadFields] = useState(user.lead_fields)
+    const [BotFields, setBotFields] = useState(user.bot_fields)
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
-        <AxiosResponse<any>, BackendError, { id: string, leadFields: { lead_fields: LeadField[] } }>
-        (UpdateUserLeadAccess, {
+        <AxiosResponse<any>, BackendError, { id: string, botFields: { bot_fields: BotField[] } }>
+        (UpdateUserBotAccess, {
             onSuccess: () => {
-                queryClient.invalidateQueries('users')
+                queryClient.invalidateQueries('flows')
+                queryClient.invalidateQueries('trackers')
             }
         })
-    function handleHidden(key: LeadFieldType) {
-        let newFields = LeadFields
-        newFields = LeadFields.map((item) => {
+    function handleHidden(key: BotFieldType) {
+        let newFields = BotFields
+        newFields = BotFields.map((item) => {
             if (item.field === key) {
                 return ({
                     ...item,
@@ -33,11 +34,11 @@ function LeadControlAccessForm({ user }: { user: IUser }) {
                 return item
             }
         })
-        setLeadFields(newFields)
+        setBotFields(newFields)
     }
-    function handleReadOnly(key: LeadFieldType) {
-        let newFields = LeadFields
-        newFields = LeadFields.map((item) => {
+    function handleReadOnly(key: BotFieldType) {
+        let newFields = BotFields
+        newFields = BotFields.map((item) => {
             if (item.field === key) {
                 return ({
                     ...item,
@@ -48,7 +49,7 @@ function LeadControlAccessForm({ user }: { user: IUser }) {
                 return item
             }
         })
-        setLeadFields(newFields)
+        setBotFields(newFields)
     }
 
     useEffect(() => {
@@ -62,10 +63,10 @@ function LeadControlAccessForm({ user }: { user: IUser }) {
         <>
 
             <Stack p={2} direction={"column"} sx={{ maxWidth: '300px', backgroundColor: 'whitesmoke' }} gap={1}>
-                <Typography variant={"subtitle1"} sx={{ fontWeight: "bold", textAlign: 'center', backgroundColor: 'rgba(0,0,0,0.1)' }}>Leads Options for Selected User</Typography>
+                <Typography variant={"subtitle1"} sx={{ fontWeight: "bold", textAlign: 'center', backgroundColor: 'rgba(0,0,0,0.1)' }}>Bots Options for Selected User</Typography>
 
                 {
-                    LeadFields.map((field, index) => {
+                    BotFields.map((field, index) => {
                         return (
                             <Stack key={index} direction="column" justifyContent={"left"}>
                                 <Typography sx={{ fontSize: 15, fontWeight: 'bold' }}>{field.field.replace("_", " ").toLocaleUpperCase()}</Typography>
@@ -101,7 +102,7 @@ function LeadControlAccessForm({ user }: { user: IUser }) {
                 <Stack gap={2} p={2} direction={"row"} alignItems={"center"} justifyContent={"center"}>
                     <Button size={"small"} variant="contained" color="primary"
                         onClick={() => {
-                            mutate({ id: user._id, leadFields: { lead_fields: LeadFields } })
+                            mutate({ id: user._id, botFields: { bot_fields: BotFields } })
                         }}
                         disabled={isLoading}
                     >
@@ -124,4 +125,4 @@ function LeadControlAccessForm({ user }: { user: IUser }) {
     )
 }
 
-export default LeadControlAccessForm
+export default BotControlAccessForm
