@@ -1,16 +1,16 @@
 import express from "express";
-import { isAdmin, isAuthenticatedUser } from "../middlewares/auth.middleware";
+import {  isAuthenticatedUser } from "../middlewares/auth.middleware";
 import { AssignFlow, CreateFlow, DestroyFlow, FuzzySearchTrackers, GetConnectedUsers, GetFlows, GetTrackers, ToogleFlowStatus, ToogleTrackerStatus, UpdateFlow, UpdateTrackerName } from "../controllers/bot.controller";
 
 const router = express.Router()
 
-router.route("/flows").get(isAuthenticatedUser, isAdmin, GetFlows)
-router.route("/flows").post(isAuthenticatedUser, isAdmin, CreateFlow)
-router.route("/flows/:id").delete(isAuthenticatedUser, isAdmin, DestroyFlow)
-router.route("/flows/:id").put(isAuthenticatedUser, isAdmin, UpdateFlow)
-router.route("/trackers").get(isAuthenticatedUser, isAdmin, GetTrackers)
-router.route("/trackers/:id").put(isAuthenticatedUser, isAdmin, UpdateTrackerName)
-router.route("/toogle").post(isAuthenticatedUser, isAdmin, ToogleTrackerStatus)
+router.route("/flows").get(isAuthenticatedUser, GetFlows)
+router.route("/flows").post(isAuthenticatedUser, CreateFlow)
+router.route("/flows/:id").delete(isAuthenticatedUser, DestroyFlow)
+router.route("/flows/:id").put(isAuthenticatedUser, UpdateFlow)
+router.route("/trackers").get(isAuthenticatedUser, GetTrackers)
+router.route("/trackers/:id").put(isAuthenticatedUser, UpdateTrackerName)
+router.route("/toogle").post(isAuthenticatedUser, ToogleTrackerStatus)
 router.route("/connected/users").get(isAuthenticatedUser, GetConnectedUsers)
 router.route("/flows/asign/:id").patch(isAuthenticatedUser, AssignFlow)
 router.route("/flows/toogle/:id").patch(isAuthenticatedUser, ToogleFlowStatus)
