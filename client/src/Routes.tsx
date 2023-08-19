@@ -131,31 +131,33 @@ function AppRoutes() {
             />
           </Route>
           {/* users nav bar */}
-          < Route path={paths.users} element={<UsersNavBar />}>
-            <Route index
-              element={
-                <UsersPage />
-              }
-            />
-            <Route
-              path={paths.users} element={
-                <UsersPage />
-              }
-            />
-          </Route>
+          {user._id === user.created_by._id &&
+            < Route path={paths.users} element={<UsersNavBar />}>
+              <Route index
+                element={
+                  <UsersPage />
+                }
+              />
+              <Route
+                path={paths.users} element={
+                  <UsersPage />
+                }
+              />
+            </Route>}
           {/* backup */}
-          <Route path={paths.backup_page} element={<DashBoardNavBar />}>
-            <Route index
-              element={
-                <BackupPage />
-              }
-            />
-            <Route
-              path={paths.backup_page} element={
-                <BackupPage />
-              }
-            />
-          </Route>
+          {user._id === user.created_by._id &&
+            <Route path={paths.backup_page} element={<DashBoardNavBar />}>
+              <Route index
+                element={
+                  <BackupPage />
+                }
+              />
+              <Route
+                path={paths.backup_page} element={
+                  <BackupPage />
+                }
+              />
+            </Route>}
         </Route>
       }
 
