@@ -110,6 +110,20 @@ function TrackersTable({ tracker, trackers, selectableTrackers, setTracker, sele
                                 :
                                 null}
 
+                            {!hiddenFields?.includes('connected_phone') ?
+                                <TableCell
+                                    sx={{ bgcolor: headColor }}                         >
+                                    <Stack
+                                        direction="row"
+                                        justifyContent="left"
+                                        alignItems="left"
+                                        spacing={2}
+                                    >
+                                        Bot Number
+                                    </Stack>
+                                </TableCell>
+                                :
+                                null}
 
                             {/* stage */}
                             {!hiddenFields?.includes('view_customer_phone') ?
@@ -301,6 +315,13 @@ function TrackersTable({ tracker, trackers, selectableTrackers, setTracker, sele
                                             </TableCell>
                                             :
                                             null}
+                                        {!hiddenFields?.includes('connected_phone') ?
+                                            <TableCell>
+                                                <Typography sx={{ textTransform: "capitalize" }}>{tracker.bot_number}</Typography>
+                                            </TableCell>
+                                            :
+                                            null}
+
                                         {/* stage */}
                                         {!hiddenFields?.includes('view_customer_phone') ?
                                             <TableCell>

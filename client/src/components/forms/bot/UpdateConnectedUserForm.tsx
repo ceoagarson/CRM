@@ -76,10 +76,18 @@ function UpdateConnectedUserForm({ flow }: { flow: IFlow }) {
                     >
                         {
                             flow.connected_users && flow.connected_users.map(user => {
-                                return (<option key={user._id} value={user._id}>
+                                return (
+                                    <>
+                                        {
+                                            user.connected_number &&
+                                            < option key={user._id} value={user._id}>
 
-                                    {user.username + ": : " + String(user.connected_number).replace("91", "").replace("@c.us", "")}
-                                </option>)
+                                                {user.username + ": : " + String(user.connected_number).replace("91", "").replace("@c.us", "")}
+                                            </option >
+
+                                        }
+                                    </>
+                                )
                             })
                         }
 
@@ -87,9 +95,15 @@ function UpdateConnectedUserForm({ flow }: { flow: IFlow }) {
                             users && users.map((user, index) => {
                                 let conn_users = flow.connected_users && flow.connected_users.map((user) => { return user._id })
                                 if (!conn_users?.includes(user._id)) {
-                                    return (<option key={index} value={user._id}>
-                                        {user.username + ": : " + String(user.connected_number).replace("91", "").replace("@c.us", "")}
-                                    </option>)
+                                    return (
+                                        <>
+                                            {
+                                                user.connected_number && <option key={index} value={user._id}>
+                                                    {user.username + ": : " + String(user.connected_number).replace("91", "").replace("@c.us", "")}
+                                                </option>
+                                            }
+                                        </>
+                                    )
                                 }
                                 else return null
                             })
@@ -114,7 +128,7 @@ function UpdateConnectedUserForm({ flow }: { flow: IFlow }) {
                         fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Assign flow"}
                     </Button>
                 </Stack>
-            </form>
+            </form >
 
         </>
     )

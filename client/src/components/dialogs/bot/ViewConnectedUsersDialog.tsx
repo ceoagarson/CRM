@@ -31,8 +31,13 @@ function ViewConnectedUsersDialog({ selectedFlow }: { selectedFlow: IFlow }) {
                         return (
                             <Stack gap={2} key={index}>
                                 <Stack direction="row" justifyContent="left" gap={1} alignItems="center">
-                                    <Typography>{user.username} : : </Typography>
-                                    <p>{user.connected_number && user.connected_number.replace("91", "").replace("@c.us", "")}</p>
+                                    {
+                                        user.connected_number && <>
+                                            <Typography>{user.username} : : </Typography>
+                                            <p>{user.connected_number.replace("91", "").replace("@c.us", "")}</p>
+                                        </>
+                                    }
+
                                 </Stack>
                             </Stack>
                         )
