@@ -8,6 +8,7 @@ import SaveUpdateFlowModal from "./SaveUpdateFlowDialog";
 import { BotChoiceActions, ChoiceContext } from "../../../contexts/dialogContext";
 import { IFlow } from "../../../types/bot/flow.types";
 import { Box, Dialog, Stack } from "@mui/material";
+import { useBotFields } from "../../hooks/BotFieldsHook";
 
 const nodeTypes = { MenuNode, DefaultNode, StartNode, OutputNode, CommonNode }
 
@@ -19,7 +20,7 @@ function UpdateFlowDialog({ selectedFlow }: { selectedFlow: IFlow }) {
     const [selectedNode, setSelectedNode] = useState<Node>()
     const [displayUpdateModal, setDisplayUpdateModal] = useState(false)
     const [displayNodeUpdateModal, setDisplayNodeUpdateModal] = useState(false)
-
+    const { readonlyFields } = useBotFields()
     function handleSingleClick(event: React.MouseEvent, _node: Node) {
         setSelectedNode(_node)
         return event
@@ -253,8 +254,8 @@ function UpdateFlowDialog({ selectedFlow }: { selectedFlow: IFlow }) {
                     <MiniMap pannable={true} nodeStrokeWidth={5}
                         zoomable={true} nodeColor="grey" />
 
-                    <Controls position="top-left" />
-                    <Panel position="top-right">
+                    <Controls position="top-left" showInteractive={readonlyFields?.includes('allow_edit_flow')} />
+                    <Panel position="top-right" >
                         {/* @ts-ignore */}
 
                         <Box sx={{

@@ -41,7 +41,7 @@ export default function FlowsPage() {
         {!hiddenFields?.includes('allow_create_flow') &&
           <Button sx={{ m: 1 }} variant="outlined" color="warning"
             onClick={() => setChoice({ type: BotChoiceActions.create_flow })}
-            disabled={!readonlyFields?.includes('allow_create_flow')}
+            disabled={readonlyFields?.includes('allow_create_flow')}
           >
             <Stack direction="row" alignItems="center" gap={1}>
               <AddOutlined />
