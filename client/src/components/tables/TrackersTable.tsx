@@ -104,7 +104,7 @@ function TrackersTable({ tracker, trackers, selectableTrackers, setTracker, sele
                                         alignItems="left"
                                         spacing={2}
                                     >
-                                        Tracker Name
+                                        Customer Name
                                     </Stack>
                                 </TableCell>
                                 :

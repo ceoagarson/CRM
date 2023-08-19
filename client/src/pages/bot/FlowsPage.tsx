@@ -24,7 +24,7 @@ export default function FlowsPage() {
   const { setChoice } = useContext(ChoiceContext)
   const { user } = useContext(UserContext)
   const { data, isLoading } = useQuery<AxiosResponse<IFlow[]>, BackendError>("flows", GetFlows)
-  const { hiddenFields,readonlyFields } = useBotFields()
+  const { hiddenFields, readonlyFields } = useBotFields()
 
   useEffect(() => {
     if (data)
@@ -41,6 +41,7 @@ export default function FlowsPage() {
         {!hiddenFields?.includes('allow_create_flow') &&
           <Button sx={{ m: 1 }} variant="outlined" color="warning"
             onClick={() => setChoice({ type: BotChoiceActions.create_flow })}
+            disabled={!readonlyFields?.includes('allow_create_flow')}
           >
             <Stack direction="row" alignItems="center" gap={1}>
               <AddOutlined />
