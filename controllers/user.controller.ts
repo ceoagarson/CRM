@@ -634,9 +634,9 @@ export const testRoute = async (req: Request, res: Response, next: NextFunction)
     if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
     let user = await User.findById(id);
 
-    let BotFields: LeadField[] = []
+    let BotFields: BotField[] = []
     if (user?.is_admin) {
-        all_fields.map((field) => {
+        all_Bot_fields.map((field) => {
             BotFields.push({
                 field: field,
                 readonly: false,
@@ -645,7 +645,7 @@ export const testRoute = async (req: Request, res: Response, next: NextFunction)
         })
     }
     else
-        all_fields.map((field) => {
+        all_Bot_fields.map((field) => {
             BotFields.push({
                 field: field,
                 readonly: true,
@@ -655,7 +655,7 @@ export const testRoute = async (req: Request, res: Response, next: NextFunction)
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }
-    user.lead_fields = BotFields
+    user.bot_fields = BotFields
     await user.save()
     res.status(200).json({ message: "user bot fields roles updated" })
 }
