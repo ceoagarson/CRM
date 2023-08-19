@@ -150,12 +150,13 @@ export const GetTrackers = async (req: Request, res: Response, next: NextFunctio
 
 
 export const FuzzySearchTrackers = async (req: Request, res: Response, next: NextFunction) => {
-    let key = String(req.query.key)
+    let key = String(req.query.key).toLowerCase()
+    console.log(key)
     if (!key)
         return res.status(500).json({ message: "bad request" })
     let trackers: IMenuTracker[] = []
     trackers = await MenuTracker.find({
-        $text: { $search: key, $caseSensitive: false }
+        $or: [{ phone_number: key }, { bot_number: key }]
     }
     ).populate({
         path: 'flow',

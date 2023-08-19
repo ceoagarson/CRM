@@ -15,6 +15,8 @@ import DashBoardPage from './pages/DashBoardPage'
 import LeadsPage from './pages/crm/LeadsPage'
 import FlowsPage from './pages/bot/FlowsPage'
 import BackupPage from './pages/backup/BackupPage'
+import SchedulerPage from './pages/scheduler/SchedulerPage'
+import BroadcastPage from './pages/broadcast/BroadcastPage'
 
 // lazy loding
 const ResetPasswordDialog = React.lazy(() => import('./components/dialogs/users/ResetPasswordDialog'))
@@ -117,7 +119,12 @@ function AppRoutes() {
           }>
             <Route
               index element={
-                <DashBoardPage />
+                <SchedulerPage />
+              }
+            />
+            <Route
+              path={paths.scheduler} element={
+                <SchedulerPage />
               }
             />
           </Route>
@@ -126,9 +133,10 @@ function AppRoutes() {
           }>
             <Route
               index element={
-                <DashBoardPage />
+                <BroadcastPage />
               }
             />
+           
           </Route>
           {/* users nav bar */}
           {user._id === user.created_by._id &&

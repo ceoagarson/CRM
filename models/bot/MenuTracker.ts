@@ -35,5 +35,4 @@ const MenuTrackerSchema = new mongoose.Schema<IMenuTracker, mongoose.Model<IMenu
         required: true
     }
 })
-MenuTrackerSchema.index({ '$**': 'text' })
 export const MenuTracker = mongoose.model<IMenuTracker, mongoose.Model<IMenuTracker, {}, {}>>("MenuTracker", MenuTrackerSchema)
