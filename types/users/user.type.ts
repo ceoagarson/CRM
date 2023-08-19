@@ -7,12 +7,12 @@ export const all_fields: LeadFieldType[] = [
 ]
 
 
-
 export type BotFieldType = "allow_connect_whatsapp" | "allow_view_trackers" | "edit_greeting_customer_name" | "allow_start_and_stop_bot_for_a_person" | "allow_create_flow" | "allow_edit_flow" | "allow_delete_flow" | "flow_status" | "view_connected_users" | "connected_phone" | "triggers" | "flow_name" | "last_edit_by" | "last_edit_date" | "view_cutsomer_name" | "view_customer_phone" | "view_tracker_flow" | "view_last_interaction" | "allow_flow_assignment" | "export_to_excel" | "activate_flow" | "created_by" | "edit_customer_name"
 
 export const all_Bot_fields: BotFieldType[] = [
-    "allow_connect_whatsapp", "allow_view_trackers", "activate_flow", "edit_greeting_customer_name", "allow_start_and_stop_bot_for_a_person", "allow_create_flow", "allow_edit_flow", "allow_delete_flow", "flow_status", "view_connected_users", "triggers", "flow_name", "last_edit_by", "last_edit_date", "view_cutsomer_name", "view_customer_phone", "view_tracker_flow", "view_last_interaction", "allow_flow_assignment", "export_to_excel", "created_by", "edit_customer_name"
+    "allow_connect_whatsapp", "allow_view_trackers", "activate_flow", "edit_greeting_customer_name", "allow_start_and_stop_bot_for_a_person", "allow_create_flow", "allow_edit_flow", "allow_delete_flow", "flow_status", "view_connected_users", "triggers", "flow_name", "last_edit_by", "last_edit_date", "view_cutsomer_name", "view_customer_phone", "view_tracker_flow", "view_last_interaction", "allow_flow_assignment", "export_to_excel", "created_by", "edit_customer_name", "connected_phone"
 ]
+
 
 export type LeadField = {
     field: LeadFieldType,
