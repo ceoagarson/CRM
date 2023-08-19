@@ -17,8 +17,7 @@ function BotControlAccessForm({ user }: { user: IUser }) {
         <AxiosResponse<any>, BackendError, { id: string, botFields: { bot_fields: BotField[] } }>
         (UpdateUserBotAccess, {
             onSuccess: () => {
-                queryClient.invalidateQueries('flows')
-                queryClient.invalidateQueries('trackers')
+                queryClient.invalidateQueries('users')
             }
         })
     function handleHidden(key: BotFieldType) {

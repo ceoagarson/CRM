@@ -41,6 +41,7 @@ export default function TrackersPage() {
     const { data: fuzzyTrackers, isSuccess: isFuzzySuccess, isLoading: isFuzzyLoading, refetch: refetchFuzzy } = useQuery<AxiosResponse<ITracker[]>, BackendError>(["fuzzytrackers", filter], async () => FuzzySearchTrackers(filter), {
         enabled: false
     })
+    
 
     useEffect(() => {
         if (isSuccess) {

@@ -202,3 +202,4 @@ export const GetConnectedUsers = async (req: Request, res: Response, next: NextF
     })
     return res.status(200).json(users)
 }
+

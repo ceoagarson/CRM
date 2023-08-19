@@ -1,7 +1,7 @@
 import express from "express";
 import multer from "multer";
 
-import { BlockUser, GetProfile, GetUsers, Login, Logout, MakeAdmin, NewUser, RemoveAdmin, ResetPassword, SendPasswordResetMail, SendVerifyEmail, SignUp, UnBlockUser, UpdateLeadFieldRoles, UpdateProfile, UpdateUser, VerifyEmail, testRoute, updatePassword, updateUserPassword } from "../controllers/user.controller";
+import { BlockUser, GetProfile, GetUsers, Login, Logout, MakeAdmin, NewUser, RemoveAdmin, ResetPassword, SendPasswordResetMail, SendVerifyEmail, SignUp, UnBlockUser, UpdateBotFieldRoles, UpdateLeadFieldRoles, UpdateProfile, UpdateUser, VerifyEmail, testRoute, updatePassword, updateUserPassword } from "../controllers/user.controller";
 import { isAdmin, isAuthenticatedUser, isProfileAuthenticated, } from "../middlewares/auth.middleware";
 
 const router = express.Router()
@@ -17,6 +17,7 @@ router.patch("/block/user/:id", isAuthenticatedUser, isAdmin, BlockUser)
 router.patch("/unblock/user/:id", isAuthenticatedUser, isAdmin, UnBlockUser)
 router.patch("/remove-admin/user/:id", isAuthenticatedUser, isAdmin, RemoveAdmin)
 router.patch("/update-lead-field-roles/user/:id", isAuthenticatedUser, isAdmin, UpdateLeadFieldRoles)
+router.patch("/update-bot-field-roles/user/:id", isAuthenticatedUser, isAdmin, UpdateBotFieldRoles)
 router.post("/login", Login)
 router.post("/logout", Logout)
 router.route("/profile")

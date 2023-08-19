@@ -15,6 +15,7 @@ import { AddOutlined, Assignment, Delete, Edit, LocalActivity, PanoramaFishEye }
 import ViewConnectedUsersDialog from "../../components/dialogs/bot/ViewConnectedUsersDialog"
 import UpdateConnectedUsersDialog from "../../components/dialogs/bot/UpdateConnectedUsersDialog"
 import ToogleFlowStatusDialog from "../../components/dialogs/bot/ToogleFlowStatusDialog"
+import { useBotFields } from "../../components/hooks/BotFieldsHook"
 
 
 export default function FlowsPage() {
@@ -23,7 +24,7 @@ export default function FlowsPage() {
   const { setChoice } = useContext(ChoiceContext)
   const { user } = useContext(UserContext)
   const { data, isLoading } = useQuery<AxiosResponse<IFlow[]>, BackendError>("flows", GetFlows)
-
+  const { hiddenFields,readonlyFields } = useBotFields()
 
   useEffect(() => {
     if (data)
@@ -37,14 +38,15 @@ export default function FlowsPage() {
         overflow: "scroll",
         minHeight: '73.5vh'
       }}>
-        <Button sx={{ m: 1 }} variant="outlined" color="warning"
-          onClick={() => setChoice({ type: BotChoiceActions.create_flow })}
-        >
-          <Stack direction="row" alignItems="center" gap={1}>
-            <AddOutlined />
-            <span> New Flow</span>
-          </Stack>
-        </Button>
+        {!hiddenFields?.includes('allow_create_flow') &&
+          <Button sx={{ m: 1 }} variant="outlined" color="warning"
+            onClick={() => setChoice({ type: BotChoiceActions.create_flow })}
+          >
+            <Stack direction="row" alignItems="center" gap={1}>
+              <AddOutlined />
+              <span> New Flow</span>
+            </Stack>
+          </Button>}
         <Table
           stickyHeader
           sx={{ minWidth: "1400px" }}
@@ -74,73 +76,78 @@ export default function FlowsPage() {
                   Index
                 </Stack>
               </TableCell>
-              <TableCell
-                sx={{ bgcolor: headColor }}                         >
-                <Stack
-                  direction="row"
-                  justifyContent="left"
-                  alignItems="left"
-                  spacing={2}
-                >
-                  Status
-                </Stack>
-              </TableCell>
-              <TableCell
-                sx={{ bgcolor: headColor }}                         >
-                <Stack
-                  direction="row"
-                  justifyContent="left"
-                  alignItems="left"
-                  spacing={2}
-                >
-                  Triggers
-                </Stack>
-              </TableCell>
-              <TableCell
-                sx={{ bgcolor: headColor }}                         >
-                <Stack
-                  direction="row"
-                  justifyContent="left"
-                  alignItems="left"
-                  spacing={2}
-                >
-                  Flow Name
-                </Stack>
-              </TableCell>
-
-              <TableCell
-                sx={{ bgcolor: headColor }}                         >
-                <Stack
-                  direction="row"
-                  justifyContent="left"
-                  alignItems="left"
-                  spacing={2}
-                >
-                  Updated By
-                </Stack>
-              </TableCell>
-              <TableCell
-                sx={{ bgcolor: headColor }}                         >
-                <Stack
-                  direction="row"
-                  justifyContent="left"
-                  alignItems="left"
-                  spacing={2}
-                >
-                  Created By
-                </Stack>
-              </TableCell>
-              <TableCell
-                sx={{ bgcolor: headColor }}                         >
-                <Stack
-                  direction="row"
-                  justifyContent="left"
-                  alignItems="left"
-                  spacing={2}
-                >
-                  Last Updated
-                </Stack>
-              </TableCell>
+              {!hiddenFields?.includes('flow_status') &&
+                <TableCell
+                  sx={{ bgcolor: headColor }}                         >
+                  <Stack
+                    direction="row"
+                    justifyContent="left"
+                    alignItems="left"
+                    spacing={2}
+                  >
+                    Status
+                  </Stack>
+                </TableCell>}
+              {!hiddenFields?.includes('allow_view_trackers') &&
+                <TableCell
+                  sx={{ bgcolor: headColor }}                         >
+                  <Stack
+                    direction="row"
+                    justifyContent="left"
+                    alignItems="left"
+                    spacing={2}
+                  >
+                    Triggers
+                  </Stack>
+                </TableCell>}
+              {!hiddenFields?.includes('flow_name') &&
+                <TableCell
+                  sx={{ bgcolor: headColor }}                         >
+                  <Stack
+                    direction="row"
+                    justifyContent="left"
+                    alignItems="left"
+                    spacing={2}
+                  >
+                    Flow Name
+                  </Stack>
+                </TableCell>}
+              {!hiddenFields?.includes('last_edit_by') &&
+                <TableCell
+                  sx={{ bgcolor: headColor }}                         >
+                  <Stack
+                    direction="row"
+                    justifyContent="left"
+                    alignItems="left"
+                    spacing={2}
+                  >
+                    Updated By
+                  </Stack>
+                </TableCell>}
+              {!hiddenFields?.includes('created_by') &&
+                <TableCell
+                  sx={{ bgcolor: headColor }}                         >
+                  <Stack
+                    direction="row"
+                    justifyContent="left"
+                    alignItems="left"
+                    spacing={2}
+                  >
+                    Created By
+                  </Stack>
+                </TableCell>}
+              {!hiddenFields?.includes('last_edit_date') &&
+                <TableCell
+                  sx={{ bgcolor: headColor }}                         >
+                  <Stack
+                    direction="row"
+                    justifyContent="left"
+                    alignItems="left"
+                    spacing={2}
+                  >
+                    Last Updated
+                  </Stack>
+                </TableCell>}
 
             </TableRow>
           </TableHead>
@@ -161,90 +168,118 @@ export default function FlowsPage() {
                       {
                         user?.is_admin ?
                           <>
-                            <Tooltip title="Change Status">
-                              <IconButton color="error"
-                                onClick={() => {
-                                  setFlow(flow)
-                                  setChoice({ type: BotChoiceActions.toogle_flow_status })
-                                }}
-                              >
-                                <LocalActivity />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title="Edit">
-                              <IconButton color="error"
-                                onClick={() => {
-                                  setFlow(flow)
-                                  setChoice({ type: BotChoiceActions.update_flow })
-                                }}
-                              >
-                                <Edit />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title="Delete">
-                              <IconButton color="warning"
-                                onClick={() => {
-                                  setFlow(flow)
-                                  setChoice({ type: BotChoiceActions.delete_flow })
-                                }}
-                              >
-                                <Delete />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title="View Connected Numbers">
-                              <IconButton color="warning"
-                                onClick={() => {
-                                  setChoice({ type: BotChoiceActions.view_connected_users })
-                                  setFlow(flow)
-                                }}
-                              >
-                                <PanoramaFishEye />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title="Manage Connected Numbers">
-                              <IconButton color="warning"
-                                onClick={() => {
-                                  setChoice({ type: BotChoiceActions.update_connected_users })
-                                  setFlow(flow)
-                                }}
-                              >
-                                <Assignment />
-                              </IconButton>
-                            </Tooltip>
+                            {!hiddenFields?.includes('activate_flow') &&
+                              <Tooltip title="Change Status">
+                                <IconButton color="error"
+                                  onClick={() => {
+                                    setFlow(flow)
+                                    setChoice({ type: BotChoiceActions.toogle_flow_status })
+                                  }}
+                                  disabled={readonlyFields?.includes('activate_flow')}
+                                >
+                                  <LocalActivity />
+                                </IconButton>
+                              </Tooltip>}
+
+                            {!hiddenFields?.includes('allow_edit_flow') &&
+                              <Tooltip title="Edit">
+                                <IconButton color="error"
+                                  onClick={() => {
+                                    setFlow(flow)
+                                    setChoice({ type: BotChoiceActions.update_flow })
+                                  }}
+                                  disabled={readonlyFields?.includes('allow_edit_flow')}
+                                >
+                                  <Edit />
+                                </IconButton>
+                              </Tooltip>}
+
+                            {!hiddenFields?.includes('allow_delete_flow') &&
+                              <Tooltip title="Delete">
+                                <IconButton color="warning"
+                                  onClick={() => {
+                                    setFlow(flow)
+                                    setChoice({ type: BotChoiceActions.delete_flow })
+                                  }}
+                                  disabled={readonlyFields?.includes('allow_delete_flow')}
+                                >
+                                  <Delete />
+                                </IconButton>
+                              </Tooltip>}
+
+                            {!hiddenFields?.includes('view_connected_users') &&
+                              <Tooltip title="View Connected Users">
+                                <IconButton color="warning"
+                                  onClick={() => {
+                                    setChoice({ type: BotChoiceActions.view_connected_users })
+                                    setFlow(flow)
+                                  }}
+                                  disabled={readonlyFields?.includes('view_connected_users')}
+
+                                >
+                                  <PanoramaFishEye />
+                                </IconButton>
+                              </Tooltip>}
+                            {!hiddenFields?.includes('allow_flow_assignment') &&
+                              <Tooltip title="Manage Connected Numbers">
+                                <IconButton color="warning"
+                                  onClick={() => {
+                                    setChoice({ type: BotChoiceActions.update_connected_users })
+                                    setFlow(flow)
+                                  }}
+                                  disabled={readonlyFields?.includes('allow_flow_assignment')}
+
+                                >
+                                  <Assignment />
+                                </IconButton>
+                              </Tooltip>}
                           </>
                           :
                           null
                       }
                     </TableCell>
+
                     <TableCell>
                       <Typography sx={{ textTransform: "capitalize" }}>{index + 1}</Typography>
                     </TableCell>
-                    {
-                      isLoading ? <TableCell>
-                        <Typography sx={{ textTransform: "capitalize" }}>Loading..</Typography>
-                      </TableCell> :
-                        <TableCell>
-                          <Typography sx={{ textTransform: "capitalize" }}>{flow.is_active ? "active" : "disabled"}</Typography>
-                        </TableCell>
+                    {!hiddenFields?.includes('flow_status') &&
+                      <>
 
+                        {
+                          isLoading ? <TableCell>
+                            <Typography sx={{ textTransform: "capitalize" }}>Loading..</Typography>
+                          </TableCell> :
+                            <TableCell>
+                              <Typography sx={{ textTransform: "capitalize" }}>{flow.is_active ? "active" : "disabled"}</Typography>
+                            </TableCell>
+
+                        }
+                      </>
                     }
-
-                    <TableCell>
-                      <Typography sx={{ textTransform: "capitalize" }}>{flow.trigger_keywords.slice(0, 50)}</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography sx={{ textTransform: "capitalize" }}>{flow.flow_name}</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography sx={{ textTransform: "capitalize" }}>{flow.updated_by?.username}</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography sx={{ textTransform: "capitalize" }}>{flow.created_by?.username}</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography sx={{ textTransform: "capitalize" }}>{flow.updated_at && new Date(flow.updated_at).toLocaleString()}</Typography>
-                    </TableCell>
-
+                    {!hiddenFields?.includes('triggers') &&
+                      <TableCell>
+                        <Typography sx={{ textTransform: "capitalize" }}>{flow.trigger_keywords.slice(0, 50)}</Typography>
+                      </TableCell>
+                    }
+                    {!hiddenFields?.includes('flow_name') &&
+                      <TableCell>
+                        <Typography sx={{ textTransform: "capitalize" }}>{flow.flow_name}</Typography>
+                      </TableCell>}
+                    {!hiddenFields?.includes('last_edit_by') &&
+                      <TableCell>
+                        <Typography sx={{ textTransform: "capitalize" }}>{flow.updated_by?.username}</Typography>
+                      </TableCell>
+                    }
+                    {!hiddenFields?.includes('created_by') &&
+                      <TableCell>
+                        <Typography sx={{ textTransform: "capitalize" }}>{flow.created_by?.username}</Typography>
+                      </TableCell>
+                    }
+                    {!hiddenFields?.includes('last_edit_date') &&
+                      <TableCell>
+                        <Typography sx={{ textTransform: "capitalize" }}>{flow.updated_at && new Date(flow.updated_at).toLocaleString()}</Typography>
+                      </TableCell>
+                    }
                   </TableRow>
                 )
               })}
@@ -258,6 +293,5 @@ export default function FlowsPage() {
       {flow ? <UpdateConnectedUsersDialog selectedFlow={flow} /> : null}
       {flow ? <ToogleFlowStatusDialog flow={flow} /> : null}
     </>
-
   )
 }

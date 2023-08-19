@@ -220,6 +220,22 @@ export const UpdateLeadFieldRoles = async (req: Request, res: Response, next: Ne
     res.status(200).json({ message: "user lead fields roles updated" })
 }
 
+export const UpdateBotFieldRoles = async (req: Request, res: Response, next: NextFunction) => {
+    const { bot_fields } = req.body as TUserBody
+    if (bot_fields.length === 0)
+        return res.status(400).json({ message: "please fill all required fields" })
+    const id = req.params.id;
+    if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
+    let user = await User.findById(id);
+    if (!user) {
+        return res.status(404).json({ message: "user not found" })
+    }
+    await User.findByIdAndUpdate(user._id, {
+        bot_fields
+    })
+    res.status(200).json({ message: "user lead fields roles updated" })
+}
+
 // update user only admin can do
 export const UpdateUser = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
