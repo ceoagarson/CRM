@@ -16,7 +16,9 @@ function UpdateLeadFieldsPage() {
             lead_sources: string[],
         }>(UpdateLeadFieldsUpdatable)
 
-    const { data, isSuccess: isFieldsSuccess } = useQuery<AxiosResponse<ILeadUpdatableField>, BackendError>("updateble-lead-leads", GetLeadFieldsUpdatable)
+    const { data, isSuccess: isFieldsSuccess } = useQuery<AxiosResponse<ILeadUpdatableField>, BackendError>("updateble-lead-leads", GetLeadFieldsUpdatable, {
+        staleTime: 10000
+    })
 
     const [fields, setFields] = useState<ILeadUpdatableField>()
 
@@ -29,15 +31,16 @@ function UpdateLeadFieldsPage() {
         if (isFieldsSuccess) {
             setFields(data.data)
         }
-        console.log(fields)
     }, [isFieldsSuccess, data])
 
+
+    
     useEffect(() => {
         if (isSuccess) {
             setFields(updated_fields?.data)
         }
     }, [isSuccess, updated_fields])
-
+    console.log(fields)
     return (
         <>
 

@@ -146,17 +146,12 @@ function LeadTableMenu({ selectedFlatRows }: Props) {
                         }}
                         disabled={readonlyFields?.includes('allow_create')}
                     > Add New</MenuItem>}
-                {
-                    user?.is_admin &&
-                    <>
-                        {!hiddenFields?.includes('export_to_excel') &&
-                            < MenuItem onClick={handleExcel}
-                                disabled={readonlyFields?.includes('export_to_excel')}
-                            >Export To Excel</MenuItem>
-                        }
-                    </>
-                }
 
+                {!hiddenFields?.includes('export_to_excel') &&
+                    < MenuItem onClick={handleExcel}
+                        disabled={readonlyFields?.includes('export_to_excel')}
+                    >Export To Excel</MenuItem>
+                }
             </Menu >
             <NewLeadDialog />
         </>

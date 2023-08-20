@@ -99,15 +99,11 @@ function TrackerTableMenu({ selectedFlatRows }: Props) {
                 sx={{ borderRadius: 2 }}
             >
 
-                {
-                    user?.is_admin &&
-                    <>
-                        {!hiddenFields?.includes('export_to_excel') &&
-                            < MenuItem onClick={handleExcel}
-                                disabled={readonlyFields?.includes('export_to_excel')}
-                            >Export To Excel</MenuItem>
-                        }
-                    </>
+
+                {!hiddenFields?.includes('export_to_excel') &&
+                    < MenuItem onClick={handleExcel}
+                        disabled={readonlyFields?.includes('export_to_excel')}
+                    >Export To Excel</MenuItem>
                 }
 
             </Menu >
