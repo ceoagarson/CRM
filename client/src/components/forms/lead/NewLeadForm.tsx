@@ -42,7 +42,7 @@ export type TformData = {
 function NewLeadForm({ users }: { users: IUser[] }) {
   const { mutate, isLoading, isSuccess, isError, error } = useMutation
     <AxiosResponse<ILead>, BackendError, FormData>
-    (NewLead,{
+    (NewLead, {
       onSuccess: () => {
         queryClient.invalidateQueries('leads')
         queryClient.invalidateQueries('customers')
@@ -86,9 +86,9 @@ function NewLeadForm({ users }: { users: IUser[] }) {
       customer_name: Yup.string(),
       customer_designation: Yup.string(),
       city: Yup.string()
-        ,
+      ,
       state: Yup.string()
-       ,
+      ,
       lead_type: Yup.string(),
       turnover: Yup.string(),
       stage: Yup.string(),
@@ -97,9 +97,9 @@ function NewLeadForm({ users }: { users: IUser[] }) {
       work_description: Yup.string()
       ,
       address: Yup.string()
-        ,
+      ,
       remark: Yup.string()
-       ,
+      ,
       mobile: Yup.string().required("required mobile string")
         .min(10, 'Must be 10 digits')
         .max(10, 'Must be 10 digits'),
@@ -246,7 +246,7 @@ function NewLeadForm({ users }: { users: IUser[] }) {
         < TextField
           variant='standard'
           type="string"
-
+          required
           error={
             formik.touched.mobile && formik.errors.mobile ? true : false
           }
@@ -284,7 +284,6 @@ function NewLeadForm({ users }: { users: IUser[] }) {
         < TextField
           variant='standard'
           fullWidth
-
           type="string"
           error={
             formik.touched.alternate_mobile1 && formik.errors.alternate_mobile1 ? true : false

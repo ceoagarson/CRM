@@ -43,7 +43,7 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
   const { hiddenFields, readonlyFields } = useLeadFields()
   const { mutate, isLoading, isSuccess, isError, error } = useMutation
     <AxiosResponse<ILead>, BackendError, { id: string, body: FormData }>
-    (UpdateLead,{
+    (UpdateLead, {
       onSuccess: () => {
         queryClient.invalidateQueries('leads')
         queryClient.invalidateQueries('customers')
@@ -258,6 +258,7 @@ function UpdateLeadForm({ lead, users }: { lead: ILead, users: IUser[] }) {
         {
           !hiddenFields?.includes('mobile') ?
             < TextField
+              required
               variant='standard'
               disabled={Boolean(readonlyFields?.includes('mobile'))}
               type="string"
