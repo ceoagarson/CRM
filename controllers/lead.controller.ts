@@ -13,6 +13,8 @@ import { Types } from "mongoose"
 import { TLeadUpdatableFieldBody } from "../types/leads/lead.updatable_field.type.js"
 import { LeadUpdatableField } from "../models/leads/lead.fields.model.js"
 import { destroyFile } from "../utils/destroyFile.util.js"
+import { TReferredPartyBody } from "../types/leads/remark.types.js"
+import { ReferredParty } from "../models/leads/referred.model.js"
 
 
 // create lead any one can do in the organization
@@ -739,4 +741,100 @@ export const AdvancedQuery = async (req: Request, res: Response, next: NextFunct
 export const BackUpAllLieds = async (req: Request, res: Response, next: NextFunction) => {
     let leads = await Lead.find().populate('created_by').populate('updated_by').populate('lead_owners')
     return res.status(200).json(leads)
+}
+
+export const CreateReferParty = async (req: Request, res: Response, next: NextFunction) => {
+    const { name, customer_name, city, state, mobile } = req.body as TReferredPartyBody
+    if (!name || !city || !state || !mobile) {
+        return res.status(400).json({ message: "please fill all required fields" })
+    }
+    let party = await new ReferredParty({
+        name, customer_name, city, state, mobile,
+        created_at: new Date(),
+        updated_at: new Date(),
+        created_by: req.user,
+        updated_by: req.user
+    }).save()
+    return res.status(201).json(party)
+}
+
+export const UpdateReferParty = async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id
+    if (!isMongoId(id))
+        return res.status(400).json({ message: "bad mongo id" })
+    let party = await ReferredParty.findById(id)
+    if (!party)
+        return res.status(404).json({ message: "party not found" })
+
+    const { name, customer_name, city, state, mobile } = req.body as TReferredPartyBody
+    if (!name || !city || !state || !mobile) {
+        return res.status(400).json({ message: "please fill all required fields" })
+    }
+    party = await ReferredParty.findByIdAndUpdate(id, {
+        name, customer_name, city, state, mobile,
+        created_at: new Date(),
+        updated_at: new Date(),
+        created_by: req.user,
+        updated_by: req.user
+    })
+    return res.status(200).json({ message: "party updated" })
+}
+
+export const getAllReferParties = async (req: Request, res: Response, next: NextFunction) => {
+    let parties = await ReferredParty.find().populate('created_by').populate('updated_by')
+    return res.status(200).json(parties)
+}
+
+export const DeleteReferParty = async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id
+    if (!isMongoId(id))
+        return res.status(400).json({ message: "bad mongo id" })
+    let party = await ReferredParty.findById(id)
+    if (!party)
+        return res.status(404).json({ message: "party not found" })
+    await ReferredParty.findByIdAndDelete(id)
+    return res.status(200).json({ message: "deleted" })
+}
+
+export const ReferLead = async (req: Request, res: Response, next: NextFunction) => {
+    const { party_id } = req.body
+    if (!party_id)
+        return res.status(400).json({ message: "fill required field" })
+    const id = req.params.id
+    if (!isMongoId(id) || !isMongoId(party_id))
+        return res.status(400).json({ message: "bad mongo id" })
+    let lead = await Lead.findById(id)
+    if (!lead)
+        return res.status(404).json({ message: "lead not found" })
+    let party = await ReferredParty.findById(party_id)
+    if (!party)
+        return res.status(404).json({ message: "referred party not found" })
+
+    lead.referred_party = party
+    lead.referred_party_mobile = party.mobile
+    lead.referred_party_name = party.name
+    lead.referred_date = new Date()
+    await lead.save()
+    return res.status(200).json({ message: "party referred successfully" })
+}
+export const UpdateReferLead = async (req: Request, res: Response, next: NextFunction) => {
+    const { party_id } = req.body
+    if (!party_id)
+        return res.status(400).json({ message: "fill required field" })
+    const id = req.params.id
+    if (!isMongoId(id) || !isMongoId(party_id))
+        return res.status(400).json({ message: "bad mongo id" })
+    let lead = await Lead.findById(id)
+    if (!lead)
+        return res.status(404).json({ message: "lead not found" })
+    let party = await ReferredParty.findById(party_id)
+    if (!party)
+        return res.status(404).json({ message: "referred party not found" })
+
+    lead.referred_party = party
+    lead.referred_party_mobile = party.mobile
+    lead.referred_party_name = party.name
+    lead.referred_date = new Date()
+    await lead.save()
+    return res.status(200).json({ message: "party referred successfully" })
 }

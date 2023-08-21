@@ -5,9 +5,8 @@ const MessageTemplateSchema = new mongoose.Schema<IMessageTemplate, mongoose.Mod
     message: [
         {
             index: Number,
-            messageTemplate: {
+            message: {
                 type: String,
-                required: true,
                 trim: true,
                 index: true
             }

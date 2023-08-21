@@ -1,5 +1,5 @@
 import { IUser } from "../users/user.type";
-import { IRemark } from "./remark.types";
+import { IReferredParty, IRemark } from "./remark.types";
 import { Asset } from "../users/asset.type";
 
 export type ILead = {
@@ -18,7 +18,10 @@ export type ILead = {
     alternate_mobile1: string,
     alternate_mobile2: string,
     alternate_email: string,
-
+    referred_party: IReferredParty,
+    referred_party_name: string,
+    referred_party_mobile: string,
+    referred_date: Date,
     lead_type: string
     stage: string
     lead_source: string

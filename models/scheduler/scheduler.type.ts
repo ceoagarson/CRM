@@ -5,21 +5,17 @@ const SchedulerSchema = new mongoose.Schema<IScheduler, mongoose.Model<ISchedule
     message: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'IMessage',
-        required: true
     },
     template: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'IMessageTemplate',
-        required: true
     },
     key: {
         type: String,
-        required: true,
         lowercase: true
     },
     cronString: {
-        type: String,
-        required: true
+        type: String
     },
     frequency: {
         type: String,
@@ -28,8 +24,7 @@ const SchedulerSchema = new mongoose.Schema<IScheduler, mongoose.Model<ISchedule
     reports: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'ISchedulerReport',
-            required: true
+            ref: 'ISchedulerReport'
         }
     ],
     created_at: {

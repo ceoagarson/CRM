@@ -475,20 +475,18 @@ function LeadsTable({ lead, leads, selectableLeads, setLead, selectAll, setSelec
                 :
                 null}
               {/* actions */}
-              {!hiddenFields?.includes('') ?
-                <TableCell
-                  sx={{ bgcolor: headColor }}                         >
-                  <Stack
-                    direction="row"
-                    justifyContent="left"
-                    alignItems="left"
-                    spacing={2}
-                  >
-                    Actions
-                  </Stack>
-                </TableCell>
-                :
-                null}
+              <TableCell
+                sx={{ bgcolor: headColor }}                         >
+                <Stack
+                  direction="row"
+                  justifyContent="left"
+                  alignItems="left"
+                  spacing={2}
+                >
+                  Actions
+                </Stack>
+              </TableCell>
+
             </TableRow>
           </TableHead>
           <TableBody >
@@ -828,7 +826,7 @@ function LeadsTable({ lead, leads, selectableLeads, setLead, selectAll, setSelec
                       :
                       null}
                     {/* visitin card */}
-                    {!hiddenFields?.includes('') ?
+                    {!hiddenFields?.includes('visiting_card') ?
                       <TableCell>
                         <img height="50" src={lead.visiting_card && lead.visiting_card.url} alt="visiting card" />
                       </TableCell>

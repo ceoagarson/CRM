@@ -4,22 +4,18 @@ import { IBroadcast } from "../../types/broadcast/broadcast.type"
 const BroadcastSchema = new mongoose.Schema<IBroadcast, mongoose.Model<IBroadcast, {}, {}>, {}>({
     message: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'IMessage',
-        required: true
+        ref: 'IMessage'
     },
     template: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'IMessageTemplate',
-        required: true
+        ref: 'IMessageTemplate'
     },
     key: {
         type: String,
-        required: true,
         lowercase: true
     },
     cronString: {
-        type: String,
-        required: true
+        type: String
     },
     frequency: {
         type: String,
@@ -28,8 +24,7 @@ const BroadcastSchema = new mongoose.Schema<IBroadcast, mongoose.Model<IBroadcas
     reports: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'IBroadcastReport',
-            required: true
+            ref: 'IBroadcastReport'
         }
     ],
     created_at: {

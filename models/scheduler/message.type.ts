@@ -7,7 +7,6 @@ const MessageSchema = new mongoose.Schema<IMessage, mongoose.Model<IMessage, {},
             index: Number,
             message: {
                 type: String,
-                required: true,
                 trim: true,
                 index: true
             }

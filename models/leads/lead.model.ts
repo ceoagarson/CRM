@@ -124,6 +124,25 @@ const leadSchema = new mongoose.Schema<ILead, mongoose.Model<ILead>>({
         default: false,
         required: true,
     },
+    referred_party: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'IReferredParty'
+    },
+    referred_party_name: {
+        type: String,
+        trim: true,
+        index: true,
+        lowercase: true,
+    },
+    referred_party_mobile: {
+        type: String,
+        trim: true,
+        index: true,
+        lowercase: true,
+    },
+    referred_date: {
+        type: Date
+    },
     last_whatsapp_date: {
         type: Date
     },

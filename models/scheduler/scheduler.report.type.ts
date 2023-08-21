@@ -8,13 +8,11 @@ const SchedulerReportSchema = new mongoose.Schema<ISchedulerReport, mongoose.Mod
     },
     mobile: {
         type: String,
-        required: true,
         lowercase: true
     },
     status: {
         type: String,
-        lowercase: true,
-        required: true
+        lowercase: true
     },
     next_run_date: {
         type: Date,

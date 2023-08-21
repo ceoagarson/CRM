@@ -1,5 +1,5 @@
 import { IUser } from "../users/user.type";
-import { IRemark } from "./remark.types";
+import { IReferredParty, IRemark } from "./remark.types";
 import { Asset } from "../users/asset.type";
 
 export type ILead = {
@@ -22,7 +22,7 @@ export type ILead = {
     lead_type: string
     stage: string
     lead_source: string
-    
+
     // new
     remarks: IRemark[]
     last_remark: string,
@@ -31,6 +31,12 @@ export type ILead = {
 
     visiting_card: Asset,
     is_customer: boolean,
+
+
+    referred_party: IReferredParty,
+    referred_party_name: string,
+    referred_party_mobile: string,
+    referred_date: Date,
 
     last_whatsapp_date: Date,
     created_at: Date,
