@@ -310,8 +310,8 @@ export const UpdateLead = async (req: Request, res: Response, next: NextFunction
     await Lead.findByIdAndUpdate(lead._id, {
         ...body,
         mobile: uniqueNumbers[0] || lead.mobile || null,
-        alternate_mobile1: uniqueNumbers[1] || lead.alternate_mobile1 || null,
-        alternate_mobile2: uniqueNumbers[2] || lead.alternate_mobile2 || null,
+        alternate_mobile1: uniqueNumbers[1] || null,
+        alternate_mobile2: uniqueNumbers[2] || null,
         lead_owners: new_lead_owners,
         lead_owners_username: new_lead_owners.map(user => { return user.username }),
         visiting_card: visiting_card,
