@@ -44,8 +44,6 @@ export const ControlMessage = async (client: Client, msg: WAWebJS.Message) => {
 
     flows = flows.filter((flow) => {
         let flow_numbers = flow.connected_users && flow.connected_users.map((u) => { return u.connected_number })
-        console.log(flow_numbers)
-        console.log(String(from?._serialized))
         if (flow.connected_users && flow.connected_users.find((u) => {
             return u.connected_number === user?.connected_number
         }))
@@ -53,7 +51,6 @@ export const ControlMessage = async (client: Client, msg: WAWebJS.Message) => {
                 return flow
 
     })
-    console.log(flows)
     if (flows.length > 0) {
         if (!tracker) {
             let flow = flows.find((flow) => {
