@@ -5,7 +5,7 @@ import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../../types'
 import { useEffect, useState } from 'react'
 import { Button, Grid, Snackbar, Stack, TextField, Typography } from '@mui/material'
-import { Delete, InsertEmoticonOutlined } from '@mui/icons-material'
+import { Delete } from '@mui/icons-material'
 
 
 function UpdateLeadFieldsPage() {
@@ -41,7 +41,6 @@ function UpdateLeadFieldsPage() {
         }
     }, [isSuccess, updated_fields])
 
-    console.log(fields)
     return (
         <>
 

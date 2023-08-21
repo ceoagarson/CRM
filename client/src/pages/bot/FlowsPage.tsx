@@ -11,12 +11,13 @@ import UpdateFlowDialog from "../../components/dialogs/bot/UpdateFlowDialog"
 import CreateFlowDialog from "../../components/dialogs/bot/CreateFlowDialog"
 import DeleteFlowDialog from "../../components/dialogs/bot/DeleteFlowDialog"
 import { color1, color2, headColor } from "../../utils/colors"
-import { AddOutlined, Assignment, Delete, Edit, LocalActivity, PanoramaFishEye } from "@mui/icons-material"
+import { AddOutlined, Delete, Edit, LocalActivity } from "@mui/icons-material"
 import ViewConnectedUsersDialog from "../../components/dialogs/bot/ViewConnectedUsersDialog"
 import UpdateConnectedUsersDialog from "../../components/dialogs/bot/UpdateConnectedUsersDialog"
 import ToogleFlowStatusDialog from "../../components/dialogs/bot/ToogleFlowStatusDialog"
 import { useBotFields } from "../../components/hooks/BotFieldsHook"
-
+import PreviewIcon from '@mui/icons-material/Preview';
+import FaceIcon from '@mui/icons-material/Face';
 
 export default function FlowsPage() {
   const [flows, setFlows] = useState<IFlow[]>()
@@ -171,7 +172,7 @@ export default function FlowsPage() {
                           <>
                             {!hiddenFields?.includes('activate_flow') &&
                               <Tooltip title="Change Status">
-                                <IconButton color="error"
+                                <IconButton color="warning"
                                   onClick={() => {
                                     setFlow(flow)
                                     setChoice({ type: BotChoiceActions.toogle_flow_status })
@@ -184,7 +185,7 @@ export default function FlowsPage() {
 
                             {!hiddenFields?.includes('allow_edit_flow') &&
                               <Tooltip title="Edit">
-                                <IconButton color="error"
+                                <IconButton color="success"
                                   onClick={() => {
                                     setFlow(flow)
                                     setChoice({ type: BotChoiceActions.update_flow })
@@ -197,7 +198,7 @@ export default function FlowsPage() {
 
                             {!hiddenFields?.includes('allow_delete_flow') &&
                               <Tooltip title="Delete">
-                                <IconButton color="warning"
+                                <IconButton color="error"
                                   onClick={() => {
                                     setFlow(flow)
                                     setChoice({ type: BotChoiceActions.delete_flow })
@@ -210,7 +211,7 @@ export default function FlowsPage() {
 
                             {!hiddenFields?.includes('view_connected_users') &&
                               <Tooltip title="View Connected Users">
-                                <IconButton color="warning"
+                                <IconButton color="success"
                                   onClick={() => {
                                     setChoice({ type: BotChoiceActions.view_connected_users })
                                     setFlow(flow)
@@ -218,12 +219,12 @@ export default function FlowsPage() {
                                   disabled={readonlyFields?.includes('view_connected_users')}
 
                                 >
-                                  <PanoramaFishEye />
+                                  <PreviewIcon />
                                 </IconButton>
                               </Tooltip>}
                             {!hiddenFields?.includes('allow_flow_assignment') &&
                               <Tooltip title="Manage Connected Numbers">
-                                <IconButton color="warning"
+                                <IconButton color="primary"
                                   onClick={() => {
                                     setChoice({ type: BotChoiceActions.update_connected_users })
                                     setFlow(flow)
@@ -231,7 +232,7 @@ export default function FlowsPage() {
                                   disabled={readonlyFields?.includes('allow_flow_assignment')}
 
                                 >
-                                  <Assignment />
+                                  <FaceIcon />
                                 </IconButton>
                               </Tooltip>}
                           </>

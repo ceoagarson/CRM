@@ -3,7 +3,6 @@ import { useContext, useEffect, useState } from 'react'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { MenuActions, MenuContext } from '../../../contexts/menuContext';
 import ExportToExcel from '../../../utils/ExportToExcel';
-import { UserContext } from '../../../contexts/userContext';
 import { useBotFields } from '../../hooks/BotFieldsHook';
 import { ITracker } from '../../../types/bot/flow.types';
 
@@ -25,7 +24,6 @@ function TrackerTableMenu({ selectedFlatRows }: Props) {
     const [selectedData, setSelectedData] = useState<ITrackerTemplate[]>([])
     const [sent, setSent] = useState(false)
     const { hiddenFields, readonlyFields } = useBotFields()
-    const { user } = useContext(UserContext)
     function handleExcel() {
         setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
         try {

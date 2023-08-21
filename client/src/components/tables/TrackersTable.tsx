@@ -4,7 +4,6 @@ import { Stack } from '@mui/system'
 import { color1, color2, headColor } from '../../utils/colors'
 import { useContext, useEffect, useState } from 'react'
 import { UserContext } from '../../contexts/userContext'
-import { BasicPOPUP } from '../popup/BasicPOPUP'
 import { ITracker } from '../../types/bot/flow.types'
 import { BotChoiceActions, ChoiceContext } from '../../contexts/dialogContext'
 import { useBotFields } from '../hooks/BotFieldsHook'
@@ -28,7 +27,6 @@ type Props = {
 function TrackersTable({ tracker, trackers, selectableTrackers, setTracker, selectAll, setSelectAll, selectedTrackers, setSelectedTrackers }: Props) {
     const { setChoice } = useContext(ChoiceContext)
     const { user } = useContext(UserContext)
-    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const [data, setData] = useState<ITracker[]>(trackers)
     const { hiddenFields, readonlyFields } = useBotFields
         ()
@@ -37,9 +35,6 @@ function TrackersTable({ tracker, trackers, selectableTrackers, setTracker, sele
         setData(trackers)
     }, [trackers])
 
-    useEffect(() => {
-        setAnchorEl(anchorEl)
-    }, [anchorEl])
     return (
         <>
             <Box sx={{
@@ -171,19 +166,6 @@ function TrackersTable({ tracker, trackers, selectableTrackers, setTracker, sele
                                 </TableCell>
                                 :
                                 null}
-
-                            {/* actions */}
-                            <TableCell
-                                sx={{ bgcolor: headColor }}                         >
-                                <Stack
-                                    direction="row"
-                                    justifyContent="left"
-                                    alignItems="left"
-                                    spacing={2}
-                                >
-                                    Actions
-                                </Stack>
-                            </TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody >
@@ -243,71 +225,69 @@ function TrackersTable({ tracker, trackers, selectableTrackers, setTracker, sele
                                             :
                                             null
                                         }
-                                        {/* actions popup */}
 
+                                        {/* actions */}
                                         <TableCell>
-                                            <BasicPOPUP
-                                                element={
-                                                    <Stack direction="row" spacing={1}>
-                                                        {
-                                                            user?.is_admin ?
-                                                                <>
-                                                                    {!hiddenFields?.includes('edit_customer_name') &&
-                                                                        <Tooltip title="Change Customer Name">
-                                                                            <IconButton color="error"
-                                                                                onClick={() => {
-                                                                                    setTracker(tracker)
-                                                                                    setChoice({ type: BotChoiceActions.update_tracker })
-                                                                                }}
-                                                                                disabled={readonlyFields?.includes('edit_customer_name')}
-                                                                            >
-                                                                                <AccountCircle />
-                                                                            </IconButton>
-                                                                        </Tooltip>}
+                                            {
+                                                <Stack direction="row" spacing={1}>
+                                                    {
+                                                        user?.is_admin ?
+                                                            <>
+                                                                {!hiddenFields?.includes('edit_customer_name') &&
+                                                                    <Tooltip title="Change Customer Name">
+                                                                        <IconButton color="primary"
+                                                                            onClick={() => {
+                                                                                setTracker(tracker)
+                                                                                setChoice({ type: BotChoiceActions.update_tracker })
+                                                                            }}
+                                                                            disabled={readonlyFields?.includes('edit_customer_name')}
+                                                                        >
+                                                                            <AccountCircle />
+                                                                        </IconButton>
+                                                                    </Tooltip>}
 
-                                                                    {
-                                                                        !hiddenFields?.includes('allow_start_and_stop_bot_for_a_person') && <>
+                                                                {
+                                                                    !hiddenFields?.includes('allow_start_and_stop_bot_for_a_person') && <>
 
-                                                                            {
-                                                                                tracker.is_active ?
+                                                                        {
+                                                                            tracker.is_active ?
 
-                                                                                    <Tooltip title="Stop bot for this person">
-                                                                                        <IconButton color="warning"
-                                                                                            onClick={() => {
-                                                                                                setTracker(tracker)
-                                                                                                setChoice({ type: BotChoiceActions.toogle_bot_status })
-                                                                                            }}
-                                                                                            disabled={readonlyFields?.includes('allow_start_and_stop_bot_for_a_person')}
-                                                                                        >
-                                                                                            <Stop />
-                                                                                        </IconButton>
-                                                                                    </Tooltip> :
-                                                                                    <Tooltip title="Start bot for this person">
-                                                                                        <IconButton color="warning"
-                                                                                            onClick={() => {
-                                                                                                setTracker(tracker)
-                                                                                                setChoice({ type: BotChoiceActions.toogle_bot_status })
-                                                                                            }}
-                                                                                            disabled={readonlyFields?.includes('allow_start_and_stop_bot_for_a_person')}
-                                                                                        >
-                                                                                            <RestartAlt />
-                                                                                        </IconButton>
-                                                                                    </Tooltip>
+                                                                                <Tooltip title="Stop bot for this person">
+                                                                                    <IconButton color="warning"
+                                                                                        onClick={() => {
+                                                                                            setTracker(tracker)
+                                                                                            setChoice({ type: BotChoiceActions.toogle_bot_status })
+                                                                                        }}
+                                                                                        disabled={readonlyFields?.includes('allow_start_and_stop_bot_for_a_person')}
+                                                                                    >
+                                                                                        <Stop />
+                                                                                    </IconButton>
+                                                                                </Tooltip> :
+                                                                                <Tooltip title="Start bot for this person">
+                                                                                    <IconButton color="success"
+                                                                                        onClick={() => {
+                                                                                            setTracker(tracker)
+                                                                                            setChoice({ type: BotChoiceActions.toogle_bot_status })
+                                                                                        }}
+                                                                                        disabled={readonlyFields?.includes('allow_start_and_stop_bot_for_a_person')}
+                                                                                    >
+                                                                                        <RestartAlt />
+                                                                                    </IconButton>
+                                                                                </Tooltip>
 
-                                                                            }
-                                                                        </>}
-
+                                                                        }
+                                                                    </>}
 
 
-                                                                </>
-                                                                :
-                                                                null
-                                                        }
-                                                    </Stack>}
-                                                anchor={anchorEl}
-                                            />
+
+                                                            </>
+                                                            :
+                                                            null
+                                                    }
+                                                </Stack>
+
+                                            }
                                         </TableCell>
-
                                         {/* tracker name */}
                                         {!hiddenFields?.includes('view_cutsomer_name') ?
                                             <TableCell>
@@ -344,68 +324,7 @@ function TrackersTable({ tracker, trackers, selectableTrackers, setTracker, sele
                                             </TableCell>
                                             :
                                             null}
-                                        {/* actions */}
-                                        <TableCell>
-                                            {
-                                                <Stack direction="row" spacing={1}>
-                                                    {
-                                                        user?.is_admin ?
-                                                            <>
-                                                                {!hiddenFields?.includes('edit_customer_name') &&
-                                                                    <Tooltip title="Change Customer Name">
-                                                                        <IconButton color="error"
-                                                                            onClick={() => {
-                                                                                setTracker(tracker)
-                                                                                setChoice({ type: BotChoiceActions.update_tracker })
-                                                                            }}
-                                                                            disabled={readonlyFields?.includes('edit_customer_name')}
-                                                                        >
-                                                                            <AccountCircle />
-                                                                        </IconButton>
-                                                                    </Tooltip>}
 
-                                                                {
-                                                                    !hiddenFields?.includes('allow_start_and_stop_bot_for_a_person') && <>
-
-                                                                        {
-                                                                            tracker.is_active ?
-
-                                                                                <Tooltip title="Stop bot for this person">
-                                                                                    <IconButton color="warning"
-                                                                                        onClick={() => {
-                                                                                            setTracker(tracker)
-                                                                                            setChoice({ type: BotChoiceActions.toogle_bot_status })
-                                                                                        }}
-                                                                                        disabled={readonlyFields?.includes('allow_start_and_stop_bot_for_a_person')}
-                                                                                    >
-                                                                                        <Stop />
-                                                                                    </IconButton>
-                                                                                </Tooltip> :
-                                                                                <Tooltip title="Start bot for this person">
-                                                                                    <IconButton color="warning"
-                                                                                        onClick={() => {
-                                                                                            setTracker(tracker)
-                                                                                            setChoice({ type: BotChoiceActions.toogle_bot_status })
-                                                                                        }}
-                                                                                        disabled={readonlyFields?.includes('allow_start_and_stop_bot_for_a_person')}
-                                                                                    >
-                                                                                        <RestartAlt />
-                                                                                    </IconButton>
-                                                                                </Tooltip>
-
-                                                                        }
-                                                                    </>}
-
-
-
-                                                            </>
-                                                            :
-                                                            null
-                                                    }
-                                                </Stack>
-
-                                            }
-                                        </TableCell>
                                     </TableRow>
                                 )
                             })

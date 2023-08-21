@@ -7,7 +7,6 @@ import ExportToExcel from '../../../utils/ExportToExcel';
 import NewLeadDialog from '../../dialogs/leads/NewLeadDialog';
 import { ILead } from '../../../types/leads/lead.type';
 import { ILeadTemplate } from '../../../types/leads/lead.template.types';
-import { UserContext } from '../../../contexts/userContext';
 import { useLeadFields } from '../../hooks/LeadFieldsHook';
 
 let template: ILeadTemplate[] = [
@@ -51,7 +50,6 @@ function LeadTableMenu({ selectedFlatRows }: Props) {
     const [sent, setSent] = useState(false)
     const { setChoice } = useContext(ChoiceContext)
     const { hiddenFields, readonlyFields } = useLeadFields()
-    const { user } = useContext(UserContext)
     function handleExcel() {
         setMenu({ type: MenuActions.close, payload: { type: null, anchorEl: null } })
         try {
