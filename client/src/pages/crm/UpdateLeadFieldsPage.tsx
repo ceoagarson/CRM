@@ -5,7 +5,7 @@ import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../../types'
 import { useEffect, useState } from 'react'
 import { Button, Grid, Snackbar, Stack, TextField, Typography } from '@mui/material'
-import { Delete } from '@mui/icons-material'
+import { Delete, InsertEmoticonOutlined } from '@mui/icons-material'
 
 
 function UpdateLeadFieldsPage() {
@@ -34,12 +34,13 @@ function UpdateLeadFieldsPage() {
     }, [isFieldsSuccess, data])
 
 
-    
+
     useEffect(() => {
         if (isSuccess) {
             setFields(updated_fields?.data)
         }
     }, [isSuccess, updated_fields])
+
     console.log(fields)
     return (
         <>
@@ -73,23 +74,25 @@ function UpdateLeadFieldsPage() {
                             </TextField>
                             <Button color="inherit" sx={{ borderRadius: 2 }} variant="contained" onClick={() => {
                                 if (stage && fields?.stages)
-                                    setFields({
-                                        ...fields,
-                                        stages: [...fields.stages, stage]
-                                    })
+                                    if (!fields.stages.includes(stage))
+                                        setFields({
+                                            ...fields,
+                                            stages: [...fields.stages, stage]
+                                        })
                             }}>+</Button>
                         </Stack>
-                        {fields && fields.stages && fields.stages?.map((stage, index) => {
+                        {fields && fields.stages && fields.stages?.map((item) => {
                             return (
-                                <Stack key={index} spacing={2} direction="row" alignItems="center">
-                                    <TextField disabled defaultValue={stage}>
+                                <Stack key={item} spacing={2} direction="row" alignItems="center">
+                                    <TextField disabled defaultValue={item}>
                                     </TextField>
                                     <Button color="error" sx={{ borderRadius: 2 }} variant="contained" onClick={() => {
-                                        if (stage && fields?.stages)
+                                        if (fields?.stages) {
                                             setFields({
                                                 ...fields,
-                                                stages: fields.stages.filter((item) => { return item !== stage })
+                                                stages: fields.stages.filter((value) => { return value !== item })
                                             })
+                                        }
                                     }}>
                                         <Delete />
                                     </Button>
@@ -108,24 +111,25 @@ function UpdateLeadFieldsPage() {
                             </TextField>
                             <Button color="inherit" sx={{ borderRadius: 2 }} variant="contained" onClick={() => {
                                 if (type && fields?.lead_types)
-                                    setFields({
-                                        ...fields,
-                                        lead_types: [...fields.lead_types, type]
-                                    })
+                                    if (!fields?.lead_types.includes(type))
+                                        setFields({
+                                            ...fields,
+                                            lead_types: [...fields.lead_types, type]
+                                        })
                             }}>
                                 +
                             </Button>
                         </Stack>
-                        {fields && fields?.lead_types && fields.lead_types.map((type, index) => {
+                        {fields && fields?.lead_types && fields.lead_types.map((item) => {
                             return (
-                                <Stack key={index} spacing={2} direction="row" alignItems="center">
-                                    <TextField disabled defaultValue={type}>
+                                <Stack key={item} spacing={2} direction="row" alignItems="center">
+                                    <TextField disabled defaultValue={item}>
                                     </TextField>
                                     <Button color="error" sx={{ borderRadius: 2 }} variant="contained" onClick={() => {
-                                        if (type && fields?.lead_types)
+                                        if (fields?.lead_types)
                                             setFields({
                                                 ...fields,
-                                                lead_types: fields.lead_types.filter((item) => { return item !== type })
+                                                lead_types: fields.lead_types.filter((value) => { return value !== item })
                                             })
 
 
@@ -147,22 +151,23 @@ function UpdateLeadFieldsPage() {
                             </TextField>
                             <Button color="inherit" sx={{ borderRadius: 2 }} variant="contained" onClick={() => {
                                 if (source && fields?.lead_sources)
-                                    setFields({
-                                        ...fields,
-                                        lead_sources: [...fields.lead_sources, source]
-                                    })
+                                    if (!fields?.lead_sources.includes(source))
+                                        setFields({
+                                            ...fields,
+                                            lead_sources: [...fields.lead_sources, source]
+                                        })
                             }}>+</Button>
                         </Stack>
-                        {fields && fields?.lead_sources && fields.lead_sources.map((field, index) => {
+                        {fields && fields?.lead_sources && fields.lead_sources.map((item) => {
                             return (
-                                <Stack key={index} spacing={2} direction="row" alignItems="center">
-                                    <TextField disabled defaultValue={field}>
+                                <Stack key={item} spacing={2} direction="row" alignItems="center">
+                                    <TextField disabled defaultValue={item}>
                                     </TextField>
                                     <Button color="error" sx={{ borderRadius: 2 }} variant="contained" onClick={() => {
-                                        if (field && fields?.lead_sources)
+                                        if (fields?.lead_sources)
                                             setFields({
                                                 ...fields,
-                                                lead_sources: fields.lead_sources.filter((source) => { return source !== field })
+                                                lead_sources: fields.lead_sources.filter((value) => { return value !== item })
                                             })
                                     }}>
                                         <Delete />
